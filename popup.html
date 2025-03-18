@@ -1,0 +1,173 @@
+// popup.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bias Detector</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .stats {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .refresh-button {
+            display: block;
+            margin: 15px auto 5px;
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .refresh-button:hover {
+            background-color: #45a049;
+        }
+        .color-legend {
+            margin-top: 15px;
+            font-size: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .color-box {
+            width: 15px;
+            height: 15px;
+            margin-right: 8px;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+        .orange {
+            background-color: rgba(255, 165, 0, 0.3);
+        }
+        .blue {
+            background-color: rgba(135, 206, 250, 0.3);
+        }
+        .pink {
+            background-color: rgba(255, 105, 180, 0.3);
+        }
+        .troubleshooting {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<h2>Bias Detector</h2>
+
+<div class="toggle-container">
+    <span>Enable Analysis</span>
+    <label class="toggle">
+        <input type="checkbox" id="enableToggle" checked>
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="toggle-container">
+    <span>Highlight Opinion Words</span>
+    <label class="toggle">
+        <input type="checkbox" id="opinionToggle" checked>
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="toggle-container">
+    <span>Highlight To-Be Verbs (E-Prime)</span>
+    <label class="toggle">
+        <input type="checkbox" id="ePrimeToggle" checked>
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="toggle-container">
+    <span>Highlight Absolutes</span>
+    <label class="toggle">
+        <input type="checkbox" id="absoluteToggle" checked>
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="stats">
+    <div>Opinion words: <span id="opinionCount">0</span></div>
+    <div>To-be verbs: <span id="toBeCount">0</span></div>
+    <div>Absolutes: <span id="absoluteCount">0</span></div>
+    <div>Bias score: <span id="biasScore">0</span>/10</div>
+</div>
+
+<button id="refreshButton" class="refresh-button">Refresh Analysis</button>
+
+<div class="color-legend">
+    <div class="legend-item">
+        <div class="color-box orange"></div>
+        <span>Opinion words</span>
+    </div>
+    <div class="legend-item">
+        <div class="color-box blue"></div>
+        <span>To-be verbs (E-Prime)</span>
+    </div>
+    <div class="legend-item">
+        <div class="color-box pink"></div>
+        <span>Absolute statements</span>
+    </div>
+</div>
+
+<div class="troubleshooting">
+    <p>Not seeing highlights? Try the Refresh button - some sites load content dynamically.</p>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

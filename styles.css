@@ -1,0 +1,56 @@
+.bias-highlight-opinion {
+    background-color: rgba(255, 165, 0, 0.3);
+    border-bottom: 1px solid orange;
+    cursor: help;
+}
+
+.bias-highlight-opinion:hover::after {
+    content: "Opinion word";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-tobe {
+    background-color: rgba(135, 206, 250, 0.3);
+    border-bottom: 1px solid lightskyblue;
+    cursor: help;
+}
+
+.bias-highlight-tobe:hover::after {
+    content: "To-be verb (E-Prime)";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-absolute {
+    background-color: rgba(255, 105, 180, 0.3);
+    border-bottom: 1px solid hotpink;
+    cursor: help;
+}
+
+.bias-highlight-absolute:hover::after {
+    content: "Absolute statement";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
