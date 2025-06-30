@@ -9,11 +9,17 @@
             highlightAbsolutes: true
         },
         
+        previousSettings: {
+            enableAnalysis: true,
+            highlightOpinion: true,
+            highlightToBe: true,
+            highlightAbsolutes: true
+        },
+        
         stats: {
             opinionCount: 0,
             toBeCount: 0,
-            absoluteCount: 0,
-            biasScore: 0
+            absoluteCount: 0
         },
         
         observer: null,
@@ -168,6 +174,8 @@
                 highlightAbsolutes: true
             }, items => {
                 this.settings = items;
+                this.previousSettings = {...items}; // Keep a copy
+                
                 if (this.settings.enableAnalysis) {
                     // Small delay to let the page load
                     setTimeout(() => this.analyzeDocument(), 500);
@@ -181,29 +189,28 @@
             chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 switch(request.action) {
                     case "updateSettings":
-                        this.settings = request.settings;
-                        this.removeHighlights();
-                        
-                        if (this.settings.enableAnalysis) {
-                            this.analyzeDocument();
-                            this.setupMutationObserver();
-                        } else if (this.observer) {
-                            this.observer.disconnect();
-                            this.observer = null;
-                        }
-                        
+                        this.updateSettings(request.settings);
                         sendResponse({success: true});
                         break;
                         
                     case "getStats":
+                        // Always recalculate stats before sending to ensure accuracy
+                        this.recalculateStats();
                         sendResponse(this.stats);
                         break;
                         
                     case "forceAnalyze":
+                        // Always remove highlights first, then re-analyze if enabled
+                        this.removeHighlights();
                         if (this.settings.enableAnalysis) {
-                            this.removeHighlights();
-                            this.analyzeDocument();
+                            // Small delay to ensure DOM is updated
+                            setTimeout(() => this.analyzeDocument(), 100);
                         }
+                        sendResponse({success: true});
+                        break;
+                        
+                    case "clearHighlights":
+                        this.removeHighlights();
                         sendResponse({success: true});
                         break;
                 }
@@ -212,24 +219,156 @@
             });
         },
         
+        // Update settings with selective highlight removal
+        updateSettings(newSettings) {
+            // Check what changed
+            const changedSettings = {};
+            for (const key in newSettings) {
+                if (this.settings[key] !== newSettings[key]) {
+                    changedSettings[key] = {
+                        old: this.settings[key],
+                        new: newSettings[key]
+                    };
+                }
+            }
+            
+            console.log('Settings changed:', changedSettings);
+            
+            // Update settings
+            this.previousSettings = {...this.settings};
+            this.settings = newSettings;
+            
+            // Handle analysis enable/disable
+            if (changedSettings.enableAnalysis) {
+                if (!this.settings.enableAnalysis) {
+                    // Analysis disabled - remove all highlights
+                    this.removeHighlights();
+                    if (this.observer) {
+                        this.observer.disconnect();
+                        this.observer = null;
+                    }
+                    return;
+                } else {
+                    // Analysis enabled - do full analysis
+                    this.analyzeDocument();
+                    this.setupMutationObserver();
+                    return;
+                }
+            }
+            
+            // Handle individual highlight type changes (only if analysis is enabled)
+            if (this.settings.enableAnalysis) {
+                let needsReanalysis = false;
+                
+                // Remove specific highlights that were disabled
+                if (changedSettings.highlightOpinion && !this.settings.highlightOpinion) {
+                    this.removeSpecificHighlights('opinion');
+                }
+                if (changedSettings.highlightToBe && !this.settings.highlightToBe) {
+                    this.removeSpecificHighlights('tobe');
+                }
+                if (changedSettings.highlightAbsolutes && !this.settings.highlightAbsolutes) {
+                    this.removeSpecificHighlights('absolute');
+                }
+                
+                // If any highlights were enabled, we need to reanalyze to add them
+                if ((changedSettings.highlightOpinion && this.settings.highlightOpinion) ||
+                    (changedSettings.highlightToBe && this.settings.highlightToBe) ||
+                    (changedSettings.highlightAbsolutes && this.settings.highlightAbsolutes)) {
+                    needsReanalysis = true;
+                }
+                
+                if (needsReanalysis) {
+                    this.analyzeDocument();
+                }
+                
+                // Recalculate stats after changes
+                this.recalculateStats();
+                
+                this.setupMutationObserver();
+            }
+        },
+        
+        // Remove specific type of highlights
+        removeSpecificHighlights(type) {
+            let selector;
+            switch (type) {
+                case 'opinion':
+                    selector = '.bias-highlight-opinion';
+                    this.stats.opinionCount = 0;
+                    break;
+                case 'tobe':
+                    selector = '.bias-highlight-tobe';
+                    this.stats.toBeCount = 0;
+                    break;
+                case 'absolute':
+                    selector = '.bias-highlight-absolute';
+                    this.stats.absoluteCount = 0;
+                    break;
+                default:
+                    return;
+            }
+            
+            const highlights = document.querySelectorAll(selector);
+            highlights.forEach(highlight => {
+                const parent = highlight.parentNode;
+                const textNode = document.createTextNode(highlight.textContent);
+                parent.replaceChild(textNode, highlight);
+                
+                // Merge adjacent text nodes to prevent fragmentation
+                parent.normalize();
+            });
+            
+            console.log(`Removed ${highlights.length} ${type} highlights`);
+            
+            // Update bias score after removal
+            const totalCount = this.stats.opinionCount + this.stats.toBeCount + this.stats.absoluteCount;
+            // Removed bias score calculation
+        },
+        
+        // Recalculate stats based on current highlights
+        recalculateStats() {
+            this.stats.opinionCount = document.querySelectorAll('.bias-highlight-opinion').length;
+            this.stats.toBeCount = document.querySelectorAll('.bias-highlight-tobe').length;
+            this.stats.absoluteCount = document.querySelectorAll('.bias-highlight-absolute').length;
+            
+            console.log(`Recalculated stats: ${this.stats.opinionCount} opinion, ${this.stats.toBeCount} to-be, ${this.stats.absoluteCount} absolute`);
+        },
+        
         // Setup mutation observer to detect content changes
         setupMutationObserver() {
             if (this.observer) {
                 this.observer.disconnect();
             }
             
+            // Debounce timer for mutation observer
+            let debounceTimer = null;
+            
             this.observer = new MutationObserver(mutations => {
-                let shouldReanalyze = mutations.some(mutation => 
-                    mutation.addedNodes.length > 0 && 
-                    Array.from(mutation.addedNodes).some(node => 
-                        (node.nodeType === Node.ELEMENT_NODE && node.textContent.trim().length > 20) ||
-                        (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 20)
-                    )
-                );
+                // Check if any significant content was added
+                let hasSignificantChange = mutations.some(mutation => {
+                    // Skip if it's our own highlight spans
+                    if (mutation.target.classList && 
+                        (mutation.target.classList.contains('bias-highlight-opinion') ||
+                         mutation.target.classList.contains('bias-highlight-tobe') ||
+                         mutation.target.classList.contains('bias-highlight-absolute'))) {
+                        return false;
+                    }
+                    
+                    return mutation.addedNodes.length > 0 && 
+                        Array.from(mutation.addedNodes).some(node => 
+                            (node.nodeType === Node.ELEMENT_NODE && node.textContent.trim().length > 20) ||
+                            (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 20)
+                        );
+                });
                 
-                if (shouldReanalyze && this.settings.enableAnalysis) {
-                    console.log("Bias Detector: Content changed, reanalyzing...");
-                    setTimeout(() => this.analyzeDocument(), 500);
+                if (hasSignificantChange && this.settings.enableAnalysis) {
+                    // Debounce the reanalysis to avoid too frequent updates
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        console.log("Bias Detector: Content changed, reanalyzing...");
+                        this.analyzeDocument();
+                    }, 1000);
                 }
             });
             
@@ -245,9 +384,20 @@
         // Remove all highlights from the document
         removeHighlights() {
             const highlights = document.querySelectorAll('.bias-highlight-opinion, .bias-highlight-tobe, .bias-highlight-absolute');
+            const processedParents = new Set();
+            
             highlights.forEach(highlight => {
+                const parent = highlight.parentNode;
                 const textNode = document.createTextNode(highlight.textContent);
-                highlight.parentNode.replaceChild(textNode, highlight);
+                parent.replaceChild(textNode, highlight);
+                processedParents.add(parent);
+            });
+            
+            // Normalize all affected parent nodes to merge adjacent text nodes
+            processedParents.forEach(parent => {
+                if (parent && parent.normalize) {
+                    parent.normalize();
+                }
             });
             
             this.resetStats();
@@ -258,14 +408,18 @@
             this.stats = {
                 opinionCount: 0,
                 toBeCount: 0,
-                absoluteCount: 0,
-                biasScore: 0
+                absoluteCount: 0
             };
         },
         
         // Main analysis function
         analyzeDocument() {
-            this.resetStats();
+            // Only reset stats if we're doing a full re-analysis
+            // Don't reset if we're just adding to existing highlights
+            const hasExistingHighlights = document.querySelector('.bias-highlight-opinion, .bias-highlight-tobe, .bias-highlight-absolute');
+            if (!hasExistingHighlights) {
+                this.resetStats();
+            }
             
             const textNodes = this.collectTextNodes(document.body);
             
@@ -300,10 +454,11 @@
                         }
                         
                         // Skip nodes that are already within our highlights
-                        if (node.parentNode && 
-                            (node.parentNode.classList.contains('bias-highlight-opinion') ||
-                             node.parentNode.classList.contains('bias-highlight-tobe') ||
-                             node.parentNode.classList.contains('bias-highlight-absolute'))) {
+                        const parent = node.parentNode;
+                        if (parent && parent.classList && 
+                            (parent.classList.contains('bias-highlight-opinion') ||
+                             parent.classList.contains('bias-highlight-tobe') ||
+                             parent.classList.contains('bias-highlight-absolute'))) {
                             return NodeFilter.FILTER_REJECT;
                         }
                         
@@ -375,15 +530,27 @@
             const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             
             textNodes.forEach(node => {
-                let html = node.textContent;
-                let originalHtml = html;
+                let text = node.textContent;
                 
                 // Skip very short texts or texts that appear to be navigation/UI elements
-                if (html.trim().length < 5 || (html.trim().length < 20 && !html.includes(' '))) {
+                if (text.trim().length < 5 || (text.trim().length < 20 && !text.includes(' '))) {
                     return;
                 }
                 
-                // Process opinion words
+                // Check if we need to process this node
+                let foundOpinion = false;
+                let foundToBe = false;
+                let foundAbsolute = false;
+                
+                // Create document fragment to hold the highlighted content
+                const fragment = document.createDocumentFragment();
+                let remainingText = text;
+                let currentPos = 0;
+                
+                // Arrays to store all matches
+                const matches = [];
+                
+                // Find all matches for opinion words
                 if (this.settings.highlightOpinion) {
                     this.dictionaries.opinion.forEach(word => {
                         try {
@@ -392,63 +559,120 @@
                             const pattern = word.includes(' ') ? escapedWord : '\\b' + escapedWord + '\\b';
                             const regex = new RegExp(pattern, 'gi');
                             
-                            html = html.replace(regex, match => {
-                                this.stats.opinionCount++;
-                                return '<span class="bias-highlight-opinion">' + match + '</span>';
-                            });
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'opinion'
+                                });
+                                foundOpinion = true;
+                            }
                         } catch (e) {
                             console.error('Error with regex for opinion word:', word, e);
                         }
                     });
                 }
                 
-                // Process to-be verbs
+                // Find all matches for to-be verbs
                 if (this.settings.highlightToBe) {
                     this.dictionaries.toBe.forEach(verb => {
                         try {
                             const regex = new RegExp(verb, 'gi');
-                            html = html.replace(regex, match => {
-                                this.stats.toBeCount++;
-                                return '<span class="bias-highlight-tobe">' + match + '</span>';
-                            });
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'tobe'
+                                });
+                                foundToBe = true;
+                            }
                         } catch (e) {
                             console.error('Error with regex for to-be verb:', verb, e);
                         }
                     });
                 }
                 
-                // Process absolute words
+                // Find all matches for absolute words
                 if (this.settings.highlightAbsolutes) {
                     this.dictionaries.absolute.forEach(word => {
                         try {
                             const regex = new RegExp(word, 'gi');
-                            html = html.replace(regex, match => {
-                                this.stats.absoluteCount++;
-                                return '<span class="bias-highlight-absolute">' + match + '</span>';
-                            });
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'absolute'
+                                });
+                                foundAbsolute = true;
+                            }
                         } catch (e) {
                             console.error('Error with regex for absolute word:', word, e);
                         }
                     });
                 }
                 
-                // If the HTML has changed, replace the text node with the highlighted version
-                if (html !== originalHtml) {
-                    try {
-                        const span = document.createElement('span');
-                        span.innerHTML = html;
-                        if (node.parentNode) {
-                            node.parentNode.replaceChild(span, node);
+                // If we found matches, replace the node with highlighted content
+                if (matches.length > 0) {
+                    // Sort matches by index
+                    matches.sort((a, b) => a.index - b.index);
+                    
+                    // Filter out overlapping matches
+                    const filteredMatches = [];
+                    let lastEnd = -1;
+                    
+                    for (const match of matches) {
+                        if (match.index >= lastEnd) {
+                            filteredMatches.push(match);
+                            lastEnd = match.index + match.length;
+                            
+                            // Update stats
+                            if (match.type === 'opinion') this.stats.opinionCount++;
+                            else if (match.type === 'tobe') this.stats.toBeCount++;
+                            else if (match.type === 'absolute') this.stats.absoluteCount++;
                         }
-                    } catch (e) {
-                        console.error('Error replacing node:', e);
+                    }
+                    
+                    // Create highlighted content
+                    let lastIndex = 0;
+                    
+                    for (const match of filteredMatches) {
+                        // Add text before this match
+                        if (match.index > lastIndex) {
+                            fragment.appendChild(
+                                document.createTextNode(text.substring(lastIndex, match.index))
+                            );
+                        }
+                        
+                        // Add highlighted match
+                        const span = document.createElement('span');
+                        span.className = `bias-highlight-${match.type}`;
+                        span.textContent = match.text;
+                        fragment.appendChild(span);
+                        
+                        lastIndex = match.index + match.length;
+                    }
+                    
+                    // Add remaining text
+                    if (lastIndex < text.length) {
+                        fragment.appendChild(
+                            document.createTextNode(text.substring(lastIndex))
+                        );
+                    }
+                    
+                    // Replace the original node with our fragment
+                    if (node.parentNode) {
+                        node.parentNode.replaceChild(fragment, node);
                     }
                 }
             });
-            
-            // Calculate bias score
-            const totalCount = this.stats.opinionCount + this.stats.toBeCount + this.stats.absoluteCount;
-            this.stats.biasScore = Math.min(10, Math.round(totalCount / 5));
             
             console.log(`Bias Detector found: ${this.stats.opinionCount} opinion words, ${this.stats.toBeCount} to-be verbs, ${this.stats.absoluteCount} absolute statements`);
         }

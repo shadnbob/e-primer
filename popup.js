@@ -1,444 +1,258 @@
-// content.js
-(function() {
-    // Default settings
-    let settings = {
-        enableAnalysis: true,
-        highlightOpinion: true,
-        highlightToBe: true,
-        highlightAbsolutes: true
-    };
+// popup.js - Extension popup interface
+document.addEventListener('DOMContentLoaded', function() {
+    // Get toggle elements
+    const enableToggle = document.getElementById('enableToggle');
+    const opinionToggle = document.getElementById('opinionToggle');
+    const ePrimeToggle = document.getElementById('ePrimeToggle');
+    const absoluteToggle = document.getElementById('absoluteToggle');
+    const refreshButton = document.getElementById('refreshButton');
+    const clearButton = document.getElementById('clearButton');
 
-    // Stats
-    let stats = {
+    // Get stat display elements
+    const opinionCount = document.getElementById('opinionCount');
+    const toBeCount = document.getElementById('toBeCount');
+    const absoluteCount = document.getElementById('absoluteCount');
+    
+    // Store last known stats to prevent disappearing
+    let lastKnownStats = {
         opinionCount: 0,
         toBeCount: 0,
-        absoluteCount: 0,
-        biasScore: 0
+        absoluteCount: 0
     };
 
-    // Keep track of mutation observer
-    let observer = null;
-
-    // Lists of words to detect
-    const opinionWords = [
-        // Certainty/Conviction Adverbs
-        "clearly", "obviously", "undoubtedly", "certainly", "definitely", "absolutely",
-        "surely", "undeniably", "unquestionably", "indisputably", "indubitably", "unmistakably",
-        "incontrovertibly", "incontestably", "irrefutably", "manifestly", "patently",
-
-        // Hedging/Uncertainty Words
-        "allegedly", "supposedly", "apparently", "evidently", "arguably", "seemingly",
-        "ostensibly", "reportedly", "reputedly", "presumably", "purportedly", "possibly",
-        "probably", "maybe", "perhaps", "conceivably", "speculated", "rumored",
-
-        // Evaluative Adjectives (Positive)
-        "good", "great", "excellent", "exceptional", "outstanding", "perfect", "flawless",
-        "fantastic", "superb", "magnificent", "brilliant", "spectacular", "impressive",
-        "remarkable", "extraordinary", "astonishing", "wonderful", "marvelous", "phenomenal",
-        "terrific", "stunning", "amazing", "incredible", "fabulous", "splendid", "delightful",
-        "admirable", "commendable", "praiseworthy", "exemplary", "stellar", "superior",
-        "first-rate", "top-notch", "premium", "favorable", "positive", "satisfactory",
-        "pleasing", "gratifying", "beneficial", "advantageous", "desirable", "worthy",
-
-        // Evaluative Adjectives (Negative)
-        "bad", "terrible", "awful", "horrible", "atrocious", "dreadful", "appalling",
-        "abysmal", "poor", "inadequate", "inferior", "substandard", "mediocre", "disappointing",
-        "unsatisfactory", "unacceptable", "deficient", "faulty", "flawed", "shoddy",
-        "deplorable", "lamentable", "pathetic", "pitiful", "regrettable", "miserable",
-        "wretched", "dismal", "grim", "bleak", "dire", "grave", "severe", "unfortunate",
-        "unfavorable", "disagreeable", "unpleasant", "distressing", "troublesome",
-        "problematic", "objectionable", "reprehensible", "repugnant", "detestable",
-
-        // Emotionally Charged Words
-        "shocking", "disturbing", "troubling", "encouraging", "inspiring", "outrageous",
-        "scandalous", "infuriating", "frustrating", "irritating", "exasperating", "vexing",
-        "heartwarming", "touching", "moving", "soothing", "comforting", "reassuring",
-        "uplifting", "exhilarating", "thrilling", "exciting", "sensational", "delightful",
-        "disgusting", "revolting", "sickening", "nauseating", "offensive", "frightening",
-        "terrifying", "horrifying", "alarming", "worrying", "concerning", "threatening",
-
-        // Comparative/Superlative Terms
-        "best", "worst", "better", "worse", "superior", "inferior", "greater", "lesser",
-        "bigger", "smaller", "higher", "lower", "finer", "poorer", "strongest", "weakest",
-        "finest", "prettiest", "ugliest", "smartest", "dumbest", "brightest", "darkest",
-
-        // Political/Controversial Framing
-        "controversial", "disputed", "radical", "extreme", "progressive", "conservative",
-        "liberal", "far-right", "far-left", "moderate", "centrist", "mainstream", "fringe",
-        "revolutionary", "traditional", "conventional", "unconventional", "orthodox",
-        "unorthodox", "establishment", "anti-establishment", "populist", "elitist",
-        "partisan", "bipartisan", "divisive", "polarizing", "contentious", "provocative",
-
-        // Intensifiers
-        "very", "extremely", "incredibly", "exceptionally", "extraordinarily", "remarkably",
-        "notably", "particularly", "especially", "surprisingly", "unusually", "strikingly",
-        "decidedly", "markedly", "profoundly", "deeply", "vastly", "greatly", "highly",
-        "immensely", "tremendously", "enormously", "exceedingly", "excessively", "overly",
-        "utterly", "completely", "entirely", "totally", "wholly", "thoroughly", "fully",
-        "intensely", "seriously", "substantially", "significantly", "considerably",
-
-        // Credibility Undermining Words
-        "claims", "purports", "asserts", "alleges", "contends", "maintains", "insists",
-        "so-called", "self-proclaimed", "supposed", "pretend", "dubious", "questionable",
-        "unproven", "unverified", "unsubstantiated", "unfounded", "baseless", "groundless",
-
-        // Loaded Political Terms
-        "freedom", "justice", "equality", "rights", "liberty", "democracy", "patriotic",
-        "unpatriotic", "un-American", "socialist", "communist", "fascist", "dictatorial",
-        "totalitarian", "authoritarian", "corrupt", "crooked", "dishonest", "shady",
-        "illegal", "unlawful", "criminal", "scandal", "conspiracy", "regime", "propaganda",
-
-        // Moral/Ethical Judgments
-        "moral", "immoral", "ethical", "unethical", "virtuous", "corrupt", "just", "unjust",
-        "fair", "unfair", "honorable", "dishonorable", "honest", "dishonest", "decent",
-        "indecent", "appropriate", "inappropriate", "acceptable", "unacceptable",
-        "legitimate", "illegitimate", "reasonable", "unreasonable",
-
-        // Emotional Appeals
-        "heartbreaking", "devastating", "tragic", "sad", "joyful", "happy", "hopeful",
-        "promising", "depressing", "gloomy", "optimistic", "pessimistic", "anxious",
-        "fearful", "afraid", "confident", "proud", "ashamed", "embarrassed", "guilty"
-    ];
-
-    const toBeVerbs = [
-        // Present forms
-        "\\bis\\b", "\\bare\\b", "\\bam\\b",
-
-        // Past forms
-        "\\bwas\\b", "\\bwere\\b",
-
-        // Infinitive and participles
-        "\\bbe\\b", "\\bbeing\\b", "\\bbeen\\b",
-
-        // Contractions with word boundaries
-        "\\bit's\\b", "\\bthat's\\b", "\\bhe's\\b", "\\bshe's\\b", "\\bwhat's\\b",
-        "\\bwho's\\b", "\\byou're\\b", "\\bthey're\\b", "\\bwe're\\b", "\\bi'm\\b",
-        "\\bthere's\\b", "\\bhere's\\b", "\\bwasn't\\b", "\\bweren't\\b", "\\bisn't\\b",
-        "\\baren't\\b"
-    ];
-
-    const absoluteWords = [
-        // Universal Quantifiers
-        "\\ball\\b", "\\bevery\\b", "\\beach\\b", "\\bany\\b", "\\bno\\b", "\\bnone\\b",
-
-        // People Universals
-        "\\beveryone\\b", "\\beverybody\\b", "\\bno one\\b", "\\bnobody\\b", "\\banyone\\b",
-        "\\banybody\\b", "\\bsomeone\\b", "\\bsomebody\\b",
-
-        // Time Universals
-        "\\balways\\b", "\\bnever\\b", "\\bforever\\b", "\\beternal\\b", "\\bconstantly\\b",
-        "\\bperpetually\\b", "\\bcontinually\\b", "\\bendlessly\\b", "\\bceaselessly\\b",
-        "\\bpermanently\\b", "\\binvariably\\b",
-
-        // Categorical Statements
-        "\\bcompletely\\b", "\\btotally\\b", "\\bentirely\\b", "\\babsolutely\\b", "\\bperfectly\\b",
-        "\\bwholly\\b", "\\bthoroughly\\b", "\\bultimately\\b", "\\bfundamentally\\b",
-        "\\bpurely\\b", "\\boutright\\b", "\\bcomprehensively\\b", "\\buniversally\\b",
-
-        // Thing Universals
-        "\\beverything\\b", "\\bnothing\\b", "\\banything\\b", "\\bsomething\\b",
-
-        // Absolute Adjectives
-        "\\bperfect\\b", "\\bcomplete\\b", "\\btotal\\b", "\\babsolute\\b", "\\bentire\\b",
-        "\\bfull\\b", "\\bwhole\\b", "\\bultimate\\b", "\\bmaximum\\b", "\\bminimum\\b",
-        "\\bsupreme\\b", "\\bextreme\\b", "\\butmost\\b", "\\bfinal\\b", "\\binfallible\\b",
-        "\\bunerring\\b", "\\buniversal\\b", "\\bimpossible\\b", "\\binevitable\\b",
-        "\\binescapable\\b", "\\bundeniable\\b", "\\birrefutable\\b", "\\bidentical\\b",
-        "\\bpure\\b", "\\bsheer\\b", "\\bmere\\b",
-
-        // Absolute Certainty
-        "\\bcertainly\\b", "\\bdefinitely\\b", "\\bundoubtedly\\b", "\\bunquestionably\\b",
-        "\\bindisputably\\b", "\\birrefutably\\b", "\\bincontrovertibly\\b", "\\bincontestably\\b",
-        "\\bunequivocally\\b"
-    ];
-
-    // Load settings from storage
+    // Load current settings
     chrome.storage.sync.get({
         enableAnalysis: true,
         highlightOpinion: true,
         highlightToBe: true,
         highlightAbsolutes: true
     }, function(items) {
-        settings = items;
-        if (settings.enableAnalysis) {
-            // Initial analysis
-            setTimeout(analyzeDocument, 500);
+        enableToggle.checked = items.enableAnalysis;
+        opinionToggle.checked = items.highlightOpinion;
+        ePrimeToggle.checked = items.highlightToBe;
+        absoluteToggle.checked = items.highlightAbsolutes;
 
-            // Set up mutation observer to detect dynamically added content
-            setupMutationObserver();
-        }
+        // Update other toggles' disabled state
+        updateTogglesState();
+        
+        // Load current stats
+        updateStats();
     });
 
-    // Set up mutation observer to detect dynamically added content
-    function setupMutationObserver() {
-        // Disconnect any existing observer
-        if (observer) {
-            observer.disconnect();
-        }
+    // Function to update the disabled state of other toggles
+    function updateTogglesState() {
+        const isEnabled = enableToggle.checked;
+        opinionToggle.disabled = !isEnabled;
+        ePrimeToggle.disabled = !isEnabled;
+        absoluteToggle.disabled = !isEnabled;
+        refreshButton.disabled = !isEnabled;
+        clearButton.disabled = !isEnabled;
+    }
 
-        // Create a new observer
-        observer = new MutationObserver(function(mutations) {
-            // Only reanalyze if we see content changes
-            let shouldReanalyze = false;
+    // Function to save settings and update content script
+    function saveSettingsAndUpdate() {
+        const settings = {
+            enableAnalysis: enableToggle.checked,
+            highlightOpinion: opinionToggle.checked,
+            highlightToBe: ePrimeToggle.checked,
+            highlightAbsolutes: absoluteToggle.checked
+        };
 
-            for (let mutation of mutations) {
-                // If nodes were added
-                if (mutation.addedNodes.length > 0) {
-                    for (let node of mutation.addedNodes) {
-                        // If it's an element node with content, or a text node with content
-                        if ((node.nodeType === Node.ELEMENT_NODE && node.textContent.trim().length > 20) ||
-                            (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 20)) {
-                            shouldReanalyze = true;
-                            break;
+        console.log('Saving settings:', settings);
+
+        // Save to storage
+        chrome.storage.sync.set(settings, function() {
+            console.log('Settings saved successfully');
+        });
+
+        // Send to content script
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (tabs[0]) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    action: "updateSettings",
+                    settings: settings
+                }, function(response) {
+                    if (chrome.runtime.lastError) {
+                        console.log('Error sending message:', chrome.runtime.lastError);
+                    } else {
+                        console.log('Settings updated successfully:', response);
+                        // Update stats after a longer delay to ensure processing is complete
+                        setTimeout(updateStats, 1000);
+                    }
+                });
+            }
+        });
+
+        updateTogglesState();
+    }
+
+    // Function to update stats display
+    function updateStats(retryCount = 0) {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (tabs[0]) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    action: "getStats"
+                }, function(response) {
+                    if (chrome.runtime.lastError) {
+                        // Tab might not have the content script loaded
+                        console.log('Could not get stats:', chrome.runtime.lastError);
+                        
+                        // Show last known stats or dashes
+                        if (lastKnownStats.opinionCount > 0 || lastKnownStats.toBeCount > 0 || lastKnownStats.absoluteCount > 0) {
+                            opinionCount.textContent = lastKnownStats.opinionCount;
+                            toBeCount.textContent = lastKnownStats.toBeCount;
+                            absoluteCount.textContent = lastKnownStats.absoluteCount;
+                        } else {
+                            opinionCount.textContent = '—';
+                            toBeCount.textContent = '—';
+                            absoluteCount.textContent = '—';
                         }
+                        
+                        // Show a hint to the user
+                        const troubleshooting = document.querySelector('.troubleshooting p');
+                        if (troubleshooting) {
+                            troubleshooting.innerHTML = '<strong>Note:</strong> Please refresh the page if stats are not loading.';
+                        }
+                    } else if (response) {
+                        // Update display and store last known stats
+                        lastKnownStats = {
+                            opinionCount: response.opinionCount || 0,
+                            toBeCount: response.toBeCount || 0,
+                            absoluteCount: response.absoluteCount || 0
+                        };
+                        
+                        opinionCount.textContent = lastKnownStats.opinionCount;
+                        toBeCount.textContent = lastKnownStats.toBeCount;
+                        absoluteCount.textContent = lastKnownStats.absoluteCount;
+                        
+                        console.log('Stats updated:', response);
+                        
+                        // Clear any error messages
+                        const troubleshooting = document.querySelector('.troubleshooting p');
+                        if (troubleshooting) {
+                            troubleshooting.innerHTML = '<strong>Active:</strong> Highlighting bias indicators in real-time.';
+                        }
+                    } else if (retryCount < 3) {
+                        // Retry a few times if we get an empty response
+                        setTimeout(() => updateStats(retryCount + 1), 500);
                     }
-                }
-
-                // If we found significant content changes, no need to check further
-                if (shouldReanalyze) break;
-            }
-
-            // Reanalyze document if significant content was added
-            if (shouldReanalyze && settings.enableAnalysis) {
-                console.log("Bias Detector: Content changed, reanalyzing...");
-                // Small delay to let DOM stabilize
-                setTimeout(analyzeDocument, 500);
+                });
             }
         });
-
-        // Start observing
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            characterData: true
-        });
-
-        console.log("Bias Detector: Mutation observer started");
     }
 
-    // Listen for messages from popup
-    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-        if (request.action === "updateSettings") {
-            settings = request.settings;
-
-            // Remove existing highlights
-            removeHighlights();
-
-            // Re-analyze if enabled
-            if (settings.enableAnalysis) {
-                analyzeDocument();
-                setupMutationObserver();
-            } else if (observer) {
-                // Disconnect observer if analysis is disabled
-                observer.disconnect();
-                observer = null;
-            }
-
-            sendResponse({success: true});
-        } else if (request.action === "getStats") {
-            sendResponse(stats);
-        } else if (request.action === "forceAnalyze") {
-            // Allow forcing a reanalysis from the popup
-            if (settings.enableAnalysis) {
-                removeHighlights();
-                analyzeDocument();
-            }
-            sendResponse({success: true});
+    // Event listeners for toggles
+    enableToggle.addEventListener('change', function() {
+        console.log('Enable toggle changed to:', enableToggle.checked);
+        
+        // If disabling, clear the last known stats
+        if (!enableToggle.checked) {
+            lastKnownStats = {
+                opinionCount: 0,
+                toBeCount: 0,
+                absoluteCount: 0
+            };
         }
-
-        return true;
+        
+        saveSettingsAndUpdate();
+    });
+    
+    opinionToggle.addEventListener('change', function() {
+        console.log('Opinion toggle changed to:', opinionToggle.checked);
+        saveSettingsAndUpdate();
+    });
+    
+    ePrimeToggle.addEventListener('change', function() {
+        console.log('E-Prime toggle changed to:', ePrimeToggle.checked);
+        saveSettingsAndUpdate();
+    });
+    
+    absoluteToggle.addEventListener('change', function() {
+        console.log('Absolute toggle changed to:', absoluteToggle.checked);
+        saveSettingsAndUpdate();
     });
 
-    // Remove highlights from the document
-    function removeHighlights() {
-        const highlights = document.querySelectorAll('.bias-highlight-opinion, .bias-highlight-tobe, .bias-highlight-absoluly');
-        highlights.forEach(function(highlight) {
-            // Replace the highlight with its text content
-            const textNode = document.createTextNode(highlight.textContent);
-            highlight.parentNode.replaceChild(textNode, highlight);
-        });
-
-        // Reset stats
-        stats = {
-            opinionCount: 0,
-            toBeCount: 0,
-            absoluteCount: 0,
-            biasScore: 0
-        };
-    }
-
-    // Analyze the document for biased language
-    function analyzeDocument() {
-        // Reset stats before analysis
-        stats = {
-            opinionCount: 0,
-            toBeCount: 0,
-            absoluteCount: 0,
-            biasScore: 0
-        };
-
-        // Text nodes to process
-        let textNodes = [];
-
-        // Get all text nodes in the document, including shadow DOM
-        function getTextNodes(node) {
-            // Skip nodes that are part of our highlighting
-            if (node.nodeType === Node.ELEMENT_NODE &&
-                (node.classList.contains('bias-highlight-opinion') ||
-                    node.classList.contains('bias-highlight-tobe') ||
-                    node.classList.contains('bias-highlight-absoluly'))) {
-                return;
-            }
-
-            // Handle regular DOM nodes
-            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
-                textNodes.push(node);
-            } else if (node.nodeType === Node.ELEMENT_NODE) {
-                // Skip certain elements
-                if (
-                    node.nodeName === 'SCRIPT' ||
-                    node.nodeName === 'STYLE' ||
-                    node.nodeName === 'NOSCRIPT' ||
-                    node.nodeName === 'SVG' ||
-                    node.nodeName === 'HEAD'
-                ) {
-                    return;
-                }
-
-                // Try to access shadow DOM
-                if (node.shadowRoot) {
-                    // Process shadow DOM children
-                    for (let i = 0; i < node.shadowRoot.childNodes.length; i++) {
-                        getTextNodes(node.shadowRoot.childNodes[i]);
-                    }
-                }
-
-                // Process regular children
-                for (let i = 0; i < node.childNodes.length; i++) {
-                    getTextNodes(node.childNodes[i]);
-                }
-
-                // Handle custom elements like cp-article that might contain content
-                if (node.nodeName.includes('-')) {
-                    // For custom elements, also check slot content
-                    const slots = node.querySelectorAll('slot');
-                    slots.forEach(slot => {
-                        const assignedNodes = slot.assignedNodes();
-                        assignedNodes.forEach(assignedNode => {
-                            getTextNodes(assignedNode);
+    // Refresh button event listener
+    refreshButton.addEventListener('click', function() {
+        console.log('Refresh button clicked');
+        
+        // Disable button temporarily to prevent rapid clicks
+        refreshButton.disabled = true;
+        refreshButton.textContent = 'Refreshing...';
+        
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (tabs[0]) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    action: "forceAnalyze"
+                }, function(response) {
+                    if (chrome.runtime.lastError) {
+                        console.log('Error forcing analysis:', chrome.runtime.lastError);
+                        // Try reloading content script if error
+                        chrome.tabs.reload(tabs[0].id, function() {
+                            setTimeout(() => {
+                                refreshButton.disabled = false;
+                                refreshButton.textContent = 'Refresh';
+                                updateTogglesState();
+                            }, 1000);
                         });
-                    });
-                }
-            }
-        }
-
-        // Process each text node
-        function processTextNodes() {
-            // Skip processing if no text nodes found
-            if (textNodes.length === 0) {
-                console.log("Bias Detector: No text nodes found to analyze.");
-                return;
-            }
-
-            // Helper function to escape regex special characters
-            function escapeRegExp(string) {
-                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            }
-
-            textNodes.forEach(function(node) {
-                let html = node.textContent;
-                let originalHtml = html;
-
-                // Skip very short texts or texts that appear to be navigation/UI elements
-                if (html.trim().length < 5 || (html.trim().length < 20 && !html.includes(' '))) {
-                    return;
-                }
-
-                // Process opinion words
-                if (settings.highlightOpinion) {
-                    opinionWords.forEach(function(word) {
-                        try {
-                            // Only apply word boundary for simple words
-                            const escapedWord = escapeRegExp(word);
-                            const pattern = word.includes(' ') ? escapedWord : '\\b' + escapedWord + '\\b';
-                            const regex = new RegExp(pattern, 'gi');
-
-                            html = html.replace(regex, function(match) {
-                                stats.opinionCount++;
-                                return '<span class="bias-highlight-opinion">' + match + '</span>';
-                            });
-                        } catch (e) {
-                            // Skip this word if regex is invalid
-                            console.error('Error with regex for word:', word, e);
-                        }
-                    });
-                }
-
-                // Process to-be verbs (E-Prime)
-                if (settings.highlightToBe) {
-                    toBeVerbs.forEach(function(verb) {
-                        try {
-                            const regex = new RegExp(verb, 'gi');
-                            html = html.replace(regex, function(match) {
-                                stats.toBeCount++;
-                                return '<span class="bias-highlight-tobe">' + match + '</span>';
-                            });
-                        } catch (e) {
-                            console.error('Error with regex for verb:', verb, e);
-                        }
-                    });
-                }
-
-                // Process absolute words
-                if (settings.highlightAbsolutes) {
-                    absoluteWords.forEach(function(word) {
-                        try {
-                            const regex = new RegExp(word, 'gi');
-                            html = html.replace(regex, function(match) {
-                                stats.absoluteCount++;
-                                return '<span class="bias-highlight-absolute">' + match + '</span>';
-                            });
-                        } catch (e) {
-                            console.error('Error with regex for absolute:', word, e);
-                        }
-                    });
-                }
-
-                // If the HTML has changed, replace the text node with the highlighted version
-                if (html !== originalHtml) {
-                    try {
-                        const span = document.createElement('span');
-                        span.innerHTML = html;
-                        if (node.parentNode) {
-                            node.parentNode.replaceChild(span, node);
-                        }
-                    } catch (e) {
-                        console.error('Error replacing node:', e);
+                    } else {
+                        console.log('Analysis refreshed successfully');
+                        setTimeout(() => {
+                            updateStats();
+                            refreshButton.disabled = false;
+                            refreshButton.textContent = 'Refresh';
+                            updateTogglesState();
+                        }, 1000);
                     }
-                }
-            });
-
-            // Calculate bias score - simple algorithm for demonstration
-            const totalCount = stats.opinionCount + stats.toBeCount + stats.absoluteCount;
-            stats.biasScore = Math.min(10, Math.round(totalCount / 5));
-
-            // Log results for debugging
-            console.log(`Bias Detector found: ${stats.opinionCount} opinion words, ${stats.toBeCount} to-be verbs, ${stats.absoluteCount} absolute statements`);
-        }
-
-        // Start the analysis
-        try {
-            getTextNodes(document.body);
-            processTextNodes();
-
-            // If no matches were found, it might be due to dynamic content loading
-            if (textNodes.length === 0 || (stats.opinionCount === 0 && stats.toBeCount === 0 && stats.absoluteCount === 0)) {
-                console.log("Bias Detector: Scheduling re-analysis due to possible dynamic content...");
-                // Try again after a short delay to catch dynamically loaded content
-                setTimeout(analyzeDocument, 2000);
+                });
             }
-        } catch (e) {
-            console.error("Bias Detector encountered an error:", e);
+        });
+    });
+
+    // Clear button event listener
+    clearButton.addEventListener('click', function() {
+        console.log('Clear button clicked');
+        
+        // Reset last known stats when clearing
+        lastKnownStats = {
+            opinionCount: 0,
+            toBeCount: 0,
+            absoluteCount: 0
+        };
+        
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (tabs[0]) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    action: "clearHighlights"
+                }, function(response) {
+                    if (chrome.runtime.lastError) {
+                        console.log('Error clearing highlights:', chrome.runtime.lastError);
+                    } else {
+                        console.log('Highlights cleared successfully');
+                        // Update display immediately to show zeros
+                        opinionCount.textContent = '0';
+                        toBeCount.textContent = '0';
+                        absoluteCount.textContent = '0';
+                        
+                        setTimeout(updateStats, 100);
+                    }
+                });
+            }
+        });
+    });
+
+    // Update stats periodically (but not too frequently)
+    setInterval(updateStats, 5000);
+    
+    // Also update stats when popup becomes visible
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            updateStats();
         }
-    }
-})();
+    });
+    
+    // Update stats when window gains focus
+    window.addEventListener('focus', function() {
+        updateStats();
+    });
+});

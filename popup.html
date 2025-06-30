@@ -59,19 +59,44 @@
             background-color: #f5f5f5;
             border-radius: 5px;
         }
-        .refresh-button {
-            display: block;
-            margin: 15px auto 5px;
+        .button-container {
+            display: flex;
+            gap: 5px;
+            margin-top: 15px;
+        }
+        .button {
+            flex: 1;
             padding: 8px 12px;
-            background-color: #4CAF50;
-            color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 12px;
         }
-        .refresh-button:hover {
+        .refresh-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .refresh-button:hover:not(:disabled) {
             background-color: #45a049;
+        }
+        .refresh-button:active {
+            transform: scale(0.98);
+        }
+        .clear-button {
+            background-color: #f44336;
+            color: white;
+        }
+        .clear-button:hover:not(:disabled) {
+            background-color: #da190b;
+        }
+        .clear-button:active {
+            transform: scale(0.98);
+        }
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
         .color-legend {
             margin-top: 15px;
@@ -143,10 +168,12 @@
     <div>Opinion words: <span id="opinionCount">0</span></div>
     <div>To-be verbs: <span id="toBeCount">0</span></div>
     <div>Absolutes: <span id="absoluteCount">0</span></div>
-    <div>Bias score: <span id="biasScore">0</span>/10</div>
 </div>
 
-<button id="refreshButton" class="refresh-button">Refresh Analysis</button>
+<div class="button-container">
+    <button id="refreshButton" class="button refresh-button">Refresh</button>
+    <button id="clearButton" class="button clear-button">Clear All</button>
+</div>
 
 <div class="color-legend">
     <div class="legend-item">
@@ -164,7 +191,7 @@
 </div>
 
 <div class="troubleshooting">
-    <p>Not seeing highlights? Try the Refresh button - some sites load content dynamically.</p>
+    <p><strong>Active:</strong> Highlighting bias indicators in real-time.</p>
 </div>
 
 <script src="popup.js"></script>
