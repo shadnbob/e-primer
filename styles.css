@@ -54,3 +54,117 @@
     margin-top: 20px;
     z-index: 1000;
 }
+
+.bias-highlight-passive {
+    background-color: rgba(128, 0, 128, 0.3);
+    border-bottom: 1px solid purple;
+    cursor: help;
+}
+
+.bias-highlight-passive:hover::after {
+    content: "Passive voice";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-weasel {
+    background-color: rgba(184, 134, 11, 0.3);
+    border-bottom: 1px solid darkgoldenrod;
+    cursor: help;
+}
+
+.bias-highlight-weasel:hover::after {
+    content: "Weasel word";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-presupposition {
+    background-color: rgba(255, 20, 147, 0.3);
+    border-bottom: 1px solid deeppink;
+    cursor: help;
+}
+
+.bias-highlight-presupposition:hover::after {
+    content: "Presupposition";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-metaphor {
+    background-color: rgba(220, 20, 60, 0.3);
+    border-bottom: 1px solid crimson;
+    cursor: help;
+}
+
+.bias-highlight-metaphor:hover::after {
+    content: "War metaphor";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-minimizer {
+    background-color: rgba(0, 128, 128, 0.3);
+    border-bottom: 1px solid teal;
+    cursor: help;
+}
+
+.bias-highlight-minimizer:hover::after {
+    content: "Minimizer";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-maximizer {
+    background-color: rgba(255, 69, 0, 0.3);
+    border-bottom: 1px solid orangered;
+    cursor: help;
+}
+
+.bias-highlight-maximizer:hover::after {
+    content: "Maximizer";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}

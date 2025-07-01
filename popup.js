@@ -1,10 +1,27 @@
 // popup.js - Extension popup interface
 document.addEventListener('DOMContentLoaded', function() {
+    // Set up category section toggle functionality
+    const categoryHeaders = document.querySelectorAll('.category-header');
+    categoryHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const section = this.parentElement;
+            section.classList.toggle('collapsed');
+            console.log('Toggled section:', this.querySelector('span').textContent);
+        });
+    });
+    console.log('Category headers found:', categoryHeaders.length);
+    
     // Get toggle elements
     const enableToggle = document.getElementById('enableToggle');
     const opinionToggle = document.getElementById('opinionToggle');
     const ePrimeToggle = document.getElementById('ePrimeToggle');
     const absoluteToggle = document.getElementById('absoluteToggle');
+    const passiveToggle = document.getElementById('passiveToggle');
+    const weaselToggle = document.getElementById('weaselToggle');
+    const presuppositionToggle = document.getElementById('presuppositionToggle');
+    const metaphorToggle = document.getElementById('metaphorToggle');
+    const minimizerToggle = document.getElementById('minimizerToggle');
+    const maximizerToggle = document.getElementById('maximizerToggle');
     const refreshButton = document.getElementById('refreshButton');
     const clearButton = document.getElementById('clearButton');
 
@@ -12,12 +29,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const opinionCount = document.getElementById('opinionCount');
     const toBeCount = document.getElementById('toBeCount');
     const absoluteCount = document.getElementById('absoluteCount');
+    const passiveCount = document.getElementById('passiveCount');
+    const weaselCount = document.getElementById('weaselCount');
+    const presuppositionCount = document.getElementById('presuppositionCount');
+    const metaphorCount = document.getElementById('metaphorCount');
+    const minimizerCount = document.getElementById('minimizerCount');
+    const maximizerCount = document.getElementById('maximizerCount');
     
     // Store last known stats to prevent disappearing
     let lastKnownStats = {
         opinionCount: 0,
         toBeCount: 0,
-        absoluteCount: 0
+        absoluteCount: 0,
+        passiveCount: 0,
+        weaselCount: 0,
+        presuppositionCount: 0,
+        metaphorCount: 0,
+        minimizerCount: 0,
+        maximizerCount: 0
     };
 
     // Load current settings
@@ -25,12 +54,24 @@ document.addEventListener('DOMContentLoaded', function() {
         enableAnalysis: true,
         highlightOpinion: true,
         highlightToBe: true,
-        highlightAbsolutes: true
+        highlightAbsolutes: true,
+        highlightPassive: false,
+        highlightWeasel: false,
+        highlightPresupposition: false,
+        highlightMetaphors: false,
+        highlightMinimizers: false,
+        highlightMaximizers: false
     }, function(items) {
         enableToggle.checked = items.enableAnalysis;
         opinionToggle.checked = items.highlightOpinion;
         ePrimeToggle.checked = items.highlightToBe;
         absoluteToggle.checked = items.highlightAbsolutes;
+        passiveToggle.checked = items.highlightPassive;
+        weaselToggle.checked = items.highlightWeasel;
+        presuppositionToggle.checked = items.highlightPresupposition;
+        metaphorToggle.checked = items.highlightMetaphors;
+        minimizerToggle.checked = items.highlightMinimizers;
+        maximizerToggle.checked = items.highlightMaximizers;
 
         // Update other toggles' disabled state
         updateTogglesState();
@@ -45,6 +86,12 @@ document.addEventListener('DOMContentLoaded', function() {
         opinionToggle.disabled = !isEnabled;
         ePrimeToggle.disabled = !isEnabled;
         absoluteToggle.disabled = !isEnabled;
+        passiveToggle.disabled = !isEnabled;
+        weaselToggle.disabled = !isEnabled;
+        presuppositionToggle.disabled = !isEnabled;
+        metaphorToggle.disabled = !isEnabled;
+        minimizerToggle.disabled = !isEnabled;
+        maximizerToggle.disabled = !isEnabled;
         refreshButton.disabled = !isEnabled;
         clearButton.disabled = !isEnabled;
     }
@@ -55,32 +102,40 @@ document.addEventListener('DOMContentLoaded', function() {
             enableAnalysis: enableToggle.checked,
             highlightOpinion: opinionToggle.checked,
             highlightToBe: ePrimeToggle.checked,
-            highlightAbsolutes: absoluteToggle.checked
+            highlightAbsolutes: absoluteToggle.checked,
+            highlightPassive: passiveToggle.checked,
+            highlightWeasel: weaselToggle.checked,
+            highlightPresupposition: presuppositionToggle.checked,
+            highlightMetaphors: metaphorToggle.checked,
+            highlightMinimizers: minimizerToggle.checked,
+            highlightMaximizers: maximizerToggle.checked
         };
 
         console.log('Saving settings:', settings);
 
         // Save to storage
         chrome.storage.sync.set(settings, function() {
-            console.log('Settings saved successfully');
-        });
-
-        // Send to content script
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            if (tabs[0]) {
-                chrome.tabs.sendMessage(tabs[0].id, {
-                    action: "updateSettings",
-                    settings: settings
-                }, function(response) {
-                    if (chrome.runtime.lastError) {
-                        console.log('Error sending message:', chrome.runtime.lastError);
-                    } else {
-                        console.log('Settings updated successfully:', response);
-                        // Update stats after a longer delay to ensure processing is complete
-                        setTimeout(updateStats, 1000);
+            console.log('Settings saved to storage');
+            
+            // Send to content script with a small delay to ensure storage is updated
+            setTimeout(() => {
+                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                    if (tabs[0]) {
+                        chrome.tabs.sendMessage(tabs[0].id, {
+                            action: "updateSettings",
+                            settings: settings
+                        }, function(response) {
+                            if (chrome.runtime.lastError) {
+                                console.log('Error sending message:', chrome.runtime.lastError);
+                            } else {
+                                console.log('Settings updated successfully:', response);
+                                // Update stats after a longer delay to ensure processing is complete
+                                setTimeout(updateStats, 1500);
+                            }
+                        });
                     }
                 });
-            }
+            }, 100);
         });
 
         updateTogglesState();
@@ -98,14 +153,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log('Could not get stats:', chrome.runtime.lastError);
                         
                         // Show last known stats or dashes
-                        if (lastKnownStats.opinionCount > 0 || lastKnownStats.toBeCount > 0 || lastKnownStats.absoluteCount > 0) {
-                            opinionCount.textContent = lastKnownStats.opinionCount;
-                            toBeCount.textContent = lastKnownStats.toBeCount;
-                            absoluteCount.textContent = lastKnownStats.absoluteCount;
+                        if (Object.values(lastKnownStats).some(v => v > 0)) {
+                            displayStats(lastKnownStats);
                         } else {
-                            opinionCount.textContent = '—';
-                            toBeCount.textContent = '—';
-                            absoluteCount.textContent = '—';
+                            displayStats({
+                                opinionCount: '-',
+                                toBeCount: '-',
+                                absoluteCount: '-',
+                                passiveCount: '-',
+                                weaselCount: '-',
+                                presuppositionCount: '-',
+                                metaphorCount: '-',
+                                minimizerCount: '-',
+                                maximizerCount: '-'
+                            });
                         }
                         
                         // Show a hint to the user
@@ -118,12 +179,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         lastKnownStats = {
                             opinionCount: response.opinionCount || 0,
                             toBeCount: response.toBeCount || 0,
-                            absoluteCount: response.absoluteCount || 0
+                            absoluteCount: response.absoluteCount || 0,
+                            passiveCount: response.passiveCount || 0,
+                            weaselCount: response.weaselCount || 0,
+                            presuppositionCount: response.presuppositionCount || 0,
+                            metaphorCount: response.metaphorCount || 0,
+                            minimizerCount: response.minimizerCount || 0,
+                            maximizerCount: response.maximizerCount || 0
                         };
                         
-                        opinionCount.textContent = lastKnownStats.opinionCount;
-                        toBeCount.textContent = lastKnownStats.toBeCount;
-                        absoluteCount.textContent = lastKnownStats.absoluteCount;
+                        displayStats(lastKnownStats);
                         
                         console.log('Stats updated:', response);
                         
@@ -141,6 +206,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Function to display stats
+    function displayStats(stats) {
+        opinionCount.textContent = stats.opinionCount;
+        toBeCount.textContent = stats.toBeCount;
+        absoluteCount.textContent = stats.absoluteCount;
+        passiveCount.textContent = stats.passiveCount;
+        weaselCount.textContent = stats.weaselCount;
+        presuppositionCount.textContent = stats.presuppositionCount;
+        metaphorCount.textContent = stats.metaphorCount;
+        minimizerCount.textContent = stats.minimizerCount;
+        maximizerCount.textContent = stats.maximizerCount;
+    }
+
     // Event listeners for toggles
     enableToggle.addEventListener('change', function() {
         console.log('Enable toggle changed to:', enableToggle.checked);
@@ -150,26 +228,26 @@ document.addEventListener('DOMContentLoaded', function() {
             lastKnownStats = {
                 opinionCount: 0,
                 toBeCount: 0,
-                absoluteCount: 0
+                absoluteCount: 0,
+                passiveCount: 0,
+                weaselCount: 0,
+                presuppositionCount: 0,
+                metaphorCount: 0,
+                minimizerCount: 0,
+                maximizerCount: 0
             };
         }
         
         saveSettingsAndUpdate();
     });
     
-    opinionToggle.addEventListener('change', function() {
-        console.log('Opinion toggle changed to:', opinionToggle.checked);
-        saveSettingsAndUpdate();
-    });
-    
-    ePrimeToggle.addEventListener('change', function() {
-        console.log('E-Prime toggle changed to:', ePrimeToggle.checked);
-        saveSettingsAndUpdate();
-    });
-    
-    absoluteToggle.addEventListener('change', function() {
-        console.log('Absolute toggle changed to:', absoluteToggle.checked);
-        saveSettingsAndUpdate();
+    // Add event listeners for all toggles
+    [opinionToggle, ePrimeToggle, absoluteToggle, passiveToggle, weaselToggle, 
+     presuppositionToggle, metaphorToggle, minimizerToggle, maximizerToggle].forEach(toggle => {
+        toggle.addEventListener('change', function() {
+            console.log(`${toggle.id} changed to:`, toggle.checked);
+            saveSettingsAndUpdate();
+        });
     });
 
     // Refresh button event listener
@@ -191,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         chrome.tabs.reload(tabs[0].id, function() {
                             setTimeout(() => {
                                 refreshButton.disabled = false;
-                                refreshButton.textContent = 'Refresh';
+                                refreshButton.textContent = 'Refresh Analysis';
                                 updateTogglesState();
                             }, 1000);
                         });
@@ -200,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         setTimeout(() => {
                             updateStats();
                             refreshButton.disabled = false;
-                            refreshButton.textContent = 'Refresh';
+                            refreshButton.textContent = 'Refresh Analysis';
                             updateTogglesState();
                         }, 1000);
                     }
@@ -217,7 +295,13 @@ document.addEventListener('DOMContentLoaded', function() {
         lastKnownStats = {
             opinionCount: 0,
             toBeCount: 0,
-            absoluteCount: 0
+            absoluteCount: 0,
+            passiveCount: 0,
+            weaselCount: 0,
+            presuppositionCount: 0,
+            metaphorCount: 0,
+            minimizerCount: 0,
+            maximizerCount: 0
         };
         
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -230,9 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         console.log('Highlights cleared successfully');
                         // Update display immediately to show zeros
-                        opinionCount.textContent = '0';
-                        toBeCount.textContent = '0';
-                        absoluteCount.textContent = '0';
+                        displayStats(lastKnownStats);
                         
                         setTimeout(updateStats, 100);
                     }

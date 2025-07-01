@@ -6,20 +6,38 @@
             enableAnalysis: true,
             highlightOpinion: true,
             highlightToBe: true,
-            highlightAbsolutes: true
+            highlightAbsolutes: true,
+            highlightPassive: false,
+            highlightWeasel: false,
+            highlightPresupposition: false,
+            highlightMetaphors: false,
+            highlightMinimizers: false,
+            highlightMaximizers: false
         },
         
         previousSettings: {
             enableAnalysis: true,
             highlightOpinion: true,
             highlightToBe: true,
-            highlightAbsolutes: true
+            highlightAbsolutes: true,
+            highlightPassive: false,
+            highlightWeasel: false,
+            highlightPresupposition: false,
+            highlightMetaphors: false,
+            highlightMinimizers: false,
+            highlightMaximizers: false
         },
         
         stats: {
             opinionCount: 0,
             toBeCount: 0,
-            absoluteCount: 0
+            absoluteCount: 0,
+            passiveCount: 0,
+            weaselCount: 0,
+            presuppositionCount: 0,
+            metaphorCount: 0,
+            minimizerCount: 0,
+            maximizerCount: 0
         },
         
         observer: null,
@@ -156,6 +174,104 @@
                 "\\bcertainly\\b", "\\bdefinitely\\b", "\\bundoubtedly\\b", "\\bunquestionably\\b",
                 "\\bindisputably\\b", "\\birrefutably\\b", "\\bincontrovertibly\\b", "\\bincontestably\\b",
                 "\\bunequivocally\\b"
+            ],
+            
+            // Passive voice patterns
+            passive: [
+                // Basic passive patterns
+                "\\bwas\\s+\\w+ed\\b",
+                "\\bwere\\s+\\w+ed\\b",
+                "\\bhas\\s+been\\s+\\w+ed\\b",
+                "\\bhave\\s+been\\s+\\w+ed\\b",
+                "\\bhad\\s+been\\s+\\w+ed\\b",
+                "\\bis\\s+being\\s+\\w+ed\\b",
+                "\\bare\\s+being\\s+\\w+ed\\b",
+                "\\bwill\\s+be\\s+\\w+ed\\b",
+                "\\bwould\\s+be\\s+\\w+ed\\b",
+                "\\bcan\\s+be\\s+\\w+ed\\b",
+                "\\bcould\\s+be\\s+\\w+ed\\b",
+                "\\bmay\\s+be\\s+\\w+ed\\b",
+                "\\bmight\\s+be\\s+\\w+ed\\b",
+                "\\bshould\\s+be\\s+\\w+ed\\b",
+                "\\bmust\\s+be\\s+\\w+ed\\b",
+                // Common irregular past participles
+                "\\bwas\\s+(written|taken|given|made|done|seen|known|shown|chosen|broken|spoken|driven|forgotten|eaten|beaten)\\b",
+                "\\bwere\\s+(written|taken|given|made|done|seen|known|shown|chosen|broken|spoken|driven|forgotten|eaten|beaten)\\b",
+                "\\bhas\\s+been\\s+(written|taken|given|made|done|seen|known|shown|chosen|broken|spoken|driven|forgotten|eaten|beaten)\\b",
+                "\\bhave\\s+been\\s+(written|taken|given|made|done|seen|known|shown|chosen|broken|spoken|driven|forgotten|eaten|beaten)\\b",
+                // Common passive phrases
+                "\\bit\\s+is\\s+believed\\b",
+                "\\bit\\s+is\\s+thought\\b",
+                "\\bit\\s+is\\s+said\\b",
+                "\\bit\\s+has\\s+been\\s+reported\\b",
+                "\\bit\\s+was\\s+reported\\b",
+                "\\bit\\s+is\\s+considered\\b",
+                "\\bit\\s+is\\s+expected\\b",
+                "\\bmistakes\\s+were\\s+made\\b",
+                "\\bconcerns\\s+have\\s+been\\s+raised\\b",
+                "\\bquestions\\s+have\\s+been\\s+asked\\b"
+            ],
+            
+            // Weasel words and vague attribution
+            weasel: [
+                "many people say", "some say", "experts believe", "studies show",
+                "it is said", "they say", "people think", "some argue",
+                "critics claim", "supporters maintain", "observers note",
+                "sources indicate", "reportedly", "allegedly", "supposedly",
+                "it is believed", "it is thought", "widely known", "widely believed",
+                "generally accepted", "commonly believed", "often said",
+                "research suggests", "evidence suggests", "data indicates",
+                "it appears", "it seems", "arguably", "presumably",
+                "in some cases", "in many cases", "frequently", "typically",
+                "tends to", "may indicate", "could suggest", "might imply"
+            ],
+            
+            // Presupposition markers
+            presupposition: [
+                // Basic presupposition triggers
+                "\\beven\\b", "\\bstill\\b", "\\banother\\b", "\\bfinally\\b", 
+                "\\balready\\b", "\\byet\\b", "\\bagain\\b",
+                // Loaded verbs
+                "\\bcontinues\\s+to\\b", "\\brefuses\\s+to\\b", "\\bfails\\s+to\\b", 
+                "\\badmits\\b", "\\bdenies\\b", "\\backnowledges\\b",
+                // Loaded phrases
+                "\\bdespite\\s+claiming\\b", "\\bwhile\\s+claiming\\b",
+                "\\bso-called\\b", "\\balleged\\b", "\\bsupposed\\b", "\\bpretend\\b",
+                "\\bthe\\s+fact\\s+that\\b", "\\bof\\s+course\\b",
+                // Temporal presuppositions
+                "\\bno\\s+longer\\b", "\\bnot\\s+anymore\\b", "\\bused\\s+to\\b"
+            ],
+            
+            // War and conflict metaphors
+            warMetaphors: [
+                "\\bbattle\\b", "\\bfight\\b", "\\bcombat\\b", "\\battack\\b", 
+                "\\bdefend\\b", "\\boffensive\\b", "\\bdefensive\\b", "\\bstrategy\\b", 
+                "\\btactics\\b", "\\bfrontline\\b", "\\bbattlefield\\b", "\\bwar\\s+on\\b", 
+                "\\bfight\\s+against\\b", "\\bcrusade\\b", "\\bcampaign\\s+against\\b",
+                "\\bunder\\s+fire\\b", "\\bunder\\s+attack\\b", "\\bbombarded\\b", 
+                "\\barsenal\\b", "\\bammunition\\b", "\\bweapon\\b", "\\btarget\\b", 
+                "\\benemy\\b", "\\bdefeat\\b", "\\bvictory\\b", "\\bconquer\\b",
+                "\\bsiege\\b", "\\bassault\\b", "\\binvade\\b", "\\bretreat\\b"
+            ],
+            
+            // Minimizers
+            minimizers: [
+                "\\bjust\\b", "\\bonly\\b", "\\bmerely\\b", "\\bsimply\\b", 
+                "\\bbarely\\b", "\\bhardly\\b", "\\bscarcely\\b", "\\bslightly\\b", 
+                "\\bsomewhat\\b", "\\ba\\s+bit\\b", "\\ba\\s+little\\b",
+                "\\bminor\\b", "\\bsmall\\b", "\\btiny\\b", "\\btrivial\\b", 
+                "\\binsignificant\\b", "\\bnegligible\\b", "\\bmarginal\\b"
+            ],
+            
+            // Maximizers
+            maximizers: [
+                "\\bmassive\\b", "\\bhuge\\b", "\\benormous\\b", "\\bgigantic\\b", 
+                "\\bcolossal\\b", "\\bcrisis\\b", "\\bdisaster\\b", "\\bcatastrophe\\b", 
+                "\\bepidemic\\b", "\\bplague\\b", "\\bexplosion\\b", "\\bskyrocket\\b", 
+                "\\bplummet\\b", "\\bdevastate\\b", "\\bdestroy\\b", "\\bannihilate\\b", 
+                "\\bobliterate\\b", "\\bdecimate\\b", "\\brevolutionary\\b",
+                "\\bunprecedented\\b", "\\bextraordinary\\b", "\\bincredible\\b",
+                "\\bamazing\\b", "\\bastonishing\\b", "\\bstaggering\\b"
             ]
         },
         
@@ -171,7 +287,13 @@
                 enableAnalysis: true,
                 highlightOpinion: true,
                 highlightToBe: true,
-                highlightAbsolutes: true
+                highlightAbsolutes: true,
+                highlightPassive: false,
+                highlightWeasel: false,
+                highlightPresupposition: false,
+                highlightMetaphors: false,
+                highlightMinimizers: false,
+                highlightMaximizers: false
             }, items => {
                 this.settings = items;
                 this.previousSettings = {...items}; // Keep a copy
@@ -221,6 +343,8 @@
         
         // Update settings with selective highlight removal
         updateSettings(newSettings) {
+            console.log('Content script received new settings:', newSettings);
+            
             // Check what changed
             const changedSettings = {};
             for (const key in newSettings) {
@@ -270,11 +394,35 @@
                 if (changedSettings.highlightAbsolutes && !this.settings.highlightAbsolutes) {
                     this.removeSpecificHighlights('absolute');
                 }
+                if (changedSettings.highlightPassive && !this.settings.highlightPassive) {
+                    this.removeSpecificHighlights('passive');
+                }
+                if (changedSettings.highlightWeasel && !this.settings.highlightWeasel) {
+                    this.removeSpecificHighlights('weasel');
+                }
+                if (changedSettings.highlightPresupposition && !this.settings.highlightPresupposition) {
+                    this.removeSpecificHighlights('presupposition');
+                }
+                if (changedSettings.highlightMetaphors && !this.settings.highlightMetaphors) {
+                    this.removeSpecificHighlights('metaphor');
+                }
+                if (changedSettings.highlightMinimizers && !this.settings.highlightMinimizers) {
+                    this.removeSpecificHighlights('minimizer');
+                }
+                if (changedSettings.highlightMaximizers && !this.settings.highlightMaximizers) {
+                    this.removeSpecificHighlights('maximizer');
+                }
                 
                 // If any highlights were enabled, we need to reanalyze to add them
                 if ((changedSettings.highlightOpinion && this.settings.highlightOpinion) ||
                     (changedSettings.highlightToBe && this.settings.highlightToBe) ||
-                    (changedSettings.highlightAbsolutes && this.settings.highlightAbsolutes)) {
+                    (changedSettings.highlightAbsolutes && this.settings.highlightAbsolutes) ||
+                    (changedSettings.highlightPassive && this.settings.highlightPassive) ||
+                    (changedSettings.highlightWeasel && this.settings.highlightWeasel) ||
+                    (changedSettings.highlightPresupposition && this.settings.highlightPresupposition) ||
+                    (changedSettings.highlightMetaphors && this.settings.highlightMetaphors) ||
+                    (changedSettings.highlightMinimizers && this.settings.highlightMinimizers) ||
+                    (changedSettings.highlightMaximizers && this.settings.highlightMaximizers)) {
                     needsReanalysis = true;
                 }
                 
@@ -305,11 +453,37 @@
                     selector = '.bias-highlight-absolute';
                     this.stats.absoluteCount = 0;
                     break;
+                case 'passive':
+                    selector = '.bias-highlight-passive';
+                    this.stats.passiveCount = 0;
+                    break;
+                case 'weasel':
+                    selector = '.bias-highlight-weasel';
+                    this.stats.weaselCount = 0;
+                    break;
+                case 'presupposition':
+                    selector = '.bias-highlight-presupposition';
+                    this.stats.presuppositionCount = 0;
+                    break;
+                case 'metaphor':
+                    selector = '.bias-highlight-metaphor';
+                    this.stats.metaphorCount = 0;
+                    break;
+                case 'minimizer':
+                    selector = '.bias-highlight-minimizer';
+                    this.stats.minimizerCount = 0;
+                    break;
+                case 'maximizer':
+                    selector = '.bias-highlight-maximizer';
+                    this.stats.maximizerCount = 0;
+                    break;
                 default:
                     return;
             }
             
             const highlights = document.querySelectorAll(selector);
+            console.log(`Removing ${type} highlights: found ${highlights.length} elements with selector ${selector}`);
+            
             highlights.forEach(highlight => {
                 const parent = highlight.parentNode;
                 const textNode = document.createTextNode(highlight.textContent);
@@ -331,8 +505,15 @@
             this.stats.opinionCount = document.querySelectorAll('.bias-highlight-opinion').length;
             this.stats.toBeCount = document.querySelectorAll('.bias-highlight-tobe').length;
             this.stats.absoluteCount = document.querySelectorAll('.bias-highlight-absolute').length;
+            this.stats.passiveCount = document.querySelectorAll('.bias-highlight-passive').length;
+            this.stats.weaselCount = document.querySelectorAll('.bias-highlight-weasel').length;
+            this.stats.presuppositionCount = document.querySelectorAll('.bias-highlight-presupposition').length;
+            this.stats.metaphorCount = document.querySelectorAll('.bias-highlight-metaphor').length;
+            this.stats.minimizerCount = document.querySelectorAll('.bias-highlight-minimizer').length;
+            this.stats.maximizerCount = document.querySelectorAll('.bias-highlight-maximizer').length;
             
-            console.log(`Recalculated stats: ${this.stats.opinionCount} opinion, ${this.stats.toBeCount} to-be, ${this.stats.absoluteCount} absolute`);
+            console.log(`Recalculated stats: ${this.stats.opinionCount} opinion, ${this.stats.toBeCount} to-be, ${this.stats.absoluteCount} absolute, ` +
+                       `${this.stats.passiveCount} passive, ${this.stats.weaselCount} weasel, ${this.stats.presuppositionCount} presupposition`);
         },
         
         // Setup mutation observer to detect content changes
@@ -351,7 +532,13 @@
                     if (mutation.target.classList && 
                         (mutation.target.classList.contains('bias-highlight-opinion') ||
                          mutation.target.classList.contains('bias-highlight-tobe') ||
-                         mutation.target.classList.contains('bias-highlight-absolute'))) {
+                         mutation.target.classList.contains('bias-highlight-absolute') ||
+                         mutation.target.classList.contains('bias-highlight-passive') ||
+                         mutation.target.classList.contains('bias-highlight-weasel') ||
+                         mutation.target.classList.contains('bias-highlight-presupposition') ||
+                         mutation.target.classList.contains('bias-highlight-metaphor') ||
+                         mutation.target.classList.contains('bias-highlight-minimizer') ||
+                         mutation.target.classList.contains('bias-highlight-maximizer'))) {
                         return false;
                     }
                     
@@ -383,7 +570,9 @@
         
         // Remove all highlights from the document
         removeHighlights() {
-            const highlights = document.querySelectorAll('.bias-highlight-opinion, .bias-highlight-tobe, .bias-highlight-absolute');
+            const highlights = document.querySelectorAll('.bias-highlight-opinion, .bias-highlight-tobe, .bias-highlight-absolute, ' +
+                '.bias-highlight-passive, .bias-highlight-weasel, .bias-highlight-presupposition, ' +
+                '.bias-highlight-metaphor, .bias-highlight-minimizer, .bias-highlight-maximizer');
             const processedParents = new Set();
             
             highlights.forEach(highlight => {
@@ -408,7 +597,13 @@
             this.stats = {
                 opinionCount: 0,
                 toBeCount: 0,
-                absoluteCount: 0
+                absoluteCount: 0,
+                passiveCount: 0,
+                weaselCount: 0,
+                presuppositionCount: 0,
+                metaphorCount: 0,
+                minimizerCount: 0,
+                maximizerCount: 0
             };
         },
         
@@ -416,7 +611,9 @@
         analyzeDocument() {
             // Only reset stats if we're doing a full re-analysis
             // Don't reset if we're just adding to existing highlights
-            const hasExistingHighlights = document.querySelector('.bias-highlight-opinion, .bias-highlight-tobe, .bias-highlight-absolute');
+            const hasExistingHighlights = document.querySelector('.bias-highlight-opinion, .bias-highlight-tobe, .bias-highlight-absolute, ' +
+                '.bias-highlight-passive, .bias-highlight-weasel, .bias-highlight-presupposition, ' +
+                '.bias-highlight-metaphor, .bias-highlight-minimizer, .bias-highlight-maximizer');
             if (!hasExistingHighlights) {
                 this.resetStats();
             }
@@ -458,7 +655,13 @@
                         if (parent && parent.classList && 
                             (parent.classList.contains('bias-highlight-opinion') ||
                              parent.classList.contains('bias-highlight-tobe') ||
-                             parent.classList.contains('bias-highlight-absolute'))) {
+                             parent.classList.contains('bias-highlight-absolute') ||
+                             parent.classList.contains('bias-highlight-passive') ||
+                             parent.classList.contains('bias-highlight-weasel') ||
+                             parent.classList.contains('bias-highlight-presupposition') ||
+                             parent.classList.contains('bias-highlight-metaphor') ||
+                             parent.classList.contains('bias-highlight-minimizer') ||
+                             parent.classList.contains('bias-highlight-maximizer'))) {
                             return NodeFilter.FILTER_REJECT;
                         }
                         
@@ -619,6 +822,134 @@
                     });
                 }
                 
+                // Find all matches for passive voice
+                if (this.settings.highlightPassive) {
+                    this.dictionaries.passive.forEach(pattern => {
+                        try {
+                            const regex = new RegExp(pattern, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'passive'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for passive pattern:', pattern, e);
+                        }
+                    });
+                }
+                
+                // Find all matches for weasel words
+                if (this.settings.highlightWeasel) {
+                    this.dictionaries.weasel.forEach(phrase => {
+                        try {
+                            const escapedPhrase = escapeRegExp(phrase);
+                            const pattern = '\\b' + escapedPhrase + '\\b';
+                            const regex = new RegExp(pattern, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'weasel'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for weasel phrase:', phrase, e);
+                        }
+                    });
+                }
+                
+                // Find all matches for presupposition markers
+                if (this.settings.highlightPresupposition) {
+                    this.dictionaries.presupposition.forEach(word => {
+                        try {
+                            const regex = new RegExp(word, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'presupposition'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for presupposition word:', word, e);
+                        }
+                    });
+                }
+                
+                // Find all matches for war metaphors
+                if (this.settings.highlightMetaphors) {
+                    this.dictionaries.warMetaphors.forEach(word => {
+                        try {
+                            const regex = new RegExp(word, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'metaphor'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for metaphor word:', word, e);
+                        }
+                    });
+                }
+                
+                // Find all matches for minimizers
+                if (this.settings.highlightMinimizers) {
+                    this.dictionaries.minimizers.forEach(word => {
+                        try {
+                            const regex = new RegExp(word, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'minimizer'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for minimizer word:', word, e);
+                        }
+                    });
+                }
+                
+                // Find all matches for maximizers
+                if (this.settings.highlightMaximizers) {
+                    this.dictionaries.maximizers.forEach(word => {
+                        try {
+                            const regex = new RegExp(word, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'maximizer'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for maximizer word:', word, e);
+                        }
+                    });
+                }
+                
                 // If we found matches, replace the node with highlighted content
                 if (matches.length > 0) {
                     // Sort matches by index
@@ -637,6 +968,12 @@
                             if (match.type === 'opinion') this.stats.opinionCount++;
                             else if (match.type === 'tobe') this.stats.toBeCount++;
                             else if (match.type === 'absolute') this.stats.absoluteCount++;
+                            else if (match.type === 'passive') this.stats.passiveCount++;
+                            else if (match.type === 'weasel') this.stats.weaselCount++;
+                            else if (match.type === 'presupposition') this.stats.presuppositionCount++;
+                            else if (match.type === 'metaphor') this.stats.metaphorCount++;
+                            else if (match.type === 'minimizer') this.stats.minimizerCount++;
+                            else if (match.type === 'maximizer') this.stats.maximizerCount++;
                         }
                     }
                     
@@ -674,7 +1011,9 @@
                 }
             });
             
-            console.log(`Bias Detector found: ${this.stats.opinionCount} opinion words, ${this.stats.toBeCount} to-be verbs, ${this.stats.absoluteCount} absolute statements`);
+            console.log(`Bias Detector found: ${this.stats.opinionCount} opinion, ${this.stats.toBeCount} to-be, ${this.stats.absoluteCount} absolute, ` +
+                       `${this.stats.passiveCount} passive, ${this.stats.weaselCount} weasel, ${this.stats.presuppositionCount} presupposition, ` +
+                       `${this.stats.metaphorCount} metaphor, ${this.stats.minimizerCount} minimizer, ${this.stats.maximizerCount} maximizer`);
         }
     };
     
