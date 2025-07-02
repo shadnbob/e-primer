@@ -227,6 +227,11 @@
         .crimson { background-color: rgba(220, 20, 60, 0.3); }
         .teal { background-color: rgba(0, 128, 128, 0.3); }
         .orangered { background-color: rgba(255, 69, 0, 0.3); }
+        .indigo { background-color: rgba(75, 0, 130, 0.3); }
+        .darkgreen { background-color: rgba(0, 100, 0, 0.3); }
+        .coral { background-color: rgba(255, 127, 80, 0.3); }
+        .maroon { background-color: rgba(128, 0, 0, 0.3); }
+        .darkviolet { background-color: rgba(148, 0, 211, 0.3); }
         .info-link {
             display: block;
             text-align: center;
@@ -304,7 +309,7 @@
                 <span>Passive Voice</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="passiveToggle">
+                <input type="checkbox" id="passiveToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -314,7 +319,7 @@
                 <span>Weasel Words</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="weaselToggle">
+                <input type="checkbox" id="weaselToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -324,7 +329,7 @@
                 <span>Presuppositions</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="presuppositionToggle">
+                <input type="checkbox" id="presuppositionToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -342,7 +347,7 @@
                 <span>War Metaphors</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="metaphorToggle">
+                <input type="checkbox" id="metaphorToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -352,7 +357,7 @@
                 <span>Minimizers</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="minimizerToggle">
+                <input type="checkbox" id="minimizerToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -362,7 +367,73 @@
                 <span>Maximizers</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="maximizerToggle">
+                <input type="checkbox" id="maximizerToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="category-section">
+    <div class="category-header">
+        <span>Rhetorical Devices</span>
+    </div>
+    <div class="category-body">
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator indigo"></div>
+                <span>False Balance Markers</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="falseBalanceToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator darkgreen"></div>
+                <span>Euphemisms/Dysphemisms</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="euphemismToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="category-section">
+    <div class="category-header">
+        <span>Manipulation Tactics</span>
+    </div>
+    <div class="category-body">
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator coral"></div>
+                <span>Emotional Manipulation</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="emotionalToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator maroon"></div>
+                <span>Gaslighting Phrases</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="gaslightingToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator darkviolet"></div>
+                <span>False Dilemmas</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="falseDilemmaToggle">
                 <span class="slider"></span>
             </label>
         </div>
@@ -406,6 +477,26 @@
         <div class="stat-item">
             <span class="stat-label">Maximizer</span>
             <span class="stat-value" id="maximizerCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">False Bal.</span>
+            <span class="stat-value" id="falseBalanceCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Euphemism</span>
+            <span class="stat-value" id="euphemismCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Emotional</span>
+            <span class="stat-value" id="emotionalCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Gaslight</span>
+            <span class="stat-value" id="gaslightingCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Dilemma</span>
+            <span class="stat-value" id="falseDilemmaCount">0</span>
         </div>
     </div>
 </div>

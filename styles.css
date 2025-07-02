@@ -168,3 +168,98 @@
     margin-top: 20px;
     z-index: 1000;
 }
+
+.bias-highlight-falsebalance {
+    background-color: rgba(75, 0, 130, 0.3);
+    border-bottom: 1px solid indigo;
+    cursor: help;
+}
+
+.bias-highlight-falsebalance:hover::after {
+    content: "False balance";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-euphemism {
+    background-color: rgba(0, 100, 0, 0.3);
+    border-bottom: 1px solid darkgreen;
+    cursor: help;
+}
+
+.bias-highlight-euphemism:hover::after {
+    content: "Euphemism/Dysphemism";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-emotional {
+    background-color: rgba(255, 127, 80, 0.3);
+    border-bottom: 1px solid coral;
+    cursor: help;
+}
+
+.bias-highlight-emotional:hover::after {
+    content: "Emotional manipulation";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-gaslighting {
+    background-color: rgba(128, 0, 0, 0.3);
+    border-bottom: 1px solid maroon;
+    cursor: help;
+}
+
+.bias-highlight-gaslighting:hover::after {
+    content: "Gaslighting";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.bias-highlight-falsedilemma {
+    background-color: rgba(148, 0, 211, 0.3);
+    border-bottom: 1px solid darkviolet;
+    cursor: help;
+}
+
+.bias-highlight-falsedilemma:hover::after {
+    content: "False dilemma";
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    margin-top: 20px;
+    z-index: 1000;
+}

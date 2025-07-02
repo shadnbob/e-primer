@@ -12,7 +12,12 @@
             highlightPresupposition: false,
             highlightMetaphors: false,
             highlightMinimizers: false,
-            highlightMaximizers: false
+            highlightMaximizers: false,
+            highlightFalseBalance: false,
+            highlightEuphemism: false,
+            highlightEmotional: false,
+            highlightGaslighting: false,
+            highlightFalseDilemma: false
         },
         
         previousSettings: {
@@ -25,7 +30,12 @@
             highlightPresupposition: false,
             highlightMetaphors: false,
             highlightMinimizers: false,
-            highlightMaximizers: false
+            highlightMaximizers: false,
+            highlightFalseBalance: false,
+            highlightEuphemism: false,
+            highlightEmotional: false,
+            highlightGaslighting: false,
+            highlightFalseDilemma: false
         },
         
         stats: {
@@ -37,7 +47,12 @@
             presuppositionCount: 0,
             metaphorCount: 0,
             minimizerCount: 0,
-            maximizerCount: 0
+            maximizerCount: 0,
+            falseBalanceCount: 0,
+            euphemismCount: 0,
+            emotionalCount: 0,
+            gaslightingCount: 0,
+            falseDilemmaCount: 0
         },
         
         observer: null,
@@ -272,6 +287,192 @@
                 "\\bobliterate\\b", "\\bdecimate\\b", "\\brevolutionary\\b",
                 "\\bunprecedented\\b", "\\bextraordinary\\b", "\\bincredible\\b",
                 "\\bamazing\\b", "\\bastonishing\\b", "\\bstaggering\\b"
+            ],
+            
+            // False Balance Markers
+            falseBalance: [
+                // Direct balance phrases
+                "both sides", "on one hand", "on the other hand", "equally valid",
+                "two sides to every story", "balanced perspective", "middle ground",
+                "neutral position", "unbiased view", "fair and balanced",
+                
+                // False equivalence markers
+                "just as", "equally problematic", "similarly concerning",
+                "two schools of thought", "competing theories", "alternative facts",
+                "different perspectives", "various viewpoints", "diverse opinions",
+                
+                // Debate framing
+                "controversial issue", "ongoing debate", "disputed topic",
+                "contentious matter", "divisive issue", "polarizing topic",
+                "heated discussion", "matter of opinion", "subjective issue",
+                
+                // Neutrality performance
+                "to be fair", "in fairness", "playing devil's advocate",
+                "for the sake of argument", "another way to look at it",
+                "from another angle", "alternative viewpoint", "counterargument",
+                
+                // Balance rhetoric
+                "pros and cons", "advantages and disadvantages", "benefits and drawbacks",
+                "strengths and weaknesses", "opportunities and challenges",
+                "supporters and critics", "proponents and opponents"
+            ],
+            
+            // Euphemisms and Dysphemisms
+            euphemisms: [
+                // Political euphemisms
+                "enhanced interrogation", "collateral damage", "friendly fire",
+                "extraordinary rendition", "neutralize", "pacification",
+                "strategic withdrawal", "tactical redeployment", "kinetic action",
+                "regime change", "nation building", "peacekeeping operation",
+                
+                // Corporate euphemisms
+                "rightsizing", "downsizing", "restructuring", "optimization",
+                "streamlining", "synergy realization", "workforce adjustment",
+                "negative growth", "deferred success", "challenging market conditions",
+                "revenue enhancement", "price adjustment", "value engineering",
+                
+                // Social euphemisms
+                "passed away", "departed", "no longer with us", "resting in peace",
+                "economically disadvantaged", "underprivileged", "underserved",
+                "differently abled", "physically challenged", "special needs",
+                "senior citizens", "golden years", "twilight years",
+                
+                // Military euphemisms
+                "surgical strike", "precision bombing", "smart weapons",
+                "soft targets", "hard targets", "assets", "resources",
+                "theater of operations", "rules of engagement", "force projection",
+                
+                // Dysphemisms (loaded negative framing)
+                "death tax", "government takeover", "job killers",
+                "tax and spend", "bleeding heart", "welfare queen",
+                "anchor babies", "illegal aliens", "chain migration",
+                "socialized medicine", "nanny state", "big government",
+                
+                // Medical/health euphemisms
+                "therapeutic misadventure", "negative patient outcome",
+                "terminal illness", "life-limiting condition", "comfort care",
+                "pregnancy termination", "medical assistance in dying",
+                
+                // Environmental euphemisms
+                "climate change", "global warming", "carbon footprint",
+                "sustainable development", "clean coal", "energy independence",
+                "managed retreat", "controlled burn", "wildlife management"
+            ],
+            
+            // Emotional Manipulation Markers
+            emotional: [
+                // Fear appeals
+                "dangerous precedent", "slippery slope", "existential threat",
+                "grave danger", "serious threat", "dire consequences",
+                "catastrophic results", "devastating impact", "irreversible damage",
+                "point of no return", "ticking time bomb", "imminent danger",
+                "clear and present danger", "looming crisis", "impending doom",
+                
+                // Guilt triggers
+                "shame on", "how dare", "blood on your hands",
+                "morally responsible", "complicit in", "turning a blind eye",
+                "failed to act", "stood by while", "allowed to happen",
+                "could have prevented", "chose to ignore", "willfully neglected",
+                "betrayed the trust", "let down", "abandoned their duty",
+                
+                // Flattery patterns
+                "smart people like you", "educated readers understand",
+                "discerning individuals", "those who truly care",
+                "people of conscience", "thoughtful citizens",
+                "intelligent observers", "wise enough to see",
+                "sophisticated thinkers", "enlightened minds",
+                "those with common sense", "reasonable people agree",
+                
+                // Outrage fuel
+                "shocking revelation", "unbelievable scandal", "absolute outrage",
+                "disgusting display", "appalling behavior", "unconscionable act",
+                "beyond the pale", "crosses the line", "new low",
+                "height of hypocrisy", "blatant corruption", "flagrant violation",
+                "egregious abuse", "stunning betrayal", "jaw-dropping",
+                
+                // Sympathy exploitation
+                "think of the children", "vulnerable victims", "innocent lives",
+                "helpless elderly", "suffering families", "heartbroken parents",
+                "orphaned children", "widows and orphans", "defenseless animals",
+                "voiceless victims", "forgotten souls", "human tragedy",
+                "real people suffering", "faces behind the statistics",
+                
+                // Urgency creation
+                "act now", "before it's too late", "time is running out",
+                "last chance", "final opportunity", "narrow window",
+                "critical moment", "now or never", "decisive moment",
+                "crucial juncture", "make or break", "do or die"
+            ],
+            
+            // Gaslighting Phrases
+            gaslighting: [
+                // Reality denial
+                "that never happened", "you're imagining things", "that's not true",
+                "you're making it up", "completely fabricated", "pure fiction",
+                "didn't happen that way", "false memory", "revisionist history",
+                "twisting the facts", "distorting reality", "alternative facts",
+                
+                // Minimizing concerns
+                "you're overreacting", "making a big deal", "blowing it out of proportion",
+                "being dramatic", "overly sensitive", "too emotional",
+                "getting worked up over nothing", "making mountains out of molehills",
+                "need to calm down", "being hysterical", "irrational response",
+                "taking it too seriously", "reading too much into it",
+                
+                // Memory manipulation
+                "you're misremembering", "that's not what was said", "you're confused",
+                "mixing things up", "got it backwards", "faulty recollection",
+                "selective memory", "conveniently forgetting", "memory is playing tricks",
+                "not how I remember it", "you must be mistaken", "false impression",
+                
+                // Credibility attacks
+                "you're being paranoid", "too sensitive", "crazy to think",
+                "lost touch with reality", "delusional thinking", "conspiracy theorist",
+                "seeing things that aren't there", "jumping to conclusions",
+                "wild accusations", "baseless claims", "unfounded fears",
+                "irrational beliefs", "unstable behavior", "not thinking clearly",
+                
+                // Deflection phrases
+                "the real issue is", "what about", "more importantly",
+                "you're missing the point", "that's not the problem",
+                "focusing on the wrong thing", "beside the point",
+                "irrelevant detail", "distracting from", "changing the subject",
+                "let's talk about", "but what about when", "conveniently ignoring"
+            ],
+            
+            // False Dilemma Indicators
+            falseDilemma: [
+                // Either/or constructions
+                "either you're with us or against us", "either...or",
+                "can't have it both ways", "pick a side", "choose one",
+                "black or white", "all or nothing", "win or lose",
+                "success or failure", "friend or foe", "love it or leave it",
+                "my way or the highway", "sink or swim", "do or die",
+                
+                // Forced choices
+                "must choose between", "forced to decide", "have to pick",
+                "can't have both", "one or the other", "mutually exclusive",
+                "incompatible options", "can't be both", "impossible to reconcile",
+                "fundamental choice", "defining decision", "ultimate choice",
+                
+                // Binary framing
+                "only two options", "just two choices", "two paths",
+                "binary choice", "simple choice", "clear choice",
+                "obvious choice", "no middle ground", "no compromise",
+                "no third option", "no alternative", "no other way",
+                "zero sum game", "winner takes all", "us versus them",
+                
+                // Ultimatums
+                "last chance", "final offer", "take it or leave it",
+                "now or never", "speak now or forever", "one time only",
+                "limited time", "closing window", "ship is sailing",
+                "train is leaving", "door is closing", "bridge is burning",
+                
+                // Exclusionary language
+                "if you're not", "unless you", "those who don't",
+                "anyone who doesn't", "people who refuse", "failure to choose",
+                "refusing to take a stand", "sitting on the fence", "can't remain neutral",
+                "neutrality is complicity", "silence is consent", "inaction is action"
             ]
         },
         
@@ -293,7 +494,12 @@
                 highlightPresupposition: false,
                 highlightMetaphors: false,
                 highlightMinimizers: false,
-                highlightMaximizers: false
+                highlightMaximizers: false,
+                highlightFalseBalance: false,
+                highlightEuphemism: false,
+                highlightEmotional: false,
+                highlightGaslighting: false,
+                highlightFalseDilemma: false
             }, items => {
                 this.settings = items;
                 this.previousSettings = {...items}; // Keep a copy
@@ -412,6 +618,21 @@
                 if (changedSettings.highlightMaximizers && !this.settings.highlightMaximizers) {
                     this.removeSpecificHighlights('maximizer');
                 }
+                if (changedSettings.highlightFalseBalance && !this.settings.highlightFalseBalance) {
+                    this.removeSpecificHighlights('falsebalance');
+                }
+                if (changedSettings.highlightEuphemism && !this.settings.highlightEuphemism) {
+                    this.removeSpecificHighlights('euphemism');
+                }
+                if (changedSettings.highlightEmotional && !this.settings.highlightEmotional) {
+                    this.removeSpecificHighlights('emotional');
+                }
+                if (changedSettings.highlightGaslighting && !this.settings.highlightGaslighting) {
+                    this.removeSpecificHighlights('gaslighting');
+                }
+                if (changedSettings.highlightFalseDilemma && !this.settings.highlightFalseDilemma) {
+                    this.removeSpecificHighlights('falsedilemma');
+                }
                 
                 // If any highlights were enabled, we need to reanalyze to add them
                 if ((changedSettings.highlightOpinion && this.settings.highlightOpinion) ||
@@ -422,7 +643,12 @@
                     (changedSettings.highlightPresupposition && this.settings.highlightPresupposition) ||
                     (changedSettings.highlightMetaphors && this.settings.highlightMetaphors) ||
                     (changedSettings.highlightMinimizers && this.settings.highlightMinimizers) ||
-                    (changedSettings.highlightMaximizers && this.settings.highlightMaximizers)) {
+                    (changedSettings.highlightMaximizers && this.settings.highlightMaximizers) ||
+                    (changedSettings.highlightFalseBalance && this.settings.highlightFalseBalance) ||
+                    (changedSettings.highlightEuphemism && this.settings.highlightEuphemism) ||
+                    (changedSettings.highlightEmotional && this.settings.highlightEmotional) ||
+                    (changedSettings.highlightGaslighting && this.settings.highlightGaslighting) ||
+                    (changedSettings.highlightFalseDilemma && this.settings.highlightFalseDilemma)) {
                     needsReanalysis = true;
                 }
                 
@@ -477,6 +703,26 @@
                     selector = '.bias-highlight-maximizer';
                     this.stats.maximizerCount = 0;
                     break;
+                case 'falsebalance':
+                    selector = '.bias-highlight-falsebalance';
+                    this.stats.falseBalanceCount = 0;
+                    break;
+                case 'euphemism':
+                    selector = '.bias-highlight-euphemism';
+                    this.stats.euphemismCount = 0;
+                    break;
+                case 'emotional':
+                    selector = '.bias-highlight-emotional';
+                    this.stats.emotionalCount = 0;
+                    break;
+                case 'gaslighting':
+                    selector = '.bias-highlight-gaslighting';
+                    this.stats.gaslightingCount = 0;
+                    break;
+                case 'falsedilemma':
+                    selector = '.bias-highlight-falsedilemma';
+                    this.stats.falseDilemmaCount = 0;
+                    break;
                 default:
                     return;
             }
@@ -511,6 +757,11 @@
             this.stats.metaphorCount = document.querySelectorAll('.bias-highlight-metaphor').length;
             this.stats.minimizerCount = document.querySelectorAll('.bias-highlight-minimizer').length;
             this.stats.maximizerCount = document.querySelectorAll('.bias-highlight-maximizer').length;
+            this.stats.falseBalanceCount = document.querySelectorAll('.bias-highlight-falsebalance').length;
+            this.stats.euphemismCount = document.querySelectorAll('.bias-highlight-euphemism').length;
+            this.stats.emotionalCount = document.querySelectorAll('.bias-highlight-emotional').length;
+            this.stats.gaslightingCount = document.querySelectorAll('.bias-highlight-gaslighting').length;
+            this.stats.falseDilemmaCount = document.querySelectorAll('.bias-highlight-falsedilemma').length;
             
             console.log(`Recalculated stats: ${this.stats.opinionCount} opinion, ${this.stats.toBeCount} to-be, ${this.stats.absoluteCount} absolute, ` +
                        `${this.stats.passiveCount} passive, ${this.stats.weaselCount} weasel, ${this.stats.presuppositionCount} presupposition`);
@@ -538,7 +789,12 @@
                          mutation.target.classList.contains('bias-highlight-presupposition') ||
                          mutation.target.classList.contains('bias-highlight-metaphor') ||
                          mutation.target.classList.contains('bias-highlight-minimizer') ||
-                         mutation.target.classList.contains('bias-highlight-maximizer'))) {
+                         mutation.target.classList.contains('bias-highlight-maximizer') ||
+                         mutation.target.classList.contains('bias-highlight-falsebalance') ||
+                         mutation.target.classList.contains('bias-highlight-euphemism') ||
+                         mutation.target.classList.contains('bias-highlight-emotional') ||
+                         mutation.target.classList.contains('bias-highlight-gaslighting') ||
+                         mutation.target.classList.contains('bias-highlight-falsedilemma'))) {
                         return false;
                     }
                     
@@ -572,7 +828,9 @@
         removeHighlights() {
             const highlights = document.querySelectorAll('.bias-highlight-opinion, .bias-highlight-tobe, .bias-highlight-absolute, ' +
                 '.bias-highlight-passive, .bias-highlight-weasel, .bias-highlight-presupposition, ' +
-                '.bias-highlight-metaphor, .bias-highlight-minimizer, .bias-highlight-maximizer');
+                '.bias-highlight-metaphor, .bias-highlight-minimizer, .bias-highlight-maximizer, ' +
+                '.bias-highlight-falsebalance, .bias-highlight-euphemism, .bias-highlight-emotional, ' +
+                '.bias-highlight-gaslighting, .bias-highlight-falsedilemma');
             const processedParents = new Set();
             
             highlights.forEach(highlight => {
@@ -603,7 +861,12 @@
                 presuppositionCount: 0,
                 metaphorCount: 0,
                 minimizerCount: 0,
-                maximizerCount: 0
+                maximizerCount: 0,
+                falseBalanceCount: 0,
+                euphemismCount: 0,
+                emotionalCount: 0,
+                gaslightingCount: 0,
+                falseDilemmaCount: 0
             };
         },
         
@@ -613,7 +876,9 @@
             // Don't reset if we're just adding to existing highlights
             const hasExistingHighlights = document.querySelector('.bias-highlight-opinion, .bias-highlight-tobe, .bias-highlight-absolute, ' +
                 '.bias-highlight-passive, .bias-highlight-weasel, .bias-highlight-presupposition, ' +
-                '.bias-highlight-metaphor, .bias-highlight-minimizer, .bias-highlight-maximizer');
+                '.bias-highlight-metaphor, .bias-highlight-minimizer, .bias-highlight-maximizer, ' +
+                '.bias-highlight-falsebalance, .bias-highlight-euphemism, .bias-highlight-emotional, ' +
+                '.bias-highlight-gaslighting, .bias-highlight-falsedilemma');
             if (!hasExistingHighlights) {
                 this.resetStats();
             }
@@ -661,7 +926,12 @@
                              parent.classList.contains('bias-highlight-presupposition') ||
                              parent.classList.contains('bias-highlight-metaphor') ||
                              parent.classList.contains('bias-highlight-minimizer') ||
-                             parent.classList.contains('bias-highlight-maximizer'))) {
+                             parent.classList.contains('bias-highlight-maximizer') ||
+                             parent.classList.contains('bias-highlight-falsebalance') ||
+                             parent.classList.contains('bias-highlight-euphemism') ||
+                             parent.classList.contains('bias-highlight-emotional') ||
+                             parent.classList.contains('bias-highlight-gaslighting') ||
+                             parent.classList.contains('bias-highlight-falsedilemma'))) {
                             return NodeFilter.FILTER_REJECT;
                         }
                         
@@ -950,6 +1220,121 @@
                     });
                 }
                 
+                // Find all matches for false balance markers
+                if (this.settings.highlightFalseBalance) {
+                    this.dictionaries.falseBalance.forEach(phrase => {
+                        try {
+                            const escapedPhrase = escapeRegExp(phrase);
+                            const pattern = '\\b' + escapedPhrase + '\\b';
+                            const regex = new RegExp(pattern, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'falsebalance'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for false balance phrase:', phrase, e);
+                        }
+                    });
+                }
+                
+                // Find all matches for euphemisms
+                if (this.settings.highlightEuphemism) {
+                    this.dictionaries.euphemisms.forEach(phrase => {
+                        try {
+                            const escapedPhrase = escapeRegExp(phrase);
+                            const pattern = '\\b' + escapedPhrase + '\\b';
+                            const regex = new RegExp(pattern, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'euphemism'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for euphemism phrase:', phrase, e);
+                        }
+                    });
+                }
+                
+                // Find all matches for emotional manipulation
+                if (this.settings.highlightEmotional) {
+                    this.dictionaries.emotional.forEach(phrase => {
+                        try {
+                            const escapedPhrase = escapeRegExp(phrase);
+                            const pattern = '\\b' + escapedPhrase + '\\b';
+                            const regex = new RegExp(pattern, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'emotional'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for emotional phrase:', phrase, e);
+                        }
+                    });
+                }
+                
+                // Find all matches for gaslighting phrases
+                if (this.settings.highlightGaslighting) {
+                    this.dictionaries.gaslighting.forEach(phrase => {
+                        try {
+                            const escapedPhrase = escapeRegExp(phrase);
+                            const pattern = '\\b' + escapedPhrase + '\\b';
+                            const regex = new RegExp(pattern, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'gaslighting'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for gaslighting phrase:', phrase, e);
+                        }
+                    });
+                }
+                
+                // Find all matches for false dilemma indicators
+                if (this.settings.highlightFalseDilemma) {
+                    this.dictionaries.falseDilemma.forEach(phrase => {
+                        try {
+                            const escapedPhrase = escapeRegExp(phrase);
+                            const pattern = '\\b' + escapedPhrase + '\\b';
+                            const regex = new RegExp(pattern, 'gi');
+                            
+                            let match;
+                            while ((match = regex.exec(text)) !== null) {
+                                matches.push({
+                                    index: match.index,
+                                    length: match[0].length,
+                                    text: match[0],
+                                    type: 'falsedilemma'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error with regex for false dilemma phrase:', phrase, e);
+                        }
+                    });
+                }
+                
                 // If we found matches, replace the node with highlighted content
                 if (matches.length > 0) {
                     // Sort matches by index
@@ -974,6 +1359,11 @@
                             else if (match.type === 'metaphor') this.stats.metaphorCount++;
                             else if (match.type === 'minimizer') this.stats.minimizerCount++;
                             else if (match.type === 'maximizer') this.stats.maximizerCount++;
+                            else if (match.type === 'falsebalance') this.stats.falseBalanceCount++;
+                            else if (match.type === 'euphemism') this.stats.euphemismCount++;
+                            else if (match.type === 'emotional') this.stats.emotionalCount++;
+                            else if (match.type === 'gaslighting') this.stats.gaslightingCount++;
+                            else if (match.type === 'falsedilemma') this.stats.falseDilemmaCount++;
                         }
                     }
                     
@@ -1013,7 +1403,9 @@
             
             console.log(`Bias Detector found: ${this.stats.opinionCount} opinion, ${this.stats.toBeCount} to-be, ${this.stats.absoluteCount} absolute, ` +
                        `${this.stats.passiveCount} passive, ${this.stats.weaselCount} weasel, ${this.stats.presuppositionCount} presupposition, ` +
-                       `${this.stats.metaphorCount} metaphor, ${this.stats.minimizerCount} minimizer, ${this.stats.maximizerCount} maximizer`);
+                       `${this.stats.metaphorCount} metaphor, ${this.stats.minimizerCount} minimizer, ${this.stats.maximizerCount} maximizer, ` +
+                       `${this.stats.falseBalanceCount} false balance, ${this.stats.euphemismCount} euphemism, ${this.stats.emotionalCount} emotional, ` +
+                       `${this.stats.gaslightingCount} gaslighting, ${this.stats.falseDilemmaCount} false dilemma`);
         }
     };
     

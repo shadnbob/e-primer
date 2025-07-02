@@ -44,6 +44,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const metaphorToggle = document.getElementById('metaphorToggle');
     const minimizerToggle = document.getElementById('minimizerToggle');
     const maximizerToggle = document.getElementById('maximizerToggle');
+    const falseBalanceToggle = document.getElementById('falseBalanceToggle');
+    const euphemismToggle = document.getElementById('euphemismToggle');
+    const emotionalToggle = document.getElementById('emotionalToggle');
+    const gaslightingToggle = document.getElementById('gaslightingToggle');
+    const falseDilemmaToggle = document.getElementById('falseDilemmaToggle');
     const refreshButton = document.getElementById('refreshButton');
     const clearButton = document.getElementById('clearButton');
 
@@ -57,6 +62,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const metaphorCount = document.getElementById('metaphorCount');
     const minimizerCount = document.getElementById('minimizerCount');
     const maximizerCount = document.getElementById('maximizerCount');
+    const falseBalanceCount = document.getElementById('falseBalanceCount');
+    const euphemismCount = document.getElementById('euphemismCount');
+    const emotionalCount = document.getElementById('emotionalCount');
+    const gaslightingCount = document.getElementById('gaslightingCount');
+    const falseDilemmaCount = document.getElementById('falseDilemmaCount');
     
     // Store last known stats to prevent disappearing
     let lastKnownStats = {
@@ -68,7 +78,12 @@ document.addEventListener('DOMContentLoaded', function() {
         presuppositionCount: 0,
         metaphorCount: 0,
         minimizerCount: 0,
-        maximizerCount: 0
+        maximizerCount: 0,
+        falseBalanceCount: 0,
+        euphemismCount: 0,
+        emotionalCount: 0,
+        gaslightingCount: 0,
+        falseDilemmaCount: 0
     };
 
     // Load current settings
@@ -82,7 +97,12 @@ document.addEventListener('DOMContentLoaded', function() {
         highlightPresupposition: false,
         highlightMetaphors: false,
         highlightMinimizers: false,
-        highlightMaximizers: false
+        highlightMaximizers: false,
+        highlightFalseBalance: false,
+        highlightEuphemism: false,
+        highlightEmotional: false,
+        highlightGaslighting: false,
+        highlightFalseDilemma: false
     }, function(items) {
         enableToggle.checked = items.enableAnalysis;
         opinionToggle.checked = items.highlightOpinion;
@@ -94,6 +114,11 @@ document.addEventListener('DOMContentLoaded', function() {
         metaphorToggle.checked = items.highlightMetaphors;
         minimizerToggle.checked = items.highlightMinimizers;
         maximizerToggle.checked = items.highlightMaximizers;
+        falseBalanceToggle.checked = items.highlightFalseBalance;
+        euphemismToggle.checked = items.highlightEuphemism;
+        emotionalToggle.checked = items.highlightEmotional;
+        gaslightingToggle.checked = items.highlightGaslighting;
+        falseDilemmaToggle.checked = items.highlightFalseDilemma;
 
         // Update other toggles' disabled state
         updateTogglesState();
@@ -114,6 +139,11 @@ document.addEventListener('DOMContentLoaded', function() {
         metaphorToggle.disabled = !isEnabled;
         minimizerToggle.disabled = !isEnabled;
         maximizerToggle.disabled = !isEnabled;
+        falseBalanceToggle.disabled = !isEnabled;
+        euphemismToggle.disabled = !isEnabled;
+        emotionalToggle.disabled = !isEnabled;
+        gaslightingToggle.disabled = !isEnabled;
+        falseDilemmaToggle.disabled = !isEnabled;
         refreshButton.disabled = !isEnabled;
         clearButton.disabled = !isEnabled;
     }
@@ -130,7 +160,12 @@ document.addEventListener('DOMContentLoaded', function() {
             highlightPresupposition: presuppositionToggle.checked,
             highlightMetaphors: metaphorToggle.checked,
             highlightMinimizers: minimizerToggle.checked,
-            highlightMaximizers: maximizerToggle.checked
+            highlightMaximizers: maximizerToggle.checked,
+            highlightFalseBalance: falseBalanceToggle.checked,
+            highlightEuphemism: euphemismToggle.checked,
+            highlightEmotional: emotionalToggle.checked,
+            highlightGaslighting: gaslightingToggle.checked,
+            highlightFalseDilemma: falseDilemmaToggle.checked
         };
 
         console.log('Saving settings:', settings);
@@ -187,7 +222,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 presuppositionCount: '-',
                                 metaphorCount: '-',
                                 minimizerCount: '-',
-                                maximizerCount: '-'
+                                maximizerCount: '-',
+                                falseBalanceCount: '-',
+                                euphemismCount: '-',
+                                emotionalCount: '-',
+                                gaslightingCount: '-',
+                                falseDilemmaCount: '-'
                             });
                         }
                         
@@ -207,7 +247,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             presuppositionCount: response.presuppositionCount || 0,
                             metaphorCount: response.metaphorCount || 0,
                             minimizerCount: response.minimizerCount || 0,
-                            maximizerCount: response.maximizerCount || 0
+                            maximizerCount: response.maximizerCount || 0,
+                            falseBalanceCount: response.falseBalanceCount || 0,
+                            euphemismCount: response.euphemismCount || 0,
+                            emotionalCount: response.emotionalCount || 0,
+                            gaslightingCount: response.gaslightingCount || 0,
+                            falseDilemmaCount: response.falseDilemmaCount || 0
                         };
                         
                         displayStats(lastKnownStats);
@@ -239,6 +284,11 @@ document.addEventListener('DOMContentLoaded', function() {
         metaphorCount.textContent = stats.metaphorCount;
         minimizerCount.textContent = stats.minimizerCount;
         maximizerCount.textContent = stats.maximizerCount;
+        falseBalanceCount.textContent = stats.falseBalanceCount;
+        euphemismCount.textContent = stats.euphemismCount;
+        emotionalCount.textContent = stats.emotionalCount;
+        gaslightingCount.textContent = stats.gaslightingCount;
+        falseDilemmaCount.textContent = stats.falseDilemmaCount;
     }
 
     // Event listeners for toggles
@@ -256,7 +306,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 presuppositionCount: 0,
                 metaphorCount: 0,
                 minimizerCount: 0,
-                maximizerCount: 0
+                maximizerCount: 0,
+                falseBalanceCount: 0,
+                euphemismCount: 0,
+                emotionalCount: 0,
+                gaslightingCount: 0,
+                falseDilemmaCount: 0
             };
         }
         
@@ -265,7 +320,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add event listeners for all toggles
     [opinionToggle, ePrimeToggle, absoluteToggle, passiveToggle, weaselToggle, 
-     presuppositionToggle, metaphorToggle, minimizerToggle, maximizerToggle].forEach(toggle => {
+     presuppositionToggle, metaphorToggle, minimizerToggle, maximizerToggle,
+     falseBalanceToggle, euphemismToggle, emotionalToggle, gaslightingToggle,
+     falseDilemmaToggle].forEach(toggle => {
         toggle.addEventListener('change', function() {
             console.log(`${toggle.id} changed to:`, toggle.checked);
             saveSettingsAndUpdate();
@@ -323,7 +380,12 @@ document.addEventListener('DOMContentLoaded', function() {
             presuppositionCount: 0,
             metaphorCount: 0,
             minimizerCount: 0,
-            maximizerCount: 0
+            maximizerCount: 0,
+            falseBalanceCount: 0,
+            euphemismCount: 0,
+            emotionalCount: 0,
+            gaslightingCount: 0,
+            falseDilemmaCount: 0
         };
         
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
