@@ -5,7 +5,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (infoLink) {
         infoLink.addEventListener('click', function(e) {
             e.preventDefault();
-            chrome.tabs.create({ url: 'info.html' });
+            console.log('Info link clicked');
+            const infoUrl = chrome.runtime.getURL('info.html');
+            console.log('Opening URL:', infoUrl);
+            
+            // Try to create tab
+            chrome.tabs.create({ url: infoUrl }, function(tab) {
+                if (chrome.runtime.lastError) {
+                    console.error('Error creating tab:', chrome.runtime.lastError);
+                    // Fallback: try opening in current tab
+                    chrome.tabs.update({url: infoUrl});
+                } else {
+                    console.log('Tab created successfully:', tab);
+                }
+            });
         });
     }
     

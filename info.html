@@ -5,6 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bias Detector - User Guide</title>
     <style>
+        /* Import the same highlight styles from the extension */
+        .bias-highlight-opinion {
+            background-color: rgba(255, 165, 0, 0.3);
+            border-bottom: 1px solid orange;
+            cursor: help;
+        }
+        .bias-highlight-tobe {
+            background-color: rgba(135, 206, 250, 0.3);
+            border-bottom: 1px solid lightskyblue;
+            cursor: help;
+        }
+        .bias-highlight-absolute {
+            background-color: rgba(255, 105, 180, 0.3);
+            border-bottom: 1px solid hotpink;
+            cursor: help;
+        }
+        .bias-highlight-passive {
+            background-color: rgba(128, 0, 128, 0.3);
+            border-bottom: 1px solid purple;
+            cursor: help;
+        }
+        .bias-highlight-weasel {
+            background-color: rgba(184, 134, 11, 0.3);
+            border-bottom: 1px solid darkgoldenrod;
+            cursor: help;
+        }
+        .bias-highlight-presupposition {
+            background-color: rgba(255, 20, 147, 0.3);
+            border-bottom: 1px solid deeppink;
+            cursor: help;
+        }
+        .bias-highlight-metaphor {
+            background-color: rgba(220, 20, 60, 0.3);
+            border-bottom: 1px solid crimson;
+            cursor: help;
+        }
+        .bias-highlight-minimizer {
+            background-color: rgba(0, 128, 128, 0.3);
+            border-bottom: 1px solid teal;
+            cursor: help;
+        }
+        .bias-highlight-maximizer {
+            background-color: rgba(255, 69, 0, 0.3);
+            border-bottom: 1px solid orangered;
+            cursor: help;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             line-height: 1.6;
@@ -113,6 +160,13 @@
             border-radius: 3px;
             font-family: 'Courier New', monospace;
         }
+        .live-example {
+            background: white;
+            padding: 15px;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -127,12 +181,12 @@
     <h2>Detection Categories</h2>
 
     <div class="category basic">
-        <h3>🟦 Basic Detection</h3>
+        <h3>Basic Detection</h3>
         
         <h4><span class="highlight-sample orange">Opinion Words</span></h4>
         <p>Detects subjective language, evaluative terms, and emotionally charged words.</p>
         <div class="example">
-            Examples: "obviously," "terrible," "amazing," "controversial," "alleged"
+            Examples: "<span class="bias-highlight-opinion">obviously</span>," "<span class="bias-highlight-opinion">terrible</span>," "<span class="bias-highlight-opinion">amazing</span>," "<span class="bias-highlight-opinion">controversial</span>," "<span class="bias-highlight-opinion">alleged</span>"
         </div>
         <div class="why">
             <strong>Why it matters:</strong> Opinion words can subtly influence readers by presenting subjective views as facts. They reveal the writer's stance and can manipulate emotional responses.
@@ -141,7 +195,8 @@
         <h4><span class="highlight-sample blue">To-Be Verbs (E-Prime)</span></h4>
         <p>Highlights forms of "to be" (is, are, was, were, etc.) following E-Prime principles.</p>
         <div class="example">
-            Examples: "The policy is bad" → "The policy harms citizens"
+            Examples: "The policy <span class="bias-highlight-tobe">is</span> bad" → "The policy harms citizens"<br>
+            "She <span class="bias-highlight-tobe">was</span> a teacher" → "She taught at the school"
         </div>
         <div class="why">
             <strong>Why it matters:</strong> To-be verbs can create false equivalencies and present opinions as inherent truths. E-Prime encourages more precise, action-oriented language.
@@ -150,7 +205,7 @@
         <h4><span class="highlight-sample pink">Absolute Statements</span></h4>
         <p>Identifies universal quantifiers and categorical claims.</p>
         <div class="example">
-            Examples: "all," "never," "everyone," "nobody," "always," "completely"
+            Examples: "<span class="bias-highlight-absolute">all</span>," "<span class="bias-highlight-absolute">never</span>," "<span class="bias-highlight-absolute">everyone</span>," "<span class="bias-highlight-absolute">nobody</span>," "<span class="bias-highlight-absolute">always</span>," "<span class="bias-highlight-absolute">completely</span>"
         </div>
         <div class="why">
             <strong>Why it matters:</strong> Absolutes rarely reflect reality accurately and can oversimplify complex issues. They often signal exaggeration or manipulative rhetoric.
@@ -158,12 +213,13 @@
     </div>
 
     <div class="category advanced">
-        <h3>🟪 Advanced Detection</h3>
+        <h3>Advanced Detection</h3>
         
         <h4><span class="highlight-sample purple">Passive Voice</span></h4>
         <p>Detects constructions that obscure who performs actions.</p>
         <div class="example">
-            Example: "Mistakes were made" (by whom?) vs. "The CEO made mistakes"
+            Example: "<span class="bias-highlight-passive">Mistakes were made</span>" (by whom?) vs. "The CEO made mistakes"<br>
+            "<span class="bias-highlight-passive">The report was written</span>" vs. "Sarah wrote the report"
         </div>
         <div class="why">
             <strong>Why it matters:</strong> Passive voice can hide responsibility and make it unclear who did what. Often used to deflect blame or create distance from controversial actions.
@@ -172,7 +228,7 @@
         <h4><span class="highlight-sample gold">Weasel Words</span></h4>
         <p>Identifies vague attributions and unsupported claims.</p>
         <div class="example">
-            Examples: "Many people say," "studies show," "experts believe," "it is thought"
+            Examples: "<span class="bias-highlight-weasel">Many people say</span>," "<span class="bias-highlight-weasel">studies show</span>," "<span class="bias-highlight-weasel">experts believe</span>," "<span class="bias-highlight-weasel">it is thought</span>"
         </div>
         <div class="why">
             <strong>Why it matters:</strong> These phrases make claims appear supported without providing actual sources. They exploit our tendency to accept authority without verification.
@@ -181,7 +237,9 @@
         <h4><span class="highlight-sample deeppink">Presuppositions</span></h4>
         <p>Highlights words that smuggle in hidden assumptions.</p>
         <div class="example">
-            Examples: "Even scientists admit..." (presupposes reluctance), "still refuses" (presupposes obligation)
+            Examples: "<span class="bias-highlight-presupposition">Even</span> scientists admit..." (presupposes reluctance)<br>
+            "She <span class="bias-highlight-presupposition">still refuses</span>" (presupposes obligation)<br>
+            "<span class="bias-highlight-presupposition">Another</span> example of..." (presupposes pattern)
         </div>
         <div class="why">
             <strong>Why it matters:</strong> Presuppositions can manipulate by making readers accept premises without realizing it. They frame issues in biased ways before the actual argument begins.
@@ -189,12 +247,12 @@
     </div>
 
     <div class="category framing">
-        <h3>🔴 Framing & Rhetoric</h3>
+        <h3>Framing & Rhetoric</h3>
         
         <h4><span class="highlight-sample crimson">War Metaphors</span></h4>
         <p>Detects militaristic language used for non-military topics.</p>
         <div class="example">
-            Examples: "battle against poverty," "war on drugs," "attacking the problem"
+            Examples: "<span class="bias-highlight-metaphor">battle</span> against poverty," "<span class="bias-highlight-metaphor">war</span> on drugs," "<span class="bias-highlight-metaphor">attacking</span> the problem," "<span class="bias-highlight-metaphor">defend</span> our position"
         </div>
         <div class="why">
             <strong>Why it matters:</strong> War metaphors frame issues as conflicts requiring aggression rather than collaboration. They can escalate tensions and oversimplify complex social issues.
@@ -203,7 +261,8 @@
         <h4><span class="highlight-sample teal">Minimizers</span></h4>
         <p>Identifies language that downplays significance.</p>
         <div class="example">
-            Examples: "just," "only," "merely," "slightly," "minor"
+            Examples: "<span class="bias-highlight-minimizer">just</span>," "<span class="bias-highlight-minimizer">only</span>," "<span class="bias-highlight-minimizer">merely</span>," "<span class="bias-highlight-minimizer">slightly</span>," "<span class="bias-highlight-minimizer">minor</span> issue"<br>
+            "It's <span class="bias-highlight-minimizer">just</span> a <span class="bias-highlight-minimizer">small</span> problem"
         </div>
         <div class="why">
             <strong>Why it matters:</strong> Minimizers can dismiss legitimate concerns or make serious issues seem trivial. Often used to deflect criticism or avoid accountability.
@@ -212,7 +271,8 @@
         <h4><span class="highlight-sample orangered">Maximizers</span></h4>
         <p>Highlights exaggeration and hyperbolic language.</p>
         <div class="example">
-            Examples: "crisis," "disaster," "unprecedented," "revolutionary," "massive"
+            Examples: "<span class="bias-highlight-maximizer">crisis</span>," "<span class="bias-highlight-maximizer">disaster</span>," "<span class="bias-highlight-maximizer">unprecedented</span>," "<span class="bias-highlight-maximizer">revolutionary</span>," "<span class="bias-highlight-maximizer">massive</span>"<br>
+            "This <span class="bias-highlight-maximizer">catastrophic</span> failure <span class="bias-highlight-maximizer">destroyed</span> everything"
         </div>
         <div class="why">
             <strong>Why it matters:</strong> Maximizers create false urgency and can manipulate through fear or excitement. They often prevent rational assessment of actual scope and impact.
@@ -230,16 +290,25 @@
         </ul>
     </div>
 
+    <div class="live-example">
+        <h2>Live Examples</h2>
+        <h3>Heavily Biased Text:</h3>
+        <p>"<span class="bias-highlight-absolute">Everyone</span> <span class="bias-highlight-opinion">knows</span> the policy <span class="bias-highlight-tobe">is</span> <span class="bias-highlight-opinion">obviously</span> a <span class="bias-highlight-absolute">complete</span> <span class="bias-highlight-maximizer">disaster</span>. <span class="bias-highlight-weasel">Studies show</span> it's <span class="bias-highlight-maximizer">destroying</span> our economy. <span class="bias-highlight-weasel">Experts believe</span> we must <span class="bias-highlight-metaphor">fight</span> against this <span class="bias-highlight-maximizer">unprecedented</span> <span class="bias-highlight-maximizer">crisis</span>. <span class="bias-highlight-presupposition">Even</span> supporters <span class="bias-highlight-opinion">admit</span> <span class="bias-highlight-passive">mistakes were made</span>."</p>
+        
+        <h3>More Neutral Version:</h3>
+        <p>"The policy has faced criticism from several economists who cite specific negative impacts on GDP growth. Three recent studies from MIT, Harvard, and Stanford found correlations between the policy and reduced business investment. Some supporters have acknowledged implementation challenges."</p>
+    </div>
+
     <h2>Limitations & Caveats</h2>
     
     <div class="limitation">
-        <h3>⚠️ Important Limitations</h3>
+        <h3>Important Limitations</h3>
         <ul>
             <li><strong>No context awareness:</strong> The tool can't distinguish between appropriate and inappropriate use of highlighted terms.</li>
             <li><strong>Genre blindness:</strong> Academic writing, poetry, and casual conversation have different standards.</li>
             <li><strong>Cultural variations:</strong> Communication styles vary across cultures and communities.</li>
             <li><strong>Technical language:</strong> Some fields require precise absolute statements or passive voice.</li>
-            <li><strong>False positives:</strong> Common phrases might be highlighted unnecessarily (e.g., "It is raining").</li>
+            <li><strong>False positives:</strong> Common phrases might be highlighted unnecessarily (e.g., "It <span class="bias-highlight-tobe">is</span> raining").</li>
         </ul>
     </div>
 
@@ -247,7 +316,7 @@
     
     <h3>News Article</h3>
     <div class="example">
-        <strong>Biased:</strong> "Everyone knows the policy is obviously a complete disaster. Studies show it's destroying our economy. Experts are battling against this unprecedented crisis."
+        <strong>Biased:</strong> "<span class="bias-highlight-absolute">Everyone</span> <span class="bias-highlight-opinion">knows</span> the policy <span class="bias-highlight-tobe">is</span> <span class="bias-highlight-opinion">obviously</span> a <span class="bias-highlight-absolute">complete</span> <span class="bias-highlight-maximizer">disaster</span>. <span class="bias-highlight-weasel">Studies show</span> it's <span class="bias-highlight-maximizer">destroying</span> our economy. <span class="bias-highlight-weasel">Experts</span> <span class="bias-highlight-tobe">are</span> <span class="bias-highlight-metaphor">battling</span> against this <span class="bias-highlight-maximizer">unprecedented</span> <span class="bias-highlight-maximizer">crisis</span>."
         <br><br>
         <strong>Neutral:</strong> "The policy has faced criticism from several economists who cite specific negative impacts on GDP growth. Three recent studies from MIT, Harvard, and Stanford found correlations between the policy and reduced business investment."
     </div>
@@ -259,7 +328,7 @@
 
     <h3>Scientific Writing</h3>
     <div class="example">
-        <strong>Appropriate passive voice:</strong> "The experiment was conducted under controlled conditions" (focus on methodology, not researchers).
+        <strong>Appropriate passive voice:</strong> "The experiment <span class="bias-highlight-passive">was conducted</span> under controlled conditions" (focus on methodology, not researchers).
     </div>
 
     <div class="footer">
