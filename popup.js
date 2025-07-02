@@ -1,5 +1,14 @@
 // popup.js - Extension popup interface
 document.addEventListener('DOMContentLoaded', function() {
+    // Set up info link
+    const infoLink = document.getElementById('infoLink');
+    if (infoLink) {
+        infoLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            chrome.tabs.create({ url: 'info.html' });
+        });
+    }
+    
     // Set up category section toggle functionality
     const categoryHeaders = document.querySelectorAll('.category-header');
     categoryHeaders.forEach(header => {

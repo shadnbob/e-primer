@@ -227,6 +227,21 @@
         .crimson { background-color: rgba(220, 20, 60, 0.3); }
         .teal { background-color: rgba(0, 128, 128, 0.3); }
         .orangered { background-color: rgba(255, 69, 0, 0.3); }
+        .info-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #1976d2;
+            text-decoration: none;
+            font-size: 12px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .info-link:hover {
+            background: rgba(25, 118, 210, 0.1);
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -403,6 +418,8 @@
 <div class="troubleshooting">
     <p><strong>Active:</strong> Highlighting bias indicators in real-time.</p>
 </div>
+
+<a href="#" id="infoLink" class="info-link">Learn about bias detection categories »</a>
 
 <script src="popup.js"></script>
 </body>

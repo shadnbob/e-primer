@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bias Detector - User Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 25px;
+        }
+        .intro {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .category {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #ddd;
+        }
+        .category.basic { border-left-color: #3498db; }
+        .category.advanced { border-left-color: #9b59b6; }
+        .category.framing { border-left-color: #e74c3c; }
+        
+        .highlight-sample {
+            display: inline-block;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+        .orange { background-color: rgba(255, 165, 0, 0.3); }
+        .blue { background-color: rgba(135, 206, 250, 0.3); }
+        .pink { background-color: rgba(255, 105, 180, 0.3); }
+        .purple { background-color: rgba(128, 0, 128, 0.3); }
+        .gold { background-color: rgba(184, 134, 11, 0.3); }
+        .deeppink { background-color: rgba(255, 20, 147, 0.3); }
+        .crimson { background-color: rgba(220, 20, 60, 0.3); }
+        .teal { background-color: rgba(0, 128, 128, 0.3); }
+        .orangered { background-color: rgba(255, 69, 0, 0.3); }
+        
+        .example {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        .why {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 3px solid #3498db;
+        }
+        .limitation {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 3px solid #ffc107;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        .footer {
+            margin-top: 50px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            text-align: center;
+            color: #666;
+        }
+        .tips {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 3px solid #28a745;
+        }
+        code {
+            background: #f1f1f1;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bias Detector User Guide</h1>
+    
+    <div class="intro">
+        <h2>What is the Bias Detector?</h2>
+        <p>The Bias Detector helps you identify potentially biased language patterns in text. It highlights various linguistic markers that can indicate bias, manipulation, or unclear communication.</p>
+        <p><strong>Important:</strong> This tool identifies <em>potential</em> bias indicators. Context matters greatly—the same words can be biased in one context and perfectly appropriate in another.</p>
+    </div>
+
+    <h2>Detection Categories</h2>
+
+    <div class="category basic">
+        <h3>🟦 Basic Detection</h3>
+        
+        <h4><span class="highlight-sample orange">Opinion Words</span></h4>
+        <p>Detects subjective language, evaluative terms, and emotionally charged words.</p>
+        <div class="example">
+            Examples: "obviously," "terrible," "amazing," "controversial," "alleged"
+        </div>
+        <div class="why">
+            <strong>Why it matters:</strong> Opinion words can subtly influence readers by presenting subjective views as facts. They reveal the writer's stance and can manipulate emotional responses.
+        </div>
+
+        <h4><span class="highlight-sample blue">To-Be Verbs (E-Prime)</span></h4>
+        <p>Highlights forms of "to be" (is, are, was, were, etc.) following E-Prime principles.</p>
+        <div class="example">
+            Examples: "The policy is bad" → "The policy harms citizens"
+        </div>
+        <div class="why">
+            <strong>Why it matters:</strong> To-be verbs can create false equivalencies and present opinions as inherent truths. E-Prime encourages more precise, action-oriented language.
+        </div>
+
+        <h4><span class="highlight-sample pink">Absolute Statements</span></h4>
+        <p>Identifies universal quantifiers and categorical claims.</p>
+        <div class="example">
+            Examples: "all," "never," "everyone," "nobody," "always," "completely"
+        </div>
+        <div class="why">
+            <strong>Why it matters:</strong> Absolutes rarely reflect reality accurately and can oversimplify complex issues. They often signal exaggeration or manipulative rhetoric.
+        </div>
+    </div>
+
+    <div class="category advanced">
+        <h3>🟪 Advanced Detection</h3>
+        
+        <h4><span class="highlight-sample purple">Passive Voice</span></h4>
+        <p>Detects constructions that obscure who performs actions.</p>
+        <div class="example">
+            Example: "Mistakes were made" (by whom?) vs. "The CEO made mistakes"
+        </div>
+        <div class="why">
+            <strong>Why it matters:</strong> Passive voice can hide responsibility and make it unclear who did what. Often used to deflect blame or create distance from controversial actions.
+        </div>
+
+        <h4><span class="highlight-sample gold">Weasel Words</span></h4>
+        <p>Identifies vague attributions and unsupported claims.</p>
+        <div class="example">
+            Examples: "Many people say," "studies show," "experts believe," "it is thought"
+        </div>
+        <div class="why">
+            <strong>Why it matters:</strong> These phrases make claims appear supported without providing actual sources. They exploit our tendency to accept authority without verification.
+        </div>
+
+        <h4><span class="highlight-sample deeppink">Presuppositions</span></h4>
+        <p>Highlights words that smuggle in hidden assumptions.</p>
+        <div class="example">
+            Examples: "Even scientists admit..." (presupposes reluctance), "still refuses" (presupposes obligation)
+        </div>
+        <div class="why">
+            <strong>Why it matters:</strong> Presuppositions can manipulate by making readers accept premises without realizing it. They frame issues in biased ways before the actual argument begins.
+        </div>
+    </div>
+
+    <div class="category framing">
+        <h3>🔴 Framing & Rhetoric</h3>
+        
+        <h4><span class="highlight-sample crimson">War Metaphors</span></h4>
+        <p>Detects militaristic language used for non-military topics.</p>
+        <div class="example">
+            Examples: "battle against poverty," "war on drugs," "attacking the problem"
+        </div>
+        <div class="why">
+            <strong>Why it matters:</strong> War metaphors frame issues as conflicts requiring aggression rather than collaboration. They can escalate tensions and oversimplify complex social issues.
+        </div>
+
+        <h4><span class="highlight-sample teal">Minimizers</span></h4>
+        <p>Identifies language that downplays significance.</p>
+        <div class="example">
+            Examples: "just," "only," "merely," "slightly," "minor"
+        </div>
+        <div class="why">
+            <strong>Why it matters:</strong> Minimizers can dismiss legitimate concerns or make serious issues seem trivial. Often used to deflect criticism or avoid accountability.
+        </div>
+
+        <h4><span class="highlight-sample orangered">Maximizers</span></h4>
+        <p>Highlights exaggeration and hyperbolic language.</p>
+        <div class="example">
+            Examples: "crisis," "disaster," "unprecedented," "revolutionary," "massive"
+        </div>
+        <div class="why">
+            <strong>Why it matters:</strong> Maximizers create false urgency and can manipulate through fear or excitement. They often prevent rational assessment of actual scope and impact.
+        </div>
+    </div>
+
+    <div class="tips">
+        <h2>How to Use This Tool Effectively</h2>
+        <ul>
+            <li><strong>Context is key:</strong> Not every highlighted word indicates bias. Consider the genre, purpose, and audience.</li>
+            <li><strong>Look for patterns:</strong> A few highlighted words might be fine, but dense highlighting suggests manipulative writing.</li>
+            <li><strong>Check primary sources:</strong> When you see weasel words, look for actual citations and evidence.</li>
+            <li><strong>Practice rewriting:</strong> Try expressing the same ideas without the highlighted words to see how meaning changes.</li>
+            <li><strong>Stay curious, not cynical:</strong> This tool reveals techniques, not necessarily deception. Even well-intentioned writers use these patterns.</li>
+        </ul>
+    </div>
+
+    <h2>Limitations & Caveats</h2>
+    
+    <div class="limitation">
+        <h3>⚠️ Important Limitations</h3>
+        <ul>
+            <li><strong>No context awareness:</strong> The tool can't distinguish between appropriate and inappropriate use of highlighted terms.</li>
+            <li><strong>Genre blindness:</strong> Academic writing, poetry, and casual conversation have different standards.</li>
+            <li><strong>Cultural variations:</strong> Communication styles vary across cultures and communities.</li>
+            <li><strong>Technical language:</strong> Some fields require precise absolute statements or passive voice.</li>
+            <li><strong>False positives:</strong> Common phrases might be highlighted unnecessarily (e.g., "It is raining").</li>
+        </ul>
+    </div>
+
+    <h2>Examples in Context</h2>
+    
+    <h3>News Article</h3>
+    <div class="example">
+        <strong>Biased:</strong> "Everyone knows the policy is obviously a complete disaster. Studies show it's destroying our economy. Experts are battling against this unprecedented crisis."
+        <br><br>
+        <strong>Neutral:</strong> "The policy has faced criticism from several economists who cite specific negative impacts on GDP growth. Three recent studies from MIT, Harvard, and Stanford found correlations between the policy and reduced business investment."
+    </div>
+
+    <h3>Opinion Piece</h3>
+    <div class="example">
+        <strong>Note:</strong> Opinion pieces legitimately use subjective language. The tool helps you recognize when you're reading opinion vs. reporting.
+    </div>
+
+    <h3>Scientific Writing</h3>
+    <div class="example">
+        <strong>Appropriate passive voice:</strong> "The experiment was conducted under controlled conditions" (focus on methodology, not researchers).
+    </div>
+
+    <div class="footer">
+        <p><strong>Remember:</strong> This tool enhances awareness, not judgment. Use it to become a more critical reader and clearer writer.</p>
+        <p>Version 2.0 | Created for conscious communication</p>
+    </div>
+</body>
+</html>
