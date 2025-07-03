@@ -4,7 +4,7 @@
 
     // Debug mode - set to true to see detailed logging
     const DEBUG_MODE = true;
-
+    
     function debugLog(...args) {
         if (DEBUG_MODE) {
             console.log('[E-Prime Debug]', ...args);
@@ -28,7 +28,7 @@
                 enabled: true,
                 tooltip: 'Subjective language that reveals the writer\'s stance'
             },
-
+            
             TO_BE: {
                 id: 'tobe',
                 name: 'To-Be Verbs (E-Prime)',
@@ -41,7 +41,7 @@
                 enabled: true,
                 tooltip: 'E-Prime: Avoiding "to be" verbs for more precise language'
             },
-
+            
             ABSOLUTE: {
                 id: 'absolute',
                 name: 'Absolute Statements',
@@ -54,7 +54,7 @@
                 enabled: true,
                 tooltip: 'Absolute terms that rarely reflect reality accurately'
             },
-
+            
             PASSIVE: {
                 id: 'passive',
                 name: 'Passive Voice',
@@ -67,7 +67,7 @@
                 enabled: false,
                 tooltip: 'Passive voice can hide responsibility and agency'
             },
-
+            
             WEASEL: {
                 id: 'weasel',
                 name: 'Weasel Words',
@@ -80,7 +80,7 @@
                 enabled: false,
                 tooltip: 'Phrases that avoid specificity and concrete sources'
             },
-
+            
             PRESUPPOSITION: {
                 id: 'presupposition',
                 name: 'Presuppositions',
@@ -93,7 +93,7 @@
                 enabled: false,
                 tooltip: 'Language that makes readers accept premises without realizing it'
             },
-
+            
             METAPHOR: {
                 id: 'metaphor',
                 name: 'War Metaphors',
@@ -106,7 +106,7 @@
                 enabled: false,
                 tooltip: 'Military metaphors that frame issues as conflicts'
             },
-
+            
             MINIMIZER: {
                 id: 'minimizer',
                 name: 'Minimizers',
@@ -119,7 +119,7 @@
                 enabled: false,
                 tooltip: 'Words that dismiss or trivialize legitimate concerns'
             },
-
+            
             MAXIMIZER: {
                 id: 'maximizer',
                 name: 'Maximizers',
@@ -132,7 +132,7 @@
                 enabled: false,
                 tooltip: 'Hyperbolic language that creates false urgency'
             },
-
+            
             FALSE_BALANCE: {
                 id: 'falsebalance',
                 name: 'False Balance',
@@ -145,7 +145,7 @@
                 enabled: false,
                 tooltip: 'Language that creates false equivalence between positions'
             },
-
+            
             EUPHEMISM: {
                 id: 'euphemism',
                 name: 'Euphemisms',
@@ -158,7 +158,7 @@
                 enabled: false,
                 tooltip: 'Euphemisms and dysphemisms that manipulate perception'
             },
-
+            
             EMOTIONAL: {
                 id: 'emotional',
                 name: 'Emotional Manipulation',
@@ -171,7 +171,7 @@
                 enabled: false,
                 tooltip: 'Language designed to manipulate through emotion'
             },
-
+            
             GASLIGHTING: {
                 id: 'gaslighting',
                 name: 'Gaslighting',
@@ -184,7 +184,7 @@
                 enabled: false,
                 tooltip: 'Language that questions reality and undermines confidence'
             },
-
+            
             FALSE_DILEMMA: {
                 id: 'falsedilemma',
                 name: 'False Dilemmas',
@@ -224,7 +224,7 @@
         validateSettings(settings) {
             const validated = { ...this.getDefaultSettings() };
             for (const [key, value] of Object.entries(settings)) {
-                if (key === 'enableAnalysis' ||
+                if (key === 'enableAnalysis' || 
                     Object.values(this.BIAS_TYPES).some(config => config.settingKey === key)) {
                     validated[key] = Boolean(value);
                 }
@@ -271,7 +271,7 @@
 
         tobe: [
             "is", "are", "am", "was", "were", "be", "being", "been",
-            "it's", "that's", "he's", "she's", "what's", "who's",
+            "it's", "that's", "he's", "she's", "what's", "who's", 
             "you're", "they're", "we're", "i'm", "there's", "here's"
         ],
 
@@ -366,12 +366,12 @@
 
         compileAllPatterns() {
             debugLog('Starting pattern compilation...');
-
+            
             for (const [type, patterns] of Object.entries(Dictionary)) {
                 debugLog(`Compiling ${patterns.length} patterns for type: ${type}`);
                 this.compiledPatterns.set(type, this.compilePatterns(patterns, type));
             }
-
+            
             debugLog('Pattern compilation complete. Summary:', this.getCompilationSummary());
         }
 
@@ -379,7 +379,7 @@
             const compiled = [];
             let successCount = 0;
             let failureCount = 0;
-
+            
             for (const pattern of patterns) {
                 try {
                     const compiledPattern = this.compilePattern(pattern, type);
@@ -395,7 +395,7 @@
                     failureCount++;
                 }
             }
-
+            
             debugLog(`Type ${type}: ${successCount} success, ${failureCount} failed`);
             return compiled;
         }
@@ -408,7 +408,7 @@
                 // Create word boundary pattern for better matching
                 // Handle patterns that already contain regex syntax vs simple words
                 let regexPattern;
-
+                
                 if (this.containsRegexSyntax(cleanPattern)) {
                     // Pattern already contains regex - use as-is but ensure word boundaries
                     regexPattern = cleanPattern;
@@ -425,11 +425,11 @@
                 }
 
                 const regex = new RegExp(regexPattern, 'gi');
-
+                
                 // Test the regex with sample text
                 const testText = 'test sample text for validation';
                 regex.test(testText);
-
+                
                 // Reset lastIndex after test
                 regex.lastIndex = 0;
 
@@ -439,10 +439,10 @@
                     type: type,
                     pattern: regexPattern
                 };
-
+                
                 debugLog(`Compiled pattern: "${cleanPattern}" -> /${regexPattern}/gi`);
                 return compiledPattern;
-
+                
             } catch (error) {
                 debugLog(`Invalid regex pattern: ${cleanPattern}`, error);
                 return null;
@@ -475,19 +475,19 @@
         testPattern(type, testText) {
             const patterns = this.getCompiledPatterns(type);
             const results = [];
-
+            
             for (const pattern of patterns) {
                 pattern.regex.lastIndex = 0;
                 const matches = [];
                 let match;
-
+                
                 while ((match = pattern.regex.exec(testText)) !== null) {
                     matches.push(match[0]);
                     if (match.index === pattern.regex.lastIndex) {
                         break;
                     }
                 }
-
+                
                 if (matches.length > 0) {
                     results.push({
                         pattern: pattern.source,
@@ -496,7 +496,7 @@
                     });
                 }
             }
-
+            
             return results;
         }
     }
@@ -592,7 +592,7 @@
             const selectors = Object.values(BiasConfig.BIAS_TYPES)
                 .map(config => `.${config.className}`)
                 .join(', ');
-
+            
             const highlights = document.querySelectorAll(selectors);
             this.processedParents.clear();
 
@@ -649,12 +649,12 @@
 
         extractChangedTextNodes(mutations) {
             const changedNodes = [];
-
+            
             mutations.forEach(mutation => {
                 if (this.isOwnHighlight(mutation.target)) return;
 
                 Array.from(mutation.addedNodes).forEach(node => {
-                    if (node.nodeType === Node.TEXT_NODE &&
+                    if (node.nodeType === Node.TEXT_NODE && 
                         node.textContent.trim().length > 5) {
                         changedNodes.push(node);
                     } else if (node.nodeType === Node.ELEMENT_NODE) {
@@ -678,15 +678,15 @@
             this.domProcessor = new DOMProcessor();
             this.stats = this.createEmptyStats();
             this.observer = null;
-
+            
             this.compiledDetectors = this.initializeDetectors();
-
+            
             debugLog('BiasDetector initialized with', Object.keys(this.compiledDetectors).length, 'detectors');
         }
 
         initializeDetectors() {
             const detectors = new Map();
-
+            
             for (const [key, config] of Object.entries(BiasConfig.BIAS_TYPES)) {
                 const patterns = this.patterns.getCompiledPatterns(config.id);
                 detectors.set(config.id, {
@@ -695,21 +695,21 @@
                     isEnabled: () => this.settings[config.settingKey],
                     detect: (text) => this.detectPatterns(text, patterns, config.id)
                 });
-
+                
                 debugLog(`Initialized detector for ${config.id} with ${patterns.length} patterns`);
             }
-
+            
             return detectors;
         }
 
         detectPatterns(text, patterns, type) {
             const matches = [];
-
+            
             for (const pattern of patterns) {
                 try {
                     let match;
                     pattern.regex.lastIndex = 0;
-
+                    
                     while ((match = pattern.regex.exec(text)) !== null) {
                         matches.push({
                             index: match.index,
@@ -718,7 +718,7 @@
                             type: type,
                             pattern: pattern.source
                         });
-
+                        
                         if (match.index === pattern.regex.lastIndex) {
                             pattern.regex.lastIndex++;
                         }
@@ -728,11 +728,11 @@
                     continue;
                 }
             }
-
+            
             if (matches.length > 0) {
                 debugLog(`Found ${matches.length} matches for type ${type}:`, matches.map(m => m.text));
             }
-
+            
             return matches;
         }
 
@@ -754,7 +754,7 @@
                 for (let i = 0; i < textNodes.length; i += batchSize) {
                     const batch = textNodes.slice(i, i + batchSize);
                     await this.processBatch(batch);
-
+                    
                     if (i % (batchSize * 4) === 0) {
                         await new Promise(resolve => setTimeout(resolve, 0));
                     }
@@ -762,7 +762,7 @@
 
                 debugLog('Analysis completed. Final stats:', this.stats);
                 return this.stats;
-
+                
             } catch (error) {
                 debugLog('Document analysis failed:', error);
                 return this.createEmptyStats();
@@ -782,7 +782,7 @@
 
         async processTextNode(node) {
             const text = node.textContent;
-
+            
             if (text.trim().length < BiasConfig.PERFORMANCE.MIN_SIGNIFICANT_TEXT || this.isUIText(text)) {
                 return;
             }
@@ -807,7 +807,7 @@
             if (sortedMatches.length === 0) return;
 
             const fragment = this.domProcessor.createHighlightedFragment(
-                node.textContent,
+                node.textContent, 
                 sortedMatches
             );
 
@@ -868,7 +868,7 @@
 
             for (const [key, detector] of this.compiledDetectors) {
                 const settingKey = detector.settingKey;
-
+                
                 if (oldSettings[settingKey] !== newSettings[settingKey]) {
                     if (!newSettings[settingKey]) {
                         this.domProcessor.removeSpecificHighlights(detector.id);
@@ -887,9 +887,9 @@
         isUIText(text) {
             const trimmed = text.trim();
             return (
-                trimmed.length < 20 &&
-                !trimmed.includes(' ') ||
-                /^[\d\s\-\+\(\)]+$/.test(trimmed) ||
+                trimmed.length < 20 && 
+                !trimmed.includes(' ') || 
+                /^[\d\s\-\+\(\)]+$/.test(trimmed) || 
                 /^[A-Z\s]{2,10}$/.test(trimmed)
             );
         }
@@ -915,7 +915,7 @@
             }
 
             let debounceTimer = null;
-
+            
             this.observer = new MutationObserver((mutations) => {
                 if (this.shouldProcessMutations(mutations)) {
                     clearTimeout(debounceTimer);
@@ -939,7 +939,7 @@
                 }
 
                 return mutation.addedNodes.length > 0 &&
-                    Array.from(mutation.addedNodes).some(node =>
+                    Array.from(mutation.addedNodes).some(node => 
                         this.domProcessor.isSignificantContent(node)
                     );
             });
@@ -947,9 +947,9 @@
 
         async handleContentChange(mutations) {
             debugLog('Content changed, processing updates...');
-
+            
             const changedNodes = this.domProcessor.extractChangedTextNodes(mutations);
-
+            
             if (changedNodes.length > 0) {
                 await this.processBatch(changedNodes);
             }
@@ -998,7 +998,7 @@
 
     function initialize() {
         if (isInitialized) return;
-
+        
         try {
             biasDetector = new BiasDetector();
             setupMessageListeners();
@@ -1012,7 +1012,7 @@
 
     function loadSettingsAndStart() {
         const defaultSettings = BiasConfig.getDefaultSettings();
-
+        
         chrome.storage.sync.get(defaultSettings, (items) => {
             const validatedSettings = BiasConfig.validateSettings(items);
             biasDetector.updateSettings(validatedSettings).then(() => {
@@ -1077,13 +1077,13 @@
 
         const validatedSettings = BiasConfig.validateSettings(request.settings);
         await biasDetector.updateSettings(validatedSettings);
-
+        
         setTimeout(() => {
             const stats = biasDetector.getStats();
-            sendResponse({
-                success: true,
+            sendResponse({ 
+                success: true, 
                 stats: stats,
-                message: 'Settings updated successfully'
+                message: 'Settings updated successfully' 
             });
         }, 100);
     }
@@ -1096,37 +1096,37 @@
 
     async function handleForceAnalyze(sendResponse) {
         debugLog('Force analyze requested');
-
+        
         try {
             biasDetector.clearHighlights();
             await new Promise(resolve => setTimeout(resolve, 100));
-
+            
             const stats = await biasDetector.forceAnalyze();
             biasDetector.setupMutationObserver();
-
-            sendResponse({
-                success: true,
+            
+            sendResponse({ 
+                success: true, 
                 stats: stats,
-                message: 'Analysis completed successfully'
+                message: 'Analysis completed successfully' 
             });
         } catch (error) {
-            sendResponse({
-                success: false,
-                error: error.message
+            sendResponse({ 
+                success: false, 
+                error: error.message 
             });
         }
     }
 
     function handleClearHighlights(sendResponse) {
         debugLog('Clear highlights requested');
-
+        
         biasDetector.clearHighlights();
         const stats = biasDetector.getStats();
-
-        sendResponse({
-            success: true,
+        
+        sendResponse({ 
+            success: true, 
             stats: stats,
-            message: 'Highlights cleared successfully'
+            message: 'Highlights cleared successfully' 
         });
     }
 
@@ -1146,7 +1146,7 @@
 
     function handleError(error) {
         debugLog('E-Prime Bias Detector error:', error);
-
+        
         if (biasDetector) {
             try {
                 biasDetector.destroy();
@@ -1154,10 +1154,10 @@
                 debugLog('Error during cleanup:', e);
             }
         }
-
+        
         biasDetector = null;
         isInitialized = false;
-
+        
         setTimeout(() => {
             debugLog('Attempting to reinitialize Bias Detector...');
             initialize();
@@ -1192,7 +1192,7 @@
                 setTimeout(initialize, 100);
             }
         };
-
+        
         debugLog('Debug utilities available at window.ePrimeDebug');
     }
 

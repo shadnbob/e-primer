@@ -1,0 +1,28 @@
+// dictionaries/minimizers.js
+export const minimizers = [
+    "\\bjust\\b", 
+    "\\bonly\\b", 
+    "\\bmerely\\b", 
+    "\\bsimply\\b",
+    "\\bbarely\\b", 
+    "\\bhardly\\b", 
+    "\\bscarcely\\b", 
+    "\\bslightly\\b",
+    "\\bsomewhat\\b", 
+    "\\ba\\s+bit\\b", 
+    "\\ba\\s+little\\b",
+    "\\bminor\\b", 
+    "\\bsmall\\b", 
+    "\\btiny\\b", 
+    "\\btrivial\\b",
+    "\\binsignificant\\b", 
+    "\\bnegligible\\b", 
+    "\\bmarginal\\b",
+    "\\brelatively\\b",
+    "\\bfairly\\b",
+    "\\brather\\b",
+    "\\bquite\\b",
+    "\\bpretty\\b",
+    "\\bkind\\s+of\\b",
+    "\\bsort\\s+of\\b"
+];

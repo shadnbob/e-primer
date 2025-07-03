@@ -1,0 +1,92 @@
+// dictionaries/euphemisms.js
+export const euphemisms = [
+    // Political euphemisms
+    "enhanced interrogation", 
+    "collateral damage", 
+    "friendly fire",
+    "extraordinary rendition", 
+    "neutralize", 
+    "pacification",
+    "strategic withdrawal", 
+    "tactical redeployment", 
+    "kinetic action",
+    "regime change", 
+    "nation building", 
+    "peacekeeping operation",
+
+    // Corporate euphemisms
+    "rightsizing", 
+    "downsizing", 
+    "restructuring", 
+    "optimization",
+    "streamlining", 
+    "synergy realization", 
+    "workforce adjustment",
+    "negative growth", 
+    "deferred success", 
+    "challenging market conditions",
+    "revenue enhancement", 
+    "price adjustment", 
+    "value engineering",
+
+    // Social euphemisms
+    "passed away", 
+    "departed", 
+    "no longer with us", 
+    "resting in peace",
+    "economically disadvantaged", 
+    "underprivileged", 
+    "underserved",
+    "differently abled", 
+    "physically challenged", 
+    "special needs",
+    "senior citizens", 
+    "golden years", 
+    "twilight years",
+
+    // Military euphemisms
+    "surgical strike", 
+    "precision bombing", 
+    "smart weapons",
+    "soft targets", 
+    "hard targets", 
+    "assets", 
+    "resources",
+    "theater of operations", 
+    "rules of engagement", 
+    "force projection",
+
+    // Dysphemisms (loaded negative framing)
+    "death tax", 
+    "government takeover", 
+    "job killers",
+    "tax and spend", 
+    "bleeding heart", 
+    "welfare queen",
+    "anchor babies", 
+    "illegal aliens", 
+    "chain migration",
+    "socialized medicine", 
+    "nanny state", 
+    "big government",
+
+    // Medical/health euphemisms
+    "therapeutic misadventure", 
+    "negative patient outcome",
+    "terminal illness", 
+    "life-limiting condition", 
+    "comfort care",
+    "pregnancy termination", 
+    "medical assistance in dying",
+
+    // Environmental euphemisms
+    "climate change", 
+    "global warming", 
+    "carbon footprint",
+    "sustainable development", 
+    "clean coal", 
+    "energy independence",
+    "managed retreat", 
+    "controlled burn", 
+    "wildlife management"
+];

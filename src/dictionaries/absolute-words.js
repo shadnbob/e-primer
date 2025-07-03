@@ -1,0 +1,93 @@
+// dictionaries/absolute-words.js
+export const absoluteWords = [
+    // Universal Quantifiers
+    "\\ball\\b",
+    "\\bevery\\b",
+    "\\beach\\b",
+    "\\bany\\b",
+    "\\bno\\b",
+    "\\bnone\\b",
+
+    // People Universals
+    "\\beveryone\\b",
+    "\\beverybody\\b",
+    "\\bno one\\b",
+    "\\bnobody\\b",
+    "\\banyone\\b",
+    "\\banybody\\b",
+    "\\bsomeone\\b",
+    "\\bsomebody\\b",
+
+    // Time Universals
+    "\\balways\\b",
+    "\\bnever\\b",
+    "\\bforever\\b",
+    "\\beternal\\b",
+    "\\bconstantly\\b",
+    "\\bperpetually\\b",
+    "\\bcontinually\\b",
+    "\\bendlessly\\b",
+    "\\bceaselessly\\b",
+    "\\bpermanently\\b",
+    "\\binvariably\\b",
+
+    // Categorical Statements
+    "\\bcompletely\\b",
+    "\\btotally\\b",
+    "\\bentirely\\b",
+    "\\babsolutely\\b",
+    "\\bperfectly\\b",
+    "\\bwholly\\b",
+    "\\bthoroughly\\b",
+    "\\bultimately\\b",
+    "\\bfundamentally\\b",
+    "\\bpurely\\b",
+    "\\boutright\\b",
+    "\\bcomprehensively\\b",
+    "\\buniversally\\b",
+
+    // Thing Universals
+    "\\beverything\\b",
+    "\\bnothing\\b",
+    "\\banything\\b",
+    "\\bsomething\\b",
+
+    // Absolute Adjectives
+    "\\bperfect\\b",
+    "\\bcomplete\\b",
+    "\\btotal\\b",
+    "\\babsolute\\b",
+    "\\bentire\\b",
+    "\\bfull\\b",
+    "\\bwhole\\b",
+    "\\bultimate\\b",
+    "\\bmaximum\\b",
+    "\\bminimum\\b",
+    "\\bsupreme\\b",
+    "\\bextreme\\b",
+    "\\butmost\\b",
+    "\\bfinal\\b",
+    "\\binfallible\\b",
+    "\\bunerring\\b",
+    "\\buniversal\\b",
+    "\\bimpossible\\b",
+    "\\binevitable\\b",
+    "\\binescapable\\b",
+    "\\bundeniable\\b",
+    "\\birrefutable\\b",
+    "\\bidentical\\b",
+    "\\bpure\\b",
+    "\\bsheer\\b",
+    "\\bmere\\b",
+
+    // Absolute Certainty
+    "\\bcertainly\\b",
+    "\\bdefinitely\\b",
+    "\\bundoubtedly\\b",
+    "\\bunquestionably\\b",
+    "\\bindisputably\\b",
+    "\\birrefutably\\b",
+    "\\bincontrovertibly\\b",
+    "\\bincontestably\\b",
+    "\\bunequivocally\\b"
+];

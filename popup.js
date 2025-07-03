@@ -1,424 +1,685 @@
-// popup.js - Extension popup interface
+// popup.js - Refactored popup interface
 document.addEventListener('DOMContentLoaded', function() {
-    // Set up info link
-    const infoLink = document.getElementById('infoLink');
-    if (infoLink) {
-        infoLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Info link clicked');
-            const infoUrl = chrome.runtime.getURL('info.html');
-            console.log('Opening URL:', infoUrl);
-            
-            // Try to create tab
-            chrome.tabs.create({ url: infoUrl }, function(tab) {
-                if (chrome.runtime.lastError) {
-                    console.error('Error creating tab:', chrome.runtime.lastError);
-                    // Fallback: try opening in current tab
-                    chrome.tabs.update({url: infoUrl});
-                } else {
-                    console.log('Tab created successfully:', tab);
-                }
-            });
-        });
-    }
     
-    // Set up category section toggle functionality
-    const categoryHeaders = document.querySelectorAll('.category-header');
-    categoryHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            const section = this.parentElement;
-            section.classList.toggle('collapsed');
-            console.log('Toggled section:', this.querySelector('span').textContent);
-        });
-    });
-    console.log('Category headers found:', categoryHeaders.length);
-    
-    // Get toggle elements
-    const enableToggle = document.getElementById('enableToggle');
-    const opinionToggle = document.getElementById('opinionToggle');
-    const ePrimeToggle = document.getElementById('ePrimeToggle');
-    const absoluteToggle = document.getElementById('absoluteToggle');
-    const passiveToggle = document.getElementById('passiveToggle');
-    const weaselToggle = document.getElementById('weaselToggle');
-    const presuppositionToggle = document.getElementById('presuppositionToggle');
-    const metaphorToggle = document.getElementById('metaphorToggle');
-    const minimizerToggle = document.getElementById('minimizerToggle');
-    const maximizerToggle = document.getElementById('maximizerToggle');
-    const falseBalanceToggle = document.getElementById('falseBalanceToggle');
-    const euphemismToggle = document.getElementById('euphemismToggle');
-    const emotionalToggle = document.getElementById('emotionalToggle');
-    const gaslightingToggle = document.getElementById('gaslightingToggle');
-    const falseDilemmaToggle = document.getElementById('falseDilemmaToggle');
-    const refreshButton = document.getElementById('refreshButton');
-    const clearButton = document.getElementById('clearButton');
+    // ============================================================================
+    // CONFIGURATION - Match the content script configuration
+    // ============================================================================
+    const BiasConfig = {
+        BIAS_TYPES: {
+            OPINION: {
+                id: 'opinion',
+                name: 'Opinion Words',
+                settingKey: 'highlightOpinion',
+                statKey: 'opinionCount',
+                enabled: true
+            },
+            TO_BE: {
+                id: 'tobe',
+                name: 'To-Be Verbs (E-Prime)',
+                settingKey: 'highlightToBe',
+                statKey: 'toBeCount',
+                enabled: true
+            },
+            ABSOLUTE: {
+                id: 'absolute',
+                name: 'Absolute Statements',
+                settingKey: 'highlightAbsolutes',
+                statKey: 'absoluteCount',
+                enabled: true
+            },
+            PASSIVE: {
+                id: 'passive',
+                name: 'Passive Voice',
+                settingKey: 'highlightPassive',
+                statKey: 'passiveCount',
+                enabled: false
+            },
+            WEASEL: {
+                id: 'weasel',
+                name: 'Weasel Words',
+                settingKey: 'highlightWeasel',
+                statKey: 'weaselCount',
+                enabled: false
+            },
+            PRESUPPOSITION: {
+                id: 'presupposition',
+                name: 'Presuppositions',
+                settingKey: 'highlightPresupposition',
+                statKey: 'presuppositionCount',
+                enabled: false
+            },
+            METAPHOR: {
+                id: 'metaphor',
+                name: 'War Metaphors',
+                settingKey: 'highlightMetaphors',
+                statKey: 'metaphorCount',
+                enabled: false
+            },
+            MINIMIZER: {
+                id: 'minimizer',
+                name: 'Minimizers',
+                settingKey: 'highlightMinimizers',
+                statKey: 'minimizerCount',
+                enabled: false
+            },
+            MAXIMIZER: {
+                id: 'maximizer',
+                name: 'Maximizers',
+                settingKey: 'highlightMaximizers',
+                statKey: 'maximizerCount',
+                enabled: false
+            },
+            FALSE_BALANCE: {
+                id: 'falsebalance',
+                name: 'False Balance',
+                settingKey: 'highlightFalseBalance',
+                statKey: 'falseBalanceCount',
+                enabled: false
+            },
+            EUPHEMISM: {
+                id: 'euphemism',
+                name: 'Euphemisms',
+                settingKey: 'highlightEuphemism',
+                statKey: 'euphemismCount',
+                enabled: false
+            },
+            EMOTIONAL: {
+                id: 'emotional',
+                name: 'Emotional Manipulation',
+                settingKey: 'highlightEmotional',
+                statKey: 'emotionalCount',
+                enabled: false
+            },
+            GASLIGHTING: {
+                id: 'gaslighting',
+                name: 'Gaslighting',
+                settingKey: 'highlightGaslighting',
+                statKey: 'gaslightingCount',
+                enabled: false
+            },
+            FALSE_DILEMMA: {
+                id: 'falsedilemma',
+                name: 'False Dilemmas',
+                settingKey: 'highlightFalseDilemma',
+                statKey: 'falseDilemmaCount',
+                enabled: false
+            }
+        },
 
-    // Get stat display elements
-    const opinionCount = document.getElementById('opinionCount');
-    const toBeCount = document.getElementById('toBeCount');
-    const absoluteCount = document.getElementById('absoluteCount');
-    const passiveCount = document.getElementById('passiveCount');
-    const weaselCount = document.getElementById('weaselCount');
-    const presuppositionCount = document.getElementById('presuppositionCount');
-    const metaphorCount = document.getElementById('metaphorCount');
-    const minimizerCount = document.getElementById('minimizerCount');
-    const maximizerCount = document.getElementById('maximizerCount');
-    const falseBalanceCount = document.getElementById('falseBalanceCount');
-    const euphemismCount = document.getElementById('euphemismCount');
-    const emotionalCount = document.getElementById('emotionalCount');
-    const gaslightingCount = document.getElementById('gaslightingCount');
-    const falseDilemmaCount = document.getElementById('falseDilemmaCount');
-    
-    // Store last known stats to prevent disappearing
-    let lastKnownStats = {
-        opinionCount: 0,
-        toBeCount: 0,
-        absoluteCount: 0,
-        passiveCount: 0,
-        weaselCount: 0,
-        presuppositionCount: 0,
-        metaphorCount: 0,
-        minimizerCount: 0,
-        maximizerCount: 0,
-        falseBalanceCount: 0,
-        euphemismCount: 0,
-        emotionalCount: 0,
-        gaslightingCount: 0,
-        falseDilemmaCount: 0
+        getDefaultSettings() {
+            const settings = { enableAnalysis: true };
+            for (const config of Object.values(this.BIAS_TYPES)) {
+                settings[config.settingKey] = config.enabled;
+            }
+            return settings;
+        },
+
+        createEmptyStats() {
+            const stats = {};
+            for (const config of Object.values(this.BIAS_TYPES)) {
+                stats[config.statKey] = 0;
+            }
+            return stats;
+        },
+
+        validateSettings(settings) {
+            const validated = { ...this.getDefaultSettings() };
+            for (const [key, value] of Object.entries(settings)) {
+                if (key === 'enableAnalysis' || 
+                    Object.values(this.BIAS_TYPES).some(config => config.settingKey === key)) {
+                    validated[key] = Boolean(value);
+                }
+            }
+            return validated;
+        }
     };
 
-    // Load current settings
-    chrome.storage.sync.get({
-        enableAnalysis: true,
-        highlightOpinion: true,
-        highlightToBe: true,
-        highlightAbsolutes: true,
-        highlightPassive: false,
-        highlightWeasel: false,
-        highlightPresupposition: false,
-        highlightMetaphors: false,
-        highlightMinimizers: false,
-        highlightMaximizers: false,
-        highlightFalseBalance: false,
-        highlightEuphemism: false,
-        highlightEmotional: false,
-        highlightGaslighting: false,
-        highlightFalseDilemma: false
-    }, function(items) {
-        enableToggle.checked = items.enableAnalysis;
-        opinionToggle.checked = items.highlightOpinion;
-        ePrimeToggle.checked = items.highlightToBe;
-        absoluteToggle.checked = items.highlightAbsolutes;
-        passiveToggle.checked = items.highlightPassive;
-        weaselToggle.checked = items.highlightWeasel;
-        presuppositionToggle.checked = items.highlightPresupposition;
-        metaphorToggle.checked = items.highlightMetaphors;
-        minimizerToggle.checked = items.highlightMinimizers;
-        maximizerToggle.checked = items.highlightMaximizers;
-        falseBalanceToggle.checked = items.highlightFalseBalance;
-        euphemismToggle.checked = items.highlightEuphemism;
-        emotionalToggle.checked = items.highlightEmotional;
-        gaslightingToggle.checked = items.highlightGaslighting;
-        falseDilemmaToggle.checked = items.highlightFalseDilemma;
+    // ============================================================================
+    // SETTINGS MANAGER - Handle settings persistence and validation
+    // ============================================================================
+    class SettingsManager {
+        constructor() {
+            this.currentSettings = BiasConfig.getDefaultSettings();
+            this.listeners = new Set();
+        }
 
-        // Update other toggles' disabled state
-        updateTogglesState();
-        
-        // Load current stats
-        updateStats();
-    });
-
-    // Function to update the disabled state of other toggles
-    function updateTogglesState() {
-        const isEnabled = enableToggle.checked;
-        opinionToggle.disabled = !isEnabled;
-        ePrimeToggle.disabled = !isEnabled;
-        absoluteToggle.disabled = !isEnabled;
-        passiveToggle.disabled = !isEnabled;
-        weaselToggle.disabled = !isEnabled;
-        presuppositionToggle.disabled = !isEnabled;
-        metaphorToggle.disabled = !isEnabled;
-        minimizerToggle.disabled = !isEnabled;
-        maximizerToggle.disabled = !isEnabled;
-        falseBalanceToggle.disabled = !isEnabled;
-        euphemismToggle.disabled = !isEnabled;
-        emotionalToggle.disabled = !isEnabled;
-        gaslightingToggle.disabled = !isEnabled;
-        falseDilemmaToggle.disabled = !isEnabled;
-        refreshButton.disabled = !isEnabled;
-        clearButton.disabled = !isEnabled;
-    }
-
-    // Function to save settings and update content script
-    function saveSettingsAndUpdate() {
-        const settings = {
-            enableAnalysis: enableToggle.checked,
-            highlightOpinion: opinionToggle.checked,
-            highlightToBe: ePrimeToggle.checked,
-            highlightAbsolutes: absoluteToggle.checked,
-            highlightPassive: passiveToggle.checked,
-            highlightWeasel: weaselToggle.checked,
-            highlightPresupposition: presuppositionToggle.checked,
-            highlightMetaphors: metaphorToggle.checked,
-            highlightMinimizers: minimizerToggle.checked,
-            highlightMaximizers: maximizerToggle.checked,
-            highlightFalseBalance: falseBalanceToggle.checked,
-            highlightEuphemism: euphemismToggle.checked,
-            highlightEmotional: emotionalToggle.checked,
-            highlightGaslighting: gaslightingToggle.checked,
-            highlightFalseDilemma: falseDilemmaToggle.checked
-        };
-
-        console.log('Saving settings:', settings);
-
-        // Save to storage
-        chrome.storage.sync.set(settings, function() {
-            console.log('Settings saved to storage');
-            
-            // Send to content script with a small delay to ensure storage is updated
-            setTimeout(() => {
-                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                    if (tabs[0]) {
-                        chrome.tabs.sendMessage(tabs[0].id, {
-                            action: "updateSettings",
-                            settings: settings
-                        }, function(response) {
-                            if (chrome.runtime.lastError) {
-                                console.log('Error sending message:', chrome.runtime.lastError);
-                            } else {
-                                console.log('Settings updated successfully:', response);
-                                // Update stats after a longer delay to ensure processing is complete
-                                setTimeout(updateStats, 1500);
-                            }
-                        });
-                    }
+        async loadSettings() {
+            return new Promise((resolve) => {
+                const defaults = BiasConfig.getDefaultSettings();
+                chrome.storage.sync.get(defaults, (items) => {
+                    this.currentSettings = BiasConfig.validateSettings(items);
+                    this.notifyListeners('loaded', this.currentSettings);
+                    resolve(this.currentSettings);
                 });
-            }, 100);
-        });
+            });
+        }
 
-        updateTogglesState();
-    }
-
-    // Function to update stats display
-    function updateStats(retryCount = 0) {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            if (tabs[0]) {
-                chrome.tabs.sendMessage(tabs[0].id, {
-                    action: "getStats"
-                }, function(response) {
+        async saveSettings(newSettings) {
+            return new Promise((resolve, reject) => {
+                const validatedSettings = BiasConfig.validateSettings(newSettings);
+                
+                chrome.storage.sync.set(validatedSettings, () => {
                     if (chrome.runtime.lastError) {
-                        // Tab might not have the content script loaded
-                        console.log('Could not get stats:', chrome.runtime.lastError);
-                        
-                        // Show last known stats or dashes
-                        if (Object.values(lastKnownStats).some(v => v > 0)) {
-                            displayStats(lastKnownStats);
+                        reject(new Error(chrome.runtime.lastError.message));
+                        return;
+                    }
+                    
+                    const oldSettings = { ...this.currentSettings };
+                    this.currentSettings = validatedSettings;
+                    
+                    this.notifyListeners('changed', this.currentSettings, oldSettings);
+                    resolve(this.currentSettings);
+                });
+            });
+        }
+
+        async sendToContentScript(settings = this.currentSettings) {
+            return new Promise((resolve, reject) => {
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    if (!tabs[0]) {
+                        reject(new Error('No active tab found'));
+                        return;
+                    }
+
+                    chrome.tabs.sendMessage(tabs[0].id, {
+                        action: "updateSettings",
+                        settings: settings
+                    }, (response) => {
+                        if (chrome.runtime.lastError) {
+                            reject(new Error(chrome.runtime.lastError.message));
                         } else {
-                            displayStats({
-                                opinionCount: '-',
-                                toBeCount: '-',
-                                absoluteCount: '-',
-                                passiveCount: '-',
-                                weaselCount: '-',
-                                presuppositionCount: '-',
-                                metaphorCount: '-',
-                                minimizerCount: '-',
-                                maximizerCount: '-',
-                                falseBalanceCount: '-',
-                                euphemismCount: '-',
-                                emotionalCount: '-',
-                                gaslightingCount: '-',
-                                falseDilemmaCount: '-'
-                            });
+                            resolve(response);
                         }
-                        
-                        // Show a hint to the user
-                        const troubleshooting = document.querySelector('.troubleshooting p');
-                        if (troubleshooting) {
-                            troubleshooting.innerHTML = '<strong>Note:</strong> Please refresh the page if stats are not loading.';
-                        }
-                    } else if (response) {
-                        // Update display and store last known stats
-                        lastKnownStats = {
-                            opinionCount: response.opinionCount || 0,
-                            toBeCount: response.toBeCount || 0,
-                            absoluteCount: response.absoluteCount || 0,
-                            passiveCount: response.passiveCount || 0,
-                            weaselCount: response.weaselCount || 0,
-                            presuppositionCount: response.presuppositionCount || 0,
-                            metaphorCount: response.metaphorCount || 0,
-                            minimizerCount: response.minimizerCount || 0,
-                            maximizerCount: response.maximizerCount || 0,
-                            falseBalanceCount: response.falseBalanceCount || 0,
-                            euphemismCount: response.euphemismCount || 0,
-                            emotionalCount: response.emotionalCount || 0,
-                            gaslightingCount: response.gaslightingCount || 0,
-                            falseDilemmaCount: response.falseDilemmaCount || 0
-                        };
-                        
-                        displayStats(lastKnownStats);
-                        
-                        console.log('Stats updated:', response);
-                        
-                        // Clear any error messages
-                        const troubleshooting = document.querySelector('.troubleshooting p');
-                        if (troubleshooting) {
-                            troubleshooting.innerHTML = '<strong>Active:</strong> Highlighting bias indicators in real-time.';
-                        }
-                    } else if (retryCount < 3) {
-                        // Retry a few times if we get an empty response
-                        setTimeout(() => updateStats(retryCount + 1), 500);
-                    }
+                    });
                 });
-            }
-        });
-    }
-
-    // Function to display stats
-    function displayStats(stats) {
-        opinionCount.textContent = stats.opinionCount;
-        toBeCount.textContent = stats.toBeCount;
-        absoluteCount.textContent = stats.absoluteCount;
-        passiveCount.textContent = stats.passiveCount;
-        weaselCount.textContent = stats.weaselCount;
-        presuppositionCount.textContent = stats.presuppositionCount;
-        metaphorCount.textContent = stats.metaphorCount;
-        minimizerCount.textContent = stats.minimizerCount;
-        maximizerCount.textContent = stats.maximizerCount;
-        falseBalanceCount.textContent = stats.falseBalanceCount;
-        euphemismCount.textContent = stats.euphemismCount;
-        emotionalCount.textContent = stats.emotionalCount;
-        gaslightingCount.textContent = stats.gaslightingCount;
-        falseDilemmaCount.textContent = stats.falseDilemmaCount;
-    }
-
-    // Event listeners for toggles
-    enableToggle.addEventListener('change', function() {
-        console.log('Enable toggle changed to:', enableToggle.checked);
-        
-        // If disabling, clear the last known stats
-        if (!enableToggle.checked) {
-            lastKnownStats = {
-                opinionCount: 0,
-                toBeCount: 0,
-                absoluteCount: 0,
-                passiveCount: 0,
-                weaselCount: 0,
-                presuppositionCount: 0,
-                metaphorCount: 0,
-                minimizerCount: 0,
-                maximizerCount: 0,
-                falseBalanceCount: 0,
-                euphemismCount: 0,
-                emotionalCount: 0,
-                gaslightingCount: 0,
-                falseDilemmaCount: 0
-            };
+            });
         }
-        
-        saveSettingsAndUpdate();
-    });
-    
-    // Add event listeners for all toggles
-    [opinionToggle, ePrimeToggle, absoluteToggle, passiveToggle, weaselToggle, 
-     presuppositionToggle, metaphorToggle, minimizerToggle, maximizerToggle,
-     falseBalanceToggle, euphemismToggle, emotionalToggle, gaslightingToggle,
-     falseDilemmaToggle].forEach(toggle => {
-        toggle.addEventListener('change', function() {
-            console.log(`${toggle.id} changed to:`, toggle.checked);
-            saveSettingsAndUpdate();
-        });
-    });
 
-    // Refresh button event listener
-    refreshButton.addEventListener('click', function() {
-        console.log('Refresh button clicked');
-        
-        // Disable button temporarily to prevent rapid clicks
-        refreshButton.disabled = true;
-        refreshButton.textContent = 'Refreshing...';
-        
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            if (tabs[0]) {
-                chrome.tabs.sendMessage(tabs[0].id, {
-                    action: "forceAnalyze"
-                }, function(response) {
-                    if (chrome.runtime.lastError) {
-                        console.log('Error forcing analysis:', chrome.runtime.lastError);
-                        // Try reloading content script if error
-                        chrome.tabs.reload(tabs[0].id, function() {
-                            setTimeout(() => {
-                                refreshButton.disabled = false;
-                                refreshButton.textContent = 'Refresh Analysis';
-                                updateTogglesState();
-                            }, 1000);
-                        });
-                    } else {
-                        console.log('Analysis refreshed successfully');
+        addListener(listener) {
+            this.listeners.add(listener);
+        }
+
+        removeListener(listener) {
+            this.listeners.delete(listener);
+        }
+
+        notifyListeners(event, settings, oldSettings = null) {
+            for (const listener of this.listeners) {
+                try {
+                    listener(event, settings, oldSettings);
+                } catch (error) {
+                    console.error('Error in settings listener:', error);
+                }
+            }
+        }
+
+        getSettings() {
+            return { ...this.currentSettings };
+        }
+
+        getSetting(key) {
+            return this.currentSettings[key];
+        }
+    }
+
+    // ============================================================================
+    // COMMUNICATION MANAGER - Handle communication with content script
+    // ============================================================================
+    class CommunicationManager {
+        constructor() {
+            this.retryAttempts = 3;
+            this.retryDelay = 500;
+        }
+
+        async sendMessage(action, data = {}) {
+            return new Promise((resolve, reject) => {
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    if (!tabs[0]) {
+                        reject(new Error('No active tab found'));
+                        return;
+                    }
+
+                    const message = { action, ...data };
+                    this.sendMessageWithRetry(tabs[0].id, message, 0, resolve, reject);
+                });
+            });
+        }
+
+        sendMessageWithRetry(tabId, message, attempt, resolve, reject) {
+            chrome.tabs.sendMessage(tabId, message, (response) => {
+                if (chrome.runtime.lastError) {
+                    if (attempt < this.retryAttempts) {
+                        console.log(`Retry attempt ${attempt + 1} for message:`, message.action);
                         setTimeout(() => {
-                            updateStats();
-                            refreshButton.disabled = false;
-                            refreshButton.textContent = 'Refresh Analysis';
-                            updateTogglesState();
-                        }, 1000);
-                    }
-                });
-            }
-        });
-    });
-
-    // Clear button event listener
-    clearButton.addEventListener('click', function() {
-        console.log('Clear button clicked');
-        
-        // Reset last known stats when clearing
-        lastKnownStats = {
-            opinionCount: 0,
-            toBeCount: 0,
-            absoluteCount: 0,
-            passiveCount: 0,
-            weaselCount: 0,
-            presuppositionCount: 0,
-            metaphorCount: 0,
-            minimizerCount: 0,
-            maximizerCount: 0,
-            falseBalanceCount: 0,
-            euphemismCount: 0,
-            emotionalCount: 0,
-            gaslightingCount: 0,
-            falseDilemmaCount: 0
-        };
-        
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            if (tabs[0]) {
-                chrome.tabs.sendMessage(tabs[0].id, {
-                    action: "clearHighlights"
-                }, function(response) {
-                    if (chrome.runtime.lastError) {
-                        console.log('Error clearing highlights:', chrome.runtime.lastError);
+                            this.sendMessageWithRetry(tabId, message, attempt + 1, resolve, reject);
+                        }, this.retryDelay * (attempt + 1));
                     } else {
-                        console.log('Highlights cleared successfully');
-                        // Update display immediately to show zeros
-                        displayStats(lastKnownStats);
-                        
-                        setTimeout(updateStats, 100);
+                        reject(new Error(chrome.runtime.lastError.message));
                     }
-                });
-            }
-        });
-    });
-
-    // Update stats periodically (but not too frequently)
-    setInterval(updateStats, 5000);
-    
-    // Also update stats when popup becomes visible
-    document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) {
-            updateStats();
+                } else {
+                    resolve(response);
+                }
+            });
         }
-    });
-    
-    // Update stats when window gains focus
-    window.addEventListener('focus', function() {
-        updateStats();
-    });
+
+        async getStats() {
+            try {
+                return await this.sendMessage('getStats');
+            } catch (error) {
+                console.error('Error getting stats:', error);
+                return BiasConfig.createEmptyStats();
+            }
+        }
+
+        async forceAnalyze() {
+            return await this.sendMessage('forceAnalyze');
+        }
+
+        async clearHighlights() {
+            return await this.sendMessage('clearHighlights');
+        }
+    }
+
+    // ============================================================================
+    // UI MANAGER - Handle user interface updates and interactions
+    // ============================================================================
+    class UIManager {
+        constructor(settingsManager, communicationManager) {
+            this.settingsManager = settingsManager;
+            this.communicationManager = communicationManager;
+            this.lastKnownStats = BiasConfig.createEmptyStats();
+            this.isUpdating = false;
+            
+            this.initializeElements();
+            this.setupEventListeners();
+        }
+
+        initializeElements() {
+            // Get all toggle elements
+            this.enableToggle = document.getElementById('enableToggle');
+            this.toggles = {
+                opinion: document.getElementById('opinionToggle'),
+                tobe: document.getElementById('ePrimeToggle'),
+                absolute: document.getElementById('absoluteToggle'),
+                passive: document.getElementById('passiveToggle'),
+                weasel: document.getElementById('weaselToggle'),
+                presupposition: document.getElementById('presuppositionToggle'),
+                metaphor: document.getElementById('metaphorToggle'),
+                minimizer: document.getElementById('minimizerToggle'),
+                maximizer: document.getElementById('maximizerToggle'),
+                falsebalance: document.getElementById('falseBalanceToggle'),
+                euphemism: document.getElementById('euphemismToggle'),
+                emotional: document.getElementById('emotionalToggle'),
+                gaslighting: document.getElementById('gaslightingToggle'),
+                falsedilemma: document.getElementById('falseDilemmaToggle')
+            };
+
+            // Get stat display elements
+            this.statElements = {
+                opinionCount: document.getElementById('opinionCount'),
+                toBeCount: document.getElementById('toBeCount'),
+                absoluteCount: document.getElementById('absoluteCount'),
+                passiveCount: document.getElementById('passiveCount'),
+                weaselCount: document.getElementById('weaselCount'),
+                presuppositionCount: document.getElementById('presuppositionCount'),
+                metaphorCount: document.getElementById('metaphorCount'),
+                minimizerCount: document.getElementById('minimizerCount'),
+                maximizerCount: document.getElementById('maximizerCount'),
+                falseBalanceCount: document.getElementById('falseBalanceCount'),
+                euphemismCount: document.getElementById('euphemismCount'),
+                emotionalCount: document.getElementById('emotionalCount'),
+                gaslightingCount: document.getElementById('gaslightingCount'),
+                falseDilemmaCount: document.getElementById('falseDilemmaCount')
+            };
+
+            // Get action buttons
+            this.refreshButton = document.getElementById('refreshButton');
+            this.clearButton = document.getElementById('clearButton');
+
+            // Get info link
+            this.infoLink = document.getElementById('infoLink');
+        }
+
+        setupEventListeners() {
+            // Enable toggle
+            if (this.enableToggle) {
+                this.enableToggle.addEventListener('change', () => this.handleEnableToggle());
+            }
+
+            // Individual bias toggles
+            for (const [type, toggle] of Object.entries(this.toggles)) {
+                if (toggle) {
+                    toggle.addEventListener('change', () => this.handleBiasToggle(type));
+                }
+            }
+
+            // Action buttons
+            if (this.refreshButton) {
+                this.refreshButton.addEventListener('click', () => this.handleRefresh());
+            }
+
+            if (this.clearButton) {
+                this.clearButton.addEventListener('click', () => this.handleClear());
+            }
+
+            // Info link
+            if (this.infoLink) {
+                this.infoLink.addEventListener('click', (e) => this.handleInfoLink(e));
+            }
+
+            // Category headers for collapsing
+            const categoryHeaders = document.querySelectorAll('.category-header');
+            categoryHeaders.forEach(header => {
+                header.addEventListener('click', () => this.toggleCategorySection(header));
+            });
+
+            // Settings change listener
+            this.settingsManager.addListener((event, settings) => {
+                if (event === 'loaded') {
+                    this.updateUIFromSettings(settings);
+                }
+            });
+        }
+
+        async handleEnableToggle() {
+            if (this.isUpdating) return;
+            
+            console.log('Enable toggle changed to:', this.enableToggle.checked);
+            
+            if (!this.enableToggle.checked) {
+                this.lastKnownStats = BiasConfig.createEmptyStats();
+            }
+            
+            await this.saveSettingsAndUpdate();
+        }
+
+        async handleBiasToggle(type) {
+            if (this.isUpdating) return;
+            
+            const toggle = this.toggles[type];
+            if (!toggle) return;
+            
+            console.log(`${type} toggle changed to:`, toggle.checked);
+            await this.saveSettingsAndUpdate();
+        }
+
+        async handleRefresh() {
+            console.log('Refresh button clicked');
+            
+            this.setButtonState(this.refreshButton, 'Refreshing...', true);
+            
+            try {
+                const response = await this.communicationManager.forceAnalyze();
+                if (response && response.success) {
+                    this.updateStats(response.stats);
+                }
+            } catch (error) {
+                console.error('Error during refresh:', error);
+                this.showError('Failed to refresh analysis');
+            } finally {
+                setTimeout(() => {
+                    this.setButtonState(this.refreshButton, 'Refresh Analysis', false);
+                }, 1000);
+            }
+        }
+
+        async handleClear() {
+            console.log('Clear button clicked');
+            
+            this.lastKnownStats = BiasConfig.createEmptyStats();
+            
+            try {
+                const response = await this.communicationManager.clearHighlights();
+                if (response && response.success) {
+                    this.updateStats(response.stats || this.lastKnownStats);
+                }
+            } catch (error) {
+                console.error('Error during clear:', error);
+                this.updateStats(this.lastKnownStats);
+            }
+        }
+
+        handleInfoLink(e) {
+            e.preventDefault();
+            console.log('Info link clicked');
+            
+            const infoUrl = chrome.runtime.getURL('info.html');
+            chrome.tabs.create({ url: infoUrl }, (tab) => {
+                if (chrome.runtime.lastError) {
+                    console.error('Error creating tab:', chrome.runtime.lastError);
+                } else {
+                    console.log('Info tab created successfully:', tab);
+                }
+            });
+        }
+
+        toggleCategorySection(header) {
+            const section = header.parentElement;
+            if (section) {
+                section.classList.toggle('collapsed');
+                console.log('Toggled section:', header.querySelector('span').textContent);
+            }
+        }
+
+        async saveSettingsAndUpdate() {
+            if (this.isUpdating) return;
+            this.isUpdating = true;
+            
+            try {
+                const settings = this.collectSettingsFromUI();
+                console.log('Saving settings:', settings);
+
+                // Save to storage
+                await this.settingsManager.saveSettings(settings);
+                
+                // Send to content script
+                setTimeout(async () => {
+                    try {
+                        const response = await this.settingsManager.sendToContentScript(settings);
+                        if (response && response.success && response.stats) {
+                            this.updateStats(response.stats);
+                        } else {
+                            // Update stats separately if not included in response
+                            setTimeout(() => this.updateStats(), 1500);
+                        }
+                    } catch (error) {
+                        console.error('Error sending to content script:', error);
+                        setTimeout(() => this.updateStats(), 1000);
+                    }
+                }, 100);
+
+                this.updateTogglesState();
+                
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                this.showError('Failed to save settings');
+            } finally {
+                this.isUpdating = false;
+            }
+        }
+
+        collectSettingsFromUI() {
+            const settings = {
+                enableAnalysis: this.enableToggle ? this.enableToggle.checked : true
+            };
+
+            // Map toggles to settings
+            const toggleMapping = {
+                opinion: 'highlightOpinion',
+                tobe: 'highlightToBe',
+                absolute: 'highlightAbsolutes',
+                passive: 'highlightPassive',
+                weasel: 'highlightWeasel',
+                presupposition: 'highlightPresupposition',
+                metaphor: 'highlightMetaphors',
+                minimizer: 'highlightMinimizers',
+                maximizer: 'highlightMaximizers',
+                falsebalance: 'highlightFalseBalance',
+                euphemism: 'highlightEuphemism',
+                emotional: 'highlightEmotional',
+                gaslighting: 'highlightGaslighting',
+                falsedilemma: 'highlightFalseDilemma'
+            };
+
+            for (const [toggleKey, settingKey] of Object.entries(toggleMapping)) {
+                const toggle = this.toggles[toggleKey];
+                if (toggle) {
+                    settings[settingKey] = toggle.checked;
+                }
+            }
+
+            return settings;
+        }
+
+        updateUIFromSettings(settings) {
+            this.isUpdating = true;
+            
+            try {
+                if (this.enableToggle) {
+                    this.enableToggle.checked = settings.enableAnalysis;
+                }
+
+                // Update individual toggles
+                const toggleMapping = {
+                    opinion: 'highlightOpinion',
+                    tobe: 'highlightToBe',
+                    absolute: 'highlightAbsolutes',
+                    passive: 'highlightPassive',
+                    weasel: 'highlightWeasel',
+                    presupposition: 'highlightPresupposition',
+                    metaphor: 'highlightMetaphors',
+                    minimizer: 'highlightMinimizers',
+                    maximizer: 'highlightMaximizers',
+                    falsebalance: 'highlightFalseBalance',
+                    euphemism: 'highlightEuphemism',
+                    emotional: 'highlightEmotional',
+                    gaslighting: 'highlightGaslighting',
+                    falsedilemma: 'highlightFalseDilemma'
+                };
+
+                for (const [toggleKey, settingKey] of Object.entries(toggleMapping)) {
+                    const toggle = this.toggles[toggleKey];
+                    if (toggle && settings[settingKey] !== undefined) {
+                        toggle.checked = settings[settingKey];
+                    }
+                }
+
+                this.updateTogglesState();
+                this.updateStats();
+                
+            } catch (error) {
+                console.error('Error updating UI from settings:', error);
+            } finally {
+                this.isUpdating = false;
+            }
+        }
+
+        updateTogglesState() {
+            const isEnabled = this.enableToggle ? this.enableToggle.checked : true;
+            
+            // Enable/disable individual toggles
+            for (const toggle of Object.values(this.toggles)) {
+                if (toggle) {
+                    toggle.disabled = !isEnabled;
+                }
+            }
+
+            // Enable/disable buttons
+            if (this.refreshButton) {
+                this.refreshButton.disabled = !isEnabled;
+            }
+            if (this.clearButton) {
+                this.clearButton.disabled = !isEnabled;
+            }
+        }
+
+        async updateStats(stats = null) {
+            if (this.isUpdating && !stats) return;
+            
+            try {
+                // Get fresh stats if not provided
+                if (!stats) {
+                    stats = await this.communicationManager.getStats();
+                }
+
+                // Update last known stats if provided
+                if (stats && typeof stats === 'object') {
+                    this.lastKnownStats = { ...this.lastKnownStats, ...stats };
+                }
+
+                // Update each stat element
+                for (const [statKey, element] of Object.entries(this.statElements)) {
+                    if (element) {
+                        const value = this.lastKnownStats[statKey];
+                        element.textContent = value !== undefined ? value : '-';
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error updating stats:', error);
+                // Show last known stats or dashes
+                for (const [statKey, element] of Object.entries(this.statElements)) {
+                    if (element) {
+                        const value = this.lastKnownStats[statKey];
+                        element.textContent = value !== undefined ? value : '-';
+                    }
+                }
+            }
+        }
+
+        setButtonState(button, text, disabled) {
+            if (button) {
+                button.textContent = text;
+                button.disabled = disabled;
+            }
+        }
+
+        showError(message) {
+            console.error(message);
+            // Could add visual error indication here
+        }
+    }
+
+    // ============================================================================
+    // INITIALIZATION
+    // ============================================================================
+    async function initialize() {
+        try {
+            const settingsManager = new SettingsManager();
+            const communicationManager = new CommunicationManager();
+            const uiManager = new UIManager(settingsManager, communicationManager);
+
+            // Load initial settings
+            await settingsManager.loadSettings();
+
+            // Update stats periodically
+            setInterval(() => {
+                if (!uiManager.isUpdating) {
+                    uiManager.updateStats();
+                }
+            }, 5000);
+
+            // Update stats when popup becomes visible
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && !uiManager.isUpdating) {
+                    uiManager.updateStats();
+                }
+            });
+
+            // Update stats when window gains focus
+            window.addEventListener('focus', () => {
+                if (!uiManager.isUpdating) {
+                    uiManager.updateStats();
+                }
+            });
+
+            console.log('E-Prime Bias Detector popup initialized successfully');
+            
+        } catch (error) {
+            console.error('Failed to initialize popup:', error);
+        }
+    }
+
+    // Start initialization
+    initialize();
 });
