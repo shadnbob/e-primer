@@ -1,0 +1,10 @@
+// loader.js - Loads the modular content script
+(async () => {
+    try {
+        // Dynamically import the main module
+        const module = await import(chrome.runtime.getURL('src/content/content-script.js'));
+        console.log('E-Prime Bias Detector module loaded successfully');
+    } catch (error) {
+        console.error('Failed to load E-Prime Bias Detector module:', error);
+    }
+})();

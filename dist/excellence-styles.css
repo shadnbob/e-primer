@@ -1,0 +1,283 @@
+/* Excellence Detection Styles */
+
+/* Excellence Highlighting - Green spectrum for good practices */
+.excellence-attribution {
+    border-bottom: 2px solid #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.excellence-nuance {
+    border-bottom: 2px dotted #218838;
+    background-color: rgba(33, 136, 56, 0.1);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.excellence-transparency {
+    border-bottom: 2px dashed #28a745;
+    background-color: rgba(40, 167, 69, 0.08);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.excellence-discourse {
+    border-bottom: 2px solid #20c997;
+    background-color: rgba(32, 201, 151, 0.1);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.excellence-evidence {
+    border-bottom: 2px solid #17a2b8;
+    background-color: rgba(23, 162, 184, 0.1);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+/* Intensity Modifiers for Problems */
+.bias-intensity-1 {
+    opacity: 0.6;
+    border-bottom-style: dotted !important;
+    border-bottom-width: 1px !important;
+}
+
+.bias-intensity-2 {
+    opacity: 0.8;
+    border-bottom-style: solid !important;
+    border-bottom-width: 2px !important;
+}
+
+.bias-intensity-3 {
+    opacity: 1;
+    border-bottom-style: solid !important;
+    border-bottom-width: 3px !important;
+    position: relative;
+}
+
+/* Warning indicator for severe bias */
+.bias-intensity-3::before {
+    content: "⚠";
+    color: #dc3545;
+    font-size: 10px;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: white;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Subject Portrayal Indicators */
+.portrayal-positive {
+    box-shadow: 0 -3px 0 rgba(40, 167, 69, 0.4) inset;
+}
+
+.portrayal-negative {
+    box-shadow: 0 -3px 0 rgba(220, 53, 69, 0.4) inset;
+}
+
+/* Hover Cards */
+.hover-card {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 250px;
+    max-width: 350px;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Show on hover with delay */
+*[class*="excellence-"]:hover .hover-card,
+*[class*="bias-"]:hover .hover-card {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0.3s;
+}
+
+/* Arrow pointing down */
+.hover-card::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+/* Excellence hover card styling */
+.hover-card-excellence {
+    border: 2px solid #28a745;
+}
+
+.hover-card-excellence .hover-card-header {
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Problem hover card styling */
+.hover-card-problem {
+    border: 2px solid #dc3545;
+}
+
+.hover-card-problem .hover-card-header {
+    color: #dc3545;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Intensity badges */
+.intensity-badge {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.intensity-1 { background: #ffc107; color: #333; }
+.intensity-2 { background: #fd7e14; color: white; }
+.intensity-3 { background: #dc3545; color: white; }
+
+/* Hover card sections */
+.hover-card-text {
+    font-style: italic;
+    color: #666;
+    margin: 8px 0;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.hover-card-reason {
+    color: #333;
+    font-size: 13px;
+}
+
+.hover-card-context {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e9ecef;
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.hover-card-portrayal {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* Mode Indicator */
+.analysis-mode-indicator {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-size: 12px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mode-indicator-excellence {
+    color: #28a745;
+    border: 2px solid #28a745;
+}
+
+.mode-indicator-problems {
+    color: #dc3545;
+    border: 2px solid #dc3545;
+}
+
+.mode-indicator-balanced {
+    background: linear-gradient(to right, rgba(40, 167, 69, 0.1), rgba(220, 53, 69, 0.1));
+    border: 2px solid #6c757d;
+}
+
+/* Document Health Bar */
+.document-health-bar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 200px;
+    z-index: 9999;
+}
+
+.health-score-visual {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.health-score-number {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.health-score-bar {
+    flex: 1;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.health-score-fill {
+    height: 100%;
+    transition: width 0.5s ease, background-color 0.5s ease;
+}
+
+.health-good { background-color: #28a745; }
+.health-medium { background-color: #ffc107; }
+.health-poor { background-color: #dc3545; }
+
+/* Animation for newly highlighted text */
+@keyframes highlightPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.newly-highlighted {
+    animation: highlightPulse 0.5s ease;
+}

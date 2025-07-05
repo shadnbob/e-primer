@@ -1,6 +1,7 @@
-// content.js - Enhanced with Excellence Detection and Intensity Levels
+// content-fixed.js - Fixed version with improved pattern handling and debugging
 (function() {
     'use strict';
+
 
     // Debug mode - set to true to see detailed logging
     const DEBUG_MODE = true;
@@ -10,254 +11,6 @@
             console.log('[E-Prime Debug]', ...args);
         }
     }
-
-    // ============================================================================
-    // EXCELLENCE DETECTOR CLASS - Positive pattern detection
-    // ============================================================================
-    class ExcellenceDetector {
-        constructor() {
-            // Excellence patterns - detecting good writing practices
-            this.excellencePatterns = {
-                attribution: {
-                    name: 'Clear Attribution',
-                    patterns: [
-                        // Academic citations
-                        /\b\w+\s+(?:et al\.?\s+)?\(\d{4}\)/gi,
-                        /\bAccording to [\w\s\.]+'s \d{4} [\w\s-]* (?:study|research|paper|analysis)/gi,
-                        /\b(?:research|study|analysis) published in \w+/gi,
-                        /\bbased on [\d,]+ (?:data points|participants|responses|observations)/gi,
-                        /\bDr\.? [\w\s]+ (?:at|from) [\w\s]+/gi,
-                        /\bThe [\w\s]+ (?:Department|Institute|University|Center|Bureau) (?:reported|found|concluded)/gi,
-                        // Specific sourcing
-                        /\b(?:per|via|through|from) [\w\s]+ (?:report|statement|announcement)/gi,
-                        /\bas (?:reported|documented|noted) (?:by|in) [\w\s]+/gi
-                    ],
-                    className: 'excellence-attribution',
-                    tooltip: '✓ Specific, verifiable source provided',
-                    color: '#28a745'
-                },
-                
-                nuance: {
-                    name: 'Nuanced Language',
-                    patterns: [
-                        // Epistemic modality
-                        /\b(?:might|could|possibly|potentially|perhaps|maybe)\b/gi,
-                        /\b(?:appears to|seems to|tends to|likely to)\b/gi,
-                        /\b(?:suggests that|indicates that|implies that|points to)\b/gi,
-                        // Acknowledging complexity
-                        /\b(?:however|although|while|whereas|nevertheless|nonetheless)\b/gi,
-                        /\b(?:on the other hand|alternatively|conversely)\b/gi,
-                        /\b(?:multiple factors|various|several|some evidence|mixed results)\b/gi,
-                        /\b(?:worth considering|it's possible|may not reflect|could be explained)\b/gi,
-                        // Conditional thinking
-                        /\b(?:depending on|in certain cases|under specific conditions)\b/gi,
-                        /\b(?:context-dependent|situation-specific|case-by-case)\b/gi
-                    ],
-                    className: 'excellence-nuance',
-                    tooltip: '✓ Acknowledges complexity and avoids absolutes',
-                    color: '#218838'
-                },
-                
-                transparency: {
-                    name: 'Transparent Communication',
-                    patterns: [
-                        // Opinion acknowledgment
-                        /\b(?:in my (?:opinion|view)|I (?:think|believe|feel)|from my perspective)\b/gi,
-                        /\b(?:personally|subjectively|as I see it)\b/gi,
-                        // Limitation acknowledgment
-                        /\b(?:limitations include|should note that|important to mention)\b/gi,
-                        /\b(?:caveat|disclaimer|qualification)\b/gi,
-                        /\b(?:correlation does not [\w\s]{0,20} causation)\b/gi,
-                        /\b(?:preliminary findings|initial results|early data)\b/gi,
-                        // Uncertainty acknowledgment
-                        /\b(?:uncertain|unclear|unknown|yet to be determined)\b/gi,
-                        /\b(?:requires? (?:further|more) (?:research|investigation|study))\b/gi,
-                        /\b(?:open to (?:correction|revision|debate|interpretation))\b/gi
-                    ],
-                    className: 'excellence-transparency',
-                    tooltip: '✓ Transparent about limitations and perspective',
-                    color: '#28a745'
-                },
-                
-                discourse: {
-                    name: 'Constructive Discourse',
-                    patterns: [
-                        // Inviting engagement
-                        /\b(?:what do you think|worth discussing|let's (?:explore|consider|examine))\b/gi,
-                        /\b(?:open to feedback|welcoming thoughts|interested in perspectives)\b/gi,
-                        // Building on ideas
-                        /\b(?:building on|extending|expanding upon|adding to)\b/gi,
-                        /\b(?:similar to|comparable|in line with|consistent with)\b/gi,
-                        /\b(?:yes,? and|to add|furthermore|additionally)\b/gi,
-                        // Acknowledging others
-                        /\b(?:valid point|good observation|worth noting|important contribution)\b/gi,
-                        /\b(?:as [\w\s]+ (?:mentioned|noted|pointed out|observed))\b/gi,
-                        // Balanced perspective
-                        /\b(?:balanced|nuanced approach|both [\w\s]+ and [\w\s]+)\b/gi,
-                        /\b(?:pros and cons|advantages and disadvantages|benefits and drawbacks)\b/gi
-                    ],
-                    className: 'excellence-discourse',
-                    tooltip: '✓ Encourages dialogue and acknowledges others',
-                    color: '#20c997'
-                },
-                
-                evidence: {
-                    name: 'Evidence-Based Claims',
-                    patterns: [
-                        // Quantified claims
-                        /\b\d+(?:\.\d+)?%\s+of\s+[\w\s]+/gi,
-                        /\b(?:statistically significant|p\s*[<=]\s*0\.\d+)\b/gi,
-                        /\b(?:sample size of|n\s*=\s*)\d+/gi,
-                        /\b(?:margin of error|confidence interval|standard deviation)\b/gi,
-                        // Data transparency
-                        /\b(?:data (?:shows?|indicates?|reveals?|demonstrates?))\b/gi,
-                        /\b(?:evidence (?:suggests?|supports?|indicates?))\b/gi,
-                        /\b(?:findings (?:show|indicate|suggest|reveal))\b/gi,
-                        // Methodology mentions
-                        /\b(?:methodology|method|approach|technique|procedure)\b/gi,
-                        /\b(?:peer-reviewed|replicated|validated|verified)\b/gi
-                    ],
-                    className: 'excellence-evidence',
-                    tooltip: '✓ Claims supported by specific evidence',
-                    color: '#17a2b8'
-                }
-            };
-            
-            // Intensity levels for problematic patterns
-            this.intensityLevels = {
-                absolute: {
-                    1: ['mostly', 'generally', 'typically', 'usually', 'often', 'frequently'],
-                    2: ['always', 'never', 'every', 'none', 'all', 'no one', 'everyone'],
-                    3: ['absolutely', 'definitely', 'certainly', 'totally', 'completely', 'utterly', 'entirely']
-                },
-                opinion: {
-                    1: ['seems', 'appears', 'arguably', 'perhaps', 'possibly'],
-                    2: ['obviously', 'clearly', 'surely', 'undoubtedly', 'evidently'],
-                    3: ['undeniably', 'unquestionably', 'indisputably', 'irrefutably', 'incontrovertibly']
-                },
-                emotional: {
-                    1: ['concerning', 'problematic', 'challenging', 'difficult', 'worrying'],
-                    2: ['crisis', 'disaster', 'failure', 'catastrophe', 'emergency'],
-                    3: ['evil', 'destroy', 'murder', 'doom', 'apocalypse', 'blood on your hands']
-                },
-                weasel: {
-                    1: ['some', 'many', 'few', 'several'],
-                    2: ['people say', 'studies show', 'experts believe', 'sources indicate'],
-                    3: ['everyone knows', 'it\'s a fact that', 'proven', 'undisputed']
-                },
-                gaslighting: {
-                    1: ['perhaps you\'re mistaken', 'that\'s unusual', 'are you sure'],
-                    2: ['you\'re overreacting', 'being dramatic', 'too sensitive'],
-                    3: ['that never happened', 'you\'re imagining things', 'you\'re crazy']
-                }
-            };
-            
-            // Subject portrayal patterns
-            this.portrayalPatterns = {
-                positive: {
-                    hero: /\b(?:hero|champion|savior|defender|protector)\b/gi,
-                    virtue: /\b(?:noble|righteous|virtuous|honorable|moral)\b/gi,
-                    success: /\b(?:brilliant|genius|visionary|revolutionary|groundbreaking)\b/gi
-                },
-                negative: {
-                    villain: /\b(?:evil|villain|monster|demon|tyrant)\b/gi,
-                    failure: /\b(?:disaster|catastrophe|failure|debacle|fiasco)\b/gi,
-                    moral: /\b(?:corrupt|immoral|unethical|shameful|disgraceful)\b/gi
-                }
-            };
-        }
-        
-        // Calculate intensity level for a match
-        calculateIntensity(text, type) {
-            const levels = this.intensityLevels[type];
-            if (!levels) return 2; // Default to medium
-            
-            const lowerText = text.toLowerCase();
-            for (let level = 3; level >= 1; level--) {
-                if (levels[level] && levels[level].some(word => lowerText.includes(word))) {
-                    return level;
-                }
-            }
-            return 2;
-        }
-        
-        // Detect subject portrayal (positive/negative framing)
-        detectPortrayal(text) {
-            for (const [valence, patterns] of Object.entries(this.portrayalPatterns)) {
-                for (const [type, pattern] of Object.entries(patterns)) {
-                    if (pattern.test(text)) {
-                        return { valence, type };
-                    }
-                }
-            }
-            return null;
-        }
-        
-        // Find all excellence patterns in text
-        findExcellence(text) {
-            const matches = [];
-            
-            for (const [type, config] of Object.entries(this.excellencePatterns)) {
-                for (const pattern of config.patterns) {
-                    let match;
-                    const regex = new RegExp(pattern.source, pattern.flags);
-                    while ((match = regex.exec(text)) !== null) {
-                        matches.push({
-                            index: match.index,
-                            length: match[0].length,
-                            text: match[0],
-                            type: type,
-                            className: config.className,
-                            tooltip: config.tooltip,
-                            isExcellence: true
-                        });
-                    }
-                }
-            }
-            
-            return matches;
-        }
-        
-        // Calculate document health score
-        calculateHealthScore(excellenceCount, problemCount) {
-            if (excellenceCount + problemCount === 0) return 50;
-            return Math.round((excellenceCount / (excellenceCount + problemCount)) * 100);
-        }
-        
-        // Get statistics for the document
-        getStatistics(text, problems = []) {
-            const excellence = this.findExcellence(text);
-            const stats = {
-                excellence: {
-                    total: excellence.length,
-                    byType: {}
-                },
-                problems: {
-                    total: problems.length,
-                    byIntensity: { 1: 0, 2: 0, 3: 0 },
-                    byType: {}
-                },
-                healthScore: this.calculateHealthScore(excellence.length, problems.length)
-            };
-            
-            // Count excellence by type
-            for (const match of excellence) {
-                stats.excellence.byType[match.type] = (stats.excellence.byType[match.type] || 0) + 1;
-            }
-            
-            // Count problems by intensity
-            for (const problem of problems) {
-                if (problem.intensity) {
-                    stats.problems.byIntensity[problem.intensity]++;
-                }
-            }
-            
-            return stats;
-        }
-    }
-
-    // Create global instance
-    const excellenceDetector = new ExcellenceDetector();
 
     // ============================================================================
     // BIAS CONFIGURATION - Centralized configuration management
@@ -446,55 +199,6 @@
                 tooltip: 'Forcing false either/or choices'
             }
         },
-        
-        // Add excellence types to configuration
-        EXCELLENCE_TYPES: {
-            ATTRIBUTION: {
-                id: 'attribution',
-                name: 'Clear Attribution',
-                description: 'Specific, verifiable sources',
-                className: 'excellence-attribution',
-                settingKey: 'highlightAttributionExcellence',
-                statKey: 'attributionExcellenceCount',
-                enabled: true
-            },
-            NUANCE: {
-                id: 'nuance',
-                name: 'Nuanced Language',
-                description: 'Acknowledges complexity',
-                className: 'excellence-nuance',
-                settingKey: 'highlightNuanceExcellence',
-                statKey: 'nuanceExcellenceCount',
-                enabled: true
-            },
-            TRANSPARENCY: {
-                id: 'transparency',
-                name: 'Transparent Communication',
-                description: 'Clear about limitations',
-                className: 'excellence-transparency',
-                settingKey: 'highlightTransparencyExcellence',
-                statKey: 'transparencyExcellenceCount',
-                enabled: true
-            },
-            DISCOURSE: {
-                id: 'discourse',
-                name: 'Constructive Discourse',
-                description: 'Encourages dialogue',
-                className: 'excellence-discourse',
-                settingKey: 'highlightDiscourseExcellence',
-                statKey: 'discourseExcellenceCount',
-                enabled: true
-            },
-            EVIDENCE: {
-                id: 'evidence',
-                name: 'Evidence-Based',
-                description: 'Supported by data',
-                className: 'excellence-evidence',
-                settingKey: 'highlightEvidenceExcellence',
-                statKey: 'evidenceExcellenceCount',
-                enabled: true
-            }
-        },
 
         PERFORMANCE: {
             BATCH_SIZE: 50,
@@ -503,29 +207,16 @@
         },
 
         getDefaultSettings() {
-            const settings = { 
-                enableAnalysis: true,
-                analysisMode: 'balanced' // 'problems', 'excellence', or 'balanced'
-            };
-            // Add bias settings
+            const settings = { enableAnalysis: true };
             for (const config of Object.values(this.BIAS_TYPES)) {
-                settings[config.settingKey] = config.enabled;
-            }
-            // Add excellence settings
-            for (const config of Object.values(this.EXCELLENCE_TYPES)) {
                 settings[config.settingKey] = config.enabled;
             }
             return settings;
         },
 
         createEmptyStats() {
-            const stats = { healthScore: 50 };
-            // Add bias stats
+            const stats = {};
             for (const config of Object.values(this.BIAS_TYPES)) {
-                stats[config.statKey] = 0;
-            }
-            // Add excellence stats
-            for (const config of Object.values(this.EXCELLENCE_TYPES)) {
                 stats[config.statKey] = 0;
             }
             return stats;
@@ -534,10 +225,9 @@
         validateSettings(settings) {
             const validated = { ...this.getDefaultSettings() };
             for (const [key, value] of Object.entries(settings)) {
-                if (key === 'enableAnalysis' || key === 'analysisMode' ||
-                    Object.values(this.BIAS_TYPES).some(config => config.settingKey === key) ||
-                    Object.values(this.EXCELLENCE_TYPES).some(config => config.settingKey === key)) {
-                    validated[key] = key === 'analysisMode' ? value : Boolean(value);
+                if (key === 'enableAnalysis' ||
+                    Object.values(this.BIAS_TYPES).some(config => config.settingKey === key)) {
+                    validated[key] = Boolean(value);
                 }
             }
             return validated;
@@ -554,9 +244,8 @@
             "surely?", "undeniably?", "unquestionably?", "indisputably?", "indubitably?", "unmistakably?",
             "incontrovertibly?", "incontestably?", "irrefutably?", "manifestly?", "patently?",
 
-            // Hedging/Uncertainty Words - ADDED "seems" and "appears" here
-            "seems", "appears", "seemingly", "apparently",
-            "allegedly?", "supposedly?", "evidently?", "arguably?", 
+            // Hedging/Uncertainty Words
+            "allegedly?", "supposedly?", "apparently?", "evidently?", "arguably?", "seemingly?",
             "ostensibly?", "reportedly?", "reputedly?", "presumably?", "purportedly?",
 
             // Evaluative Adjectives (Positive) - with plurals
@@ -568,7 +257,7 @@
 
             // Evaluative Adjectives (Negative) - with plurals
             "bads?", "terribles?", "awfuls?", "horribles?", "atrocious", "dreadfuls?", "appallings?",
-            "abysmals?", "poors?", "inadequates?", "inferiors?", "substandards?", "mediocres?", "disappointings?",
+            "abystemals?", "poors?", "inadequates?", "inferiors?", "substandardd?", "mediocres?", "disappointings?",
             "unsatisfactor(?:y|ies)", "unacceptables?", "deficients?", "faultys?", "flaweds?", "shoddys?",
             "deplorables?", "lamentables?", "pathetics?", "pitifuls?", "regrettables?", "miserables?",
 
@@ -588,20 +277,20 @@
         ],
 
         absolute: [
-            // Universal Quantifiers - FIXED with proper word boundaries
-            "\\b(?:all|every|each|any|no|none)\\b(?:\\s+\\w+)?",
-            "\\b(?:everyone|everybody|no\\s+one|nobody|anyone|anybody|someone|somebody)\\b",
-            "\\b(?:always|never|forever|eternal|constantly|perpetually|continually|endlessly|ceaselessly|permanently|invariably)\\b",
-            "\\b(?:completely|totally|entirely|absolutely|perfectly|wholly|thoroughly|ultimately|fundamentally|purely|outright|comprehensively|universally)\\b",
-            "\\b(?:everything|nothing|anything|something)\\b",
+            // Universal Quantifiers - improved patterns
+            "(?:all|every|each|any|no|none)(?:\\s+\\w+)?",
+            "(?:everyone|everybody|no\\s+one|nobody|anyone|anybody|someone|somebody)",
+            "(?:always|never|forever|eternal|constantly|perpetually|continually|endlessly|ceaselessly|permanently|invariably)",
+            "(?:completely|totally|entirely|absolutely|perfectly|wholly|thoroughly|ultimately|fundamentally|purely|outright|comprehensively|universally)",
+            "(?:everything|nothing|anything|something)",
             // Absolute adjectives with variations
-            "\\b(?:perfect|complete|total|absolute|entire|full|whole|ultimate|maximum|minimum|supreme|extreme|utmost|final|infallible|unerring|universal|impossible|inevitable|inescapable|undeniable|irrefutable|identical|pure|sheer|mere)s?\\b"
+            "(?:perfect|complete|total|absolute|entire|full|whole|ultimate|maximum|minimum|supreme|extreme|utmost|final|infallible|unerring|universal|impossible|inevitable|inescapable|undeniable|irrefutable|identical|pure|sheer|mere)s?"
         ],
 
         passive: [
-            "\\bwas\\s+\\w+ed\\b", "\\bwere\\s+\\w+ed\\b", "\\bhas\\s+been\\s+\\w+ed\\b", "\\bhave\\s+been\\s+\\w+ed\\b",
-            "\\bhad\\s+been\\s+\\w+ed\\b", "\\bis\\s+being\\s+\\w+ed\\b", "\\bare\\s+being\\s+\\w+ed\\b",
-            "\\bwill\\s+be\\s+\\w+ed\\b", "\\bwould\\s+be\\s+\\w+ed\\b", "\\bcan\\s+be\\s+\\w+ed\\b",
+            "was\\s+\\w+ed", "were\\s+\\w+ed", "has\\s+been\\s+\\w+ed", "have\\s+been\\s+\\w+ed",
+            "had\\s+been\\s+\\w+ed", "is\\s+being\\s+\\w+ed", "are\\s+being\\s+\\w+ed",
+            "will\\s+be\\s+\\w+ed", "would\\s+be\\s+\\w+ed", "can\\s+be\\s+\\w+ed",
             "mistakes\\s+were\\s+made", "concerns\\s+have\\s+been\\s+raised"
         ],
 
@@ -636,60 +325,15 @@
         ],
 
         falsebalance: [
-            // Direct balance phrases
             "both sides", "on one hand", "on the other hand", "equally valid",
             "two sides to every story", "balanced perspective", "middle ground",
-            // False equivalence markers
-            "just as", "alternative facts", "different truths", "competing narratives",
-            // Debate framing
-            "controversial issue", "ongoing debate", "two schools of thought",
-            "divisive issue", "contentious matter", "polarizing topic",
-            "hotly debated", "much debated", "disputed territory",
-            // Neutrality performance
-            "to be fair", "in fairness", "playing devil's advocate",
-            "alternative viewpoints", "matter of opinion", "different perspectives",
-            // Balance rhetoric
-            "pros and cons", "strengths and weaknesses", "supporters and critics",
-            "advantages and disadvantages", "benefits and drawbacks"
+            "to be fair", "in fairness", "pros and cons"
         ],
 
         euphemism: [
-            // Military/Political euphemisms
             "enhanced interrogation", "collateral damage", "friendly fire", "extraordinary rendition",
-            "kinetic action", "strategic withdrawal", "enhanced enforcement",
-            "regime change", "surgical strike", "soft targets", "neutralize",
-            "pacification", "police action", "conflict resolution",
-            // Corporate euphemisms
             "rightsizing", "downsizing", "restructuring", "workforce adjustment",
-            "negative growth", "challenging market conditions", "synergy realization",
-            "offshoring", "outsourcing", "optimization", "streamlining",
-            "let go", "between jobs", "transitioning",
-            // Social euphemisms
-            "passed away", "departed", "no longer with us", "passed on",
-            "senior citizens", "golden years", "economically disadvantaged",
-            "differently abled", "special needs", "physically challenged",
-            "urban", "inner city", "at-risk", "underserved",
-            // Medical euphemisms
-            "therapeutic misadventure", "terminal illness", "growth", "mass",
-            // Environmental euphemisms
-            "climate change", "carbon neutral", "sustainable development",
-            // Immigration euphemisms/dysphemisms
-            "undocumented workers", "illegal aliens", "chain migration",
-            // Political dysphemisms
-            "death tax", "socialized medicine", "government takeover",
-            "nanny state", "job killers", "tax and spend", "welfare state",
-            // Additional military/political
-            "regime change", "surgical strike", "soft targets", "neutralize",
-            "pacification", "police action", "conflict resolution",
-            // Additional corporate
-            "offshoring", "outsourcing", "optimization", "streamlining",
-            "let go", "between jobs", "transitioning",
-            // Additional social
-            "passed on", "physically challenged", "urban", "inner city", "at-risk", "underserved",
-            // Medical euphemisms
-            "therapeutic misadventure", "terminal illness", "growth", "mass",
-            // Environmental euphemisms
-            "climate change", "carbon neutral", "sustainable development"
+            "passed away", "departed", "no longer with us"
         ],
 
         emotional: [
@@ -859,12 +503,11 @@
     }
 
     // ============================================================================
-    // ENHANCED DOM PROCESSOR - With excellence highlighting support
+    // DOM PROCESSOR - Enhanced DOM manipulation
     // ============================================================================
     class DOMProcessor {
         constructor() {
             this.highlightClassPrefix = 'bias-highlight-';
-            this.excellenceClassPrefix = 'excellence-';
             this.processedParents = new Set();
         }
 
@@ -910,8 +553,7 @@
         isOwnHighlight(element) {
             if (!element.classList) return false;
             for (const className of element.classList) {
-                if (className.startsWith(this.highlightClassPrefix) || 
-                    className.startsWith(this.excellenceClassPrefix)) {
+                if (className.startsWith(this.highlightClassPrefix)) {
                     return true;
                 }
             }
@@ -930,24 +572,9 @@
                 }
 
                 const span = document.createElement('span');
-                
-                // Determine class name based on match type
-                if (match.isExcellence) {
-                    span.className = match.className;
-                } else {
-                    span.className = `${this.highlightClassPrefix}${match.type}`;
-                    // Add intensity class if present
-                    if (match.intensity) {
-                        span.className += ` bias-intensity-${match.intensity}`;
-                    }
-                    // Add portrayal class if present
-                    if (match.portrayal) {
-                        span.className += ` portrayal-${match.portrayal.valence}`;
-                    }
-                }
-                
+                span.className = `${this.highlightClassPrefix}${match.type}`;
                 span.textContent = match.text;
-                span.title = match.tooltip || `${match.type}: ${match.text}`;
+                span.title = `${match.type}: ${match.text}`;
                 fragment.appendChild(span);
 
                 lastIndex = match.index + match.length;
@@ -963,10 +590,9 @@
         }
 
         removeAllHighlights() {
-            const selectors = [
-                ...Object.values(BiasConfig.BIAS_TYPES).map(config => `.${config.className}`),
-                ...Object.values(BiasConfig.EXCELLENCE_TYPES).map(config => `.${config.className}`)
-            ].join(', ');
+            const selectors = Object.values(BiasConfig.BIAS_TYPES)
+                .map(config => `.${config.className}`)
+                .join(', ');
 
             const highlights = document.querySelectorAll(selectors);
             this.processedParents.clear();
@@ -990,8 +616,7 @@
         }
 
         removeSpecificHighlights(type) {
-            const config = Object.values(BiasConfig.BIAS_TYPES).find(c => c.id === type) ||
-                          Object.values(BiasConfig.EXCELLENCE_TYPES).find(c => c.id === type);
+            const config = Object.values(BiasConfig.BIAS_TYPES).find(c => c.id === type);
             if (!config) return;
 
             const highlights = document.querySelectorAll(`.${config.className}`);
@@ -1045,7 +670,7 @@
     }
 
     // ============================================================================
-    // ENHANCED BIAS DETECTOR - With excellence detection and mode support
+    // ENHANCED BIAS DETECTOR - Main detection class with debugging
     // ============================================================================
     class BiasDetector {
         constructor() {
@@ -1054,7 +679,6 @@
             this.domProcessor = new DOMProcessor();
             this.stats = this.createEmptyStats();
             this.observer = null;
-            this.mode = 'balanced'; // 'problems', 'excellence', or 'balanced'
 
             this.compiledDetectors = this.initializeDetectors();
 
@@ -1088,24 +712,13 @@
                     pattern.regex.lastIndex = 0;
 
                     while ((match = pattern.regex.exec(text)) !== null) {
-                        const matchData = {
+                        matches.push({
                             index: match.index,
                             length: match[0].length,
                             text: match[0],
                             type: type,
                             pattern: pattern.source
-                        };
-                        
-                        // Add intensity for problem patterns
-                        matchData.intensity = excellenceDetector.calculateIntensity(match[0], type);
-                        
-                        // Check for subject portrayal
-                        const portrayal = excellenceDetector.detectPortrayal(match[0]);
-                        if (portrayal) {
-                            matchData.portrayal = portrayal;
-                        }
-                        
-                        matches.push(matchData);
+                        });
 
                         if (match.index === pattern.regex.lastIndex) {
                             pattern.regex.lastIndex++;
@@ -1147,14 +760,6 @@
                         await new Promise(resolve => setTimeout(resolve, 0));
                     }
                 }
-                
-                // Calculate health score
-                const excellenceTotal = Object.values(BiasConfig.EXCELLENCE_TYPES)
-                    .reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);
-                const problemsTotal = Object.values(BiasConfig.BIAS_TYPES)
-                    .reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);
-                
-                this.stats.healthScore = excellenceDetector.calculateHealthScore(excellenceTotal, problemsTotal);
 
                 debugLog('Analysis completed. Final stats:', this.stats);
                 return this.stats;
@@ -1184,27 +789,12 @@
             }
 
             const allMatches = [];
-            const mode = this.settings.analysisMode || 'balanced';
 
-            // Detect problems if mode is 'problems' or 'balanced'
-            if (mode === 'problems' || mode === 'balanced') {
-                for (const [type, detector] of this.compiledDetectors) {
-                    if (detector.isEnabled()) {
-                        const matches = detector.detect(text);
-                        allMatches.push(...matches.map(match => ({ ...match, type })));
-                    }
+            for (const [type, detector] of this.compiledDetectors) {
+                if (detector.isEnabled()) {
+                    const matches = detector.detect(text);
+                    allMatches.push(...matches.map(match => ({ ...match, type })));
                 }
-            }
-
-            // Detect excellence if mode is 'excellence' or 'balanced'
-            if (mode === 'excellence' || mode === 'balanced') {
-                const excellenceMatches = excellenceDetector.findExcellence(text);
-                // Filter excellence matches based on settings
-                const enabledExcellence = excellenceMatches.filter(match => {
-                    const config = BiasConfig.EXCELLENCE_TYPES[match.type.toUpperCase()];
-                    return config && this.settings[config.settingKey] !== false;
-                });
-                allMatches.push(...enabledExcellence);
             }
 
             if (allMatches.length > 0) {
@@ -1223,7 +813,7 @@
             );
 
             for (const match of sortedMatches) {
-                this.updateStats(match.type, match.isExcellence);
+                this.updateStats(match.type);
             }
 
             if (node.parentNode) {
@@ -1268,12 +858,6 @@
                     return;
                 }
             }
-            
-            // Handle mode change
-            if (oldSettings.analysisMode !== newSettings.analysisMode) {
-                await this.analyzeDocument();
-                return;
-            }
 
             if (newSettings.enableAnalysis) {
                 await this.handleDetectorChanges(oldSettings, newSettings);
@@ -1283,7 +867,6 @@
         async handleDetectorChanges(oldSettings, newSettings) {
             let needsReanalysis = false;
 
-            // Check bias detectors
             for (const [key, detector] of this.compiledDetectors) {
                 const settingKey = detector.settingKey;
 
@@ -1291,18 +874,6 @@
                     if (!newSettings[settingKey]) {
                         this.domProcessor.removeSpecificHighlights(detector.id);
                         this.stats[detector.statKey] = 0;
-                    } else {
-                        needsReanalysis = true;
-                    }
-                }
-            }
-            
-            // Check excellence detectors
-            for (const [key, config] of Object.entries(BiasConfig.EXCELLENCE_TYPES)) {
-                if (oldSettings[config.settingKey] !== newSettings[config.settingKey]) {
-                    if (!newSettings[config.settingKey]) {
-                        this.domProcessor.removeSpecificHighlights(config.id);
-                        this.stats[config.statKey] = 0;
                     } else {
                         needsReanalysis = true;
                     }
@@ -1324,17 +895,10 @@
             );
         }
 
-        updateStats(type, isExcellence = false) {
-            if (isExcellence) {
-                const config = BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()];
-                if (config && config.statKey) {
-                    this.stats[config.statKey] = (this.stats[config.statKey] || 0) + 1;
-                }
-            } else {
-                const detector = this.compiledDetectors.get(type);
-                if (detector && detector.statKey) {
-                    this.stats[detector.statKey]++;
-                }
+        updateStats(type) {
+            const detector = this.compiledDetectors.get(type);
+            if (detector && detector.statKey) {
+                this.stats[detector.statKey]++;
             }
         }
 
@@ -1427,6 +991,8 @@
         }
     }
 
+    const excellenceDetector = new ExcellenceDetector();
+
     // ============================================================================
     // MAIN CONTENT SCRIPT LOGIC
     // ============================================================================
@@ -1441,7 +1007,7 @@
             setupMessageListeners();
             loadSettingsAndStart();
             isInitialized = true;
-            debugLog('E-Prime Bias Detector (with Excellence) initialized successfully');
+            debugLog('E-Prime Bias Detector (Fixed) initialized successfully');
         } catch (error) {
             debugLog('Failed to initialize Bias Detector:', error);
         }
@@ -1499,10 +1065,6 @@
                 case 'testPatterns':
                     handleTestPatterns(request, sendResponse);
                     break;
-                    
-                case 'changeMode':
-                    await handleChangeMode(request, sendResponse);
-                    break;
 
                 default:
                     sendResponse({ success: false, error: 'Unknown action' });
@@ -1527,21 +1089,6 @@
                 message: 'Settings updated successfully'
             });
         }, 100);
-    }
-    
-    async function handleChangeMode(request, sendResponse) {
-        debugLog('Mode change requested:', request.mode);
-        
-        const currentSettings = { ...biasDetector.settings };
-        currentSettings.analysisMode = request.mode;
-        await biasDetector.updateSettings(currentSettings);
-        
-        const stats = biasDetector.getStats();
-        sendResponse({
-            success: true,
-            stats: stats,
-            message: `Mode changed to ${request.mode}`
-        });
     }
 
     function handleGetStats(sendResponse) {
@@ -1646,10 +1193,7 @@
             reinitialize: () => {
                 handleUnload();
                 setTimeout(initialize, 100);
-            },
-            testExcellence: (text) => excellenceDetector.findExcellence(text),
-            testIntensity: (text, type) => excellenceDetector.calculateIntensity(text, type),
-            testPortrayal: (text) => excellenceDetector.detectPortrayal(text)
+            }
         };
 
         debugLog('Debug utilities available at window.ePrimeDebug');

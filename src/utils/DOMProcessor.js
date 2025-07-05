@@ -2,6 +2,7 @@
 export class DOMProcessor {
     constructor() {
         this.highlightClassPrefix = 'bias-highlight-';
+        this.excellenceClassPrefix = 'excellence-';
         this.processedParents = new Set();
     }
 
@@ -62,7 +63,8 @@ export class DOMProcessor {
         if (!element.classList) return false;
         
         for (const className of element.classList) {
-            if (className.startsWith(this.highlightClassPrefix)) {
+            if (className.startsWith(this.highlightClassPrefix) || 
+                className.startsWith(this.excellenceClassPrefix)) {
                 return true;
             }
         }
@@ -104,9 +106,17 @@ export class DOMProcessor {
 
             // Add highlighted match
             const span = document.createElement('span');
-            span.className = `${this.highlightClassPrefix}${match.type}`;
+            
+            // Use appropriate class prefix based on match type
+            if (match.isExcellence) {
+                span.className = match.className || `${this.excellenceClassPrefix}${match.type}`;
+                span.title = match.tooltip || this.getExcellenceTooltipText(match.type);
+            } else {
+                span.className = `${this.highlightClassPrefix}${match.type}`;
+                span.title = this.getTooltipText(match.type);
+            }
+            
             span.textContent = match.text;
-            span.title = this.getTooltipText(match.type);
             fragment.appendChild(span);
 
             lastIndex = match.index + match.length;
@@ -140,6 +150,17 @@ export class DOMProcessor {
             falsedilemma: 'False dilemma'
         };
         return tooltips[type] || 'Bias indicator';
+    }
+    
+    getExcellenceTooltipText(type) {
+        const tooltips = {
+            attribution: '✓ Specific, verifiable source provided',
+            nuance: '✓ Acknowledges complexity and avoids absolutes',
+            transparency: '✓ Transparent about limitations and perspective',
+            discourse: '✓ Encourages dialogue and acknowledges others',
+            evidence: '✓ Claims supported by specific evidence'
+        };
+        return tooltips[type] || 'Excellence indicator';
     }
 
     // Remove all bias highlights
@@ -192,6 +213,7 @@ export class DOMProcessor {
 
     getHighlightSelectors() {
         return {
+            // Bias selectors
             opinion: `.${this.highlightClassPrefix}opinion`,
             tobe: `.${this.highlightClassPrefix}tobe`,
             absolute: `.${this.highlightClassPrefix}absolute`,
@@ -205,7 +227,13 @@ export class DOMProcessor {
             euphemism: `.${this.highlightClassPrefix}euphemism`,
             emotional: `.${this.highlightClassPrefix}emotional`,
             gaslighting: `.${this.highlightClassPrefix}gaslighting`,
-            falsedilemma: `.${this.highlightClassPrefix}falsedilemma`
+            falsedilemma: `.${this.highlightClassPrefix}falsedilemma`,
+            // Excellence selectors
+            attribution: `.${this.excellenceClassPrefix}attribution`,
+            nuance: `.${this.excellenceClassPrefix}nuance`,
+            transparency: `.${this.excellenceClassPrefix}transparency`,
+            discourse: `.${this.excellenceClassPrefix}discourse`,
+            evidence: `.${this.excellenceClassPrefix}evidence`
         };
     }
 

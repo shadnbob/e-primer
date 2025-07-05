@@ -18,14 +18,15 @@
     "128": "images/icon128.png"
   },
   "web_accessible_resources": [{
-    "resources": ["info.html"],
+    "resources": ["info.html", "src/*"],
     "matches": ["<all_urls>"]
   }],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["styles.css", "src/excellence-styles.css"]
+      "js": ["src/content/content-script.js"],
+      "css": ["styles.css"],
+      "type": "module"
     }
   ]
 }

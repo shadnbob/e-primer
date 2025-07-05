@@ -3,16 +3,19 @@ import { BiasConfig } from '../config/BiasConfig.js';
 import { BiasPatterns } from '../dictionaries/index.js';
 import { DOMProcessor } from '../utils/DOMProcessor.js';
 import { PerformanceMonitor } from '../utils/PerformanceMonitor.js';
+import { ExcellenceDetector } from '../utils/ExcellenceDetector.js';
 
 export class BiasDetector {
     constructor() {
         this.settings = BiasConfig.getDefaultSettings();
         this.patterns = new BiasPatterns();
         this.domProcessor = new DOMProcessor();
+        this.excellenceDetector = new ExcellenceDetector();
         this.stats = this.createEmptyStats();
         this.observer = null;
         this.performanceMonitor = new PerformanceMonitor();
-        
+        this.mode = this.settings.analysisMode || 'balanced'; // 'problems', 'excellence', or 'balanced'
+
         // Pre-compile all patterns for better performance
         this.compiledDetectors = this.initializeDetectors();
     }
@@ -129,13 +132,35 @@ export class BiasDetector {
         }
 
         const allMatches = [];
+        const mode = this.settings.analysisMode || 'balanced';
 
-        // Run all enabled detectors
-        for (const [type, detector] of this.compiledDetectors) {
-            if (detector.isEnabled()) {
-                const matches = detector.detect(text);
-                allMatches.push(...matches.map(match => ({ ...match, type })));
+        // Detect problems if mode is 'problems' or 'balanced'
+        if (mode === 'problems' || mode === 'balanced') {
+            // Run all enabled detectors
+            for (const [type, detector] of this.compiledDetectors) {
+                if (detector.isEnabled()) {
+                    const matches = detector.detect(text);
+                    // Add intensity for problem patterns
+                    const matchesWithIntensity = matches.map(match => ({
+                        ...match,
+                        type: type,
+                        intensity: this.excellenceDetector.calculateIntensity(match.text, type),
+                        portrayal: this.excellenceDetector.detectPortrayal(match.text)
+                    }));
+                    allMatches.push(...matchesWithIntensity);
+                }
             }
+        }
+        
+        // Detect excellence if mode is 'excellence' or 'balanced'
+        if (mode === 'excellence' || mode === 'balanced') {
+            const excellenceMatches = this.excellenceDetector.findExcellence(text);
+            // Filter excellence matches based on settings
+            const enabledExcellence = excellenceMatches.filter(match => {
+                const config = BiasConfig.EXCELLENCE_TYPES[match.type.toUpperCase()];
+                return config && this.settings[config.settingKey] !== false;
+            });
+            allMatches.push(...enabledExcellence);
         }
 
         if (allMatches.length > 0) {
@@ -158,7 +183,7 @@ export class BiasDetector {
 
         // Update stats
         for (const match of sortedMatches) {
-            this.updateStats(match.type);
+            this.updateStats(match);
         }
 
         // Replace the original node
@@ -247,11 +272,26 @@ export class BiasDetector {
         );
     }
 
-    updateStats(type) {
-        const detector = this.compiledDetectors.get(type);
-        if (detector && detector.statKey) {
-            this.stats[detector.statKey]++;
+    updateStats(match) {
+        if (match.isExcellence) {
+            const config = BiasConfig.EXCELLENCE_TYPES[match.type.toUpperCase()];
+            if (config && config.statKey) {
+                this.stats[config.statKey] = (this.stats[config.statKey] || 0) + 1;
+            }
+        } else {
+            const detector = this.compiledDetectors.get(match.type);
+            if (detector && detector.statKey) {
+                this.stats[detector.statKey]++;
+            }
         }
+        
+        // Recalculate health score
+        const excellenceCount = Object.values(BiasConfig.EXCELLENCE_TYPES)
+            .reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);
+        const problemCount = Object.values(BiasConfig.BIAS_TYPES)
+            .reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);
+        
+        this.stats.healthScore = this.excellenceDetector.calculateHealthScore(excellenceCount, problemCount);
     }
 
     resetStats() {

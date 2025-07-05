@@ -201,6 +201,55 @@ export class BiasConfig {
             examples: ['either you\'re with us or against us', 'pick a side', 'all or nothing']
         }
     };
+    
+    // Excellence detection types
+    static EXCELLENCE_TYPES = {
+        ATTRIBUTION: {
+            id: 'attribution',
+            name: 'Clear Attribution',
+            description: 'Specific, verifiable sources',
+            className: 'excellence-attribution',
+            settingKey: 'highlightAttributionExcellence',
+            statKey: 'attributionExcellenceCount',
+            enabled: true
+        },
+        NUANCE: {
+            id: 'nuance',
+            name: 'Nuanced Language',
+            description: 'Acknowledges complexity',
+            className: 'excellence-nuance',
+            settingKey: 'highlightNuanceExcellence',
+            statKey: 'nuanceExcellenceCount',
+            enabled: true
+        },
+        TRANSPARENCY: {
+            id: 'transparency',
+            name: 'Transparent Communication',
+            description: 'Clear about limitations',
+            className: 'excellence-transparency',
+            settingKey: 'highlightTransparencyExcellence',
+            statKey: 'transparencyExcellenceCount',
+            enabled: true
+        },
+        DISCOURSE: {
+            id: 'discourse',
+            name: 'Constructive Discourse',
+            description: 'Encourages dialogue',
+            className: 'excellence-discourse',
+            settingKey: 'highlightDiscourseExcellence',
+            statKey: 'discourseExcellenceCount',
+            enabled: true
+        },
+        EVIDENCE: {
+            id: 'evidence',
+            name: 'Evidence-Based',
+            description: 'Supported by data',
+            className: 'excellence-evidence',
+            settingKey: 'highlightEvidenceExcellence',
+            statKey: 'evidenceExcellenceCount',
+            enabled: true
+        }
+    };
 
     static CATEGORIES = {
         basic: {
@@ -231,11 +280,17 @@ export class BiasConfig {
 
     static getDefaultSettings() {
         const settings = {
-            enableAnalysis: true
+            enableAnalysis: true,
+            analysisMode: 'balanced' // 'problems', 'excellence', or 'balanced'
         };
 
         // Add all bias type settings with their default enabled state
         for (const [key, config] of Object.entries(this.BIAS_TYPES)) {
+            settings[config.settingKey] = config.enabled;
+        }
+        
+        // Add all excellence type settings
+        for (const [key, config] of Object.entries(this.EXCELLENCE_TYPES)) {
             settings[config.settingKey] = config.enabled;
         }
 
@@ -273,8 +328,13 @@ export class BiasConfig {
     }
 
     static createEmptyStats() {
-        const stats = {};
+        const stats = { healthScore: 50 };
+        // Add bias stats
         for (const config of Object.values(this.BIAS_TYPES)) {
+            stats[config.statKey] = 0;
+        }
+        // Add excellence stats
+        for (const config of Object.values(this.EXCELLENCE_TYPES)) {
             stats[config.statKey] = 0;
         }
         return stats;
@@ -285,8 +345,10 @@ export class BiasConfig {
         
         // Validate each setting
         for (const [key, value] of Object.entries(settings)) {
-            if (key === 'enableAnalysis' || 
-                Object.values(this.BIAS_TYPES).some(config => config.settingKey === key)) {
+            if (key === 'enableAnalysis' || key === 'analysisMode') {
+                validated[key] = key === 'analysisMode' ? value : Boolean(value);
+            } else if (Object.values(this.BIAS_TYPES).some(config => config.settingKey === key) ||
+                      Object.values(this.EXCELLENCE_TYPES).some(config => config.settingKey === key)) {
                 validated[key] = Boolean(value);
             }
         }

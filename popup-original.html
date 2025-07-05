@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>E-Prime Bias Detector</title>
+    <title>Bias Detector</title>
     <style>
         body {
-            width: 380px;
+            width: 350px;
             padding: 10px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             margin: 0;
@@ -18,88 +18,6 @@
             align-items: center;
             gap: 8px;
         }
-        
-        /* Mode Selector */
-        .mode-selector {
-            background: white;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .mode-selector h4 {
-            margin: 0 0 10px 0;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #666;
-            font-weight: 600;
-        }
-        .mode-options {
-            display: flex;
-            gap: 8px;
-        }
-        .mode-options label {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-            background: white;
-        }
-        .mode-options input[type="radio"] {
-            display: none;
-        }
-        .mode-options input[type="radio"]:checked + span {
-            font-weight: 600;
-        }
-        .mode-options label:has(input:checked) {
-            border-color: #2196F3;
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-        
-        /* Health Score */
-        .health-score-container {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .health-score-label {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .health-score {
-            font-size: 36px;
-            font-weight: bold;
-            margin: 8px 0;
-        }
-        .health-good { color: #28a745; }
-        .health-medium { color: #ffc107; }
-        .health-poor { color: #dc3545; }
-        .health-bar {
-            width: 100%;
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-        .health-fill {
-            height: 100%;
-            transition: width 0.5s ease;
-        }
-        
         .master-toggle {
             background: #333;
             color: white;
@@ -223,13 +141,6 @@
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .stats-title {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #666;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -249,13 +160,6 @@
             font-weight: 600;
             color: #333;
             display: block;
-        }
-        .stat-item.excellence {
-            background: rgba(40, 167, 69, 0.1);
-            border-radius: 4px;
-        }
-        .stat-item.excellence .stat-value {
-            color: #28a745;
         }
         .button-container {
             display: flex;
@@ -328,13 +232,6 @@
         .coral { background-color: rgba(255, 127, 80, 0.3); }
         .maroon { background-color: rgba(128, 0, 0, 0.3); }
         .darkviolet { background-color: rgba(148, 0, 211, 0.3); }
-        
-        /* Excellence colors */
-        .green { background-color: rgba(40, 167, 69, 0.3); }
-        .lightgreen { background-color: rgba(33, 136, 56, 0.3); }
-        .turquoise { background-color: rgba(32, 201, 151, 0.3); }
-        .info { background-color: rgba(23, 162, 184, 0.3); }
-        
         .info-link {
             display: block;
             text-align: center;
@@ -353,35 +250,7 @@
     </style>
 </head>
 <body>
-<h2>E-Prime Bias Detector</h2>
-
-<!-- Mode Selector -->
-<div class="mode-selector">
-    <h4>Analysis Mode</h4>
-    <div class="mode-options">
-        <label>
-            <input type="radio" name="mode" value="problems" checked>
-            <span>Problems Only</span>
-        </label>
-        <label>
-            <input type="radio" name="mode" value="excellence">
-            <span>Excellence Only</span>
-        </label>
-        <label>
-            <input type="radio" name="mode" value="balanced">
-            <span>Balanced View</span>
-        </label>
-    </div>
-</div>
-
-<!-- Health Score -->
-<div class="health-score-container">
-    <div class="health-score-label">Document Health</div>
-    <div class="health-score" id="healthScore">--</div>
-    <div class="health-bar">
-        <div class="health-fill" id="healthFill"></div>
-    </div>
-</div>
+<h2>Bias Detector</h2>
 
 <div class="master-toggle">
     <span class="toggle-label">Enable Analysis</span>
@@ -391,70 +260,9 @@
     </label>
 </div>
 
-<!-- Excellence Detection (New) -->
-<div class="category-section">
-    <div class="category-header">
-        <span>Excellence Detection ✨</span>
-        <span class="chevron">▼</span>
-    </div>
-    <div class="category-body">
-        <div class="toggle-container">
-            <div class="toggle-label">
-                <div class="color-indicator green"></div>
-                <span>Clear Attribution</span>
-            </div>
-            <label class="toggle">
-                <input type="checkbox" id="attributionExcellenceToggle" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="toggle-container">
-            <div class="toggle-label">
-                <div class="color-indicator lightgreen"></div>
-                <span>Nuanced Language</span>
-            </div>
-            <label class="toggle">
-                <input type="checkbox" id="nuanceExcellenceToggle" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="toggle-container">
-            <div class="toggle-label">
-                <div class="color-indicator green"></div>
-                <span>Transparency</span>
-            </div>
-            <label class="toggle">
-                <input type="checkbox" id="transparencyExcellenceToggle" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="toggle-container">
-            <div class="toggle-label">
-                <div class="color-indicator turquoise"></div>
-                <span>Constructive Discourse</span>
-            </div>
-            <label class="toggle">
-                <input type="checkbox" id="discourseExcellenceToggle" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="toggle-container">
-            <div class="toggle-label">
-                <div class="color-indicator info"></div>
-                <span>Evidence-Based</span>
-            </div>
-            <label class="toggle">
-                <input type="checkbox" id="evidenceExcellenceToggle" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-    </div>
-</div>
-
 <div class="category-section">
     <div class="category-header">
         <span>Basic Detection</span>
-        <span class="chevron">▼</span>
     </div>
     <div class="category-body">
         <div class="toggle-container">
@@ -490,10 +298,9 @@
     </div>
 </div>
 
-<div class="category-section collapsed">
+<div class="category-section">
     <div class="category-header">
         <span>Advanced Detection</span>
-        <span class="chevron">▼</span>
     </div>
     <div class="category-body">
         <div class="toggle-container">
@@ -502,7 +309,7 @@
                 <span>Passive Voice</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="passiveToggle">
+                <input type="checkbox" id="passiveToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -512,7 +319,7 @@
                 <span>Weasel Words</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="weaselToggle">
+                <input type="checkbox" id="weaselToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -522,17 +329,16 @@
                 <span>Presuppositions</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="presuppositionToggle">
+                <input type="checkbox" id="presuppositionToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
     </div>
 </div>
 
-<div class="category-section collapsed">
+<div class="category-section">
     <div class="category-header">
         <span>Framing & Rhetoric</span>
-        <span class="chevron">▼</span>
     </div>
     <div class="category-body">
         <div class="toggle-container">
@@ -541,7 +347,7 @@
                 <span>War Metaphors</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="metaphorToggle">
+                <input type="checkbox" id="metaphorToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -551,7 +357,7 @@
                 <span>Minimizers</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="minimizerToggle">
+                <input type="checkbox" id="minimizerToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -561,37 +367,44 @@
                 <span>Maximizers</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="maximizerToggle">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="toggle-container">
-            <div class="toggle-label">
-                <div class="color-indicator indigo"></div>
-                <span>False Balance</span>
-            </div>
-            <label class="toggle">
-                <input type="checkbox" id="falseBalanceToggle">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="toggle-container">
-            <div class="toggle-label">
-                <div class="color-indicator darkgreen"></div>
-                <span>Euphemisms</span>
-            </div>
-            <label class="toggle">
-                <input type="checkbox" id="euphemismToggle">
+                <input type="checkbox" id="maximizerToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
     </div>
 </div>
 
-<div class="category-section collapsed">
+<div class="category-section">
+    <div class="category-header">
+        <span>Rhetorical Devices</span>
+    </div>
+    <div class="category-body">
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator indigo"></div>
+                <span>False Balance Markers</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="falseBalanceToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator darkgreen"></div>
+                <span>Euphemisms/Dysphemisms</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="euphemismToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="category-section">
     <div class="category-header">
         <span>Manipulation Tactics</span>
-        <span class="chevron">▼</span>
     </div>
     <div class="category-body">
         <div class="toggle-container">
@@ -600,17 +413,17 @@
                 <span>Emotional Manipulation</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="emotionalToggle">
+                <input type="checkbox" id="emotionalToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
         <div class="toggle-container">
             <div class="toggle-label">
                 <div class="color-indicator maroon"></div>
-                <span>Gaslighting</span>
+                <span>Gaslighting Phrases</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="gaslightingToggle">
+                <input type="checkbox" id="gaslightingToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -620,7 +433,7 @@
                 <span>False Dilemmas</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="falseDilemmaToggle">
+                <input type="checkbox" id="falseDilemmaToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -628,31 +441,6 @@
 </div>
 
 <div class="stats">
-    <div class="stats-title">Excellence Indicators</div>
-    <div class="stats-grid">
-        <div class="stat-item excellence">
-            <span class="stat-label">Attribution</span>
-            <span class="stat-value" id="attributionExcellenceCount">0</span>
-        </div>
-        <div class="stat-item excellence">
-            <span class="stat-label">Nuance</span>
-            <span class="stat-value" id="nuanceExcellenceCount">0</span>
-        </div>
-        <div class="stat-item excellence">
-            <span class="stat-label">Transparency</span>
-            <span class="stat-value" id="transparencyExcellenceCount">0</span>
-        </div>
-        <div class="stat-item excellence">
-            <span class="stat-label">Discourse</span>
-            <span class="stat-value" id="discourseExcellenceCount">0</span>
-        </div>
-        <div class="stat-item excellence">
-            <span class="stat-label">Evidence</span>
-            <span class="stat-value" id="evidenceExcellenceCount">0</span>
-        </div>
-    </div>
-    
-    <div class="stats-title" style="margin-top: 15px;">Bias Indicators</div>
     <div class="stats-grid">
         <div class="stat-item">
             <span class="stat-label">Opinion</span>
@@ -719,7 +507,7 @@
 </div>
 
 <div class="troubleshooting">
-    <p id="statusText"><strong>Active:</strong> Highlighting bias indicators in real-time.</p>
+    <p><strong>Active:</strong> Highlighting bias indicators in real-time.</p>
 </div>
 
 <a href="#" id="infoLink" class="info-link">Learn about bias detection categories »</a>
