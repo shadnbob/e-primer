@@ -14,7 +14,6 @@ export const falseDilemmaPhrases = [
     "love it or leave it",
     "my way or the highway", 
     "sink or swim", 
-    "do or die",
 
     // Forced choices
     "must choose between", 

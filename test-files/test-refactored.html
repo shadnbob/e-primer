@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Prime Bias Detector - Refactored Test Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: #f9f9f9;
+        }
+        h1, h2 { color: #333; }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .performance-test {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+        .advanced-test {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+        }
+        .manipulation-test {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        .dynamic-content {
+            background: #f0f0f0;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 2px dashed #ccc;
+        }
+        .stats-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .test-passed {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .test-failed {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>E-Prime Bias Detector - Refactored Version Test</h1>
+    
+    <div class="info-box">
+        <h2>🚀 Testing Refactored Architecture</h2>
+        <p><strong>Instructions:</strong> Open the E-Prime Bias Detector extension popup and test the following scenarios. The refactored version should show improved performance and consistent behavior.</p>
+        <ul>
+            <li><strong>Performance:</strong> Faster analysis with pre-compiled patterns</li>
+            <li><strong>Consistency:</strong> Unified naming and configuration</li>
+            <li><strong>Reliability:</strong> Better error handling and memory management</li>
+            <li><strong>Maintainability:</strong> Modular architecture</li>
+        </ul>
+    </div>
+
+    <!-- Basic Detection Tests -->
+    <div class="test-section">
+        <h2>📋 Basic Detection Tests</h2>
+        
+        <h3>Opinion Words</h3>
+        <p>This is obviously a great example of how the refactored extension works. It's clearly superior to the original version and absolutely fantastic. Everyone definitely needs to test this amazing new architecture. It's undoubtedly the best solution available and remarkably well-designed.</p>
+        
+        <h3>To-Be Verbs (E-Prime)</h3>
+        <p>The weather is nice today. It was raining yesterday, but now it's sunny. They are happy about the refactoring. We were worried it would be difficult. This sentence is full of to-be verbs that should be highlighted consistently. The new architecture is much more maintainable.</p>
+        
+        <h3>Absolute Statements</h3>
+        <p>All programmers always love clean code. Nobody ever wants to work with legacy systems. Everyone knows this refactoring is totally necessary. Nothing can prevent this from being completely successful. Every single developer agrees absolutely that this approach is perfect.</p>
+    </div>
+
+    <!-- Performance Tests -->
+    <div class="test-section performance-test">
+        <h2>⚡ Performance & Architecture Tests</h2>
+        
+        <p>The refactored architecture uses pre-compiled regex patterns for significantly faster performance. The modular design clearly separates concerns between pattern compilation, DOM processing, and bias detection. This obviously results in better maintainability and definitely improved performance.</p>
+        
+        <p>Memory management is substantially better with the new approach. The consolidated dictionary system efficiently handles all pattern types without redundant compilation. Error handling is remarkably robust, ensuring the extension never crashes completely.</p>
+        
+        <button onclick="performanceTest()">Run Performance Test</button>
+        <button onclick="addLargeContent()">Add Large Content Block</button>
+        
+        <div id="performance-results" class="stats-display" style="display: none;">
+            <h4>Performance Results:</h4>
+            <div id="performance-data"></div>
+        </div>
+        
+        <div id="large-content" class="dynamic-content" style="display: none;">
+            <!-- Large content will be added here -->
+        </div>
+    </div>
+
+    <!-- Advanced Detection Tests -->
+    <div class="test-section advanced-test">
+        <h2>🧠 Advanced Detection Tests</h2>
+        
+        <h3>Passive Voice</h3>
+        <p>Mistakes were made during the original implementation. The code was written without proper architecture. Improvements have been made to the overall design. The system was restructured for better maintainability. Concerns were raised about the monolithic approach.</p>
+        
+        <h3>Weasel Words</h3>
+        <p>Many people say that modular architecture is better. Studies show that refactored code performs well. Experts believe this approach is superior. It is widely known that clean code is important. Sources indicate that the new version is more reliable.</p>
+        
+        <h3>Presuppositions</h3>
+        <p>Even critics admit the refactoring is necessary. The team still refuses to use the old approach. Another developer finally acknowledged the benefits. The code already shows improvement. Yet another test proves the architecture works.</p>
+        
+        <h3>War Metaphors</h3>
+        <p>The battle against technical debt continues. We must fight the legacy code. This refactoring attacks the core problems. The new architecture defends against future issues. Our strategy targets maintainability.</p>
+    </div>
+
+    <!-- Manipulation Detection Tests -->
+    <div class="test-section manipulation-test">
+        <h2>⚠️ Manipulation Tactics Detection</h2>
+        
+        <h3>Minimizers & Maximizers</h3>
+        <p>This is just a small refactoring that only improves things slightly. It's merely a minor update that barely changes anything. However, this revolutionary breakthrough completely transforms everything! The massive improvements are absolutely unprecedented and totally game-changing!</p>
+        
+        <h3>False Balance</h3>
+        <p>Both sides of the architecture debate have valid points. On one hand, monolithic code is simple. On the other hand, modular design offers benefits. To be fair, there are pros and cons to each approach. Some experts favor the old way, while others support the new method.</p>
+        
+        <h3>Emotional Manipulation</h3>
+        <p>Think of the poor developers who have to maintain legacy code! This refactoring saves innocent programmers from suffering. The devastating impact of technical debt threatens our entire project. Act now before it's too late to fix these critical issues!</p>
+        
+        <h3>Gaslighting</h3>
+        <p>The old code was never that bad - you're imagining things. You're overreacting to these supposed architecture problems. That's not how the original system worked. You're being too dramatic about the need for refactoring.</p>
+        
+        <h3>False Dilemmas</h3>
+        <p>Either you support this refactoring or you're against progress. You can't have both maintainable code and legacy systems. It's all or nothing - pick a side. The choice is simple: use the new architecture or accept failure.</p>
+    </div>
+
+    <!-- Dynamic Content Tests -->
+    <div class="test-section">
+        <h2>🔄 Dynamic Content Tests</h2>
+        <p>Test the mutation observer and incremental processing with dynamically added content.</p>
+        
+        <button onclick="addDynamicOpinions()">Add Opinion Words</button>
+        <button onclick="addDynamicToBeVerbs()">Add To-Be Verbs</button>
+        <button onclick="addDynamicAbsolutes()">Add Absolutes</button>
+        <button onclick="addMixedContent()">Add Mixed Content</button>
+        <button onclick="clearDynamicContent()">Clear All</button>
+        
+        <div id="dynamic-content" class="dynamic-content">
+            <p><em>Dynamic content will appear here...</em></p>
+        </div>
+    </div>
+
+    <!-- Configuration Tests -->
+    <div class="test-section">
+        <h2>⚙️ Configuration & Settings Tests</h2>
+        <p>Test the unified configuration system and settings persistence.</p>
+        
+        <div class="stats-display">
+            <h4>Test Instructions:</h4>
+            <ol>
+                <li>Toggle individual bias types on/off in the popup</li>
+                <li>Verify that highlights update correctly</li>
+                <li>Test the enable/disable master switch</li>
+                <li>Check that settings persist after popup close/open</li>
+                <li>Verify refresh and clear functions work properly</li>
+                <li>Test with advanced features enabled</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Performance testing
+        function performanceTest() {
+            const resultsDiv = document.getElementById('performance-results');
+            const dataDiv = document.getElementById('performance-data');
+            
+            resultsDiv.style.display = 'block';
+            dataDiv.innerHTML = 'Running performance test...';
+            
+            const startTime = performance.now();
+            
+            // Simulate analysis by adding various bias types
+            const testContent = `
+                This is obviously a comprehensive test that clearly demonstrates the remarkable performance improvements.
+                The refactored architecture is absolutely superior and definitely shows better results.
+                All developers will undoubtedly appreciate these amazing enhancements.
+                The system was redesigned for optimal performance and substantial improvements were made.
+                Many experts believe this approach is revolutionary and studies show significant benefits.
+            `.repeat(10);
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = testContent;
+            document.body.appendChild(tempDiv);
+            
+            setTimeout(() => {
+                const endTime = performance.now();
+                const duration = endTime - startTime;
+                
+                dataDiv.innerHTML = `
+                    <strong>Performance Test Results:</strong><br>
+                    Test Duration: ${duration.toFixed(2)}ms<br>
+                    Content Added: ${testContent.length} characters<br>
+                    Status: <span class="test-passed">✓ Performance test completed</span>
+                `;
+                
+                // Clean up
+                document.body.removeChild(tempDiv);
+            }, 1000);
+        }
+        
+        function addLargeContent() {
+            const largeDiv = document.getElementById('large-content');
+            largeDiv.style.display = 'block';
+            
+            const biasTypes = [
+                'obviously', 'clearly', 'definitely', 'absolutely', 'certainly',
+                'terrible', 'amazing', 'fantastic', 'horrible', 'excellent',
+                'all', 'never', 'always', 'everyone', 'nobody',
+                'completely', 'totally', 'entirely', 'perfectly', 'absolutely'
+            ];
+            
+            let content = '<h4>Large Content Block for Performance Testing</h4>';
+            for (let i = 0; i < 50; i++) {
+                const randomBias = biasTypes[Math.floor(Math.random() * biasTypes.length)];
+                content += `<p>This is ${randomBias} a test paragraph number ${i + 1} that contains various bias indicators. `;
+                content += `The content is designed to test the refactored architecture's performance with larger documents. `;
+                content += `This ${randomBias} demonstrates how the new system handles substantial amounts of text.</p>`;
+            }
+            
+            largeDiv.innerHTML = content;
+        }
+        
+        // Dynamic content functions
+        function addDynamicOpinions() {
+            addDynamicContent('This new content obviously contains some clearly biased opinions that are definitely problematic and absolutely need to be highlighted by the amazing refactored system.');
+        }
+        
+        function addDynamicToBeVerbs() {
+            addDynamicContent('The dynamic content is being added to test if the observer is working. It was designed to be comprehensive. The system is functioning as expected.');
+        }
+        
+        function addDynamicAbsolutes() {
+            addDynamicContent('All dynamic content will always be processed perfectly. Everyone can see that nothing prevents the system from working completely. Every single test always passes absolutely.');
+        }
+        
+        function addMixedContent() {
+            addDynamicContent('This obviously comprehensive test completely validates that all features are working perfectly. The system was clearly designed with everyone in mind and absolutely nothing can prevent its amazing success.');
+        }
+        
+        function addDynamicContent(text) {
+            const container = document.getElementById('dynamic-content');
+            const newPara = document.createElement('p');
+            newPara.textContent = text;
+            newPara.style.marginTop = '10px';
+            newPara.style.padding = '10px';
+            newPara.style.background = '#e3f2fd';
+            newPara.style.borderRadius = '4px';
+            container.appendChild(newPara);
+        }
+        
+        function clearDynamicContent() {
+            const container = document.getElementById('dynamic-content');
+            container.innerHTML = '<p><em>Dynamic content cleared...</em></p>';
+        }
+        
+        // Page load performance monitoring
+        window.addEventListener('load', function() {
+            console.log('Test page loaded. Extension should begin analysis shortly.');
+            
+            // Add a performance marker
+            const performanceInfo = document.createElement('div');
+            performanceInfo.className = 'stats-display';
+            performanceInfo.innerHTML = `
+                <h4>Page Load Info:</h4>
+                Load Time: ${performance.now().toFixed(2)}ms<br>
+                DOM Ready: ${document.readyState}<br>
+                Timestamp: ${new Date().toISOString()}
+            `;
+            document.body.appendChild(performanceInfo);
+        });
+    </script>
+</body>
+</html>

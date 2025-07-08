@@ -18,7 +18,6 @@ export const falseBalancePhrases = [
     "similarly concerning",
     "two schools of thought", 
     "competing theories", 
-    "alternative facts",
     "different perspectives", 
     "various viewpoints", 
     "diverse opinions",

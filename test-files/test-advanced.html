@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Primer Advanced Test Page</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+        h1 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 { 
+            color: #34495e;
+            margin-top: 30px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+        }
+        .info-box {
+            background: #e8f4f8;
+            border: 1px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .example {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        code {
+            background: #f1f1f1;
+            padding: 2px 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 E-Primer Advanced Bias Detection Test Page</h1>
+    
+    <div class="info-box">
+        <h3>📋 Testing Instructions:</h3>
+        <ol>
+            <li>Open the E-Primer extension popup</li>
+            <li>Enable different detection categories to see various bias types</li>
+            <li>Use the "Basic", "Advanced", and "Framing & Rhetoric" sections</li>
+            <li>Watch the stats update as you toggle different options</li>
+            <li>Test the Refresh and Clear buttons</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>1. Passive Voice Detection (Purple)</h2>
+        <p><strong>Obscuring Agency:</strong> Mistakes were made during the project. The decision was taken by management. It has been reported that profits declined. The policy was implemented last year. Concerns have been raised about the budget. Questions have been asked about accountability.</p>
+        <div class="example">
+            <strong>Notice:</strong> The report was written (by whom?). The data was analyzed (who did it?). It is believed that changes are needed (who believes this?).
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Weasel Words & Vague Attribution (Gold)</h2>
+        <p><strong>Avoiding Specificity:</strong> Many people say the economy is struggling. Some experts believe inflation will rise. Studies show that stress levels are increasing. It is widely known that trust in institutions has declined. Critics claim the policy failed. Sources indicate potential problems ahead.</p>
+        <div class="example">
+            <strong>Vague Claims:</strong> Research suggests this approach works. Evidence indicates possible issues. Some argue for change. Observers note growing concerns. It appears that momentum is building.
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Presupposition Markers (Deep Pink)</h2>
+        <p><strong>Hidden Assumptions:</strong> Even the CEO admits the company struggled. She still refuses to acknowledge the problem. Another example of government overreach occurred. He finally accepts responsibility. Despite claiming innocence, the evidence mounted.</p>
+        <div class="example">
+            <strong>Loaded Language:</strong> The so-called experts failed again. The alleged improvements never materialized. He continues to deny the obvious. Yet another scandal emerges.
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. War Metaphors & Conflict Framing (Crimson)</h2>
+        <p><strong>Militaristic Language:</strong> The company must fight for market share. We're battling against time. The war on poverty continues. They attacked our position. We need better defensive strategies. Our campaign against waste is gaining ground.</p>
+        <div class="example">
+            <strong>Combat Rhetoric:</strong> They bombarded us with criticism. We're on the frontline of innovation. The enemy of progress is complacency. Victory requires better tactics. We must defeat the competition.
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Minimizers (Teal)</h2>
+        <p><strong>Downplaying Importance:</strong> It's just a minor issue. There's only a small problem. We merely need to adjust slightly. This is simply a tiny setback. The impact is barely noticeable. It's hardly worth mentioning.</p>
+        <div class="example">
+            <strong>Diminishing Language:</strong> The concerns are somewhat trivial. There's scarcely any difference. It's merely a marginal improvement. Just a little adjustment is needed.
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>6. Maximizers (Orange-Red)</h2>
+        <p><strong>Exaggerating Impact:</strong> This is a massive crisis! The disaster is unprecedented. We face a catastrophic failure. The epidemic of misinformation is destroying society. Sales have skyrocketed amazingly. The revolutionary changes will devastate the industry.</p>
+        <div class="example">
+            <strong>Hyperbolic Language:</strong> The enormous implications are staggering. This colossal mistake will annihilate our progress. The extraordinary surge is incredible. It's an absolutely huge problem.
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>7. Mixed Bias Example</h2>
+        <p>Many experts believe that the controversial policy was implemented poorly. It's obviously a massive disaster that everyone knows will completely fail. The decision was made without proper consultation, and critics claim it's just another example of government incompetence. Despite claiming success, officials still refuse to acknowledge the catastrophic problems. Some say this unprecedented crisis requires immediate action, while others argue it's merely a minor issue. The battle against misinformation continues, with sources indicating that the situation is absolutely terrible.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>8. News Article Simulation</h2>
+        <h3>Tech Giant Faces Unprecedented Challenges</h3>
+        <p>In what many experts are calling a massive crisis, the tech industry leader was hit with devastating news yesterday. Sources close to the company indicate that profits have plummeted dramatically, though the exact figures were not disclosed by management.</p>
+        
+        <p>The decision to restructure was apparently made last month, despite claiming earlier that no changes were needed. Even supporters admit the situation is dire. Critics argue this is just another example of corporate mismanagement, while defenders say it's merely a temporary setback.</p>
+        
+        <p>Studies show that consumer confidence has been shaken. The company continues to battle against negative perceptions, with their PR campaign targeting what they call "misinformation." It is widely believed that more layoffs are inevitable, though officials refuse to confirm these reports.</p>
+        
+        <p>The unprecedented scale of the problem has analysts worried. Some say it's the worst crisis in the company's history, while others maintain it's simply a minor bump in the road. Everyone agrees, however, that significant changes must be made immediately.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>9. Dynamic Content Test</h2>
+        <button onclick="addBiasedContent()">Add More Biased Content</button>
+        <div id="dynamic-content"></div>
+    </div>
+
+    <script>
+        let contentCounter = 0;
+        function addBiasedContent() {
+            const content = document.getElementById('dynamic-content');
+            const examples = [
+                'Breaking: Experts claim the situation was handled poorly. Many people say this is obviously a huge problem that everyone knows about.',
+                'It has been reported that massive changes are coming. Sources indicate unprecedented challenges ahead, despite officials claiming everything is fine.',
+                'The decision was made without consultation. Critics argue it\'s just another disaster, while supporters say it\'s merely a small issue.',
+                'Studies show alarming trends. The battle continues, with both sides refusing to acknowledge the other\'s position.',
+                'Even analysts admit the crisis is real. The so-called solution still fails to address what everyone knows is a catastrophic problem.'
+            ];
+            
+            const newPara = document.createElement('p');
+            newPara.style.margin = '10px 0';
+            newPara.style.padding = '10px';
+            newPara.style.background = '#fff';
+            newPara.style.border = '1px solid #ddd';
+            newPara.textContent = examples[contentCounter % examples.length];
+            content.appendChild(newPara);
+            contentCounter++;
+        }
+    </script>
+</body>
+</html>

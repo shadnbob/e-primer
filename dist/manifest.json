@@ -3,7 +3,12 @@
   "name": "E-Prime Bias Detector",
   "version": "2.0",
   "description": "Detects and highlights biased language patterns using E-Prime principles and advanced linguistic analysis",
-  "permissions": ["activeTab", "scripting", "storage", "tabs"],
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -17,15 +22,28 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-  "web_accessible_resources": [{
-    "resources": ["info.html"],
-    "matches": ["<all_urls>"]
-  }],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "info.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["styles.css", "excellence-styles.css"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css",
+        "excellence-styles.css"
+      ]
     }
   ]
 }

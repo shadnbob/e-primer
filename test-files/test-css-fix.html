@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSS Intensity Fix Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            line-height: 2;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #2196F3;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2196F3;
+            margin-top: 0;
+        }
+        .fix-info {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4caf50;
+        }
+        .test-text {
+            font-size: 18px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS Intensity Fix Test</h1>
+    
+    <div class="fix-info">
+        <h3>✅ CSS Fix Applied!</h3>
+        <p><strong>Changes made:</strong></p>
+        <ul>
+            <li>Removed conflicting border styles from base classes</li>
+            <li>Ensured intensity classes properly override base styles</li>
+            <li>Added intensity background variations for all bias types</li>
+            <li>Set appropriate default intensity values for each bias type</li>
+        </ul>
+        <p><strong>Expected behavior:</strong></p>
+        <ul>
+            <li><strong>Level 1 (Mild):</strong> Dotted underline, lighter background</li>
+            <li><strong>Level 2 (Moderate):</strong> Solid underline, medium background</li>
+            <li><strong>Level 3 (Severe):</strong> Thick underline, darker background + ⚠️ icon</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>Quick Test - All Bias Types</h2>
+        
+        <div class="test-text">
+            <p><strong>Opinion Words:</strong> This <strong>possibly</strong> works. It <strong>clearly</strong> shows improvement. This is <strong>absolutely</strong> perfect now.</p>
+            
+            <p><strong>To-Be Verbs:</strong> This <strong>is</strong> a test. They <strong>are</strong> working. It <strong>was</strong> broken before.</p>
+            
+            <p><strong>Absolutes:</strong> <strong>Sometimes</strong> it works. <strong>Always</strong> check this. <strong>Never</strong> ignore warnings.</p>
+            
+            <p><strong>Emotional:</strong> This is <strong>concerning</strong> news. A <strong>serious threat</strong> exists. <strong>Think of the children</strong> in danger.</p>
+            
+            <p><strong>Minimizers:</strong> It's <strong>just</strong> a small issue. <strong>Only</strong> a minor problem. <strong>Merely</strong> a suggestion.</p>
+            
+            <p><strong>Maximizers:</strong> A massive improvement! <strong>Huge</strong> success! <strong>Catastrophic</strong> failure!</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Instructions</h2>
+        <ol>
+            <li><strong>Reload the extension:</strong>
+                <ul>
+                    <li>Go to chrome://extensions/</li>
+                    <li>Find "Bias Detector"</li>
+                    <li>Click the refresh icon</li>
+                </ul>
+            </li>
+            <li><strong>Refresh this page</strong> (Ctrl+F5 or Cmd+Shift+R)</li>
+            <li><strong>Enable detection</strong> in the extension popup</li>
+            <li><strong>Check results:</strong> You should see proper underlines instead of bold text</li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>Troubleshooting</h2>
+        <p>If highlights still appear as bold:</p>
+        <ul>
+            <li>Clear browser cache</li>
+            <li>Disable and re-enable the extension</li>
+            <li>Check browser console for errors (F12)</li>
+        </ul>
+    </div>
+</body>
+</html>

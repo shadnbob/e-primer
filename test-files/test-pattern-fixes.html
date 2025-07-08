@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Fix Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.8;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .test-case {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .should-match {
+            color: green;
+        }
+        
+        .should-not-match {
+            color: red;
+        }
+        
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pattern Fix Test - Verifying Word Boundaries</h1>
+    
+    <div class="test-section">
+        <h2>Testing "no" Pattern (Absolute Words)</h2>
+        
+        <div class="test-case should-match">
+            <strong>Should Match:</strong>
+            <p>No way! There is no evidence for that claim.</p>
+            <p>I have no idea what you mean.</p>
+            <p>No, I disagree with that statement.</p>
+        </div>
+        
+        <div class="test-case should-not-match">
+            <strong>Should NOT Match (word boundaries):</strong>
+            <p>I know that already. Knowledge is power.</p>
+            <p>Unknown factors may affect the outcome.</p>
+            <p>Cannot determine the answer. Innovation is key.</p>
+            <p>It's snowing outside. The piano sounds beautiful.</p>
+            <p>Acknowledge the problem. Diagnose the issue.</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Testing "seems" and "appears" (Opinion Words)</h2>
+        
+        <div class="test-case should-match">
+            <strong>Should Match:</strong>
+            <p>It seems like a good idea to me.</p>
+            <p>The solution appears to be working.</p>
+            <p>This seems reasonable. That appears correct.</p>
+            <p>Apparently, the situation has changed.</p>
+            <p>Seemingly, there are no other options.</p>
+        </div>
+        
+        <div class="test-case">
+            <strong>Testing Intensity Levels:</strong>
+            <p>Level 1 (Mild): It seems possible. This appears feasible.</p>
+            <p>Level 2 (Moderate): Obviously, this is the answer. Clearly wrong.</p>
+            <p>Level 3 (Severe): Undeniably true! Absolutely indisputable!</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Testing Other Absolute Words</h2>
+        
+        <div class="test-case should-match">
+            <strong>Should Match:</strong>
+            <p>All people deserve respect. Every child needs education.</p>
+            <p>Any questions? None of the above. Each person is unique.</p>
+        </div>
+        
+        <div class="test-case should-not-match">
+            <strong>Should NOT Match:</strong>
+            <p>Call me later. Really important. Beach vacation.</p>
+            <p>Reach out if needed. Many thanks. Canon camera.</p>
+            <p>Balloon festival. Preach to the choir.</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Testing Excellence Patterns</h2>
+        
+        <div class="test-case">
+            <p>According to Dr. Smith's 2024 study, the results appear promising. However, it seems we need more research. In my opinion, while the evidence suggests a trend, we should remain open to alternative interpretations.</p>
+        </div>
+    </div>
+    
+    <div class="note" style="margin-top: 40px; padding: 20px; background: #e3f2fd; border-radius: 8px;">
+        <strong>Expected Results After Fix:</strong>
+        <ul>
+            <li>"no" should only highlight as a complete word, not in "know", "unknown", etc.</li>
+            <li>"seems" and "appears" should be highlighted as opinion words</li>
+            <li>All absolute words should respect word boundaries</li>
+            <li>Excellence patterns should still work correctly</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test - Phase 1: Intensity Levels & Hover Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            line-height: 1.8;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #2196F3;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2196F3;
+            margin-top: 0;
+        }
+        .intensity-example {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #ddd;
+        }
+        .mild { border-left-color: #1976d2; }
+        .moderate { border-left-color: #f57c00; }
+        .severe { border-left-color: #d32f2f; }
+        .note {
+            color: #666;
+            font-style: italic;
+            margin-top: 15px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 4px;
+        }
+        .instructions {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Visual Intensity System & Rich Hover Cards</h1>
+    
+    <div class="instructions">
+        <strong>🎯 New Features:</strong>
+        <ul>
+            <li><strong>Intensity Levels:</strong> Mild (dotted line), Moderate (solid line), Severe (thick line + ⚠️)</li>
+            <li><strong>Hover Cards:</strong> Hover over any highlighted text for 0.3 seconds to see detailed analysis</li>
+            <li><strong>Intent Analysis:</strong> Understand the writer's likely purpose</li>
+            <li><strong>Context Awareness:</strong> See what other biases appear nearby</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>Opinion Words - Three Intensity Levels</h2>
+        
+        <div class="intensity-example mild">
+            <strong>Mild (Level 1):</strong> This <strong>possibly</strong> indicates a trend. It <strong>seems</strong> like the data <strong>suggests</strong> a pattern. This <strong>might be</strong> significant, though it's <strong>arguably</strong> too early to tell.
+        </div>
+        
+        <div class="intensity-example moderate">
+            <strong>Moderate (Level 2):</strong> This <strong>clearly</strong> shows a problem. The evidence <strong>obviously</strong> points to one conclusion. We <strong>certainly</strong> need to act, as this <strong>definitely</strong> requires attention.
+        </div>
+        
+        <div class="intensity-example severe">
+            <strong>Severe (Level 3):</strong> This is <strong>absolutely</strong> unacceptable. The facts are <strong>undeniably</strong> clear. This is <strong>incontrovertibly</strong> the worst outcome. The evidence is <strong>irrefutably</strong> damning.
+        </div>
+        
+        <p class="note">Hover over any highlighted word to see its intent analysis, psychological effect, and suggested alternatives.</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Emotional Manipulation - Escalating Intensity</h2>
+        
+        <div class="intensity-example mild">
+            <strong>Mild:</strong> This is <strong>concerning</strong> news that seems <strong>troubling</strong>. It's an <strong>important</strong> issue that could be <strong>meaningful</strong> for our community.
+        </div>
+        
+        <div class="intensity-example moderate">
+            <strong>Moderate:</strong> We face a <strong>dangerous</strong> situation. This <strong>serious threat</strong> is <strong>shocking</strong> and <strong>outrageous</strong>. The <strong>devastating</strong> impact cannot be ignored.
+        </div>
+        
+        <div class="intensity-example severe">
+            <strong>Severe:</strong> This <strong>existential threat</strong> will have <strong>catastrophic</strong> consequences. Those responsible have <strong>blood on their hands</strong>. We must <strong>think of the children</strong> whose <strong>innocent lives</strong> are in <strong>grave danger</strong>.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Gaslighting Phrases - Manipulation Severity</h2>
+        
+        <div class="intensity-example mild">
+            <strong>Mild:</strong> <strong>You might be mistaken</strong> about that detail. <strong>Perhaps you misunderstood</strong> what was said. <strong>Are you sure</strong> that's what happened?
+        </div>
+        
+        <div class="intensity-example moderate">
+            <strong>Moderate:</strong> <strong>You're overreacting</strong> to this situation. <strong>That's not what happened</strong> at all. <strong>You're being sensitive</strong> about a minor issue.
+        </div>
+        
+        <div class="intensity-example severe">
+            <strong>Severe:</strong> <strong>You're imagining things</strong> that never occurred. <strong>You're crazy</strong> if you believe that. <strong>That never happened</strong> - <strong>you're delusional</strong> if you think it did.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Combined Example with Multiple Intensities</h2>
+        
+        <p>This report <strong>clearly</strong> shows an <strong>important</strong> trend. Critics who say <strong>that never happened</strong> are <strong>absolutely</strong> wrong. We face a <strong>serious threat</strong> that requires immediate action. Some <strong>might argue</strong> otherwise, but the evidence is <strong>irrefutably</strong> clear. Those who deny this <strong>existential threat</strong> are either <strong>delusional</strong> or have <strong>blood on their hands</strong>. <strong>You're overreacting</strong> if you think this language is too strong - the situation is <strong>undeniably</strong> dire.</p>
+        
+        <p class="note">This paragraph demonstrates how different bias types and intensity levels work together. Hover over each to see how they reinforce each other and create a manipulative narrative.</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Hover Card Features</h2>
+        
+        <p>When you hover over highlighted text, you'll see:</p>
+        <ul>
+            <li><strong>Bias Type & Severity:</strong> Clear identification and intensity level</li>
+            <li><strong>Detected Phrase:</strong> The exact text that triggered detection</li>
+            <li><strong>Likely Intent:</strong> Why the writer might use this language</li>
+            <li><strong>Psychological Effect:</strong> How it impacts readers' thinking</li>
+            <li><strong>Neutral Alternative:</strong> More objective ways to express the same idea</li>
+            <li><strong>Context:</strong> Other biases found nearby that might work together</li>
+        </ul>
+        
+        <p>Try hovering over this severely biased sentence: The <strong>absolutely</strong> <strong>catastrophic</strong> situation <strong>clearly</strong> demands we <strong>think of the children</strong> before it's too late.</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Visual Hierarchy Guide</h2>
+        
+        <p><strong>Dotted underline (Mild):</strong> Subtle bias that gently influences<br>
+        <strong>Solid underline (Moderate):</strong> Clear bias that noticeably shapes perception<br>
+        <strong>Thick underline + ⚠️ (Severe):</strong> Strong manipulation that demands critical evaluation</p>
+        
+        <p>Background opacity also increases with severity, making more manipulative language more visually prominent.</p>
+    </div>
+</body>
+</html>

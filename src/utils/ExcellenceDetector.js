@@ -26,7 +26,7 @@ export class ExcellenceDetector {
                 name: 'Nuanced Language',
                 patterns: [
                     // Epistemic modality
-                    /\b(?:might|could|possibly|potentially|perhaps|maybe)\b/gi,
+                    /\b(?:might|could|possibly|potentially|perhaps|maybe|seems|appears)\b/gi,
                     /\b(?:appears to|seems to|tends to|likely to)\b/gi,
                     /\b(?:suggests that|indicates that|implies that|points to)\b/gi,
                     // Acknowledging complexity

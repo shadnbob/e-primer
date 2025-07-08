@@ -1,34 +1,34 @@
 // dictionaries/tobe-verbs.js
 export const toBeVerbs = [
     // Present forms
-    "\\bis\\b", 
-    "\\bare\\b", 
-    "\\bam\\b",
+    "is",
+    "are",
+    "am",
 
     // Past forms
-    "\\bwas\\b", 
-    "\\bwere\\b",
+    "was",
+    "were",
 
     // Infinitive and participles
-    "\\bbe\\b", 
-    "\\bbeing\\b", 
-    "\\bbeen\\b",
+    "be",
+    "being",
+    "been",
 
     // Contractions with word boundaries
-    "\\bit's\\b", 
-    "\\bthat's\\b", 
-    "\\bhe's\\b", 
-    "\\bshe's\\b", 
-    "\\bwhat's\\b",
-    "\\bwho's\\b", 
-    "\\byou're\\b", 
-    "\\bthey're\\b", 
-    "\\bwe're\\b", 
-    "\\bi'm\\b",
-    "\\bthere's\\b", 
-    "\\bhere's\\b", 
-    "\\bwasn't\\b", 
-    "\\bweren't\\b", 
-    "\\bisn't\\b",
-    "\\baren't\\b"
+    "it's",
+    "that's",
+    "he's",
+    "she's",
+    "what's",
+    "who's",
+    "you're",
+    "they're",
+    "we're",
+    "i'm",
+    "there's",
+    "here's",
+    "wasn't",
+    "weren't",
+    "isn't",
+    "aren't"
 ];

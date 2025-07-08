@@ -262,14 +262,32 @@ export class BiasDetector {
     }
 
     // Utility methods
+    // Fixed isUIText function - more targeted filtering
     isUIText(text) {
         const trimmed = text.trim();
-        return (
-            trimmed.length < 20 && 
-            !trimmed.includes(' ') || 
-            /^[\d\s\-\+\(\)]+$/.test(trimmed) || // Numbers/phone
-            /^[A-Z\s]{2,10}$/.test(trimmed) // Short caps (likely buttons/labels)
-        );
+
+        // Skip very short text (likely UI elements)
+        if (trimmed.length < 3) {
+            return true;
+        }
+
+        // Skip pure numbers, punctuation, or symbols
+        if (/^[\d\s\-\+\(\)]+$/.test(trimmed)) {
+            return true; // Phone numbers, math, etc.
+        }
+
+        // Skip short ALL CAPS text (likely buttons/labels)
+        if (/^[A-Z\s]{2,8}$/.test(trimmed) && trimmed.length <= 8) {
+            return true; // "OK", "SUBMIT", "CANCEL", etc.
+        }
+
+        // Skip common UI text patterns
+        if (/^(ok|yes|no|submit|cancel|close|back|next|prev|home|menu)$/i.test(trimmed)) {
+            return true;
+        }
+
+        // Allow everything else (including single content words)
+        return false;
     }
 
     updateStats(match) {

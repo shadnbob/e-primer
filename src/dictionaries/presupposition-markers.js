@@ -1,41 +1,41 @@
 // dictionaries/presupposition-markers.js
 export const presuppositionMarkers = [
     // Basic presupposition triggers
-    "\\beven\\b", 
-    "\\bstill\\b", 
-    "\\banother\\b", 
-    "\\bfinally\\b",
-    "\\balready\\b", 
-    "\\byet\\b", 
-    "\\bagain\\b",
+    "even",
+    "still",
+    "another",
+    "finally",
+    "already",
+    "yet",
+    "again",
     
     // Loaded verbs
-    "\\bcontinues\\s+to\\b", 
-    "\\brefuses\\s+to\\b", 
-    "\\bfails\\s+to\\b",
-    "\\badmits\\b", 
-    "\\bdenies\\b", 
-    "\\backnowledges\\b",
+    "continues\\s+to",
+    "refuses\\s+to",
+    "fails\\s+to",
+    "admits",
+    "denies",
+    "acknowledges",
     
     // Loaded phrases
-    "\\bdespite\\s+claiming\\b", 
-    "\\bwhile\\s+claiming\\b",
-    "\\bso-called\\b", 
-    "\\balleged\\b", 
-    "\\bsupposed\\b", 
-    "\\bpretend\\b",
-    "\\bthe\\s+fact\\s+that\\b", 
-    "\\bof\\s+course\\b",
+    "despite\\s+claiming",
+    "while\\s+claiming",
+    "so-called",
+    "alleged",
+    "supposed",
+    "pretend",
+    "the\\s+fact\\s+that",
+    "of\\s+course",
     
     // Temporal presuppositions
-    "\\bno\\s+longer\\b", 
-    "\\bnot\\s+anymore\\b", 
-    "\\bused\\s+to\\b",
+    "no\\s+longer",
+    "not\\s+anymore",
+    "used\\s+to",
     
     // Additional presupposition markers
-    "\\bmanages\\s+to\\b",
-    "\\bhappens\\s+to\\b",
-    "\\btends\\s+to\\b",
-    "\\bkeeps\\s+on\\b",
-    "\\bgoes\\s+on\\s+to\\b"
+    "manages\\s+to",
+    "happens\\s+to",
+    "tends\\s+to",
+    "keeps\\s+on",
+    "goes\\s+on\\s+to"
 ];
