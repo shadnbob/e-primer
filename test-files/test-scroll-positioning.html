@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scroll Positioning Test</title>
+    <link rel="stylesheet" href="../dist/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: 200px;
+        }
+        .fix-info {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+            position: sticky;
+            top: 20px;
+            z-index: 500;
+        }
+        .scroll-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1001;
+        }
+        .section-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .tall-spacer {
+            height: 300px;
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+            margin: 20px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator" id="scrollIndicator">
+        Scroll: 0px
+    </div>
+    
+    <h1>Context Menu Scroll Positioning Test</h1>
+    
+    <div class="fix-info">
+        <h3>✅ Fixed: Context Menu Positioning</h3>
+        <p><strong>Issue:</strong> Popups appeared further down when scrolled</p>
+        <p><strong>Fix:</strong> Changed from <code>pageX/pageY</code> to <code>clientX/clientY</code></p>
+        <p><strong>Test:</strong> Right-click elements at different scroll positions - popup should always appear next to cursor</p>
+    </div>
+    
+    <div class="test-section">
+        <div class="section-number">Section 1 - Top of Page</div>
+        <p>Test right-click positioning at the top of the page:</p>
+        <p>Right-click: <span class="bias-highlight-opinion" data-tooltip="Opinion word">obviously</span> this should work correctly.</p>
+        <p>Also try: <span class="excellence-attribution" data-tooltip="✓ Good attribution">Smith (2023)</span> for excellence patterns.</p>
+    </div>
+    
+    <div class="tall-spacer">
+        Scroll down to test positioning at different scroll offsets
+    </div>
+    
+    <div class="test-section">
+        <div class="section-number">Section 2 - After Some Scrolling</div>
+        <p>Test right-click positioning after scrolling:</p>
+        <p>The <span class="bias-highlight-absolute" data-tooltip="Absolute statement">always</span> problematic pattern.</p>
+        <p>Good <span class="excellence-evidence" data-tooltip="✓ Evidence-based">evidence shows</span> improvement.</p>
+    </div>
+    
+    <div class="tall-spacer">
+        Keep scrolling to test more positions
+    </div>
+    
+    <div class="test-section">
+        <div class="section-number">Section 3 - Mid-Page</div>
+        <p>Test right-click positioning in the middle of the page:</p>
+        <p>These <span class="bias-highlight-weasel" data-tooltip="Weasel words">studies show</span> the fix works.</p>
+        <p>With <span class="excellence-nuance" data-tooltip="✓ Nuanced language">some limitations</span> noted.</p>
+    </div>
+    
+    <div class="tall-spacer">
+        Continue scrolling for more tests
+    </div>
+    
+    <div class="test-section">
+        <div class="section-number">Section 4 - Further Down</div>
+        <p>Test right-click positioning further down the page:</p>
+        <p>The <span class="bias-highlight-emotional" data-tooltip="Emotional manipulation">devastating</span> impact of poor positioning.</p>
+        <p>But <span class="excellence-transparency" data-tooltip="✓ Transparent communication">this fix addresses</span> the issue.</p>
+    </div>
+    
+    <div class="tall-spacer">
+        Almost at the bottom - test edge cases
+    </div>
+    
+    <div class="test-section">
+        <div class="section-number">Section 5 - Near Bottom</div>
+        <p>Test right-click positioning near the bottom (should flip upward):</p>
+        <p>Final <span class="bias-highlight-gaslighting" data-tooltip="Gaslighting">test case</span> for positioning.</p>
+        <p>With <span class="excellence-discourse" data-tooltip="✓ Constructive discourse">proper dialogue</span> established.</p>
+    </div>
+    
+    <div class="tall-spacer">
+        Bottom spacer for final testing
+    </div>
+    
+    <div class="test-section">
+        <div class="section-number">Section 6 - Bottom of Page</div>
+        <p>Final test at the bottom of the page:</p>
+        <p>This <span class="bias-highlight-falsedilemma" data-tooltip="False dilemma">either/or</span> should work perfectly.</p>
+        <p>Success with <span class="excellence-attribution" data-tooltip="✓ Attribution">documented evidence</span>!</p>
+    </div>
+    
+    <script>
+        // Track scroll position
+        window.addEventListener('scroll', () => {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            scrollIndicator.textContent = `Scroll: ${window.pageYOffset}px`;
+        });
+        
+        // Simulate the context menu system with corrected positioning
+        document.addEventListener('DOMContentLoaded', function() {
+            const highlights = document.querySelectorAll('[class*="bias-highlight-"], [class*="excellence-"]');
+            
+            highlights.forEach(highlight => {
+                const isExcellence = highlight.className.includes('excellence');
+                
+                highlight.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove existing menus
+                    document.querySelectorAll('.context-menu').forEach(menu => menu.remove());
+                    
+                    // Create context menu
+                    const menu = document.createElement('div');
+                    menu.className = `context-menu ${isExcellence ? 'excellence' : 'problem'}`;
+                    
+                    // Debug info about positioning
+                    const scrollY = window.pageYOffset;
+                    const clientY = e.clientY;
+                    const pageY = e.pageY;
+                    
+                    menu.innerHTML = `
+                        <div class="context-menu-header ${isExcellence ? 'excellence' : 'problem'}">
+                            <span>${isExcellence ? '✓' : '⚠'} Test Menu</span>
+                            <button class="context-menu-close">×</button>
+                        </div>
+                        <div class="context-menu-text">"${highlight.textContent}"</div>
+                        <div class="context-menu-description">
+                            <strong>Positioning Debug:</strong><br>
+                            Scroll Y: ${scrollY}px<br>
+                            Client Y: ${clientY}px<br>
+                            Page Y: ${pageY}px<br>
+                            Using: clientY (${clientY}px)
+                        </div>
+                        <div class="context-menu-suggestion">
+                            💡 Menu should appear next to cursor regardless of scroll position!
+                        </div>
+                    `;
+                    
+                    // Position using clientX/clientY (viewport-relative)
+                    menu.style.left = e.clientX + 'px';
+                    menu.style.top = e.clientY + 'px';
+                    menu.style.display = 'block';
+                    
+                    document.body.appendChild(menu);
+                    
+                    // Close functionality
+                    const closeMenu = () => menu.remove();
+                    menu.querySelector('.context-menu-close').addEventListener('click', closeMenu);
+                    
+                    setTimeout(() => {
+                        document.addEventListener('click', function closeOnOutside(e) {
+                            if (!menu.contains(e.target)) {
+                                closeMenu();
+                                document.removeEventListener('click', closeOnOutside);
+                            }
+                        });
+                    }, 10);
+                    
+                    document.addEventListener('keydown', function closeOnEscape(e) {
+                        if (e.key === 'Escape') {
+                            closeMenu();
+                            document.removeEventListener('keydown', closeOnEscape);
+                        }
+                    });
+                    
+                    // Adjust position if off-screen (using clientX/clientY)
+                    setTimeout(() => {
+                        const rect = menu.getBoundingClientRect();
+                        if (rect.right > window.innerWidth) {
+                            menu.style.left = (e.clientX - rect.width) + 'px';
+                        }
+                        if (rect.bottom > window.innerHeight) {
+                            menu.style.top = (e.clientY - rect.height) + 'px';
+                        }
+                    }, 10);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

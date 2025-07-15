@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hover Card Height Expansion Test</title>
+    <link rel="stylesheet" href="../dist/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .debug-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        
+        /* Debug styles to visualize the hover card structure */
+        .debug-mode .hover-card {
+            border: 3px dashed red !important;
+            background: rgba(255, 255, 0, 0.1) !important;
+        }
+        
+        .debug-mode .hover-card-header {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid red;
+        }
+        
+        .debug-mode .hover-card-text {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid green;
+        }
+        
+        .debug-mode .hover-card-reason {
+            background: rgba(0, 0, 255, 0.1);
+            border: 1px solid blue;
+        }
+        
+        .debug-mode .hover-card-expanded {
+            background: rgba(255, 0, 255, 0.1);
+            border: 1px solid magenta;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hover Card Height Expansion Test</h1>
+    
+    <div class="debug-info">
+        <h3>🔍 Height Expansion Testing</h3>
+        <p><strong>Expected behavior:</strong> The hover card border should fully enclose all content, including the expanded sections that appear on longer hover.</p>
+        <p><strong>Debug mode:</strong> <button onclick="toggleDebugMode()">Toggle Debug Visualization</button></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>📏 Basic Height Test</h2>
+        <p>Test basic cards - borders should wrap all content:</p>
+        <p>Short content: <span class="bias-highlight-opinion">opinion</span></p>
+        <p>Medium content: <span class="bias-highlight-tobe">obviously this is true</span></p>
+        <p>Long content: <span class="bias-highlight-absolute">everyone knows this is absolutely certain</span></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎯 Expanded Content Test</h2>
+        <p>These should expand on longer hover (1.5s) - border should grow:</p>
+        <p>Problem pattern: <span class="bias-highlight-emotional">devastating consequences</span></p>
+        <p>Excellence pattern: <span class="excellence-attribution">Smith et al. (2023)</span></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>📐 Complex Content Test</h2>
+        <p>Test with complex content structure:</p>
+        <p>Multiple issues: <span class="bias-highlight-presupposition">even scientists admit</span></p>
+        <p>With context: <span class="bias-highlight-weasel">studies show</span></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎨 Visual Verification</h2>
+        <div id="height-info" style="background: #f8f9fa; padding: 10px; border-radius: 4px; margin: 10px 0;">
+            <p><strong>Current Test:</strong> Hover over elements to see real-time height measurements</p>
+            <p id="height-display">Height: Not measured</p>
+        </div>
+    </div>
+    
+    <script>
+        let debugMode = false;
+        
+        function toggleDebugMode() {
+            debugMode = !debugMode;
+            document.body.classList.toggle('debug-mode', debugMode);
+        }
+        
+        // Enhanced test simulation with height measurement
+        document.addEventListener('DOMContentLoaded', function() {
+            const highlights = document.querySelectorAll('[class*="bias-highlight-"], [class*="excellence-"]');
+            
+            highlights.forEach(highlight => {
+                const isExcellence = highlight.className.includes('excellence');
+                
+                // Remove any existing hover cards
+                const existingCards = highlight.querySelectorAll('.hover-card');
+                existingCards.forEach(card => card.remove());
+                
+                const hoverCard = document.createElement('div');
+                hoverCard.className = `hover-card ${isExcellence ? 'hover-card-excellence' : 'hover-card-problem'}`;
+                
+                // Create content with proper structure
+                const content = document.createElement('div');
+                content.innerHTML = `
+                    <div class="hover-card-header">
+                        ${isExcellence ? '✅ Excellence Pattern' : '⚠️ Bias Pattern'}
+                        ${!isExcellence ? '<span class="intensity-badge intensity-2">Moderate</span>' : ''}
+                    </div>
+                    <div class="hover-card-text">"${highlight.textContent}"</div>
+                    <div class="hover-card-reason">
+                        ${isExcellence ? 
+                            'This demonstrates excellent writing practices that build trust and clarity.' : 
+                            'This language pattern may introduce bias or reduce clarity for readers.'
+                        }
+                    </div>
+                    <div class="hover-card-expanded">
+                        <div class="hover-card-suggestion">
+                            💡 ${isExcellence ? 
+                                'Continue using this clear, evidence-based communication style.' : 
+                                'Consider using more neutral, specific language that provides concrete evidence.'
+                            }
+                        </div>
+                        <div class="hover-card-examples">
+                            <strong>Examples:</strong> ${isExcellence ? 
+                                'Keep providing specific sources like "According to the 2023 study by Johnson et al." or "Data from the Federal Reserve shows..."' : 
+                                'Replace with objective alternatives like "Research indicates" with specific citations or "Data shows" with verifiable sources.'
+                            }
+                        </div>
+                    </div>
+                `;
+                
+                hoverCard.appendChild(content);
+                highlight.appendChild(hoverCard);
+                
+                // Add height measurement
+                const heightDisplay = document.getElementById('height-display');
+                
+                highlight.addEventListener('mouseenter', function() {
+                    setTimeout(() => {
+                        const rect = hoverCard.getBoundingClientRect();
+                        const computedStyle = window.getComputedStyle(hoverCard);
+                        heightDisplay.innerHTML = `
+                            <strong>Element:</strong> ${highlight.textContent}<br>
+                            <strong>Height:</strong> ${rect.height}px<br>
+                            <strong>Computed Height:</strong> ${computedStyle.height}<br>
+                            <strong>Min Height:</strong> ${computedStyle.minHeight}<br>
+                            <strong>Border:</strong> ${computedStyle.border}<br>
+                            <strong>Padding:</strong> ${computedStyle.padding}
+                        `;
+                    }, 100);
+                });
+                
+                // Position adjustment
+                const adjustPosition = () => {
+                    const rect = highlight.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    const viewportWidth = window.innerWidth;
+                    
+                    hoverCard.classList.remove('flip-to-top', 'align-left', 'align-right');
+                    
+                    if (rect.bottom > viewportHeight - 300) {
+                        hoverCard.classList.add('flip-to-top');
+                    }
+                    
+                    if (rect.left < 150) {
+                        hoverCard.classList.add('align-left');
+                    } else if (rect.right > viewportWidth - 150) {
+                        hoverCard.classList.add('align-right');
+                    }
+                };
+                
+                highlight.addEventListener('mouseenter', adjustPosition);
+            });
+        });
+    </script>
+</body>
+</html>

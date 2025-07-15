@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiple Popup Fixes Test</title>
+    <link rel="stylesheet" href="../dist/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .fix-summary {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .test-results {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .stress-test {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        .inline-test {
+            display: inline;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Multiple Popup Fixes Test</h1>
+    
+    <div class="fix-summary">
+        <h3>✅ Fixes Applied:</h3>
+        <ul>
+            <li>✅ Prevent duplicate hover card creation per element</li>
+            <li>✅ Proper event listener cleanup and management</li>
+            <li>✅ CSS ensures only one hover card visible at a time</li>
+            <li>✅ Throttled positioning updates for performance</li>
+            <li>✅ Cleanup when highlights are removed</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔬 Single Element Test</h2>
+        <p>Each element should show exactly <strong>ONE</strong> hover card:</p>
+        <p>Test <span class="bias-highlight-opinion">single opinion</span> and <span class="bias-highlight-tobe">single to-be</span> verb.</p>
+        <p>Check <span class="excellence-attribution">single attribution</span> and <span class="excellence-evidence">single evidence</span>.</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>⚡ Rapid Hover Test</h2>
+        <p>Move mouse quickly between these elements. Only one card should show at a time:</p>
+        <p>
+            <span class="bias-highlight-opinion inline-test">opinion</span>
+            <span class="bias-highlight-tobe inline-test">obvious</span>
+            <span class="bias-highlight-absolute inline-test">never</span>
+            <span class="bias-highlight-passive inline-test">was done</span>
+            <span class="bias-highlight-weasel inline-test">studies show</span>
+        </p>
+    </div>
+    
+    <div class="test-section">
+        <h2>🧪 Stress Test - Multiple Elements</h2>
+        <div class="stress-test">
+            <p>This section contains many highlighted elements to test for stacking issues:</p>
+            <p>The <span class="bias-highlight-opinion">obvious</span> problem with <span class="bias-highlight-absolute">all</span> these <span class="bias-highlight-weasel">studies</span> that <span class="bias-highlight-tobe">are</span> being <span class="bias-highlight-passive">conducted</span> by <span class="bias-highlight-presupposition">even experts</span> shows <span class="bias-highlight-emotional">devastating</span> results.</p>
+            
+            <p>However, <span class="excellence-attribution">Smith (2023)</span> provides <span class="excellence-evidence">specific data</span> with <span class="excellence-nuance">some limitations</span> and <span class="excellence-transparency">acknowledges uncertainty</span> while <span class="excellence-discourse">encouraging dialogue</span>.</p>
+            
+            <p>The <span class="bias-highlight-metaphor">war on</span> this <span class="bias-highlight-minimizer">minor</span> issue has <span class="bias-highlight-maximizer">catastrophic</span> implications for <span class="bias-highlight-gaslighting">your concerns</span> about <span class="bias-highlight-euphemism">collateral damage</span>.</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎯 Positioning Test</h2>
+        <p>Left edge: <span class="bias-highlight-opinion">edge case</span></p>
+        <p style="text-align: center;">Center: <span class="bias-highlight-tobe">centered text</span></p>
+        <p style="text-align: right;">Right edge: <span class="bias-highlight-absolute">right side</span></p>
+    </div>
+    
+    <div class="test-results">
+        <h3>🔍 What to Test:</h3>
+        <ol>
+            <li><strong>Single Cards:</strong> Each element should show exactly one hover card</li>
+            <li><strong>No Stacking:</strong> Multiple cards should never appear simultaneously</li>
+            <li><strong>Smooth Transitions:</strong> Cards should appear/disappear smoothly</li>
+            <li><strong>Proper Cleanup:</strong> Moving between elements should hide previous cards</li>
+            <li><strong>Performance:</strong> No lag or stuttering during rapid hover</li>
+        </ol>
+    </div>
+    
+    <!-- Bottom test area -->
+    <div style="height: 300px;"></div>
+    
+    <div class="test-section">
+        <h2>⬇️ Bottom Flip Test</h2>
+        <p>These should flip upward: <span class="bias-highlight-falsedilemma">either/or</span> and <span class="excellence-discourse">dialogue</span>.</p>
+        <br><br>
+        <p>Very bottom: <span class="bias-highlight-euphemism">final test</span> element.</p>
+    </div>
+    
+    <script>
+        // Enhanced test simulation with proper single-card management
+        document.addEventListener('DOMContentLoaded', function() {
+            const highlights = document.querySelectorAll('[class*="bias-highlight-"], [class*="excellence-"]');
+            
+            highlights.forEach(highlight => {
+                const isExcellence = highlight.className.includes('excellence');
+                
+                // Remove any existing hover cards (preventing duplicates)
+                const existingCards = highlight.querySelectorAll('.hover-card');
+                existingCards.forEach(card => card.remove());
+                
+                const hoverCard = document.createElement('div');
+                hoverCard.className = `hover-card ${isExcellence ? 'hover-card-excellence' : 'hover-card-problem'}`;
+                
+                let content = '';
+                if (isExcellence) {
+                    content = `
+                        <div class="hover-card-header">✅ Excellence Pattern</div>
+                        <div class="hover-card-text">"${highlight.textContent}"</div>
+                        <div class="hover-card-reason">This demonstrates excellent writing practices.</div>
+                        <div class="hover-card-expanded">
+                            <div class="hover-card-suggestion">💡 Continue this clear communication style.</div>
+                            <div class="hover-card-examples"><strong>Examples:</strong> Keep providing specific sources.</div>
+                        </div>
+                    `;
+                } else {
+                    content = `
+                        <div class="hover-card-header">⚠️ Bias Pattern <span class="intensity-badge intensity-2">Moderate</span></div>
+                        <div class="hover-card-text">"${highlight.textContent}"</div>
+                        <div class="hover-card-reason">This language pattern may introduce bias.</div>
+                        <div class="hover-card-expanded">
+                            <div class="hover-card-suggestion">💡 Use more neutral, specific language.</div>
+                            <div class="hover-card-examples"><strong>Examples:</strong> Replace with objective alternatives.</div>
+                        </div>
+                    `;
+                }
+                
+                hoverCard.innerHTML = content;
+                highlight.appendChild(hoverCard);
+                
+                // Smart positioning with throttling
+                let positionTimeout;
+                const adjustPosition = () => {
+                    if (positionTimeout) clearTimeout(positionTimeout);
+                    positionTimeout = setTimeout(() => {
+                        const rect = highlight.getBoundingClientRect();
+                        const viewportWidth = window.innerWidth;
+                        const viewportHeight = window.innerHeight;
+                        
+                        hoverCard.classList.remove('flip-to-top', 'align-left', 'align-right');
+                        
+                        if (rect.bottom > viewportHeight - 300) {
+                            hoverCard.classList.add('flip-to-top');
+                        }
+                        
+                        if (rect.left < 150) {
+                            hoverCard.classList.add('align-left');
+                        } else if (rect.right > viewportWidth - 150) {
+                            hoverCard.classList.add('align-right');
+                        }
+                    }, 10);
+                };
+                
+                highlight.addEventListener('mouseenter', adjustPosition);
+                window.addEventListener('scroll', adjustPosition, { passive: true });
+                window.addEventListener('resize', adjustPosition, { passive: true });
+            });
+            
+            // Test result tracking
+            let activeCards = 0;
+            const observer = new MutationObserver(() => {
+                const visibleCards = document.querySelectorAll('.hover-card:not([style*="opacity: 0"])');
+                if (visibleCards.length > 1) {
+                    console.warn('⚠️ Multiple hover cards detected!', visibleCards.length);
+                }
+            });
+            
+            observer.observe(document.body, { 
+                childList: true, 
+                subtree: true, 
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+        });
+    </script>
+</body>
+</html>

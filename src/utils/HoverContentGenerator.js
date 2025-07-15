@@ -134,26 +134,14 @@ export class HoverContentGenerator {
         // Quoted text
         content += `<div class="hover-card-text">"${match.text}"</div>`;
         
-        // Basic description (always shown)
+        // All content always visible - no progressive disclosure
         const descriptions = isExcellence ? this.excellenceDescriptions : this.enhancedDescriptions;
         const desc = descriptions[type];
         
         if (desc) {
             content += `<div class="hover-card-reason">${desc.description}</div>`;
-        }
-        
-        // Portrayal information for problems
-        if (!isExcellence && match.portrayal) {
-            content += `<div class="hover-card-portrayal">Portrayal: ${match.portrayal.valence} (${match.portrayal.type})</div>`;
-        }
-        
-        // Nearby context
-        if (nearbyMatches.length > 0) {
-            content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map(m => m.type).join(', ')}</div>`;
-        }
-        
-        // Expanded content (shown on longer hover)
-        if (desc) {
+            
+            // Always show expanded content for reliable height
             content += `<div class="hover-card-expanded">`;
             
             if (desc.suggestion) {
@@ -167,45 +155,20 @@ export class HoverContentGenerator {
             content += `</div>`;
         }
         
+        // Portrayal information for problems
+        if (!isExcellence && match.portrayal) {
+            content += `<div class="hover-card-portrayal">Portrayal: ${match.portrayal.valence} (${match.portrayal.type})</div>`;
+        }
+        
+        // Nearby context
+        if (nearbyMatches.length > 0) {
+            content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map(m => m.type).join(', ')}</div>`;
+        }
+        
         content += '</div>';
         return content;
     }
     
-    // Add positioning logic after the hover card is created
-    static setupSmartPositioning(hoverCard, parentElement) {
-        // Add event listeners to adjust positioning dynamically
-        const parent = parentElement;
-        
-        const adjustPosition = () => {
-            if (!hoverCard || !parent) return;
-            
-            const rect = parent.getBoundingClientRect();
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            
-            // Reset classes
-            hoverCard.classList.remove('flip-to-top', 'align-left', 'align-right');
-            
-            // Check if we're near the bottom of the viewport
-            if (rect.bottom > viewportHeight - 400) {
-                hoverCard.classList.add('flip-to-top');
-            }
-            
-            // Check if we're near the left or right edge
-            if (rect.left < 200) {
-                hoverCard.classList.add('align-left');
-            } else if (rect.right > viewportWidth - 200) {
-                hoverCard.classList.add('align-right');
-            }
-        };
-        
-        // Adjust position on hover
-        parent.addEventListener('mouseenter', adjustPosition);
-        
-        // Also adjust on scroll/resize
-        window.addEventListener('scroll', adjustPosition);
-        window.addEventListener('resize', adjustPosition);
-    }
     
     getTypeName(type, isExcellence) {
         const typeNames = {

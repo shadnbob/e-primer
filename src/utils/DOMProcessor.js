@@ -124,14 +124,8 @@ export class DOMProcessor {
             
             span.textContent = match.text;
             
-            // Create and add hover card
-            const hoverCard = this.createHoverCard(match, matches);
-            if (hoverCard) {
-                span.appendChild(hoverCard);
-                
-                // Setup smart positioning
-                this.hoverGenerator.constructor.setupSmartPositioning(hoverCard, span);
-            }
+            // Add simple tooltip and right-click functionality
+            this.addSimpleTooltip(span, match);
             
             fragment.appendChild(span);
 
@@ -217,6 +211,102 @@ export class DOMProcessor {
         return nearby;
     }
 
+    // Add simple tooltip and right-click functionality
+    addSimpleTooltip(spanElement, match) {
+        // Add tooltip data attribute
+        const tooltipText = match.isExcellence ? 
+            this.getExcellenceTooltipText(match.type) :
+            this.getTooltipText(match.type);
+        
+        spanElement.setAttribute('data-tooltip', tooltipText);
+        
+        // Add right-click context menu
+        spanElement.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.showContextMenu(e, match);
+        });
+    }
+
+    // Show context menu on right-click
+    showContextMenu(event, match) {
+        // Remove any existing context menus
+        const existingMenus = document.querySelectorAll('.context-menu');
+        existingMenus.forEach(menu => menu.remove());
+        
+        // Create context menu
+        const menu = document.createElement('div');
+        menu.className = `context-menu ${match.isExcellence ? 'excellence' : 'problem'}`;
+        
+        // Get detailed content from HoverContentGenerator
+        const descriptions = match.isExcellence ? 
+            this.hoverGenerator.excellenceDescriptions : 
+            this.hoverGenerator.enhancedDescriptions;
+        
+        const desc = descriptions[match.type];
+        const intensity = match.intensity || 2;
+        const intensityLabel = ['Mild', 'Moderate', 'Severe'][intensity - 1];
+        
+        menu.innerHTML = `
+            <div class="context-menu-header ${match.isExcellence ? 'excellence' : 'problem'}">
+                <span>
+                    ${match.isExcellence ? '✓' : '⚠'} ${this.hoverGenerator.getTypeName(match.type, match.isExcellence)}
+                    ${!match.isExcellence ? `<span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>` : ''}
+                </span>
+                <button class="context-menu-close">×</button>
+            </div>
+            <div class="context-menu-text">"${match.text}"</div>
+            <div class="context-menu-description">${desc ? desc.description : 'Language pattern detected.'}</div>
+            ${desc && desc.suggestion ? `<div class="context-menu-suggestion">💡 ${desc.suggestion}</div>` : ''}
+            ${desc && desc.examples ? `<div class="context-menu-examples"><strong>Examples:</strong> ${desc.examples}</div>` : ''}
+        `;
+        
+        // Position menu (use clientX/clientY for viewport-relative positioning)
+        menu.style.left = event.clientX + 'px';
+        menu.style.top = event.clientY + 'px';
+        menu.style.display = 'block';
+        
+        // Add to document
+        document.body.appendChild(menu);
+        
+        // Close menu on click outside or close button
+        const closeMenu = () => menu.remove();
+        
+        menu.querySelector('.context-menu-close').addEventListener('click', closeMenu);
+        
+        // Close on click outside
+        setTimeout(() => {
+            document.addEventListener('click', function closeOnOutside(e) {
+                if (!menu.contains(e.target)) {
+                    closeMenu();
+                    document.removeEventListener('click', closeOnOutside);
+                }
+            });
+        }, 10);
+        
+        // Close on escape key
+        document.addEventListener('keydown', function closeOnEscape(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+                document.removeEventListener('keydown', closeOnEscape);
+            }
+        });
+        
+        // Adjust position if menu goes off-screen
+        setTimeout(() => {
+            const rect = menu.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            if (rect.right > viewportWidth) {
+                menu.style.left = (event.clientX - rect.width) + 'px';
+            }
+            
+            if (rect.bottom > viewportHeight) {
+                menu.style.top = (event.clientY - rect.height) + 'px';
+            }
+        }, 10);
+    }
+
     // Remove all bias highlights
     removeAllHighlights() {
         const selector = Object.keys(this.getHighlightSelectors()).join(', ');
@@ -225,6 +315,9 @@ export class DOMProcessor {
         this.processedParents.clear();
 
         highlights.forEach(highlight => {
+            // Clean up hover cards and event listeners
+            this.cleanupHoverElements(highlight);
+            
             const parent = highlight.parentNode;
             const textNode = document.createTextNode(highlight.textContent);
             parent.replaceChild(textNode, highlight);
@@ -241,6 +334,15 @@ export class DOMProcessor {
         this.processedParents.clear();
     }
 
+    // Clean up hover-related elements and event listeners
+    cleanupHoverElements(element) {
+        // Remove tooltip attribute
+        element.removeAttribute('data-tooltip');
+        
+        // Remove context menu event listeners (they're handled automatically when element is removed)
+        // No complex cleanup needed with simple tooltip system
+    }
+
     // Remove specific type of highlights
     removeSpecificHighlights(type) {
         const selector = `.${this.highlightClassPrefix}${type}`;
@@ -249,6 +351,9 @@ export class DOMProcessor {
         this.processedParents.clear();
 
         highlights.forEach(highlight => {
+            // Clean up hover cards and event listeners
+            this.cleanupHoverElements(highlight);
+            
             const parent = highlight.parentNode;
             const textNode = document.createTextNode(highlight.textContent);
             parent.replaceChild(textNode, highlight);

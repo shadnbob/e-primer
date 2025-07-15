@@ -1586,14 +1586,6 @@
       const desc = descriptions[type];
       if (desc) {
         content += `<div class="hover-card-reason">${desc.description}</div>`;
-      }
-      if (!isExcellence && match.portrayal) {
-        content += `<div class="hover-card-portrayal">Portrayal: ${match.portrayal.valence} (${match.portrayal.type})</div>`;
-      }
-      if (nearbyMatches.length > 0) {
-        content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map((m) => m.type).join(", ")}</div>`;
-      }
-      if (desc) {
         content += `<div class="hover-card-expanded">`;
         if (desc.suggestion) {
           content += `<div class="hover-card-suggestion">\u{1F4A1} ${desc.suggestion}</div>`;
@@ -1603,31 +1595,14 @@
         }
         content += `</div>`;
       }
+      if (!isExcellence && match.portrayal) {
+        content += `<div class="hover-card-portrayal">Portrayal: ${match.portrayal.valence} (${match.portrayal.type})</div>`;
+      }
+      if (nearbyMatches.length > 0) {
+        content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map((m) => m.type).join(", ")}</div>`;
+      }
       content += "</div>";
       return content;
-    }
-    // Add positioning logic after the hover card is created
-    static setupSmartPositioning(hoverCard, parentElement) {
-      const parent = parentElement;
-      const adjustPosition = () => {
-        if (!hoverCard || !parent)
-          return;
-        const rect = parent.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        hoverCard.classList.remove("flip-to-top", "align-left", "align-right");
-        if (rect.bottom > viewportHeight - 400) {
-          hoverCard.classList.add("flip-to-top");
-        }
-        if (rect.left < 200) {
-          hoverCard.classList.add("align-left");
-        } else if (rect.right > viewportWidth - 200) {
-          hoverCard.classList.add("align-right");
-        }
-      };
-      parent.addEventListener("mouseenter", adjustPosition);
-      window.addEventListener("scroll", adjustPosition);
-      window.addEventListener("resize", adjustPosition);
     }
     getTypeName(type, isExcellence) {
       const typeNames = {
@@ -1750,11 +1725,7 @@
           span.classList.add(`bias-intensity-${match.intensity}`);
         }
         span.textContent = match.text;
-        const hoverCard = this.createHoverCard(match, matches);
-        if (hoverCard) {
-          span.appendChild(hoverCard);
-          this.hoverGenerator.constructor.setupSmartPositioning(hoverCard, span);
-        }
+        this.addSimpleTooltip(span, match);
         fragment.appendChild(span);
         lastIndex = match.index + match.length;
       }
@@ -1821,12 +1792,77 @@
       }
       return nearby;
     }
+    // Add simple tooltip and right-click functionality
+    addSimpleTooltip(spanElement, match) {
+      const tooltipText = match.isExcellence ? this.getExcellenceTooltipText(match.type) : this.getTooltipText(match.type);
+      spanElement.setAttribute("data-tooltip", tooltipText);
+      spanElement.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        this.showContextMenu(e, match);
+      });
+    }
+    // Show context menu on right-click
+    showContextMenu(event, match) {
+      const existingMenus = document.querySelectorAll(".context-menu");
+      existingMenus.forEach((menu2) => menu2.remove());
+      const menu = document.createElement("div");
+      menu.className = `context-menu ${match.isExcellence ? "excellence" : "problem"}`;
+      const descriptions = match.isExcellence ? this.hoverGenerator.excellenceDescriptions : this.hoverGenerator.enhancedDescriptions;
+      const desc = descriptions[match.type];
+      const intensity = match.intensity || 2;
+      const intensityLabel = ["Mild", "Moderate", "Severe"][intensity - 1];
+      menu.innerHTML = `
+            <div class="context-menu-header ${match.isExcellence ? "excellence" : "problem"}">
+                <span>
+                    ${match.isExcellence ? "\u2713" : "\u26A0"} ${this.hoverGenerator.getTypeName(match.type, match.isExcellence)}
+                    ${!match.isExcellence ? `<span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>` : ""}
+                </span>
+                <button class="context-menu-close">\xD7</button>
+            </div>
+            <div class="context-menu-text">"${match.text}"</div>
+            <div class="context-menu-description">${desc ? desc.description : "Language pattern detected."}</div>
+            ${desc && desc.suggestion ? `<div class="context-menu-suggestion">\u{1F4A1} ${desc.suggestion}</div>` : ""}
+            ${desc && desc.examples ? `<div class="context-menu-examples"><strong>Examples:</strong> ${desc.examples}</div>` : ""}
+        `;
+      menu.style.left = event.clientX + "px";
+      menu.style.top = event.clientY + "px";
+      menu.style.display = "block";
+      document.body.appendChild(menu);
+      const closeMenu = () => menu.remove();
+      menu.querySelector(".context-menu-close").addEventListener("click", closeMenu);
+      setTimeout(() => {
+        document.addEventListener("click", function closeOnOutside(e) {
+          if (!menu.contains(e.target)) {
+            closeMenu();
+            document.removeEventListener("click", closeOnOutside);
+          }
+        });
+      }, 10);
+      document.addEventListener("keydown", function closeOnEscape(e) {
+        if (e.key === "Escape") {
+          closeMenu();
+          document.removeEventListener("keydown", closeOnEscape);
+        }
+      });
+      setTimeout(() => {
+        const rect = menu.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        if (rect.right > viewportWidth) {
+          menu.style.left = event.clientX - rect.width + "px";
+        }
+        if (rect.bottom > viewportHeight) {
+          menu.style.top = event.clientY - rect.height + "px";
+        }
+      }, 10);
+    }
     // Remove all bias highlights
     removeAllHighlights() {
       const selector = Object.keys(this.getHighlightSelectors()).join(", ");
       const highlights = document.querySelectorAll(selector);
       this.processedParents.clear();
       highlights.forEach((highlight) => {
+        this.cleanupHoverElements(highlight);
         const parent = highlight.parentNode;
         const textNode = document.createTextNode(highlight.textContent);
         parent.replaceChild(textNode, highlight);
@@ -1839,12 +1875,17 @@
       });
       this.processedParents.clear();
     }
+    // Clean up hover-related elements and event listeners
+    cleanupHoverElements(element) {
+      element.removeAttribute("data-tooltip");
+    }
     // Remove specific type of highlights
     removeSpecificHighlights(type) {
       const selector = `.${this.highlightClassPrefix}${type}`;
       const highlights = document.querySelectorAll(selector);
       this.processedParents.clear();
       highlights.forEach((highlight) => {
+        this.cleanupHoverElements(highlight);
         const parent = highlight.parentNode;
         const textNode = document.createTextNode(highlight.textContent);
         parent.replaceChild(textNode, highlight);
