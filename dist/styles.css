@@ -2,267 +2,113 @@
     background-color: rgba(255, 165, 0, 0.3);
     border-bottom: 1px solid orange;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-opinion:hover::after {
-    content: "Opinion word";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-tobe {
     background-color: rgba(135, 206, 250, 0.3);
     border-bottom: 1px solid lightskyblue;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-tobe:hover::after {
-    content: "To-be verb (E-Prime)";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-absolute {
     background-color: rgba(255, 105, 180, 0.3);
     border-bottom: 1px solid hotpink;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-absolute:hover::after {
-    content: "Absolute statement";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-passive {
     background-color: rgba(128, 0, 128, 0.3);
     border-bottom: 1px solid purple;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-passive:hover::after {
-    content: "Passive voice";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-weasel {
     background-color: rgba(184, 134, 11, 0.3);
     border-bottom: 1px solid darkgoldenrod;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-weasel:hover::after {
-    content: "Weasel word";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-presupposition {
     background-color: rgba(255, 20, 147, 0.3);
     border-bottom: 1px solid deeppink;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-presupposition:hover::after {
-    content: "Presupposition";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-metaphor {
     background-color: rgba(220, 20, 60, 0.3);
     border-bottom: 1px solid crimson;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-metaphor:hover::after {
-    content: "War metaphor";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-minimizer {
     background-color: rgba(0, 128, 128, 0.3);
     border-bottom: 1px solid teal;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-minimizer:hover::after {
-    content: "Minimizer";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-maximizer {
     background-color: rgba(255, 69, 0, 0.3);
     border-bottom: 1px solid orangered;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-maximizer:hover::after {
-    content: "Maximizer";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-falsebalance {
     background-color: rgba(75, 0, 130, 0.3);
     border-bottom: 1px solid indigo;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-falsebalance:hover::after {
-    content: "False balance";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-euphemism {
     background-color: rgba(0, 100, 0, 0.3);
     border-bottom: 1px solid darkgreen;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-euphemism:hover::after {
-    content: "Euphemism/Dysphemism";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-emotional {
     background-color: rgba(255, 127, 80, 0.3);
     border-bottom: 1px solid coral;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-emotional:hover::after {
-    content: "Emotional manipulation";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-gaslighting {
     background-color: rgba(128, 0, 0, 0.3);
     border-bottom: 1px solid maroon;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-gaslighting:hover::after {
-    content: "Gaslighting";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 .bias-highlight-falsedilemma {
     background-color: rgba(148, 0, 211, 0.3);
     border-bottom: 1px solid darkviolet;
     cursor: help;
+    position: relative;
 }
 
-.bias-highlight-falsedilemma:hover::after {
-    content: "False dilemma";
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    margin-top: 20px;
-    z-index: 1000;
-}
 
 /* Excellence Detection Styles */
 
@@ -357,10 +203,10 @@
 /* Hover Cards */
 .hover-card {
     position: absolute;
-    bottom: 100%;
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    margin-bottom: 8px;
+    margin-top: 8px;
     background: white;
     border-radius: 8px;
     padding: 12px;
@@ -373,6 +219,35 @@
     transition: opacity 0.2s, visibility 0.2s;
     font-size: 14px;
     line-height: 1.5;
+    pointer-events: none; /* Prevent hover card from interfering with mouse events */
+    white-space: normal; /* Allow text wrapping */
+    word-wrap: break-word; /* Break long words */
+}
+
+/* Auto-flip to top when near bottom of viewport */
+.hover-card.flip-to-top {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.hover-card.flip-to-top::before {
+    top: 100%;
+    bottom: auto;
+    border-color: white transparent transparent transparent;
+}
+
+/* Auto-adjust horizontal position when near viewport edges */
+.hover-card.align-left {
+    left: 0;
+    transform: translateX(0);
+}
+
+.hover-card.align-right {
+    left: auto;
+    right: 0;
+    transform: translateX(0);
 }
 
 /* Show on hover with delay */
@@ -383,16 +258,24 @@
     transition-delay: 0.3s;
 }
 
-/* Arrow pointing down */
-.hover-card::after {
+/* Expanded content shows on longer hover */
+*[class*="excellence-"]:hover .hover-card-expanded,
+*[class*="bias-"]:hover .hover-card-expanded {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 1.5s;
+}
+
+/* Arrow pointing up */
+.hover-card::before {
     content: "";
     position: absolute;
-    top: 100%;
+    bottom: 100%;
     left: 50%;
     margin-left: -6px;
     border-width: 6px;
     border-style: solid;
-    border-color: white transparent transparent transparent;
+    border-color: transparent transparent white transparent;
 }
 
 /* Excellence hover card styling */
@@ -462,6 +345,41 @@
     margin-top: 6px;
     font-size: 12px;
     color: #6c757d;
+}
+
+/* Progressive disclosure sections */
+.hover-card-expanded {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e9ecef;
+}
+
+.hover-card-description {
+    color: #333;
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.hover-card-suggestion {
+    color: #28a745;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.hover-card-examples {
+    color: #6c757d;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.hover-card-examples strong {
+    color: #333;
+    font-style: normal;
 }
 
 /* Mode Indicator */

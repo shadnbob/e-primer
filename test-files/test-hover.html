@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hover Card Test</title>
+    <link rel="stylesheet" href="../dist/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-highlight {
+            background-color: rgba(255, 165, 0, 0.3);
+            border-bottom: 1px solid orange;
+            cursor: help;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hover Card Positioning Test</h1>
+    
+    <div class="test-section">
+        <h2>Top of Page Test</h2>
+        <p>This is a <span class="bias-highlight-opinion">biased opinion</span> that should show a hover card below the text.</p>
+        <p>Another <span class="bias-highlight-tobe">obvious statement</span> to test hover functionality.</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Middle Section</h2>
+        <p>Testing <span class="bias-highlight-absolute">absolute statements</span> and <span class="bias-highlight-passive">passive voice</span> detection.</p>
+        <p>More content with <span class="bias-highlight-weasel">weasel words</span> and <span class="bias-highlight-presupposition">presuppositions</span>.</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Excellence Examples</h2>
+        <p>This shows <span class="excellence-attribution">good attribution</span> and <span class="excellence-nuance">nuanced language</span>.</p>
+        <p>With <span class="excellence-transparency">transparent communication</span> and <span class="excellence-evidence">evidence-based claims</span>.</p>
+    </div>
+    
+    <!-- Add lots of content to test bottom positioning -->
+    <div class="test-section">
+        <h2>Bottom of Page Test</h2>
+        <p>This content is near the <span class="bias-highlight-emotional">bottom of the page</span> to test flip-to-top positioning.</p>
+        <p>Final test with <span class="bias-highlight-gaslighting">gaslighting language</span>.</p>
+        <br><br><br><br><br><br><br><br><br><br>
+        <p>Very bottom: <span class="bias-highlight-falsedilemma">false dilemma</span> should flip to top.</p>
+    </div>
+    
+    <script>
+        // Simulate the hover card creation since the extension isn't loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const highlights = document.querySelectorAll('[class*="bias-highlight-"], [class*="excellence-"]');
+            
+            highlights.forEach(highlight => {
+                const hoverCard = document.createElement('div');
+                hoverCard.className = 'hover-card ' + (highlight.className.includes('excellence') ? 'hover-card-excellence' : 'hover-card-problem');
+                
+                let content = '';
+                if (highlight.className.includes('excellence')) {
+                    content = `
+                        <div class="hover-card-header">✓ Excellence Pattern</div>
+                        <div class="hover-card-text">"${highlight.textContent}"</div>
+                        <div class="hover-card-reason">This demonstrates good writing practices.</div>
+                        <div class="hover-card-expanded">
+                            <div class="hover-card-suggestion">💡 Continue using this style of clear communication.</div>
+                            <div class="hover-card-examples"><strong>Examples:</strong> Keep providing specific sources and evidence.</div>
+                        </div>
+                    `;
+                } else {
+                    content = `
+                        <div class="hover-card-header">⚠ Bias Pattern <span class="intensity-badge intensity-2">Moderate</span></div>
+                        <div class="hover-card-text">"${highlight.textContent}"</div>
+                        <div class="hover-card-reason">This language pattern may introduce bias or unclear communication.</div>
+                        <div class="hover-card-expanded">
+                            <div class="hover-card-suggestion">💡 Consider using more neutral and specific language.</div>
+                            <div class="hover-card-examples"><strong>Examples:</strong> Replace with objective alternatives that don't assume reader agreement.</div>
+                        </div>
+                    `;
+                }
+                
+                hoverCard.innerHTML = content;
+                highlight.appendChild(hoverCard);
+                
+                // Add positioning logic
+                highlight.addEventListener('mouseenter', function() {
+                    const rect = highlight.getBoundingClientRect();
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+                    
+                    hoverCard.classList.remove('flip-to-top', 'align-left', 'align-right');
+                    
+                    if (rect.bottom > viewportHeight - 400) {
+                        hoverCard.classList.add('flip-to-top');
+                    }
+                    
+                    if (rect.left < 200) {
+                        hoverCard.classList.add('align-left');
+                    } else if (rect.right > viewportWidth - 200) {
+                        hoverCard.classList.add('align-right');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

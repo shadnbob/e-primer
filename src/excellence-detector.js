@@ -232,8 +232,19 @@ class ExcellenceDetector {
         return stats;
     }
     
-    // Create hover card content
+    // Create hover card content (enhanced)
     createHoverCardContent(match, nearbyMatches = []) {
+        // Import HoverContentGenerator dynamically if not already available
+        if (!this.hoverGenerator) {
+            // For now, fallback to simpler content until we can integrate the full system
+            return this.createSimpleHoverContent(match, nearbyMatches);
+        }
+        
+        return this.hoverGenerator.generateHoverContent(match, nearbyMatches);
+    }
+    
+    // Fallback method for simpler hover content
+    createSimpleHoverContent(match, nearbyMatches = []) {
         let content = `<div class="hover-card ${match.isExcellence ? 'hover-card-excellence' : 'hover-card-problem'}">`;
         
         if (match.isExcellence) {

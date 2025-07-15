@@ -1,9 +1,12 @@
 // utils/DOMProcessor.js - DOM manipulation utilities
+import { HoverContentGenerator } from './HoverContentGenerator.js';
+
 export class DOMProcessor {
     constructor() {
         this.highlightClassPrefix = 'bias-highlight-';
         this.excellenceClassPrefix = 'excellence-';
         this.processedParents = new Set();
+        this.hoverGenerator = new HoverContentGenerator();
     }
 
     // Collect all text nodes from a root element
@@ -110,13 +113,26 @@ export class DOMProcessor {
             // Use appropriate class prefix based on match type
             if (match.isExcellence) {
                 span.className = match.className || `${this.excellenceClassPrefix}${match.type}`;
-                span.title = match.tooltip || this.getExcellenceTooltipText(match.type);
             } else {
                 span.className = `${this.highlightClassPrefix}${match.type}`;
-                span.title = this.getTooltipText(match.type);
+            }
+            
+            // Add intensity class if applicable
+            if (match.intensity) {
+                span.classList.add(`bias-intensity-${match.intensity}`);
             }
             
             span.textContent = match.text;
+            
+            // Create and add hover card
+            const hoverCard = this.createHoverCard(match, matches);
+            if (hoverCard) {
+                span.appendChild(hoverCard);
+                
+                // Setup smart positioning
+                this.hoverGenerator.constructor.setupSmartPositioning(hoverCard, span);
+            }
+            
             fragment.appendChild(span);
 
             lastIndex = match.index + match.length;
@@ -161,6 +177,44 @@ export class DOMProcessor {
             evidence: '✓ Claims supported by specific evidence'
         };
         return tooltips[type] || 'Excellence indicator';
+    }
+
+    // Create a hover card element for enhanced tooltips
+    createHoverCard(match, allMatches = []) {
+        try {
+            // Find nearby matches for context
+            const nearbyMatches = this.findNearbyMatches(match, allMatches);
+            
+            // Generate the hover content
+            const hoverHTML = this.hoverGenerator.generateHoverContent(match, nearbyMatches);
+            
+            // Create a container div and set its innerHTML
+            const container = document.createElement('div');
+            container.innerHTML = hoverHTML;
+            
+            // Return the first child (the hover card)
+            return container.firstChild;
+        } catch (error) {
+            console.warn('Error creating hover card:', error);
+            return null;
+        }
+    }
+
+    // Find matches that are near the current match for context
+    findNearbyMatches(currentMatch, allMatches) {
+        const NEARBY_DISTANCE = 100; // characters
+        const nearby = [];
+        
+        for (const match of allMatches) {
+            if (match === currentMatch) continue;
+            
+            const distance = Math.abs(match.index - currentMatch.index);
+            if (distance <= NEARBY_DISTANCE) {
+                nearby.push(match);
+            }
+        }
+        
+        return nearby;
     }
 
     // Remove all bias highlights
