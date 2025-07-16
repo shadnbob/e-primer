@@ -114,7 +114,9 @@ export class DOMProcessor {
             if (match.isExcellence) {
                 span.className = match.className || `${this.excellenceClassPrefix}${match.type}`;
             } else {
-                span.className = `${this.highlightClassPrefix}${match.type}`;
+                // For opinion sub-categories, use the base 'opinion' class for styling
+                const cssType = match.type.startsWith('opinion_') ? 'opinion' : match.type;
+                span.className = `${this.highlightClassPrefix}${cssType}`;
             }
             
             // Add intensity class if applicable
@@ -145,6 +147,22 @@ export class DOMProcessor {
     getTooltipText(type) {
         const tooltips = {
             opinion: 'Opinion word - subjective language',
+            
+            // Opinion Sub-Categories
+            opinion_certainty: '🎯 Certainty/Conviction - false certainty',
+            opinion_hedging: '❓ Hedging/Uncertainty - vague language',
+            opinion_evaluative_positive: '👍 Positive Evaluation - subjective judgment',
+            opinion_evaluative_negative: '👎 Negative Evaluation - subjective judgment',
+            opinion_emotional_charge: '⚡ Emotional Charge - triggers emotions',
+            opinion_comparative: '📊 Comparative/Superlative - artificial ranking',
+            opinion_political_framing: '🏛️ Political Framing - polarizing language',
+            opinion_intensifiers: '🔥 Intensifiers - exaggerates without meaning',
+            opinion_credibility_undermining: '🗣️ Credibility Undermining - attacks credibility',
+            opinion_loaded_political: '⚖️ Loaded Political Terms - ideological baggage',
+            opinion_moral_judgments: '⚖️ Moral/Ethical Judgments - imposed frameworks',
+            opinion_emotional_appeals: '💭 Emotional Appeals - bypasses logic',
+            
+            // Other types
             tobe: 'To-be verb (E-Prime violation)',
             absolute: 'Absolute statement',
             passive: 'Passive voice construction',
@@ -220,6 +238,12 @@ export class DOMProcessor {
         
         spanElement.setAttribute('data-tooltip', tooltipText);
         
+        // Add click handler to show hover card
+        spanElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.showContextMenu(e, match);
+        });
+        
         // Add right-click context menu
         spanElement.addEventListener('contextmenu', (e) => {
             e.preventDefault();
@@ -233,32 +257,25 @@ export class DOMProcessor {
         const existingMenus = document.querySelectorAll('.context-menu');
         existingMenus.forEach(menu => menu.remove());
         
-        // Create context menu
+        // Create context menu using HoverContentGenerator
+        const hoverCard = this.createHoverCard(match);
+        if (!hoverCard) return;
+        
+        // Convert hover card to context menu
         const menu = document.createElement('div');
         menu.className = `context-menu ${match.isExcellence ? 'excellence' : 'problem'}`;
         
-        // Get detailed content from HoverContentGenerator
-        const descriptions = match.isExcellence ? 
-            this.hoverGenerator.excellenceDescriptions : 
-            this.hoverGenerator.enhancedDescriptions;
+        // Use the generated hover content, but add close button
+        menu.innerHTML = hoverCard.innerHTML;
         
-        const desc = descriptions[match.type];
-        const intensity = match.intensity || 2;
-        const intensityLabel = ['Mild', 'Moderate', 'Severe'][intensity - 1];
-        
-        menu.innerHTML = `
-            <div class="context-menu-header ${match.isExcellence ? 'excellence' : 'problem'}">
-                <span>
-                    ${match.isExcellence ? '✓' : '⚠'} ${this.hoverGenerator.getTypeName(match.type, match.isExcellence)}
-                    ${!match.isExcellence ? `<span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>` : ''}
-                </span>
-                <button class="context-menu-close">×</button>
-            </div>
-            <div class="context-menu-text">"${match.text}"</div>
-            <div class="context-menu-description">${desc ? desc.description : 'Language pattern detected.'}</div>
-            ${desc && desc.suggestion ? `<div class="context-menu-suggestion">💡 ${desc.suggestion}</div>` : ''}
-            ${desc && desc.examples ? `<div class="context-menu-examples"><strong>Examples:</strong> ${desc.examples}</div>` : ''}
-        `;
+        // Add close button to the header
+        const header = menu.querySelector('.hover-card-header');
+        if (header) {
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'context-menu-close';
+            closeBtn.innerHTML = '×';
+            header.appendChild(closeBtn);
+        }
         
         // Position menu (use clientX/clientY for viewport-relative positioning)
         menu.style.left = event.clientX + 'px';

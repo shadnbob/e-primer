@@ -1,5 +1,5 @@
 // dictionaries/index.js - Central dictionary export
-import { opinionWords } from './opinion-words.js';
+import { opinionWords, opinionWordsFlat } from './opinion-words.js';
 import { toBeVerbs } from './tobe-verbs.js';
 import { absoluteWords } from './absolute-words.js';
 import { passivePatterns } from './passive-patterns.js';
@@ -23,7 +23,7 @@ export class BiasPatterns {
 
     loadRawPatterns() {
         return {
-            opinion: opinionWords,
+            opinion: opinionWordsFlat, // Use flat array for backward compatibility
             tobe: toBeVerbs,
             absolute: absoluteWords,
             passive: passivePatterns,
@@ -38,6 +38,24 @@ export class BiasPatterns {
             gaslighting: gaslightingPhrases,
             falsedilemma: falseDilemmaPhrases
         };
+    }
+
+    // Get opinion word sub-categories for enhanced detection
+    getOpinionSubCategories() {
+        return opinionWords;
+    }
+
+    // Get sub-category for a specific opinion word
+    getOpinionSubCategory(word) {
+        for (const [categoryId, category] of Object.entries(opinionWords)) {
+            if (category.words.includes(word.toLowerCase())) {
+                return {
+                    id: categoryId,
+                    ...category
+                };
+            }
+        }
+        return null;
     }
 
     compileAllPatterns() {
@@ -131,6 +149,7 @@ export class BiasPatterns {
 // Export the individual dictionaries for direct access if needed
 export {
     opinionWords,
+    opinionWordsFlat,
     toBeVerbs,
     absoluteWords,
     passivePatterns,

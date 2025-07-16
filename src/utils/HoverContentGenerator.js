@@ -9,6 +9,68 @@ export class HoverContentGenerator {
                 suggestion: "Consider using more objective language or acknowledging the subjective nature of the statement.",
                 examples: "Instead of 'This is obviously wrong' → 'This appears to contradict the evidence' or 'I believe this is incorrect'"
             },
+            
+            // Opinion Sub-Categories
+            opinion_certainty: {
+                description: "Words that push readers toward unquestioning acceptance by conveying false certainty about debatable topics.",
+                suggestion: "Use more tentative language that acknowledges uncertainty and invites evaluation.",
+                examples: "Instead of 'obviously wrong' → 'appears to contradict' or 'I believe this is incorrect'"
+            },
+            opinion_hedging: {
+                description: "Words that create unnecessary doubt or vagueness, often to avoid taking responsibility for claims.",
+                suggestion: "Be more definitive when you have evidence, or explain the specific reasons for uncertainty.",
+                examples: "Instead of 'maybe true' → 'requires further investigation' or 'preliminary evidence suggests'"
+            },
+            opinion_evaluative_positive: {
+                description: "Subjective positive judgments that reveal the writer's approval without objective criteria.",
+                suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
+                examples: "Instead of 'excellent performance' → 'achieved 95% accuracy' or 'I consider this performance strong because...'"
+            },
+            opinion_evaluative_negative: {
+                description: "Subjective negative judgments that reveal the writer's disapproval without objective criteria.",
+                suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
+                examples: "Instead of 'poor quality' → 'failed to meet safety standards' or 'I find this concerning because...'"
+            },
+            opinion_emotional_charge: {
+                description: "Words designed to trigger strong emotional responses that bypass logical evaluation.",
+                suggestion: "Use neutral language that allows readers to form their own emotional responses based on facts.",
+                examples: "Instead of 'heartwarming story' → 'story about community support' or 'horrifying event' → 'traumatic incident'"
+            },
+            opinion_comparative: {
+                description: "Words that create artificial rankings or comparisons without context or criteria.",
+                suggestion: "Provide specific criteria for comparison or use measured language that acknowledges context.",
+                examples: "Instead of 'the best solution' → 'an effective solution' or 'the most efficient approach we tested'"
+            },
+            opinion_political_framing: {
+                description: "Words that frame issues in political terms, potentially polarizing neutral topics.",
+                suggestion: "Use neutral, descriptive language that focuses on specific policies or actions rather than political labels.",
+                examples: "Instead of 'radical proposal' → 'proposal that differs significantly from current policy' or describe specific elements"
+            },
+            opinion_intensifiers: {
+                description: "Words that amplify or exaggerate without adding meaningful information.",
+                suggestion: "Use specific, measurable descriptions or remove unnecessary intensification.",
+                examples: "Instead of 'extremely important' → 'critical for project success' or 'increased by 300%'"
+            },
+            opinion_credibility_undermining: {
+                description: "Words that question or attack credibility without providing evidence or reasoning.",
+                suggestion: "Address specific claims with evidence rather than attacking the source's credibility.",
+                examples: "Instead of 'so-called expert' → 'Dr. Smith, whose methodology differs from mainstream approaches' or address specific claims"
+            },
+            opinion_loaded_political: {
+                description: "Words that carry heavy political or ideological baggage, triggering partisan responses.",
+                suggestion: "Use specific, descriptive language that focuses on actions or policies rather than loaded terms.",
+                examples: "Instead of 'socialist policies' → 'government-funded programs' or 'authoritarian regime' → 'government that restricts civil liberties'"
+            },
+            opinion_moral_judgments: {
+                description: "Words that impose moral frameworks without acknowledging their subjective nature.",
+                suggestion: "Acknowledge the subjective nature of moral judgments or specify the ethical framework being used.",
+                examples: "Instead of 'immoral behavior' → 'behavior that violates principle X' or 'I consider this unethical because...'"
+            },
+            opinion_emotional_appeals: {
+                description: "Words that bypass logical evaluation by directly targeting emotional responses.",
+                suggestion: "Focus on factual information that allows readers to form their own emotional responses.",
+                examples: "Instead of 'promising developments' → 'developments that may lead to improved outcomes' or provide specific evidence"
+            },
             tobe: {
                 description: "Forms of 'to be' that can create false equivalencies or unclear relationships. E-Prime writing avoids these to encourage precision.",
                 suggestion: "Replace with more specific verbs that show relationships, actions, or states more clearly.",
@@ -119,24 +181,56 @@ export class HoverContentGenerator {
         
         let content = `<div class="hover-card ${isExcellence ? 'hover-card-excellence' : 'hover-card-problem'}">`;
         
-        // Header section
+        // Header section with enhanced sub-category styling
         if (isExcellence) {
             content += `<div class="hover-card-header">✓ ${this.getTypeName(type, true)}</div>`;
         } else {
-            content += `
-                <div class="hover-card-header">
-                    ⚠ ${this.getTypeName(type, false)}
-                    <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
-                </div>
-            `;
+            // For opinion words with sub-categories, show the sub-category name
+            let typeName;
+            if (match.subCategory && type === 'opinion') {
+                const subCategoryType = `opinion_${match.subCategory.id}`;
+                typeName = this.getTypeName(subCategoryType, false);
+                
+                // Add the generic "Opinion Words" on a second line
+                content += `
+                    <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
+                        ⚠ ${typeName}
+                        <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
+<!--                        <div class="hover-card-subheader">Opinion Words</div>-->
+                    </div>
+                `;
+            } else {
+                typeName = this.getTypeName(type, false);
+                content += `
+                    <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
+                        ⚠ ${typeName}
+                        <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
+                    </div>
+                `;
+            }
         }
         
         // Quoted text
         content += `<div class="hover-card-text">"${match.text}"</div>`;
         
+        // Sub-category implication (for opinion words)
+        if (match.subCategory) {
+            content += `<div class="hover-card-implication">
+                <strong>Implication:</strong> ${match.subCategory.implication}
+            </div>`;
+        }
+        
         // All content always visible - no progressive disclosure
         const descriptions = isExcellence ? this.excellenceDescriptions : this.enhancedDescriptions;
-        const desc = descriptions[type];
+        
+        // For opinion words with sub-categories, use the sub-category description
+        let desc;
+        if (match.subCategory && type === 'opinion') {
+            const subCategoryType = `opinion_${match.subCategory.id}`;
+            desc = descriptions[subCategoryType];
+        } else {
+            desc = descriptions[type];
+        }
         
         if (desc) {
             content += `<div class="hover-card-reason">${desc.description}</div>`;
@@ -169,11 +263,35 @@ export class HoverContentGenerator {
         return content;
     }
     
+    // Get custom styling for sub-categories
+    getSubCategoryStyle(match) {
+        if (match.subCategory && match.subCategory.color) {
+            return ` style="border-left: 4px solid ${match.subCategory.color}; background-color: ${match.subCategory.color}10;"`;
+        }
+        return '';
+    }
+    
     
     getTypeName(type, isExcellence) {
         const typeNames = {
             // Problems
             opinion: 'Opinion Words',
+            
+            // Opinion Sub-Categories
+            opinion_certainty: '🎯 Certainty/Conviction',
+            opinion_hedging: '❓ Hedging/Uncertainty',
+            opinion_evaluative_positive: '👍 Positive Evaluation',
+            opinion_evaluative_negative: '👎 Negative Evaluation',
+            opinion_emotional_charge: '⚡ Emotional Charge',
+            opinion_comparative: '📊 Comparative/Superlative',
+            opinion_political_framing: '🏛️ Political Framing',
+            opinion_intensifiers: '🔥 Intensifiers',
+            opinion_credibility_undermining: '🗣️ Credibility Undermining',
+            opinion_loaded_political: '⚖️ Loaded Political Terms',
+            opinion_moral_judgments: '⚖️ Moral/Ethical Judgments',
+            opinion_emotional_appeals: '💭 Emotional Appeals',
+            
+            // Other Problems
             tobe: 'To-Be Verbs',
             absolute: 'Absolute Statements',
             passive: 'Passive Voice',

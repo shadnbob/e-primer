@@ -350,300 +350,421 @@
   var FEATURES = BiasConfig.FEATURES;
 
   // src/dictionaries/opinion-words.js
-  var opinionWords = [
-    // Certainty/Conviction Adverbs
-    "clearly",
-    "obviously",
-    "undoubtedly",
-    "certainly",
-    "definitely",
-    "absolutely",
-    "surely",
-    "undeniably",
-    "unquestionably",
-    "indisputably",
-    "indubitably",
-    "unmistakably",
-    "incontrovertibly",
-    "incontestably",
-    "irrefutably",
-    "manifestly",
-    "patently",
-    // Hedging/Uncertainty Words
-    "probably",
-    "maybe",
-    "perhaps",
-    "conceivably",
-    "speculated",
-    "rumored",
-    // Evaluative Adjectives (Positive)
-    "good",
-    "great",
-    "excellent",
-    "exceptional",
-    "outstanding",
-    "perfect",
-    "flawless",
-    "admirable",
-    "commendable",
-    "praiseworthy",
-    "exemplary",
-    "stellar",
-    "superior",
-    "first-rate",
-    "top-notch",
-    "premium",
-    "favorable",
-    "positive",
-    "satisfactory",
-    "pleasing",
-    "gratifying",
-    "beneficial",
-    "advantageous",
-    "desirable",
-    "worthy",
-    // Evaluative Adjectives (Negative)
-    "abysmal",
-    "poor",
-    "inadequate",
-    "inferior",
-    "substandard",
-    "mediocre",
-    "disappointing",
-    "unsatisfactory",
-    "unacceptable",
-    "deficient",
-    "faulty",
-    "flawed",
-    "shoddy",
-    "deplorable",
-    "lamentable",
-    "pathetic",
-    "pitiful",
-    "regrettable",
-    "miserable",
-    "wretched",
-    "dismal",
-    "grim",
-    "bleak",
-    "dire",
-    "grave",
-    "severe",
-    "unfortunate",
-    "unfavorable",
-    "disagreeable",
-    "unpleasant",
-    "distressing",
-    "troublesome",
-    "problematic",
-    "objectionable",
-    "reprehensible",
-    "repugnant",
-    "detestable",
-    // Emotionally Charged Words
-    "heartwarming",
-    "touching",
-    "moving",
-    "soothing",
-    "comforting",
-    "reassuring",
-    "uplifting",
-    "exhilarating",
-    "thrilling",
-    "exciting",
-    "sensational",
-    "delightful",
-    "disgusting",
-    "revolting",
-    "sickening",
-    "nauseating",
-    "offensive",
-    "frightening",
-    "terrifying",
-    "horrifying",
-    "alarming",
-    "worrying",
-    "concerning",
-    "threatening",
-    // Comparative/Superlative Terms
-    "best",
-    "worst",
-    "better",
-    "worse",
-    "superior",
-    "inferior",
-    "greater",
-    "lesser",
-    "bigger",
-    "smaller",
-    "higher",
-    "lower",
-    "finer",
-    "poorer",
-    "strongest",
-    "weakest",
-    "finest",
-    "prettiest",
-    "ugliest",
-    "smartest",
-    "dumbest",
-    "brightest",
-    "darkest",
-    // Political/Controversial Framing
-    "controversial",
-    "disputed",
-    "radical",
-    "extreme",
-    "progressive",
-    "conservative",
-    "liberal",
-    "far-right",
-    "far-left",
-    "moderate",
-    "centrist",
-    "mainstream",
-    "fringe",
-    "revolutionary",
-    "traditional",
-    "conventional",
-    "unconventional",
-    "orthodox",
-    "unorthodox",
-    "establishment",
-    "anti-establishment",
-    "populist",
-    "elitist",
-    "partisan",
-    "bipartisan",
-    "divisive",
-    "polarizing",
-    "contentious",
-    "provocative",
-    // Intensifiers
-    "very",
-    "extremely",
-    "incredibly",
-    "exceptionally",
-    "extraordinarily",
-    "remarkably",
-    "notably",
-    "particularly",
-    "especially",
-    "surprisingly",
-    "unusually",
-    "strikingly",
-    "decidedly",
-    "markedly",
-    "profoundly",
-    "deeply",
-    "vastly",
-    "greatly",
-    "highly",
-    "immensely",
-    "tremendously",
-    "enormously",
-    "exceedingly",
-    "excessively",
-    "overly",
-    "utterly",
-    "completely",
-    "entirely",
-    "totally",
-    "wholly",
-    "thoroughly",
-    "fully",
-    "intensely",
-    "seriously",
-    "substantially",
-    "significantly",
-    "considerably",
-    // Credibility Undermining Words
-    "claims",
-    "purports",
-    "asserts",
-    "alleges",
-    "contends",
-    "maintains",
-    "insists",
-    "so-called",
-    "self-proclaimed",
-    "supposed",
-    "pretend",
-    "dubious",
-    "questionable",
-    "unproven",
-    "unverified",
-    "unsubstantiated",
-    "unfounded",
-    "baseless",
-    "groundless",
-    // Loaded Political Terms
-    "freedom",
-    "justice",
-    "equality",
-    "rights",
-    "liberty",
-    "democracy",
-    "patriotic",
-    "unpatriotic",
-    "un-American",
-    "socialist",
-    "communist",
-    "fascist",
-    "dictatorial",
-    "totalitarian",
-    "authoritarian",
-    "corrupt",
-    "crooked",
-    "dishonest",
-    "shady",
-    "illegal",
-    "unlawful",
-    "criminal",
-    "scandal",
-    "conspiracy",
-    "regime",
-    "propaganda",
-    // Moral/Ethical Judgments
-    "moral",
-    "immoral",
-    "ethical",
-    "unethical",
-    "virtuous",
-    "corrupt",
-    "just",
-    "unjust",
-    "fair",
-    "unfair",
-    "honorable",
-    "dishonorable",
-    "honest",
-    "dishonest",
-    "decent",
-    "indecent",
-    "appropriate",
-    "inappropriate",
-    "acceptable",
-    "unacceptable",
-    "legitimate",
-    "illegitimate",
-    "reasonable",
-    "unreasonable",
-    // Emotional Appeals
-    "promising",
-    "depressing",
-    "gloomy",
-    "optimistic",
-    "pessimistic",
-    "anxious",
-    "fearful",
-    "afraid",
-    "confident",
-    "proud",
-    "ashamed",
-    "embarrassed",
-    "guilty"
-  ];
+  var opinionWords = {
+    certainty: {
+      icon: "\u{1F3AF}",
+      color: "#ff6b6b",
+      name: "Certainty/Conviction",
+      description: "Words that push readers toward unquestioning acceptance by conveying false certainty about debatable topics.",
+      implication: "Creates false authority and discourages critical thinking by presenting opinions as indisputable facts.",
+      suggestion: "Use more tentative language that acknowledges uncertainty and invites evaluation.",
+      examples: 'Instead of "obviously wrong" \u2192 "appears to contradict" or "I believe this is incorrect"',
+      words: [
+        "clearly",
+        "obviously",
+        "undoubtedly",
+        "certainly",
+        "definitely",
+        "absolutely",
+        "surely",
+        "undeniably",
+        "unquestionably",
+        "indisputably",
+        "indubitably",
+        "unmistakably",
+        "incontrovertibly",
+        "incontestably",
+        "irrefutably",
+        "manifestly",
+        "patently"
+      ]
+    },
+    hedging: {
+      icon: "\u2753",
+      color: "#ffa726",
+      name: "Hedging/Uncertainty",
+      description: "Words that create unnecessary doubt or vagueness, often to avoid taking responsibility for claims.",
+      implication: "Undermines confidence and can signal the writer is unsure of their position or trying to avoid accountability.",
+      suggestion: "Be more definitive when you have evidence, or explain the specific reasons for uncertainty.",
+      examples: 'Instead of "maybe true" \u2192 "requires further investigation" or "preliminary evidence suggests"',
+      words: [
+        "probably",
+        "maybe",
+        "perhaps",
+        "conceivably",
+        "speculated",
+        "rumored"
+      ]
+    },
+    evaluative_positive: {
+      icon: "\u{1F44D}",
+      color: "#66bb6a",
+      name: "Positive Evaluation",
+      description: "Subjective positive judgments that reveal the writer's approval without objective criteria.",
+      implication: "Biases readers toward positive evaluation without providing evidence or reasoning for the judgment.",
+      suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
+      examples: 'Instead of "excellent performance" \u2192 "achieved 95% accuracy" or "I consider this performance strong because..."',
+      words: [
+        "good",
+        "great",
+        "excellent",
+        "exceptional",
+        "outstanding",
+        "perfect",
+        "flawless",
+        "admirable",
+        "commendable",
+        "praiseworthy",
+        "exemplary",
+        "stellar",
+        "superior",
+        "first-rate",
+        "top-notch",
+        "premium",
+        "favorable",
+        "positive",
+        "satisfactory",
+        "pleasing",
+        "gratifying",
+        "beneficial",
+        "advantageous",
+        "desirable",
+        "worthy"
+      ]
+    },
+    evaluative_negative: {
+      icon: "\u{1F44E}",
+      color: "#ef5350",
+      name: "Negative Evaluation",
+      description: "Subjective negative judgments that reveal the writer's disapproval without objective criteria.",
+      implication: "Biases readers toward negative evaluation without providing evidence or reasoning for the judgment.",
+      suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
+      examples: 'Instead of "poor quality" \u2192 "failed to meet safety standards" or "I find this concerning because..."',
+      words: [
+        "abysmal",
+        "poor",
+        "inadequate",
+        "inferior",
+        "substandard",
+        "mediocre",
+        "disappointing",
+        "unsatisfactory",
+        "unacceptable",
+        "deficient",
+        "faulty",
+        "flawed",
+        "shoddy",
+        "deplorable",
+        "lamentable",
+        "pathetic",
+        "pitiful",
+        "regrettable",
+        "miserable",
+        "wretched",
+        "dismal",
+        "grim",
+        "bleak",
+        "dire",
+        "grave",
+        "severe",
+        "unfortunate",
+        "unfavorable",
+        "disagreeable",
+        "unpleasant",
+        "distressing",
+        "troublesome",
+        "problematic",
+        "objectionable",
+        "reprehensible",
+        "repugnant",
+        "detestable"
+      ]
+    },
+    emotional_charge: {
+      icon: "\u26A1",
+      color: "#ab47bc",
+      name: "Emotional Charge",
+      description: "Words designed to trigger strong emotional responses that bypass logical evaluation.",
+      implication: "Manipulates readers through emotion rather than reason, potentially clouding judgment.",
+      suggestion: "Use neutral language that allows readers to form their own emotional responses based on facts.",
+      examples: 'Instead of "heartwarming story" \u2192 "story about community support" or "horrifying event" \u2192 "traumatic incident"',
+      words: [
+        "heartwarming",
+        "touching",
+        "moving",
+        "soothing",
+        "comforting",
+        "reassuring",
+        "uplifting",
+        "exhilarating",
+        "thrilling",
+        "exciting",
+        "sensational",
+        "delightful",
+        "disgusting",
+        "revolting",
+        "sickening",
+        "nauseating",
+        "offensive",
+        "frightening",
+        "terrifying",
+        "horrifying",
+        "alarming",
+        "worrying",
+        "concerning",
+        "threatening"
+      ]
+    },
+    comparative: {
+      icon: "\u{1F4CA}",
+      color: "#42a5f5",
+      name: "Comparative/Superlative",
+      description: "Words that create artificial rankings or comparisons without context or criteria.",
+      implication: "Establishes hierarchies without justification, potentially misleading readers about relative importance or quality.",
+      suggestion: "Provide specific criteria for comparison or use measured language that acknowledges context.",
+      examples: 'Instead of "the best solution" \u2192 "an effective solution" or "the most efficient approach we tested"',
+      words: [
+        "best",
+        "worst",
+        "better",
+        "worse",
+        "superior",
+        "inferior",
+        "greater",
+        "lesser",
+        "bigger",
+        "smaller",
+        "higher",
+        "lower",
+        "finer",
+        "poorer",
+        "strongest",
+        "weakest",
+        "finest",
+        "prettiest",
+        "ugliest",
+        "smartest",
+        "dumbest",
+        "brightest",
+        "darkest"
+      ]
+    },
+    political_framing: {
+      icon: "\u{1F3DB}\uFE0F",
+      color: "#8d6e63",
+      name: "Political Framing",
+      description: "Words that frame issues in political terms, potentially polarizing neutral topics.",
+      implication: "Activates political identity and tribal thinking, making objective evaluation more difficult.",
+      suggestion: "Use neutral, descriptive language that focuses on specific policies or actions rather than political labels.",
+      examples: 'Instead of "radical proposal" \u2192 "proposal that differs significantly from current policy" or describe specific elements',
+      words: [
+        "controversial",
+        "disputed",
+        "radical",
+        "extreme",
+        "progressive",
+        "conservative",
+        "liberal",
+        "far-right",
+        "far-left",
+        "moderate",
+        "centrist",
+        "mainstream",
+        "fringe",
+        "revolutionary",
+        "traditional",
+        "conventional",
+        "unconventional",
+        "orthodox",
+        "unorthodox",
+        "establishment",
+        "anti-establishment",
+        "populist",
+        "elitist",
+        "partisan",
+        "bipartisan",
+        "divisive",
+        "polarizing",
+        "contentious",
+        "provocative"
+      ]
+    },
+    intensifiers: {
+      icon: "\u{1F525}",
+      color: "#ff7043",
+      name: "Intensifiers",
+      description: "Words that amplify or exaggerate without adding meaningful information.",
+      implication: "Creates artificial emphasis that can distort the actual significance of events or characteristics.",
+      suggestion: "Use specific, measurable descriptions or remove unnecessary intensification.",
+      examples: 'Instead of "extremely important" \u2192 "critical for project success" or "increased by 300%"',
+      words: [
+        "very",
+        "extremely",
+        "incredibly",
+        "exceptionally",
+        "extraordinarily",
+        "remarkably",
+        "notably",
+        "particularly",
+        "especially",
+        "surprisingly",
+        "unusually",
+        "strikingly",
+        "decidedly",
+        "markedly",
+        "profoundly",
+        "deeply",
+        "vastly",
+        "greatly",
+        "highly",
+        "immensely",
+        "tremendously",
+        "enormously",
+        "exceedingly",
+        "excessively",
+        "overly",
+        "utterly",
+        "completely",
+        "entirely",
+        "totally",
+        "wholly",
+        "thoroughly",
+        "fully",
+        "intensely",
+        "seriously",
+        "substantially",
+        "significantly",
+        "considerably"
+      ]
+    },
+    credibility_undermining: {
+      icon: "\u{1F5E3}\uFE0F",
+      color: "#78909c",
+      name: "Credibility Undermining",
+      description: "Words that question or attack credibility without providing evidence or reasoning.",
+      implication: "Weakens trust in sources through insinuation rather than substantive critique.",
+      suggestion: "Address specific claims with evidence rather than attacking the source's credibility.",
+      examples: 'Instead of "so-called expert" \u2192 "Dr. Smith, whose methodology differs from mainstream approaches" or address specific claims',
+      words: [
+        "claims",
+        "purports",
+        "asserts",
+        "alleges",
+        "contends",
+        "maintains",
+        "insists",
+        "so-called",
+        "self-proclaimed",
+        "supposed",
+        "pretend",
+        "dubious",
+        "questionable",
+        "unproven",
+        "unverified",
+        "unsubstantiated",
+        "unfounded",
+        "baseless",
+        "groundless"
+      ]
+    },
+    loaded_political: {
+      icon: "\u2696\uFE0F",
+      color: "#5d4037",
+      name: "Loaded Political Terms",
+      description: "Words that carry heavy political or ideological baggage, triggering partisan responses.",
+      implication: "Activates political identity and bias, making neutral evaluation difficult.",
+      suggestion: "Use specific, descriptive language that focuses on actions or policies rather than loaded terms.",
+      examples: 'Instead of "socialist policies" \u2192 "government-funded programs" or "authoritarian regime" \u2192 "government that restricts civil liberties"',
+      words: [
+        "freedom",
+        "justice",
+        "equality",
+        "rights",
+        "liberty",
+        "democracy",
+        "patriotic",
+        "unpatriotic",
+        "un-American",
+        "socialist",
+        "communist",
+        "fascist",
+        "dictatorial",
+        "totalitarian",
+        "authoritarian",
+        "corrupt",
+        "crooked",
+        "dishonest",
+        "shady",
+        "illegal",
+        "unlawful",
+        "criminal",
+        "scandal",
+        "conspiracy",
+        "regime",
+        "propaganda"
+      ]
+    },
+    moral_judgments: {
+      icon: "\u2696\uFE0F",
+      color: "#7e57c2",
+      name: "Moral/Ethical Judgments",
+      description: "Words that impose moral frameworks without acknowledging their subjective nature.",
+      implication: "Presents moral judgments as universal truths rather than perspective-dependent evaluations.",
+      suggestion: "Acknowledge the subjective nature of moral judgments or specify the ethical framework being used.",
+      examples: 'Instead of "immoral behavior" \u2192 "behavior that violates principle X" or "I consider this unethical because..."',
+      words: [
+        "moral",
+        "immoral",
+        "ethical",
+        "unethical",
+        "virtuous",
+        "corrupt",
+        "just",
+        "unjust",
+        "fair",
+        "unfair",
+        "honorable",
+        "dishonorable",
+        "honest",
+        "dishonest",
+        "decent",
+        "indecent",
+        "appropriate",
+        "inappropriate",
+        "acceptable",
+        "unacceptable",
+        "legitimate",
+        "illegitimate",
+        "reasonable",
+        "unreasonable"
+      ]
+    },
+    emotional_appeals: {
+      icon: "\u{1F4AD}",
+      color: "#26a69a",
+      name: "Emotional Appeals",
+      description: "Words that bypass logical evaluation by directly targeting emotional responses.",
+      implication: "Manipulates emotional state to influence opinion without providing rational justification.",
+      suggestion: "Focus on factual information that allows readers to form their own emotional responses.",
+      examples: 'Instead of "promising developments" \u2192 "developments that may lead to improved outcomes" or provide specific evidence',
+      words: [
+        "promising",
+        "depressing",
+        "gloomy",
+        "optimistic",
+        "pessimistic",
+        "anxious",
+        "fearful",
+        "afraid",
+        "confident",
+        "proud",
+        "ashamed",
+        "embarrassed",
+        "guilty"
+      ]
+    }
+  };
+  var opinionWordsFlat = Object.values(opinionWords).flatMap((category) => category.words);
 
   // src/dictionaries/tobe-verbs.js
   var toBeVerbs = [
@@ -1373,7 +1494,8 @@
     }
     loadRawPatterns() {
       return {
-        opinion: opinionWords,
+        opinion: opinionWordsFlat,
+        // Use flat array for backward compatibility
         tobe: toBeVerbs,
         absolute: absoluteWords,
         passive: passivePatterns,
@@ -1388,6 +1510,22 @@
         gaslighting: gaslightingPhrases,
         falsedilemma: falseDilemmaPhrases
       };
+    }
+    // Get opinion word sub-categories for enhanced detection
+    getOpinionSubCategories() {
+      return opinionWords;
+    }
+    // Get sub-category for a specific opinion word
+    getOpinionSubCategory(word) {
+      for (const [categoryId, category] of Object.entries(opinionWords)) {
+        if (category.words.includes(word.toLowerCase())) {
+          return {
+            id: categoryId,
+            ...category
+          };
+        }
+      }
+      return null;
     }
     compileAllPatterns() {
       for (const [type, patterns] of Object.entries(this.rawPatterns)) {
@@ -1467,6 +1605,67 @@
           description: "Subjective language that reveals the writer's personal stance or evaluation. These words signal opinion rather than fact.",
           suggestion: "Consider using more objective language or acknowledging the subjective nature of the statement.",
           examples: "Instead of 'This is obviously wrong' \u2192 'This appears to contradict the evidence' or 'I believe this is incorrect'"
+        },
+        // Opinion Sub-Categories
+        opinion_certainty: {
+          description: "Words that push readers toward unquestioning acceptance by conveying false certainty about debatable topics.",
+          suggestion: "Use more tentative language that acknowledges uncertainty and invites evaluation.",
+          examples: "Instead of 'obviously wrong' \u2192 'appears to contradict' or 'I believe this is incorrect'"
+        },
+        opinion_hedging: {
+          description: "Words that create unnecessary doubt or vagueness, often to avoid taking responsibility for claims.",
+          suggestion: "Be more definitive when you have evidence, or explain the specific reasons for uncertainty.",
+          examples: "Instead of 'maybe true' \u2192 'requires further investigation' or 'preliminary evidence suggests'"
+        },
+        opinion_evaluative_positive: {
+          description: "Subjective positive judgments that reveal the writer's approval without objective criteria.",
+          suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
+          examples: "Instead of 'excellent performance' \u2192 'achieved 95% accuracy' or 'I consider this performance strong because...'"
+        },
+        opinion_evaluative_negative: {
+          description: "Subjective negative judgments that reveal the writer's disapproval without objective criteria.",
+          suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
+          examples: "Instead of 'poor quality' \u2192 'failed to meet safety standards' or 'I find this concerning because...'"
+        },
+        opinion_emotional_charge: {
+          description: "Words designed to trigger strong emotional responses that bypass logical evaluation.",
+          suggestion: "Use neutral language that allows readers to form their own emotional responses based on facts.",
+          examples: "Instead of 'heartwarming story' \u2192 'story about community support' or 'horrifying event' \u2192 'traumatic incident'"
+        },
+        opinion_comparative: {
+          description: "Words that create artificial rankings or comparisons without context or criteria.",
+          suggestion: "Provide specific criteria for comparison or use measured language that acknowledges context.",
+          examples: "Instead of 'the best solution' \u2192 'an effective solution' or 'the most efficient approach we tested'"
+        },
+        opinion_political_framing: {
+          description: "Words that frame issues in political terms, potentially polarizing neutral topics.",
+          suggestion: "Use neutral, descriptive language that focuses on specific policies or actions rather than political labels.",
+          examples: "Instead of 'radical proposal' \u2192 'proposal that differs significantly from current policy' or describe specific elements"
+        },
+        opinion_intensifiers: {
+          description: "Words that amplify or exaggerate without adding meaningful information.",
+          suggestion: "Use specific, measurable descriptions or remove unnecessary intensification.",
+          examples: "Instead of 'extremely important' \u2192 'critical for project success' or 'increased by 300%'"
+        },
+        opinion_credibility_undermining: {
+          description: "Words that question or attack credibility without providing evidence or reasoning.",
+          suggestion: "Address specific claims with evidence rather than attacking the source's credibility.",
+          examples: "Instead of 'so-called expert' \u2192 'Dr. Smith, whose methodology differs from mainstream approaches' or address specific claims"
+        },
+        opinion_loaded_political: {
+          description: "Words that carry heavy political or ideological baggage, triggering partisan responses.",
+          suggestion: "Use specific, descriptive language that focuses on actions or policies rather than loaded terms.",
+          examples: "Instead of 'socialist policies' \u2192 'government-funded programs' or 'authoritarian regime' \u2192 'government that restricts civil liberties'"
+        },
+        opinion_moral_judgments: {
+          description: "Words that impose moral frameworks without acknowledging their subjective nature.",
+          suggestion: "Acknowledge the subjective nature of moral judgments or specify the ethical framework being used.",
+          examples: "Instead of 'immoral behavior' \u2192 'behavior that violates principle X' or 'I consider this unethical because...'"
+        },
+        opinion_emotional_appeals: {
+          description: "Words that bypass logical evaluation by directly targeting emotional responses.",
+          suggestion: "Focus on factual information that allows readers to form their own emotional responses.",
+          examples: "Instead of 'promising developments' \u2192 'developments that may lead to improved outcomes' or provide specific evidence"
         },
         tobe: {
           description: "Forms of 'to be' that can create false equivalencies or unclear relationships. E-Prime writing avoids these to encourage precision.",
@@ -1574,16 +1773,41 @@
       if (isExcellence) {
         content += `<div class="hover-card-header">\u2713 ${this.getTypeName(type, true)}</div>`;
       } else {
-        content += `
-                <div class="hover-card-header">
-                    \u26A0 ${this.getTypeName(type, false)}
-                    <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
-                </div>
-            `;
+        let typeName;
+        if (match.subCategory && type === "opinion") {
+          const subCategoryType = `opinion_${match.subCategory.id}`;
+          typeName = this.getTypeName(subCategoryType, false);
+          content += `
+                    <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
+                        \u26A0 ${typeName}
+                        <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
+<!--                        <div class="hover-card-subheader">Opinion Words</div>-->
+                    </div>
+                `;
+        } else {
+          typeName = this.getTypeName(type, false);
+          content += `
+                    <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
+                        \u26A0 ${typeName}
+                        <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
+                    </div>
+                `;
+        }
       }
       content += `<div class="hover-card-text">"${match.text}"</div>`;
+      if (match.subCategory) {
+        content += `<div class="hover-card-implication">
+                <strong>Implication:</strong> ${match.subCategory.implication}
+            </div>`;
+      }
       const descriptions = isExcellence ? this.excellenceDescriptions : this.enhancedDescriptions;
-      const desc = descriptions[type];
+      let desc;
+      if (match.subCategory && type === "opinion") {
+        const subCategoryType = `opinion_${match.subCategory.id}`;
+        desc = descriptions[subCategoryType];
+      } else {
+        desc = descriptions[type];
+      }
       if (desc) {
         content += `<div class="hover-card-reason">${desc.description}</div>`;
         content += `<div class="hover-card-expanded">`;
@@ -1604,10 +1828,31 @@
       content += "</div>";
       return content;
     }
+    // Get custom styling for sub-categories
+    getSubCategoryStyle(match) {
+      if (match.subCategory && match.subCategory.color) {
+        return ` style="border-left: 4px solid ${match.subCategory.color}; background-color: ${match.subCategory.color}10;"`;
+      }
+      return "";
+    }
     getTypeName(type, isExcellence) {
       const typeNames = {
         // Problems
         opinion: "Opinion Words",
+        // Opinion Sub-Categories
+        opinion_certainty: "\u{1F3AF} Certainty/Conviction",
+        opinion_hedging: "\u2753 Hedging/Uncertainty",
+        opinion_evaluative_positive: "\u{1F44D} Positive Evaluation",
+        opinion_evaluative_negative: "\u{1F44E} Negative Evaluation",
+        opinion_emotional_charge: "\u26A1 Emotional Charge",
+        opinion_comparative: "\u{1F4CA} Comparative/Superlative",
+        opinion_political_framing: "\u{1F3DB}\uFE0F Political Framing",
+        opinion_intensifiers: "\u{1F525} Intensifiers",
+        opinion_credibility_undermining: "\u{1F5E3}\uFE0F Credibility Undermining",
+        opinion_loaded_political: "\u2696\uFE0F Loaded Political Terms",
+        opinion_moral_judgments: "\u2696\uFE0F Moral/Ethical Judgments",
+        opinion_emotional_appeals: "\u{1F4AD} Emotional Appeals",
+        // Other Problems
         tobe: "To-Be Verbs",
         absolute: "Absolute Statements",
         passive: "Passive Voice",
@@ -1719,7 +1964,8 @@
         if (match.isExcellence) {
           span.className = match.className || `${this.excellenceClassPrefix}${match.type}`;
         } else {
-          span.className = `${this.highlightClassPrefix}${match.type}`;
+          const cssType = match.type.startsWith("opinion_") ? "opinion" : match.type;
+          span.className = `${this.highlightClassPrefix}${cssType}`;
         }
         if (match.intensity) {
           span.classList.add(`bias-intensity-${match.intensity}`);
@@ -1739,6 +1985,20 @@
     getTooltipText(type) {
       const tooltips = {
         opinion: "Opinion word - subjective language",
+        // Opinion Sub-Categories
+        opinion_certainty: "\u{1F3AF} Certainty/Conviction - false certainty",
+        opinion_hedging: "\u2753 Hedging/Uncertainty - vague language",
+        opinion_evaluative_positive: "\u{1F44D} Positive Evaluation - subjective judgment",
+        opinion_evaluative_negative: "\u{1F44E} Negative Evaluation - subjective judgment",
+        opinion_emotional_charge: "\u26A1 Emotional Charge - triggers emotions",
+        opinion_comparative: "\u{1F4CA} Comparative/Superlative - artificial ranking",
+        opinion_political_framing: "\u{1F3DB}\uFE0F Political Framing - polarizing language",
+        opinion_intensifiers: "\u{1F525} Intensifiers - exaggerates without meaning",
+        opinion_credibility_undermining: "\u{1F5E3}\uFE0F Credibility Undermining - attacks credibility",
+        opinion_loaded_political: "\u2696\uFE0F Loaded Political Terms - ideological baggage",
+        opinion_moral_judgments: "\u2696\uFE0F Moral/Ethical Judgments - imposed frameworks",
+        opinion_emotional_appeals: "\u{1F4AD} Emotional Appeals - bypasses logic",
+        // Other types
         tobe: "To-be verb (E-Prime violation)",
         absolute: "Absolute statement",
         passive: "Passive voice construction",
@@ -1796,6 +2056,10 @@
     addSimpleTooltip(spanElement, match) {
       const tooltipText = match.isExcellence ? this.getExcellenceTooltipText(match.type) : this.getTooltipText(match.type);
       spanElement.setAttribute("data-tooltip", tooltipText);
+      spanElement.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.showContextMenu(e, match);
+      });
       spanElement.addEventListener("contextmenu", (e) => {
         e.preventDefault();
         this.showContextMenu(e, match);
@@ -1805,25 +2069,19 @@
     showContextMenu(event, match) {
       const existingMenus = document.querySelectorAll(".context-menu");
       existingMenus.forEach((menu2) => menu2.remove());
+      const hoverCard = this.createHoverCard(match);
+      if (!hoverCard)
+        return;
       const menu = document.createElement("div");
       menu.className = `context-menu ${match.isExcellence ? "excellence" : "problem"}`;
-      const descriptions = match.isExcellence ? this.hoverGenerator.excellenceDescriptions : this.hoverGenerator.enhancedDescriptions;
-      const desc = descriptions[match.type];
-      const intensity = match.intensity || 2;
-      const intensityLabel = ["Mild", "Moderate", "Severe"][intensity - 1];
-      menu.innerHTML = `
-            <div class="context-menu-header ${match.isExcellence ? "excellence" : "problem"}">
-                <span>
-                    ${match.isExcellence ? "\u2713" : "\u26A0"} ${this.hoverGenerator.getTypeName(match.type, match.isExcellence)}
-                    ${!match.isExcellence ? `<span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>` : ""}
-                </span>
-                <button class="context-menu-close">\xD7</button>
-            </div>
-            <div class="context-menu-text">"${match.text}"</div>
-            <div class="context-menu-description">${desc ? desc.description : "Language pattern detected."}</div>
-            ${desc && desc.suggestion ? `<div class="context-menu-suggestion">\u{1F4A1} ${desc.suggestion}</div>` : ""}
-            ${desc && desc.examples ? `<div class="context-menu-examples"><strong>Examples:</strong> ${desc.examples}</div>` : ""}
-        `;
+      menu.innerHTML = hoverCard.innerHTML;
+      const header = menu.querySelector(".hover-card-header");
+      if (header) {
+        const closeBtn = document.createElement("button");
+        closeBtn.className = "context-menu-close";
+        closeBtn.innerHTML = "\xD7";
+        header.appendChild(closeBtn);
+      }
       menu.style.left = event.clientX + "px";
       menu.style.top = event.clientY + "px";
       menu.style.display = "block";
@@ -2323,13 +2581,21 @@
           let match;
           pattern.regex.lastIndex = 0;
           while ((match = pattern.regex.exec(text)) !== null) {
-            matches.push({
+            const matchData = {
               index: match.index,
               length: match[0].length,
               text: match[0],
               type,
               pattern: pattern.source
-            });
+            };
+            if (type === "opinion") {
+              const subCategory = this.patterns.getOpinionSubCategory(match[0]);
+              if (subCategory) {
+                matchData.type = `opinion_${subCategory.id}`;
+                matchData.subCategory = subCategory;
+              }
+            }
+            matches.push(matchData);
             if (match.index === pattern.regex.lastIndex) {
               pattern.regex.lastIndex++;
             }
@@ -2509,7 +2775,8 @@
           this.stats[config.statKey] = (this.stats[config.statKey] || 0) + 1;
         }
       } else {
-        const detector = this.compiledDetectors.get(match.type);
+        const originalType = match.type.startsWith("opinion_") ? "opinion" : match.type;
+        const detector = this.compiledDetectors.get(originalType);
         if (detector && detector.statKey) {
           this.stats[detector.statKey]++;
         }

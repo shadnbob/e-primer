@@ -48,13 +48,24 @@ export class BiasDetector {
                 pattern.regex.lastIndex = 0;
                 
                 while ((match = pattern.regex.exec(text)) !== null) {
-                    matches.push({
+                    const matchData = {
                         index: match.index,
                         length: match[0].length,
                         text: match[0],
                         type: type,
                         pattern: pattern.source
-                    });
+                    };
+                    
+                    // For opinion words, enrich with sub-category information
+                    if (type === 'opinion') {
+                        const subCategory = this.patterns.getOpinionSubCategory(match[0]);
+                        if (subCategory) {
+                            matchData.type = `opinion_${subCategory.id}`;
+                            matchData.subCategory = subCategory;
+                        }
+                    }
+                    
+                    matches.push(matchData);
                     
                     // Prevent infinite loops with zero-width matches
                     if (match.index === pattern.regex.lastIndex) {
@@ -297,7 +308,9 @@ export class BiasDetector {
                 this.stats[config.statKey] = (this.stats[config.statKey] || 0) + 1;
             }
         } else {
-            const detector = this.compiledDetectors.get(match.type);
+            // For opinion sub-categories, map back to the original 'opinion' type for stats
+            const originalType = match.type.startsWith('opinion_') ? 'opinion' : match.type;
+            const detector = this.compiledDetectors.get(originalType);
             if (detector && detector.statKey) {
                 this.stats[detector.statKey]++;
             }

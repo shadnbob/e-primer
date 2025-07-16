@@ -301,6 +301,13 @@
     color: #dc3545;
 }
 
+.hover-card-subheader {
+    font-size: 12px;
+    color: #666;
+    font-weight: normal;
+    margin-top: 4px;
+}
+
 .context-menu-text {
     font-style: italic;
     color: #666;
