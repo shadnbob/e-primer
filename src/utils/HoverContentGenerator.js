@@ -1,4 +1,5 @@
 // utils/HoverContentGenerator.js - Enhanced hover content generation
+import { BiasConfig } from '../config/BiasConfig.js';
 
 export class HoverContentGenerator {
     constructor() {
@@ -181,7 +182,12 @@ export class HoverContentGenerator {
         
         let content = `<div class="hover-card ${isExcellence ? 'hover-card-excellence' : 'hover-card-problem'}">`;
         
-        // Header section with enhanced sub-category styling
+        // Get configuration from BiasConfig
+        const biasConfig = isExcellence ? 
+            BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()] : 
+            BiasConfig.getBiasTypeConfig(type);
+        
+        // Header section
         if (isExcellence) {
             content += `<div class="hover-card-header">✓ ${this.getTypeName(type, true)}</div>`;
         } else {
@@ -191,12 +197,10 @@ export class HoverContentGenerator {
                 const subCategoryType = `opinion_${match.subCategory.id}`;
                 typeName = this.getTypeName(subCategoryType, false);
                 
-                // Add the generic "Opinion Words" on a second line
                 content += `
                     <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
                         ⚠ ${typeName}
                         <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
-<!--                        <div class="hover-card-subheader">Opinion Words</div>-->
                     </div>
                 `;
             } else {
@@ -220,33 +224,91 @@ export class HoverContentGenerator {
             </div>`;
         }
         
-        // All content always visible - no progressive disclosure
-        const descriptions = isExcellence ? this.excellenceDescriptions : this.enhancedDescriptions;
-        
-        // For opinion words with sub-categories, use the sub-category description
-        let desc;
-        if (match.subCategory && type === 'opinion') {
-            const subCategoryType = `opinion_${match.subCategory.id}`;
-            desc = descriptions[subCategoryType];
-        } else {
-            desc = descriptions[type];
-        }
-        
-        if (desc) {
-            content += `<div class="hover-card-reason">${desc.description}</div>`;
-            
-            // Always show expanded content for reliable height
-            content += `<div class="hover-card-expanded">`;
-            
-            if (desc.suggestion) {
-                content += `<div class="hover-card-suggestion">💡 ${desc.suggestion}</div>`;
+        // Use BiasConfig data for enhanced tips
+        if (biasConfig) {
+            // Basic description
+            if (biasConfig.basicTip) {
+                content += `<div class="hover-card-reason">${biasConfig.basicTip}</div>`;
             }
             
-            if (desc.examples) {
-                content += `<div class="hover-card-examples"><strong>Examples:</strong> ${desc.examples}</div>`;
+            // Enhanced contextual content
+            content += `<div class="hover-card-expanded">`;
+            
+            // When concerning section
+            if (biasConfig.whenConcerning) {
+                content += `<div class="hover-card-section">
+                    <div class="hover-card-section-title">⚠️ When to be concerned:</div>
+                    <div class="hover-card-section-content">${biasConfig.whenConcerning}</div>
+                </div>`;
+            }
+            
+            // When acceptable section
+            if (biasConfig.whenAcceptable) {
+                content += `<div class="hover-card-section">
+                    <div class="hover-card-section-title">✅ When it's acceptable:</div>
+                    <div class="hover-card-section-content">${biasConfig.whenAcceptable}</div>
+                </div>`;
+            }
+            
+            // Look for checklist
+            if (biasConfig.lookFor && biasConfig.lookFor.length > 0) {
+                content += `<div class="hover-card-section">
+                    <div class="hover-card-section-title">🔍 Look for:</div>
+                    <ul class="hover-card-checklist">`;
+                biasConfig.lookFor.forEach(item => {
+                    content += `<li>${item}</li>`;
+                });
+                content += `</ul></div>`;
+            }
+            
+            // Examples section
+            if (biasConfig.examples) {
+                content += `<div class="hover-card-section">
+                    <div class="hover-card-section-title">📝 Examples:</div>`;
+                
+                if (biasConfig.examples.problematic) {
+                    content += `<div class="hover-card-examples-problematic">
+                        <strong>Concerning:</strong> ${biasConfig.examples.problematic.join(', ')}
+                    </div>`;
+                }
+                
+                if (biasConfig.examples.acceptable) {
+                    content += `<div class="hover-card-examples-acceptable">
+                        <strong>Acceptable:</strong> ${biasConfig.examples.acceptable.join(', ')}
+                    </div>`;
+                }
+                
+                content += `</div>`;
             }
             
             content += `</div>`;
+        } else {
+            // Fallback to legacy descriptions if BiasConfig data is not available
+            const descriptions = isExcellence ? this.excellenceDescriptions : this.enhancedDescriptions;
+            
+            let desc;
+            if (match.subCategory && type === 'opinion') {
+                const subCategoryType = `opinion_${match.subCategory.id}`;
+                desc = descriptions[subCategoryType];
+            } else {
+                desc = descriptions[type];
+            }
+            
+            if (desc) {
+                content += `<div class="hover-card-reason">${desc.description}</div>`;
+                
+                content += `<div class="hover-card-expanded">`;
+                
+                if (desc.suggestion) {
+                    content += `<div class="hover-card-suggestion">💡 ${desc.suggestion}</div>`;
+                }
+                
+                if (desc.examples) {
+                    content += `<div class="hover-card-examples"><strong>Examples:</strong> ${desc.examples}</div>`;
+                }
+                
+                content += `</div>`;
+            }
         }
         
         // Portrayal information for problems

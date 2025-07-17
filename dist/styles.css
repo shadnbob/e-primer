@@ -445,3 +445,146 @@
 .newly-highlighted {
     animation: highlightPulse 0.5s ease;
 }
+
+/* Enhanced Hover Card Styles for Multi-Section Layout */
+.hover-card {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    max-width: 400px;
+    font-size: 14px;
+    line-height: 1.4;
+    z-index: 10000;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.hover-card-problem {
+    border-left: 4px solid #dc3545;
+}
+
+.hover-card-excellence {
+    border-left: 4px solid #28a745;
+}
+
+.hover-card-header {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hover-card-text {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #007bff;
+}
+
+.hover-card-reason {
+    color: #333;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.hover-card-expanded {
+    border-top: 1px solid #eee;
+    padding-top: 12px;
+}
+
+.hover-card-section {
+    margin-bottom: 16px;
+}
+
+.hover-card-section:last-child {
+    margin-bottom: 0;
+}
+
+.hover-card-section-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.hover-card-section-content {
+    color: #555;
+    line-height: 1.5;
+}
+
+.hover-card-checklist {
+    margin: 0;
+    padding-left: 20px;
+    color: #555;
+}
+
+.hover-card-checklist li {
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.hover-card-examples-problematic {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.hover-card-examples-problematic strong {
+    color: #c53030;
+}
+
+.hover-card-examples-acceptable {
+    background: #f0fff4;
+    border: 1px solid #9ae6b4;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.hover-card-examples-acceptable strong {
+    color: #22543d;
+}
+
+.hover-card-implication {
+    background: #e8f4f8;
+    border: 1px solid #bee3f8;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 12px;
+}
+
+.hover-card-portrayal {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+}
+
+.hover-card-context {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hover-card {
+        max-width: 300px;
+        font-size: 13px;
+    }
+    
+    .hover-card-header {
+        font-size: 15px;
+    }
+}
