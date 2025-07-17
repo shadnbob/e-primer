@@ -497,6 +497,9 @@
 .hover-card-expanded {
     border-top: 1px solid #eee;
     padding-top: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 280px;
 }
 
 .hover-card-section {
