@@ -116,5 +116,3 @@ export class PerformanceMonitor {
     }
 }
 
-// Export a singleton instance for global use
-export const performanceMonitor = new PerformanceMonitor();

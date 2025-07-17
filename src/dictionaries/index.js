@@ -146,21 +146,5 @@ export class BiasPatterns {
     }
 }
 
-// Export the individual dictionaries for direct access if needed
-export {
-    opinionWords,
-    opinionWordsFlat,
-    toBeVerbs,
-    absoluteWords,
-    passivePatterns,
-    weaselPhrases,
-    presuppositionMarkers,
-    warMetaphors,
-    minimizers,
-    maximizers,
-    falseBalancePhrases,
-    euphemisms,
-    emotionalTriggers,
-    gaslightingPhrases,
-    falseDilemmaPhrases
-};
+// Only export what's actually used
+export { opinionWords };

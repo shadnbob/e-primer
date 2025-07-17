@@ -1,4 +1,4 @@
-// content/content-script.js - New main content script using refactored architecture
+// content/content-script.js - Main content script using refactored architecture
 import { BiasDetector } from './BiasDetector.js';
 import { BiasConfig } from '../config/BiasConfig.js';
 

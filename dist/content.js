@@ -321,12 +321,6 @@
       }
       return validated;
     }
-    static hexToRgba(hex, alpha) {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
     // Performance settings
     static PERFORMANCE = {
       BATCH_SIZE: 50,
@@ -335,19 +329,10 @@
       MIN_SIGNIFICANT_TEXT: 5,
       UI_UPDATE_INTERVAL: 200
     };
-    // Feature flags for experimental features
-    static FEATURES = {
-      CONTEXT_AWARENESS: false,
-      MACHINE_LEARNING: false,
-      EXPORT_REPORTS: false,
-      CUSTOM_DICTIONARIES: false,
-      PERFORMANCE_MONITORING: true
-    };
   };
   var BIAS_TYPES = BiasConfig.BIAS_TYPES;
   var CATEGORIES = BiasConfig.CATEGORIES;
   var PERFORMANCE = BiasConfig.PERFORMANCE;
-  var FEATURES = BiasConfig.FEATURES;
 
   // src/dictionaries/opinion-words.js
   var opinionWords = {
@@ -2320,7 +2305,6 @@
       this.enabled = false;
     }
   };
-  var performanceMonitor = new PerformanceMonitor();
 
   // src/utils/ExcellenceDetector.js
   var ExcellenceDetector = class {

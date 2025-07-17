@@ -66,35 +66,46 @@ document.addEventListener('DOMContentLoaded', function() {
     requestStats();
 
     function loadSettings() {
-        const defaults = {
-            enableAnalysis: true,
-            analysisMode: 'balanced',
-            highlightOpinion: true,
-            highlightToBe: true,
-            highlightAbsolutes: true,
-            highlightPassive: false,
-            highlightWeasel: false,
-            highlightPresupposition: false,
-            highlightMetaphors: false,
-            highlightMinimizers: false,
-            highlightMaximizers: false,
-            highlightFalseBalance: false,
-            highlightEuphemism: false,
-            highlightEmotional: false,
-            highlightGaslighting: false,
-            highlightFalseDilemma: false,
-            // Excellence defaults
-            highlightAttributionExcellence: true,
-            highlightNuanceExcellence: true,
-            highlightTransparencyExcellence: true,
-            highlightDiscourseExcellence: true,
-            highlightEvidenceExcellence: true
-        };
-
-        chrome.storage.sync.get(defaults, function(items) {
-            currentSettings = items;
-            updateUI();
-            updateModeUI();
+        // Import BiasConfig to get defaults
+        import('./src/config/BiasConfig.js').then(module => {
+            const defaults = module.BiasConfig.getDefaultSettings();
+            
+            chrome.storage.sync.get(defaults, function(items) {
+                currentSettings = items;
+                updateUI();
+                updateModeUI();
+            });
+        }).catch(error => {
+            // Fallback to hardcoded defaults if import fails
+            const defaults = {
+                enableAnalysis: true,
+                analysisMode: 'balanced',
+                highlightOpinion: true,
+                highlightToBe: true,
+                highlightAbsolutes: true,
+                highlightPassive: false,
+                highlightWeasel: false,
+                highlightPresupposition: false,
+                highlightMetaphors: false,
+                highlightMinimizers: false,
+                highlightMaximizers: false,
+                highlightFalseBalance: false,
+                highlightEuphemism: false,
+                highlightEmotional: false,
+                highlightGaslighting: false,
+                highlightFalseDilemma: false,
+                highlightAttributionExcellence: true,
+                highlightNuanceExcellence: true,
+                highlightTransparencyExcellence: true,
+                highlightDiscourseExcellence: true,
+                highlightEvidenceExcellence: true
+            };
+            
+            chrome.storage.sync.get(defaults, function(items) {
+                currentSettings = items;
+                updateUI();
+                updateModeUI();
+            });
         });
     }
 

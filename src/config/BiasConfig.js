@@ -356,13 +356,6 @@ export class BiasConfig {
         return validated;
     }
 
-    static hexToRgba(hex, alpha) {
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
-
     // Performance settings
     static PERFORMANCE = {
         BATCH_SIZE: 50,
@@ -371,19 +364,9 @@ export class BiasConfig {
         MIN_SIGNIFICANT_TEXT: 5,
         UI_UPDATE_INTERVAL: 200
     };
-
-    // Feature flags for experimental features
-    static FEATURES = {
-        CONTEXT_AWARENESS: false,
-        MACHINE_LEARNING: false,
-        EXPORT_REPORTS: false,
-        CUSTOM_DICTIONARIES: false,
-        PERFORMANCE_MONITORING: true
-    };
 }
 
 // Export specific configurations for easy access
 export const BIAS_TYPES = BiasConfig.BIAS_TYPES;
 export const CATEGORIES = BiasConfig.CATEGORIES;
 export const PERFORMANCE = BiasConfig.PERFORMANCE;
-export const FEATURES = BiasConfig.FEATURES;
