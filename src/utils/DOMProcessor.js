@@ -146,21 +146,21 @@ export class DOMProcessor {
 
     getTooltipText(type) {
         const tooltips = {
-            opinion: 'Opinion word - subjective language',
+            opinion: 'Opinion - Subjective - General',
             
             // Opinion Sub-Categories
-            opinion_certainty: '🎯 Certainty/Conviction - false certainty',
-            opinion_hedging: '❓ Hedging/Uncertainty - vague language',
-            opinion_evaluative_positive: '👍 Positive Evaluation - subjective judgment',
-            opinion_evaluative_negative: '👎 Negative Evaluation - subjective judgment',
-            opinion_emotional_charge: '⚡ Emotional Charge - triggers emotions',
-            opinion_comparative: '📊 Comparative/Superlative - artificial ranking',
-            opinion_political_framing: '🏛️ Political Framing - polarizing language',
-            opinion_intensifiers: '🔥 Intensifiers - exaggerates without meaning',
-            opinion_credibility_undermining: '🗣️ Credibility Undermining - attacks credibility',
-            opinion_loaded_political: '⚖️ Loaded Political Terms - ideological baggage',
-            opinion_moral_judgments: '⚖️ Moral/Ethical Judgments - imposed frameworks',
-            opinion_emotional_appeals: '💭 Emotional Appeals - bypasses logic',
+            opinion_certainty: 'Possible Opinion - Certainty/Conviction',
+            opinion_hedging: 'Possible Opinion - Hedging/Uncertainty',
+            opinion_evaluative_positive: 'Possible Opinion - Positive Evaluation',
+            opinion_evaluative_negative: 'Possible Opinion - Negative Evaluation',
+            opinion_emotional_charge: 'Possible Opinion - Emotional Charge',
+            opinion_comparative: 'Possible Opinion - Comparative/Superlative',
+            opinion_political_framing: 'Possible Opinion - Political Framing',
+            opinion_intensifiers: 'Possible Opinion - Intensifiers',
+            opinion_credibility_undermining: 'Possible Opinion - Credibility Undermining',
+            opinion_loaded_political: 'Possible Opinion - Loaded Political Terms',
+            opinion_moral_judgments: 'Possible Opinion - Moral/Ethical Judgments',
+            opinion_emotional_appeals: 'Possible Opinion - Emotional Appeals',
             
             // Other types
             tobe: 'To-be verb (E-Prime violation)',
@@ -232,9 +232,20 @@ export class DOMProcessor {
     // Add simple tooltip and right-click functionality
     addSimpleTooltip(spanElement, match) {
         // Add tooltip data attribute
-        const tooltipText = match.isExcellence ? 
-            this.getExcellenceTooltipText(match.type) :
-            this.getTooltipText(match.type);
+        let tooltipText;
+        if (match.isExcellence) {
+            tooltipText = this.getExcellenceTooltipText(match.type);
+        } else {
+            // For opinion words, try subcategory first, then fallback
+            if (match.subCategory && match.type.startsWith('opinion_')) {
+                tooltipText = this.getTooltipText(match.type);
+            } else if (match.type === 'opinion' && match.subCategory) {
+                // If type is still 'opinion' but we have subcategory info, use it
+                tooltipText = this.getTooltipText(`opinion_${match.subCategory.id}`);
+            } else {
+                tooltipText = this.getTooltipText(match.type);
+            }
+        }
         
         spanElement.setAttribute('data-tooltip', tooltipText);
         

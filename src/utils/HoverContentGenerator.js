@@ -369,7 +369,7 @@ export class HoverContentGenerator {
     getTypeName(type, isExcellence) {
         const typeNames = {
             // Problems
-            opinion: 'Opinion Words',
+            // opinion: 'Opinion Words',
             
             // Opinion Sub-Categories
             opinion_certainty: '🎯 Certainty/Conviction',
