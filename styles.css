@@ -556,6 +556,24 @@
     color: #22543d;
 }
 
+.hover-card-suggestion {
+    background: #e8f5e8;
+    border: 1px solid #9ae6b4;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 12px;
+    color: #22543d;
+}
+
+.hover-card-examples {
+    background: #f0f8ff;
+    border: 1px solid #bee3f8;
+    border-radius: 4px;
+    padding: 12px;
+    color: #2d3748;
+    font-size: 13px;
+}
+
 .hover-card-implication {
     background: #e8f4f8;
     border: 1px solid #bee3f8;

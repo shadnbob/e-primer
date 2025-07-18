@@ -234,20 +234,36 @@ export class HoverContentGenerator {
             // Enhanced contextual content
             content += `<div class="hover-card-expanded">`;
             
-            // When concerning section
-            if (biasConfig.whenConcerning) {
-                content += `<div class="hover-card-section">
-                    <div class="hover-card-section-title">⚠️ When to be concerned:</div>
-                    <div class="hover-card-section-content">${biasConfig.whenConcerning}</div>
-                </div>`;
-            }
-            
-            // When acceptable section
-            if (biasConfig.whenAcceptable) {
-                content += `<div class="hover-card-section">
-                    <div class="hover-card-section-title">✅ When it's acceptable:</div>
-                    <div class="hover-card-section-content">${biasConfig.whenAcceptable}</div>
-                </div>`;
+            if (isExcellence) {
+                // Excellence-specific sections
+                if (biasConfig.whenExcellent) {
+                    content += `<div class="hover-card-section">
+                        <div class="hover-card-section-title">✨ Why this is excellent:</div>
+                        <div class="hover-card-section-content">${biasConfig.whenExcellent}</div>
+                    </div>`;
+                }
+                
+                if (biasConfig.howToEnhance) {
+                    content += `<div class="hover-card-section">
+                        <div class="hover-card-section-title">🚀 How to enhance further:</div>
+                        <div class="hover-card-section-content">${biasConfig.howToEnhance}</div>
+                    </div>`;
+                }
+            } else {
+                // Problem-specific sections
+                if (biasConfig.whenConcerning) {
+                    content += `<div class="hover-card-section">
+                        <div class="hover-card-section-title">⚠️ When to be concerned:</div>
+                        <div class="hover-card-section-content">${biasConfig.whenConcerning}</div>
+                    </div>`;
+                }
+                
+                if (biasConfig.whenAcceptable) {
+                    content += `<div class="hover-card-section">
+                        <div class="hover-card-section-title">✅ When it's acceptable:</div>
+                        <div class="hover-card-section-content">${biasConfig.whenAcceptable}</div>
+                    </div>`;
+                }
             }
             
             // Look for checklist
@@ -266,16 +282,32 @@ export class HoverContentGenerator {
                 content += `<div class="hover-card-section">
                     <div class="hover-card-section-title">📝 Examples:</div>`;
                 
-                if (biasConfig.examples.problematic) {
-                    content += `<div class="hover-card-examples-problematic">
-                        <strong>Concerning:</strong> ${biasConfig.examples.problematic.join(', ')}
-                    </div>`;
-                }
-                
-                if (biasConfig.examples.acceptable) {
-                    content += `<div class="hover-card-examples-acceptable">
-                        <strong>Acceptable:</strong> ${biasConfig.examples.acceptable.join(', ')}
-                    </div>`;
+                if (isExcellence) {
+                    // Excellence examples
+                    if (biasConfig.examples.excellent) {
+                        content += `<div class="hover-card-examples-acceptable">
+                            <strong>Excellent examples:</strong> ${biasConfig.examples.excellent.join(', ')}
+                        </div>`;
+                    }
+                    
+                    if (biasConfig.examples.enhance) {
+                        content += `<div class="hover-card-examples-problematic">
+                            <strong>Enhancement ideas:</strong> ${biasConfig.examples.enhance.join(', ')}
+                        </div>`;
+                    }
+                } else {
+                    // Problem examples
+                    if (biasConfig.examples.problematic) {
+                        content += `<div class="hover-card-examples-problematic">
+                            <strong>Concerning:</strong> ${biasConfig.examples.problematic.join(', ')}
+                        </div>`;
+                    }
+                    
+                    if (biasConfig.examples.acceptable) {
+                        content += `<div class="hover-card-examples-acceptable">
+                            <strong>Acceptable:</strong> ${biasConfig.examples.acceptable.join(', ')}
+                        </div>`;
+                    }
                 }
                 
                 content += `</div>`;

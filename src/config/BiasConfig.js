@@ -628,7 +628,20 @@ export class BiasConfig {
             className: 'excellence-attribution',
             settingKey: 'highlightAttributionExcellence',
             statKey: 'attributionExcellenceCount',
-            enabled: true
+            enabled: true,
+            basicTip: 'Specific, verifiable sources that build trust and accountability',
+            whenExcellent: 'When sources are named, dated, and easily verifiable by readers',
+            howToEnhance: 'Add page numbers, direct links, or timestamps to make sources even more accessible',
+            examples: {
+                excellent: ['According to Smith et al. (2023, p. 45)', 'The WHO reported on March 15, 2024', 'Dr. Johnson from Harvard Medical School stated'],
+                enhance: ['Add DOI links for academic papers', 'Include specific page numbers', 'Provide direct URLs when possible']
+            },
+            lookFor: [
+                'Named authors and publications',
+                'Specific dates and page numbers',
+                'Institutional affiliations',
+                'Direct quotes with citations'
+            ]
         },
         NUANCE: {
             id: 'nuance',
@@ -637,7 +650,20 @@ export class BiasConfig {
             className: 'excellence-nuance',
             settingKey: 'highlightNuanceExcellence',
             statKey: 'nuanceExcellenceCount',
-            enabled: true
+            enabled: true,
+            basicTip: 'Language that acknowledges complexity and avoids oversimplification',
+            whenExcellent: 'When acknowledging multiple perspectives, limitations, or contextual factors',
+            howToEnhance: 'Continue showing complexity while keeping main arguments clear and accessible',
+            examples: {
+                excellent: ['While generally true, exceptions include...', 'This trend shows X, though Y factors also influence...', 'The relationship appears complex because...'],
+                enhance: ['Explain why something is complex', 'Acknowledge competing theories', 'Show how context matters']
+            },
+            lookFor: [
+                'Conditional language (might, could, seems)',
+                'Acknowledgment of exceptions',
+                'Recognition of multiple factors',
+                'Context-dependent statements'
+            ]
         },
         TRANSPARENCY: {
             id: 'transparency',
@@ -646,7 +672,20 @@ export class BiasConfig {
             className: 'excellence-transparency',
             settingKey: 'highlightTransparencyExcellence',
             statKey: 'transparencyExcellenceCount',
-            enabled: true
+            enabled: true,
+            basicTip: 'Open communication about limitations, biases, and uncertainties',
+            whenExcellent: 'When openly discussing methodology, limitations, or potential biases',
+            howToEnhance: 'Consider discussing funding sources, methodology details, or personal stakes',
+            examples: {
+                excellent: ['This analysis has limitations...', 'I should note my background in X might influence...', 'The data is preliminary and requires further research'],
+                enhance: ['Explain specific limitations', 'Disclose conflicts of interest', 'Discuss methodology constraints']
+            },
+            lookFor: [
+                'Acknowledgment of limitations',
+                'Discussion of uncertainty',
+                'Methodological transparency',
+                'Bias acknowledgment'
+            ]
         },
         DISCOURSE: {
             id: 'discourse',
@@ -655,7 +694,20 @@ export class BiasConfig {
             className: 'excellence-discourse',
             settingKey: 'highlightDiscourseExcellence',
             statKey: 'discourseExcellenceCount',
-            enabled: true
+            enabled: true,
+            basicTip: 'Language that encourages dialogue and acknowledges other perspectives',
+            whenExcellent: 'When inviting input, acknowledging others\' views, or building on ideas constructively',
+            howToEnhance: 'Ask specific questions or provide clear ways for others to contribute to the discussion',
+            examples: {
+                excellent: ['What do you think about...?', 'Others might argue...', 'Building on Sarah\'s point...', 'I\'d value your perspective on...'],
+                enhance: ['Ask specific follow-up questions', 'Acknowledge opposing viewpoints fairly', 'Invite concrete suggestions']
+            },
+            lookFor: [
+                'Questions inviting input',
+                'Acknowledgment of others\' contributions',
+                'Building on others\' ideas',
+                'Fair representation of different views'
+            ]
         },
         EVIDENCE: {
             id: 'evidence',
@@ -664,7 +716,20 @@ export class BiasConfig {
             className: 'excellence-evidence',
             settingKey: 'highlightEvidenceExcellence',
             statKey: 'evidenceExcellenceCount',
-            enabled: true
+            enabled: true,
+            basicTip: 'Claims supported by specific evidence, data, or research',
+            whenExcellent: 'When providing quantified data, citing specific studies, or linking claims to evidence',
+            howToEnhance: 'Explain why the evidence supports your claims and discuss any limitations in the data',
+            examples: {
+                excellent: ['Data from the 2023 survey shows 67% of respondents...', 'Three peer-reviewed studies demonstrate...', 'The methodology involved 1,200 participants over 6 months'],
+                enhance: ['Explain statistical significance', 'Discuss sample representativeness', 'Compare with other studies']
+            },
+            lookFor: [
+                'Specific percentages and numbers',
+                'Named studies and datasets',
+                'Methodological details',
+                'Peer-reviewed sources'
+            ]
         }
     };
 
