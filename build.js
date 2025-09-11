@@ -27,7 +27,7 @@ function copyStaticFiles() {
   const filesToCopy = [
     'manifest.json',
     'popup.html',
-    'popup.js',
+    'popup-dynamic.js',
     'styles.css',
     'src/excellence-styles.css',
     'info.html'
@@ -35,12 +35,18 @@ function copyStaticFiles() {
 
   filesToCopy.forEach(file => {
     const source = path.join(__dirname, file);
-    const destFile = file.includes('/') ? path.basename(file) : file;
+    let destFile = file.includes('/') ? path.basename(file) : file;
+    
+    // Rename popup-dynamic.js to popup.js in dist
+    if (file === 'popup-dynamic.js') {
+      destFile = 'popup.js';
+    }
+    
     const dest = path.join(__dirname, 'dist', destFile);
     
     if (fs.existsSync(source)) {
       fs.copyFileSync(source, dest);
-      console.log(`Copied ${file} to dist/`);
+      console.log(`Copied ${file} to dist/${destFile}`);
     }
   });
 
@@ -61,6 +67,26 @@ function copyStaticFiles() {
     });
     console.log('Copied images directory to dist/');
   }
+
+  // Copy source files needed for dynamic popup
+  const sourceFiles = [
+    { src: 'src/popup/PopupGenerator.js', dest: 'src/popup/PopupGenerator.js' },
+    { src: 'src/config/BiasConfig.js', dest: 'src/config/BiasConfig.js' }
+  ];
+
+  sourceFiles.forEach(({ src, dest }) => {
+    const source = path.join(__dirname, src);
+    const destPath = path.join(__dirname, 'dist', dest);
+    const destDir = path.dirname(destPath);
+    
+    if (fs.existsSync(source)) {
+      if (!fs.existsSync(destDir)) {
+        fs.mkdirSync(destDir, { recursive: true });
+      }
+      fs.copyFileSync(source, destPath);
+      console.log(`Copied ${src} to dist/${dest}`);
+    }
+  });
 }
 
 // Main build function
