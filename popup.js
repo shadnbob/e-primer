@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'emotionalToggle': 'highlightEmotional',
         'gaslightingToggle': 'highlightGaslighting',
         'falseDilemmaToggle': 'highlightFalseDilemma',
+        'probabilityToggle': 'highlightProbability',
         // Excellence toggles
         'attributionExcellenceToggle': 'highlightAttributionExcellence',
         'nuanceExcellenceToggle': 'highlightNuanceExcellence',
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'emotionalCount': 'emotionalCount',
         'gaslightingCount': 'gaslightingCount',
         'falseDilemmaCount': 'falseDilemmaCount',
+        'probabilityCount': 'probabilityCount',
         // Excellence stats
         'attributionExcellenceCount': 'attributionExcellenceCount',
         'nuanceExcellenceCount': 'nuanceExcellenceCount',
@@ -94,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 highlightEmotional: false,
                 highlightGaslighting: false,
                 highlightFalseDilemma: false,
+                highlightProbability: false,
                 highlightAttributionExcellence: true,
                 highlightNuanceExcellence: true,
                 highlightTransparencyExcellence: true,

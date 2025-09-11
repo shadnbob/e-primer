@@ -110,6 +110,14 @@
 }
 
 
+.bias-highlight-probability {
+    background-color: rgba(65, 105, 225, 0.3);
+    border-bottom: 1px solid royalblue;
+    cursor: help;
+    position: relative;
+}
+
+
 /* Excellence Detection Styles */
 
 /* Excellence Highlighting - Green spectrum for good practices */
@@ -215,6 +223,7 @@
 .bias-highlight-emotional::after,
 .bias-highlight-gaslighting::after,
 .bias-highlight-falsedilemma::after,
+.bias-highlight-probability::after,
 .excellence-attribution::after,
 .excellence-nuance::after,
 .excellence-transparency::after,
@@ -253,6 +262,7 @@
 .bias-highlight-emotional:hover::after,
 .bias-highlight-gaslighting:hover::after,
 .bias-highlight-falsedilemma:hover::after,
+.bias-highlight-probability:hover::after,
 .excellence-attribution:hover::after,
 .excellence-nuance:hover::after,
 .excellence-transparency:hover::after,

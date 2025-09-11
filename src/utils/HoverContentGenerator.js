@@ -399,6 +399,7 @@ export class HoverContentGenerator {
             emotional: 'Emotional Manipulation',
             gaslighting: 'Gaslighting',
             falsedilemma: 'False Dilemmas',
+            probability: 'Probability Perception',
             
             // Excellence
             attribution: 'Clear Attribution',

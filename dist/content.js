@@ -604,6 +604,49 @@
           opinion: "Common rhetorical device but often misleading",
           instructions: "Appropriate only when choices are genuinely binary"
         }
+      },
+      PROBABILITY: {
+        id: "probability",
+        name: "Probability Perception",
+        description: "Vague probability language that distorts risk perception",
+        category: "advanced",
+        color: "#4169e1",
+        className: "bias-highlight-probability",
+        settingKey: "highlightProbability",
+        statKey: "probabilityCount",
+        enabled: true,
+        tooltip: "Vague probability language that creates misperception of risk",
+        basicTip: "Vague probability language that creates misperception of risk",
+        whenConcerning: "When vague probability terms substitute for specific data or create false impressions",
+        whenAcceptable: "When uncertainty is genuine and specific data unavailable, with proper caveats",
+        lookFor: [
+          "Is this hiding actual data?",
+          "Could this mislead about real risks?",
+          "Is the vagueness appropriate to the context?",
+          "Are people equipped to make informed decisions?"
+        ],
+        examples: {
+          problematic: [
+            "highly unlikely side effects (without rates)",
+            "remote possibility of problems",
+            "very safe procedure (no statistics)",
+            "rare complications (undefined)",
+            "minimal risk involved"
+          ],
+          acceptable: [
+            "5% chance of side effects",
+            "occurs in 1 in 10,000 cases",
+            "uncertain due to limited data",
+            "preliminary results suggest...",
+            "confidence interval: 2-8%"
+          ]
+        },
+        contextualGuidance: {
+          academic: "Concerning when vague terms replace statistical data in research reporting",
+          news: "Red flag when probability language downplays or exaggerates actual risks",
+          opinion: "Watch for vague probability used to support arguments without evidence",
+          instructions: "Generally inappropriate for safety-critical information without specific data"
+        }
       }
     };
     // Excellence detection types
@@ -1521,7 +1564,7 @@
     "scarcely",
     "slightly",
     "somewhat",
-    "a\\s+bit",
+    "a\\s+bit\\s",
     "a\\s+little",
     "minor",
     "small",
@@ -1952,6 +1995,158 @@
     "inaction is action"
   ];
 
+  // src/dictionaries/probability-language.js
+  var probabilityLanguage = [
+    // Vague quantifiers that hide actual probabilities
+    "highly unlikely",
+    "very unlikely",
+    "quite unlikely",
+    "extremely unlikely",
+    "rather unlikely",
+    "somewhat unlikely",
+    "likely",
+    "quite likely",
+    "very likely",
+    "highly likely",
+    "extremely likely",
+    "rather likely",
+    "somewhat likely",
+    "probably",
+    "probably not",
+    "quite probably",
+    "very probably",
+    "most probably",
+    "almost certainly",
+    // Risk minimization language
+    "minimal risk",
+    "low risk",
+    "small risk",
+    "tiny risk",
+    "negligible risk",
+    "slight risk",
+    "minor risk",
+    "insignificant risk",
+    "virtually no risk",
+    "practically no risk",
+    // Risk amplification language
+    "significant risk",
+    "considerable risk",
+    "substantial risk",
+    "serious risk",
+    "major risk",
+    "high risk",
+    "extreme risk",
+    "severe risk",
+    "grave risk",
+    // Frequency vagueness
+    "rarely",
+    "seldom",
+    "infrequently",
+    "occasionally",
+    "sometimes",
+    "often",
+    "frequently",
+    "regularly",
+    "commonly",
+    "typically",
+    "usually",
+    "generally",
+    "mostly",
+    "largely",
+    "predominantly",
+    "mainly",
+    // Possibility language
+    "possible",
+    "quite possible",
+    "very possible",
+    "entirely possible",
+    "highly possible",
+    "perfectly possible",
+    "impossible",
+    "highly impossible",
+    "virtually impossible",
+    "may occur",
+    "might occur",
+    "could occur",
+    "may happen",
+    "might happen",
+    "could happen",
+    "can happen",
+    "will likely happen",
+    "may result",
+    // Certainty language without evidence
+    "almost certain",
+    "virtually certain",
+    "practically certain",
+    "nearly certain",
+    "all but certain",
+    "essentially certain",
+    // Medical/safety vagueness
+    "rare side effects",
+    "uncommon side effects",
+    "possible side effects",
+    "potential side effects",
+    "occasional complications",
+    "infrequent complications",
+    "unlikely complications",
+    "rare complications",
+    "safe procedure",
+    "very safe",
+    "quite safe",
+    "relatively safe",
+    "generally safe",
+    "considered safe",
+    "proven safe",
+    "deemed safe",
+    "typically safe",
+    // Degree modifiers that obscure probability
+    "remote possibility",
+    "distant possibility",
+    "slight possibility",
+    "small possibility",
+    "good possibility",
+    "strong possibility",
+    "real possibility",
+    "distinct possibility",
+    "remote chance",
+    "slim chance",
+    "small chance",
+    "good chance",
+    "strong chance",
+    "excellent chance",
+    "fair chance",
+    "reasonable chance",
+    "decent chance",
+    // Conditional probability vagueness  
+    "in most cases",
+    "in some cases",
+    "in many cases",
+    "in certain cases",
+    "under normal circumstances",
+    "under typical conditions",
+    "in general",
+    "as a rule",
+    // Comparative probability without baselines
+    "more likely",
+    "less likely",
+    "much more likely",
+    "much less likely",
+    "far more likely",
+    "far less likely",
+    "significantly more likely",
+    "significantly less likely",
+    // Time-based probability vagueness
+    "eventually",
+    "sooner or later",
+    "at some point",
+    "in time",
+    "over time",
+    "long term",
+    "short term",
+    "immediate term",
+    "near future"
+  ];
+
   // src/dictionaries/index.js
   var BiasPatterns = class {
     constructor() {
@@ -1975,7 +2170,8 @@
         euphemism: euphemisms,
         emotional: emotionalTriggers,
         gaslighting: gaslightingPhrases,
-        falsedilemma: falseDilemmaPhrases
+        falsedilemma: falseDilemmaPhrases,
+        probability: probabilityLanguage
       };
     }
     // Get opinion word sub-categories for enhanced detection
@@ -2377,7 +2573,7 @@
     getTypeName(type, isExcellence) {
       const typeNames = {
         // Problems
-        opinion: "Opinion Words",
+        // opinion: 'Opinion Words',
         // Opinion Sub-Categories
         opinion_certainty: "\u{1F3AF} Certainty/Conviction",
         opinion_hedging: "\u2753 Hedging/Uncertainty",
@@ -2405,6 +2601,7 @@
         emotional: "Emotional Manipulation",
         gaslighting: "Gaslighting",
         falsedilemma: "False Dilemmas",
+        probability: "Probability Perception",
         // Excellence
         attribution: "Clear Attribution",
         nuance: "Nuanced Language",
@@ -2523,20 +2720,20 @@
     }
     getTooltipText(type) {
       const tooltips = {
-        opinion: "Opinion word - subjective language",
+        opinion: "Opinion - Subjective - General",
         // Opinion Sub-Categories
-        opinion_certainty: "\u{1F3AF} Certainty/Conviction - false certainty",
-        opinion_hedging: "\u2753 Hedging/Uncertainty - vague language",
-        opinion_evaluative_positive: "\u{1F44D} Positive Evaluation - subjective judgment",
-        opinion_evaluative_negative: "\u{1F44E} Negative Evaluation - subjective judgment",
-        opinion_emotional_charge: "\u26A1 Emotional Charge - triggers emotions",
-        opinion_comparative: "\u{1F4CA} Comparative/Superlative - artificial ranking",
-        opinion_political_framing: "\u{1F3DB}\uFE0F Political Framing - polarizing language",
-        opinion_intensifiers: "\u{1F525} Intensifiers - exaggerates without meaning",
-        opinion_credibility_undermining: "\u{1F5E3}\uFE0F Credibility Undermining - attacks credibility",
-        opinion_loaded_political: "\u2696\uFE0F Loaded Political Terms - ideological baggage",
-        opinion_moral_judgments: "\u2696\uFE0F Moral/Ethical Judgments - imposed frameworks",
-        opinion_emotional_appeals: "\u{1F4AD} Emotional Appeals - bypasses logic",
+        opinion_certainty: "Possible Opinion - Certainty/Conviction",
+        opinion_hedging: "Possible Opinion - Hedging/Uncertainty",
+        opinion_evaluative_positive: "Possible Opinion - Positive Evaluation",
+        opinion_evaluative_negative: "Possible Opinion - Negative Evaluation",
+        opinion_emotional_charge: "Possible Opinion - Emotional Charge",
+        opinion_comparative: "Possible Opinion - Comparative/Superlative",
+        opinion_political_framing: "Possible Opinion - Political Framing",
+        opinion_intensifiers: "Possible Opinion - Intensifiers",
+        opinion_credibility_undermining: "Possible Opinion - Credibility Undermining",
+        opinion_loaded_political: "Possible Opinion - Loaded Political Terms",
+        opinion_moral_judgments: "Possible Opinion - Moral/Ethical Judgments",
+        opinion_emotional_appeals: "Possible Opinion - Emotional Appeals",
         // Other types
         tobe: "To-be verb (E-Prime violation)",
         absolute: "Absolute statement",
@@ -2550,7 +2747,8 @@
         euphemism: "Euphemism/dysphemism",
         emotional: "Emotional manipulation",
         gaslighting: "Gaslighting phrase",
-        falsedilemma: "False dilemma"
+        falsedilemma: "False dilemma",
+        probability: "Probability language"
       };
       return tooltips[type] || "Bias indicator";
     }
@@ -2593,7 +2791,18 @@
     }
     // Add simple tooltip and right-click functionality
     addSimpleTooltip(spanElement, match) {
-      const tooltipText = match.isExcellence ? this.getExcellenceTooltipText(match.type) : this.getTooltipText(match.type);
+      let tooltipText;
+      if (match.isExcellence) {
+        tooltipText = this.getExcellenceTooltipText(match.type);
+      } else {
+        if (match.subCategory && match.type.startsWith("opinion_")) {
+          tooltipText = this.getTooltipText(match.type);
+        } else if (match.type === "opinion" && match.subCategory) {
+          tooltipText = this.getTooltipText(`opinion_${match.subCategory.id}`);
+        } else {
+          tooltipText = this.getTooltipText(match.type);
+        }
+      }
       spanElement.setAttribute("data-tooltip", tooltipText);
       spanElement.addEventListener("click", (e) => {
         e.preventDefault();

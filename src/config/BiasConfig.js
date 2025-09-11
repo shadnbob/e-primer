@@ -616,6 +616,50 @@ export class BiasConfig {
                 opinion: 'Common rhetorical device but often misleading',
                 instructions: 'Appropriate only when choices are genuinely binary'
             }
+        },
+        
+        PROBABILITY: {
+            id: 'probability',
+            name: 'Probability Perception',
+            description: 'Vague probability language that distorts risk perception',
+            category: 'advanced',
+            color: '#4169e1',
+            className: 'bias-highlight-probability',
+            settingKey: 'highlightProbability',
+            statKey: 'probabilityCount',
+            enabled: true,
+            tooltip: 'Vague probability language that creates misperception of risk',
+            basicTip: 'Vague probability language that creates misperception of risk',
+            whenConcerning: 'When vague probability terms substitute for specific data or create false impressions',
+            whenAcceptable: 'When uncertainty is genuine and specific data unavailable, with proper caveats',
+            lookFor: [
+                'Is this hiding actual data?',
+                'Could this mislead about real risks?',
+                'Is the vagueness appropriate to the context?',
+                'Are people equipped to make informed decisions?'
+            ],
+            examples: {
+                problematic: [
+                    'highly unlikely side effects (without rates)',
+                    'remote possibility of problems',
+                    'very safe procedure (no statistics)',
+                    'rare complications (undefined)',
+                    'minimal risk involved'
+                ],
+                acceptable: [
+                    '5% chance of side effects',
+                    'occurs in 1 in 10,000 cases',
+                    'uncertain due to limited data',
+                    'preliminary results suggest...',
+                    'confidence interval: 2-8%'
+                ]
+            },
+            contextualGuidance: {
+                academic: 'Concerning when vague terms replace statistical data in research reporting',
+                news: 'Red flag when probability language downplays or exaggerates actual risks',
+                opinion: 'Watch for vague probability used to support arguments without evidence',
+                instructions: 'Generally inappropriate for safety-critical information without specific data'
+            }
         }
     };
     

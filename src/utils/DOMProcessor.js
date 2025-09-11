@@ -175,7 +175,8 @@ export class DOMProcessor {
             euphemism: 'Euphemism/dysphemism',
             emotional: 'Emotional manipulation',
             gaslighting: 'Gaslighting phrase',
-            falsedilemma: 'False dilemma'
+            falsedilemma: 'False dilemma',
+            probability: 'Probability language'
         };
         return tooltips[type] || 'Bias indicator';
     }

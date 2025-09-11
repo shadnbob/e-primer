@@ -9,7 +9,7 @@ export const minimizers = [
     "scarcely",
     "slightly",
     "somewhat",
-    "a\\s+bit",
+    "a\\s+bit\\s",
     "a\\s+little",
     "minor",
     "small",

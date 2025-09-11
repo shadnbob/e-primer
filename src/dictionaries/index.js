@@ -13,6 +13,7 @@ import { euphemisms } from './euphemisms.js';
 import { emotionalTriggers } from './emotional-triggers.js';
 import { gaslightingPhrases } from './gaslighting.js';
 import { falseDilemmaPhrases } from './false-dilemma.js';
+import { probabilityLanguage } from './probability-language.js';
 
 export class BiasPatterns {
     constructor() {
@@ -36,7 +37,8 @@ export class BiasPatterns {
             euphemism: euphemisms,
             emotional: emotionalTriggers,
             gaslighting: gaslightingPhrases,
-            falsedilemma: falseDilemmaPhrases
+            falsedilemma: falseDilemmaPhrases,
+            probability: probabilityLanguage
         };
     }
 
