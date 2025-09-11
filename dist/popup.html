@@ -391,25 +391,339 @@
     </label>
 </div>
 
-<!-- Dynamic content containers - populated by PopupGenerator -->
-<div id="excellence-detection-container">
-    <!-- Excellence detection toggles will be generated here -->
+<!-- Excellence Detection -->
+<div class="category-section">
+    <div class="category-header">
+        <span>Excellence Detection ✨</span>
+        <span class="chevron">▼</span>
+    </div>
+    <div class="category-body">
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator green"></div>
+                <span>Clear Attribution</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="attributionExcellenceToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator lightgreen"></div>
+                <span>Nuanced Language</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="nuanceExcellenceToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator green"></div>
+                <span>Transparency</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="transparencyExcellenceToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator turquoise"></div>
+                <span>Constructive Discourse</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="discourseExcellenceToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator info"></div>
+                <span>Evidence-Based</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="evidenceExcellenceToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
 </div>
 
-<div id="bias-detection-container">
-    <!-- Bias detection categories will be generated here -->
+<div class="category-section">
+    <div class="category-header">
+        <span>Basic Detection</span>
+        <span class="chevron">▼</span>
+    </div>
+    <div class="category-body">
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator orange"></div>
+                <span>Opinion Words</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="opinionToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator blue"></div>
+                <span>To-Be Verbs (E-Prime)</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="ePrimeToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator pink"></div>
+                <span>Absolute Statements</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="absoluteToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
 </div>
 
-<!-- Dynamic statistics container - populated by PopupGenerator -->
+<div class="category-section collapsed">
+    <div class="category-header">
+        <span>Advanced Detection</span>
+        <span class="chevron">▼</span>
+    </div>
+    <div class="category-body">
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator purple"></div>
+                <span>Passive Voice</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="passiveToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator gold"></div>
+                <span>Weasel Words</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="weaselToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator deeppink"></div>
+                <span>Presuppositions</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="presuppositionToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator" style="background-color: #4169e1;"></div>
+                <span>Probability Perception</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="probabilityToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="category-section collapsed">
+    <div class="category-header">
+        <span>Framing & Rhetoric</span>
+        <span class="chevron">▼</span>
+    </div>
+    <div class="category-body">
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator crimson"></div>
+                <span>War Metaphors</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="metaphorToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator teal"></div>
+                <span>Minimizers</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="minimizerToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator orangered"></div>
+                <span>Maximizers</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="maximizerToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator indigo"></div>
+                <span>False Balance</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="falseBalanceToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator darkgreen"></div>
+                <span>Euphemisms</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="euphemismToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="category-section collapsed">
+    <div class="category-header">
+        <span>Manipulation Tactics</span>
+        <span class="chevron">▼</span>
+    </div>
+    <div class="category-body">
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator coral"></div>
+                <span>Emotional Manipulation</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="emotionalToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator maroon"></div>
+                <span>Gaslighting</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="gaslightingToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <div class="color-indicator darkviolet"></div>
+                <span>False Dilemmas</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="falseDilemmaToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
 <div class="stats">
     <div class="stats-title">Excellence Indicators</div>
-    <div class="stats-grid" id="excellence-stats-container">
-        <!-- Excellence statistics will be generated here -->
+    <div class="stats-grid">
+        <div class="stat-item excellence">
+            <span class="stat-label">Attribution</span>
+            <span class="stat-value" id="attributionExcellenceCount">0</span>
+        </div>
+        <div class="stat-item excellence">
+            <span class="stat-label">Nuance</span>
+            <span class="stat-value" id="nuanceExcellenceCount">0</span>
+        </div>
+        <div class="stat-item excellence">
+            <span class="stat-label">Transparency</span>
+            <span class="stat-value" id="transparencyExcellenceCount">0</span>
+        </div>
+        <div class="stat-item excellence">
+            <span class="stat-label">Discourse</span>
+            <span class="stat-value" id="discourseExcellenceCount">0</span>
+        </div>
+        <div class="stat-item excellence">
+            <span class="stat-label">Evidence</span>
+            <span class="stat-value" id="evidenceExcellenceCount">0</span>
+        </div>
     </div>
     
     <div class="stats-title" style="margin-top: 15px;">Bias Indicators</div>
-    <div class="stats-grid" id="bias-stats-container">
-        <!-- Bias statistics will be generated here -->
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-label">Opinion</span>
+            <span class="stat-value" id="opinionCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">To-be</span>
+            <span class="stat-value" id="toBeCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Absolute</span>
+            <span class="stat-value" id="absoluteCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Passive</span>
+            <span class="stat-value" id="passiveCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Weasel</span>
+            <span class="stat-value" id="weaselCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Presupp.</span>
+            <span class="stat-value" id="presuppositionCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Metaphor</span>
+            <span class="stat-value" id="metaphorCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Minimizer</span>
+            <span class="stat-value" id="minimizerCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Maximizer</span>
+            <span class="stat-value" id="maximizerCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">False Bal.</span>
+            <span class="stat-value" id="falseBalanceCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Euphemism</span>
+            <span class="stat-value" id="euphemismCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Emotional</span>
+            <span class="stat-value" id="emotionalCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Gaslight</span>
+            <span class="stat-value" id="gaslightingCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Dilemma</span>
+            <span class="stat-value" id="falseDilemmaCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Probability</span>
+            <span class="stat-value" id="probabilityCount">0</span>
+        </div>
     </div>
 </div>
 
@@ -424,6 +738,6 @@
 
 <a href="#" id="infoLink" class="info-link">Learn about bias detection categories »</a>
 
-<script type="module" src="popup.js"></script>
+<script src="popup.js"></script>
 </body>
 </html>

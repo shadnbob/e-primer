@@ -1,113 +1,134 @@
-// popup-dynamic.js - Refactored popup with dynamic UI generation
-import { PopupGenerator } from './src/popup/PopupGenerator.js';
-import { BiasConfig } from './src/config/BiasConfig.js';
-
+// popup.js - Enhanced with Excellence Detection and Mode Switching
 document.addEventListener('DOMContentLoaded', function() {
+    // Toggle mappings - updated with excellence toggles
+    const toggleMappings = {
+        'enableToggle': 'enableAnalysis',
+        'opinionToggle': 'highlightOpinion',
+        'ePrimeToggle': 'highlightToBe',
+        'absoluteToggle': 'highlightAbsolutes',
+        'passiveToggle': 'highlightPassive',
+        'weaselToggle': 'highlightWeasel',
+        'presuppositionToggle': 'highlightPresupposition',
+        'metaphorToggle': 'highlightMetaphors',
+        'minimizerToggle': 'highlightMinimizers',
+        'maximizerToggle': 'highlightMaximizers',
+        'falseBalanceToggle': 'highlightFalseBalance',
+        'euphemismToggle': 'highlightEuphemism',
+        'emotionalToggle': 'highlightEmotional',
+        'gaslightingToggle': 'highlightGaslighting',
+        'falseDilemmaToggle': 'highlightFalseDilemma',
+        'probabilityToggle': 'highlightProbability',
+        // Excellence toggles
+        'attributionExcellenceToggle': 'highlightAttributionExcellence',
+        'nuanceExcellenceToggle': 'highlightNuanceExcellence',
+        'transparencyExcellenceToggle': 'highlightTransparencyExcellence',
+        'discourseExcellenceToggle': 'highlightDiscourseExcellence',
+        'evidenceExcellenceToggle': 'highlightEvidenceExcellence'
+    };
+
+    // Stat element mappings - updated with excellence stats
+    const statMappings = {
+        'opinionCount': 'opinionCount',
+        'toBeCount': 'toBeCount',
+        'absoluteCount': 'absoluteCount',
+        'passiveCount': 'passiveCount',
+        'weaselCount': 'weaselCount',
+        'presuppositionCount': 'presuppositionCount',
+        'metaphorCount': 'metaphorCount',
+        'minimizerCount': 'minimizerCount',
+        'maximizerCount': 'maximizerCount',
+        'falseBalanceCount': 'falseBalanceCount',
+        'euphemismCount': 'euphemismCount',
+        'emotionalCount': 'emotionalCount',
+        'gaslightingCount': 'gaslightingCount',
+        'falseDilemmaCount': 'falseDilemmaCount',
+        'probabilityCount': 'probabilityCount',
+        // Excellence stats
+        'attributionExcellenceCount': 'attributionExcellenceCount',
+        'nuanceExcellenceCount': 'nuanceExcellenceCount',
+        'transparencyExcellenceCount': 'transparencyExcellenceCount',
+        'discourseExcellenceCount': 'discourseExcellenceCount',
+        'evidenceExcellenceCount': 'evidenceExcellenceCount'
+    };
+
     let currentSettings = {};
     let isUpdating = false;
-    let popupGenerator = null;
 
-    // Initialize the popup
-    initialize();
+    // Initialize settings
+    loadSettings();
 
-    async function initialize() {
-        try {
-            // Create popup generator
-            popupGenerator = new PopupGenerator();
+    // Setup event listeners
+    setupToggleListeners();
+    setupButtonListeners();
+    setupCategoryCollapse();
+    setupModeSelector();
+    setupInfoLink();
+
+    // Request initial stats
+    requestStats();
+
+    function loadSettings() {
+        // Import BiasConfig to get defaults
+        import('./src/config/BiasConfig.js').then(module => {
+            const defaults = module.BiasConfig.getDefaultSettings();
             
-            // Generate dynamic UI
-            generateUI();
-            
-            // Load settings and update UI
-            await loadSettings();
-            
-            // Setup event listeners
-            setupEventListeners();
-            
-            // Request initial stats
-            requestStats();
-            
-            console.log('Dynamic popup initialized successfully');
-        } catch (error) {
-            console.error('Failed to initialize dynamic popup:', error);
-            // Fallback to basic functionality
-            handleInitializationError(error);
-        }
-    }
-
-    function generateUI() {
-        // Generate excellence detection section
-        const excellenceContainer = document.getElementById('excellence-detection-container');
-        if (excellenceContainer) {
-            excellenceContainer.innerHTML = popupGenerator.generateExcellenceSection();
-        }
-
-        // Generate bias detection sections
-        const biasContainer = document.getElementById('bias-detection-container');
-        if (biasContainer) {
-            biasContainer.innerHTML = popupGenerator.generateAllBiasSections();
-        }
-
-        // Generate statistics sections
-        const excellenceStatsContainer = document.getElementById('excellence-stats-container');
-        if (excellenceStatsContainer) {
-            excellenceStatsContainer.innerHTML = popupGenerator.generateExcellenceStatsGrid();
-        }
-
-        const biasStatsContainer = document.getElementById('bias-stats-container');
-        if (biasStatsContainer) {
-            biasStatsContainer.innerHTML = popupGenerator.generateBiasStatsGrid();
-        }
-    }
-
-    async function loadSettings() {
-        try {
-            // Always use BiasConfig as the source of truth
-            const defaults = BiasConfig.getDefaultSettings();
-            
-            return new Promise((resolve) => {
-                chrome.storage.sync.get(defaults, function(items) {
-                    currentSettings = BiasConfig.validateSettings(items);
-                    updateUI();
-                    updateModeUI();
-                    resolve();
-                });
+            chrome.storage.sync.get(defaults, function(items) {
+                currentSettings = items;
+                updateUI();
+                updateModeUI();
             });
-        } catch (error) {
-            console.error('Failed to load settings:', error);
-            // Use minimal defaults if BiasConfig fails
-            currentSettings = {
+        }).catch(error => {
+            // Fallback to hardcoded defaults if import fails
+            const defaults = {
                 enableAnalysis: true,
-                analysisMode: 'balanced'
+                analysisMode: 'balanced',
+                highlightOpinion: true,
+                highlightToBe: true,
+                highlightAbsolutes: true,
+                highlightPassive: false,
+                highlightWeasel: false,
+                highlightPresupposition: false,
+                highlightMetaphors: false,
+                highlightMinimizers: false,
+                highlightMaximizers: false,
+                highlightFalseBalance: false,
+                highlightEuphemism: false,
+                highlightEmotional: false,
+                highlightGaslighting: false,
+                highlightFalseDilemma: false,
+                highlightProbability: false,
+                highlightAttributionExcellence: true,
+                highlightNuanceExcellence: true,
+                highlightTransparencyExcellence: true,
+                highlightDiscourseExcellence: true,
+                highlightEvidenceExcellence: true
             };
-            updateUI();
-        }
+            
+            chrome.storage.sync.get(defaults, function(items) {
+                currentSettings = items;
+                updateUI();
+                updateModeUI();
+            });
+        });
     }
 
     function updateUI() {
         isUpdating = true;
         
-        // Update all toggles using data attributes
-        const toggles = document.querySelectorAll('input[data-setting-key]');
-        toggles.forEach(toggle => {
-            const settingKey = toggle.dataset.settingKey;
-            if (settingKey && currentSettings.hasOwnProperty(settingKey)) {
+        // Update toggles
+        for (const [toggleId, settingKey] of Object.entries(toggleMappings)) {
+            const toggle = document.getElementById(toggleId);
+            if (toggle) {
                 toggle.checked = currentSettings[settingKey];
             }
-        });
-
-        // Update master toggle
-        const enableToggle = document.getElementById('enableToggle');
-        if (enableToggle) {
-            enableToggle.checked = currentSettings.enableAnalysis;
         }
         
-        // Update status text
+        // Update status text based on mode
         updateStatusText();
         
         isUpdating = false;
     }
-
+    
     function updateModeUI() {
         // Update mode selector
         const modeInputs = document.querySelectorAll('input[name="mode"]');
@@ -138,47 +159,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function setupEventListeners() {
-        // Generic toggle handler using event delegation
-        setupDynamicToggleListeners();
-        
-        // Other event listeners
-        setupButtonListeners();
-        setupCategoryCollapse();
-        setupModeSelector();
-        setupInfoLink();
+    function setupToggleListeners() {
+        for (const toggleId of Object.keys(toggleMappings)) {
+            const toggle = document.getElementById(toggleId);
+            if (toggle) {
+                toggle.addEventListener('change', handleToggleChange);
+            }
+        }
     }
 
-    function setupDynamicToggleListeners() {
-        // Use event delegation for all toggle changes
-        document.addEventListener('change', (event) => {
-            if (isUpdating) return;
-            
-            const target = event.target;
-            
-            // Handle bias/excellence type toggles
-            if (target.matches('input[data-setting-key]')) {
-                const settingKey = target.dataset.settingKey;
-                handleSettingChange(settingKey, target.checked);
-            }
-            
-            // Handle master enable toggle
-            if (target.id === 'enableToggle') {
-                handleSettingChange('enableAnalysis', target.checked);
-            }
-        });
-    }
-
-    function handleSettingChange(settingKey, value) {
-        if (!settingKey) return;
+    function handleToggleChange(event) {
+        if (isUpdating) return;
         
-        currentSettings[settingKey] = value;
+        const toggleId = event.target.id;
+        const settingKey = toggleMappings[toggleId];
         
-        // Save to storage
-        chrome.storage.sync.set(currentSettings, function() {
-            // Send message to content script
-            sendSettingsToContentScript();
-        });
+        if (settingKey) {
+            currentSettings[settingKey] = event.target.checked;
+            
+            // Save to storage
+            chrome.storage.sync.set(currentSettings, function() {
+                // Send message to content script
+                sendSettingsToContentScript();
+            });
+        }
     }
 
     function setupButtonListeners() {
@@ -245,12 +249,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function setupCategoryCollapse() {
-        // Use event delegation for dynamically generated headers
-        document.addEventListener('click', (event) => {
-            if (event.target.matches('.category-header')) {
-                const section = event.target.parentElement;
+        const headers = document.querySelectorAll('.category-header');
+        headers.forEach(header => {
+            header.addEventListener('click', function() {
+                const section = this.parentElement;
                 section.classList.toggle('collapsed');
-            }
+            });
         });
     }
     
@@ -321,13 +325,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateStats(stats) {
         if (!stats) return;
         
-        // Update all stat values using IDs
-        Object.entries(stats).forEach(([statKey, value]) => {
-            const element = document.getElementById(statKey);
-            if (element && statKey !== 'healthScore') {
-                element.textContent = value || 0;
+        // Update stat values
+        for (const [elementId, statKey] of Object.entries(statMappings)) {
+            const element = document.getElementById(elementId);
+            if (element && stats[statKey] !== undefined) {
+                element.textContent = stats[statKey] || 0;
             }
-        });
+        }
         
         // Update health score
         updateHealthScore(stats.healthScore);
@@ -362,30 +366,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 healthFill.style.width = score + '%';
             }
         }
-    }
-
-    function handleInitializationError(error) {
-        console.error('Popup initialization failed, using fallback mode:', error);
-        
-        // Show error message to user
-        const containers = [
-            'excellence-detection-container',
-            'bias-detection-container', 
-            'excellence-stats-container',
-            'bias-stats-container'
-        ];
-        
-        containers.forEach(containerId => {
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = `
-                    <div style="padding: 20px; text-align: center; color: #666;">
-                        <p>Error loading dynamic interface.</p>
-                        <p style="font-size: 12px;">Please refresh the extension.</p>
-                    </div>
-                `;
-            }
-        });
     }
 
     // Listen for stats updates from content script

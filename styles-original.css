@@ -1,7 +1,165 @@
+.bias-highlight-opinion {
+    background-color: rgba(255, 165, 0, 0.3);
+    border-bottom: 1px solid orange;
+    cursor: help;
+    position: relative;
+}
 
-/* =================================================
-   STATIC CSS - Manual styles that don't change
-   ================================================= */
+
+.bias-highlight-tobe {
+    background-color: rgba(135, 206, 250, 0.3);
+    border-bottom: 1px solid lightskyblue;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-absolute {
+    background-color: rgba(255, 105, 180, 0.3);
+    border-bottom: 1px solid hotpink;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-passive {
+    background-color: rgba(128, 0, 128, 0.3);
+    border-bottom: 1px solid purple;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-weasel {
+    background-color: rgba(184, 134, 11, 0.3);
+    border-bottom: 1px solid darkgoldenrod;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-presupposition {
+    background-color: rgba(255, 20, 147, 0.3);
+    border-bottom: 1px solid deeppink;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-metaphor {
+    background-color: rgba(220, 20, 60, 0.3);
+    border-bottom: 1px solid crimson;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-minimizer {
+    background-color: rgba(0, 128, 128, 0.3);
+    border-bottom: 1px solid teal;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-maximizer {
+    background-color: rgba(255, 69, 0, 0.3);
+    border-bottom: 1px solid orangered;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-falsebalance {
+    background-color: rgba(75, 0, 130, 0.3);
+    border-bottom: 1px solid indigo;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-euphemism {
+    background-color: rgba(0, 100, 0, 0.3);
+    border-bottom: 1px solid darkgreen;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-emotional {
+    background-color: rgba(255, 127, 80, 0.3);
+    border-bottom: 1px solid coral;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-gaslighting {
+    background-color: rgba(128, 0, 0, 0.3);
+    border-bottom: 1px solid maroon;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-falsedilemma {
+    background-color: rgba(148, 0, 211, 0.3);
+    border-bottom: 1px solid darkviolet;
+    cursor: help;
+    position: relative;
+}
+
+
+.bias-highlight-probability {
+    background-color: rgba(65, 105, 225, 0.3);
+    border-bottom: 1px solid royalblue;
+    cursor: help;
+    position: relative;
+}
+
+
+/* Excellence Detection Styles */
+
+/* Excellence Highlighting - Green spectrum for good practices */
+.excellence-attribution {
+    border-bottom: 2px solid #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.excellence-nuance {
+    border-bottom: 2px dotted #218838;
+    background-color: rgba(33, 136, 56, 0.1);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.excellence-transparency {
+    border-bottom: 2px dashed #28a745;
+    background-color: rgba(40, 167, 69, 0.08);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.excellence-discourse {
+    border-bottom: 2px solid #20c997;
+    background-color: rgba(32, 201, 151, 0.1);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.excellence-evidence {
+    border-bottom: 2px solid #17a2b8;
+    background-color: rgba(23, 162, 184, 0.1);
+    position: relative;
+    cursor: help;
+    transition: all 0.2s ease;
+}
 
 /* Intensity Modifiers for Problems */
 .bias-intensity-1 {
@@ -50,7 +208,71 @@
     box-shadow: 0 -3px 0 rgba(220, 53, 69, 0.4) inset;
 }
 
-/* Context menu styles */
+/* Simple CSS Tooltips */
+.bias-highlight-opinion::after,
+.bias-highlight-tobe::after,
+.bias-highlight-absolute::after,
+.bias-highlight-passive::after,
+.bias-highlight-weasel::after,
+.bias-highlight-presupposition::after,
+.bias-highlight-metaphor::after,
+.bias-highlight-minimizer::after,
+.bias-highlight-maximizer::after,
+.bias-highlight-falsebalance::after,
+.bias-highlight-euphemism::after,
+.bias-highlight-emotional::after,
+.bias-highlight-gaslighting::after,
+.bias-highlight-falsedilemma::after,
+.bias-highlight-probability::after,
+.excellence-attribution::after,
+.excellence-nuance::after,
+.excellence-transparency::after,
+.excellence-discourse::after,
+.excellence-evidence::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+    margin-bottom: 5px;
+}
+
+/* Show tooltip on hover */
+.bias-highlight-opinion:hover::after,
+.bias-highlight-tobe:hover::after,
+.bias-highlight-absolute:hover::after,
+.bias-highlight-passive:hover::after,
+.bias-highlight-weasel:hover::after,
+.bias-highlight-presupposition:hover::after,
+.bias-highlight-metaphor:hover::after,
+.bias-highlight-minimizer:hover::after,
+.bias-highlight-maximizer:hover::after,
+.bias-highlight-falsebalance:hover::after,
+.bias-highlight-euphemism:hover::after,
+.bias-highlight-emotional:hover::after,
+.bias-highlight-gaslighting:hover::after,
+.bias-highlight-falsedilemma:hover::after,
+.bias-highlight-probability:hover::after,
+.excellence-attribution:hover::after,
+.excellence-nuance:hover::after,
+.excellence-transparency:hover::after,
+.excellence-discourse:hover::after,
+.excellence-evidence:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Right-click context menu for detailed info */
 .context-menu {
     position: fixed;
     background: white;
@@ -396,219 +618,4 @@
     .hover-card-header {
         font-size: 15px;
     }
-}
-
-
-/* =================================================
-   DYNAMIC CSS - Generated from BiasConfig.js
-   Do not edit manually - changes will be overwritten
-   ================================================= */
-
-.bias-highlight-opinion {
-    background-color: rgba(255, 140, 0, 0.3);
-    border-bottom: 1px solid #ff8c00;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-tobe {
-    background-color: rgba(135, 206, 235, 0.3);
-    border-bottom: 1px solid #87ceeb;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-absolute {
-    background-color: rgba(255, 105, 180, 0.3);
-    border-bottom: 1px solid #ff69b4;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-passive {
-    background-color: rgba(128, 0, 128, 0.3);
-    border-bottom: 1px solid #800080;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-weasel {
-    background-color: rgba(184, 134, 11, 0.3);
-    border-bottom: 1px solid #b8860b;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-presupposition {
-    background-color: rgba(255, 20, 147, 0.3);
-    border-bottom: 1px solid #ff1493;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-metaphor {
-    background-color: rgba(220, 20, 60, 0.3);
-    border-bottom: 1px solid #dc143c;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-minimizer {
-    background-color: rgba(0, 128, 128, 0.3);
-    border-bottom: 1px solid #008080;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-maximizer {
-    background-color: rgba(255, 69, 0, 0.3);
-    border-bottom: 1px solid #ff4500;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-falsebalance {
-    background-color: rgba(75, 0, 130, 0.3);
-    border-bottom: 1px solid #4b0082;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-euphemism {
-    background-color: rgba(0, 100, 0, 0.3);
-    border-bottom: 1px solid #006400;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-emotional {
-    background-color: rgba(255, 127, 80, 0.3);
-    border-bottom: 1px solid #ff7f50;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-gaslighting {
-    background-color: rgba(128, 0, 0, 0.3);
-    border-bottom: 1px solid #800000;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-falsedilemma {
-    background-color: rgba(148, 0, 211, 0.3);
-    border-bottom: 1px solid #9400d3;
-    cursor: help;
-    position: relative;
-}
-
-.bias-highlight-probability {
-    background-color: rgba(65, 105, 225, 0.3);
-    border-bottom: 1px solid #4169e1;
-    cursor: help;
-    position: relative;
-}
-
-.excellence-attribution {
-    border-bottom: 2px solid #28a745;
-    background-color: rgba(40, 167, 69, 0.1);
-    position: relative;
-    cursor: help;
-    transition: all 0.2s ease;
-}
-
-.excellence-nuance {
-    border-bottom: 2px dotted #218838;
-    background-color: rgba(33, 136, 56, 0.1);
-    position: relative;
-    cursor: help;
-    transition: all 0.2s ease;
-}
-
-.excellence-transparency {
-    border-bottom: 2px dashed #28a745;
-    background-color: rgba(40, 167, 69, 0.08);
-    position: relative;
-    cursor: help;
-    transition: all 0.2s ease;
-}
-
-.excellence-discourse {
-    border-bottom: 2px solid #20c997;
-    background-color: rgba(32, 201, 151, 0.1);
-    position: relative;
-    cursor: help;
-    transition: all 0.2s ease;
-}
-
-.excellence-evidence {
-    border-bottom: 2px solid #17a2b8;
-    background-color: rgba(23, 162, 184, 0.1);
-    position: relative;
-    cursor: help;
-    transition: all 0.2s ease;
-}
-
-/* CSS Tooltips - Generated from BiasConfig */
-.bias-highlight-opinion::after,
-.bias-highlight-tobe::after,
-.bias-highlight-absolute::after,
-.bias-highlight-passive::after,
-.bias-highlight-weasel::after,
-.bias-highlight-presupposition::after,
-.bias-highlight-metaphor::after,
-.bias-highlight-minimizer::after,
-.bias-highlight-maximizer::after,
-.bias-highlight-falsebalance::after,
-.bias-highlight-euphemism::after,
-.bias-highlight-emotional::after,
-.bias-highlight-gaslighting::after,
-.bias-highlight-falsedilemma::after,
-.bias-highlight-probability::after,
-.excellence-attribution::after,
-.excellence-nuance::after,
-.excellence-transparency::after,
-.excellence-discourse::after,
-.excellence-evidence::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: white;
-    padding: 6px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease;
-    z-index: 1000;
-    margin-bottom: 5px;
-}
-
-/* Show tooltip on hover - Generated from BiasConfig */
-.bias-highlight-opinion:hover::after,
-.bias-highlight-tobe:hover::after,
-.bias-highlight-absolute:hover::after,
-.bias-highlight-passive:hover::after,
-.bias-highlight-weasel:hover::after,
-.bias-highlight-presupposition:hover::after,
-.bias-highlight-metaphor:hover::after,
-.bias-highlight-minimizer:hover::after,
-.bias-highlight-maximizer:hover::after,
-.bias-highlight-falsebalance:hover::after,
-.bias-highlight-euphemism:hover::after,
-.bias-highlight-emotional:hover::after,
-.bias-highlight-gaslighting:hover::after,
-.bias-highlight-falsedilemma:hover::after,
-.bias-highlight-probability:hover::after,
-.excellence-attribution:hover::after,
-.excellence-nuance:hover::after,
-.excellence-transparency:hover::after,
-.excellence-discourse:hover::after,
-.excellence-evidence:hover::after {
-    opacity: 1;
-    visibility: visible;
 }

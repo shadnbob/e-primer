@@ -2,6 +2,7 @@
 const esbuild = require('esbuild');
 const path = require('path');
 const fs = require('fs');
+const { StyleGenerator } = require('./src/build/StyleGenerator.js');
 
 // Check if we're in watch mode
 const isWatch = process.argv.includes('--watch');
@@ -26,9 +27,8 @@ if (!fs.existsSync('dist')) {
 function copyStaticFiles() {
   const filesToCopy = [
     'manifest.json',
-    'popup.html',
-    'popup-dynamic.js',
-    'styles.css',
+    'popup.html', 
+    'popup.js',
     'src/excellence-styles.css',
     'info.html'
   ];
@@ -37,10 +37,8 @@ function copyStaticFiles() {
     const source = path.join(__dirname, file);
     let destFile = file.includes('/') ? path.basename(file) : file;
     
-    // Rename popup-dynamic.js to popup.js in dist
-    if (file === 'popup-dynamic.js') {
-      destFile = 'popup.js';
-    }
+    // Keep original filename for popup.js
+    // (removed popup-dynamic.js renaming)
     
     const dest = path.join(__dirname, 'dist', destFile);
     
@@ -71,7 +69,8 @@ function copyStaticFiles() {
   // Copy source files needed for dynamic popup
   const sourceFiles = [
     { src: 'src/popup/PopupGenerator.js', dest: 'src/popup/PopupGenerator.js' },
-    { src: 'src/config/BiasConfig.js', dest: 'src/config/BiasConfig.js' }
+    { src: 'src/config/BiasConfig.js', dest: 'src/config/BiasConfig.js' },
+    { src: 'src/build/StyleGenerator.js', dest: 'src/build/StyleGenerator.js' }
   ];
 
   sourceFiles.forEach(({ src, dest }) => {
@@ -87,6 +86,28 @@ function copyStaticFiles() {
       console.log(`Copied ${src} to dist/${dest}`);
     }
   });
+}
+
+// Generate CSS from BiasConfig
+function generateCSS() {
+  try {
+    console.log('Generating CSS from BiasConfig...');
+    const styleGenerator = new StyleGenerator();
+    const generatedCSS = styleGenerator.generateCompleteStylesheet();
+    
+    const cssPath = path.join(__dirname, 'dist', 'styles.css');
+    fs.writeFileSync(cssPath, generatedCSS);
+    console.log('Generated styles.css with dynamic bias type CSS');
+  } catch (error) {
+    console.error('Error generating CSS:', error);
+    // Fallback to copying existing styles.css
+    const source = path.join(__dirname, 'styles.css');
+    const dest = path.join(__dirname, 'dist', 'styles.css');
+    if (fs.existsSync(source)) {
+      fs.copyFileSync(source, dest);
+      console.log('Fallback: Copied existing styles.css');
+    }
+  }
 }
 
 // Main build function
@@ -117,6 +138,9 @@ async function build() {
     
     // Copy static files
     copyStaticFiles();
+    
+    // Generate CSS from BiasConfig
+    generateCSS();
     
     // Update manifest to use the bundled file
     const manifestPath = path.join(__dirname, 'dist', 'manifest.json');
