@@ -1,162 +1,153 @@
-// popup/SettingsManager.js - Settings management utility
+// popup/SettingsManager.js - Dynamic settings management from BiasConfig
 import { BiasConfig } from '../config/BiasConfig.js';
 
 export class SettingsManager {
     constructor() {
-        this.currentSettings = BiasConfig.getDefaultSettings();
-        this.listeners = new Set();
+        this.biasTypes = BiasConfig.getAllBiasTypes();
+        this.excellenceTypes = BiasConfig.EXCELLENCE_TYPES;
+        this.defaultSettings = BiasConfig.getDefaultSettings();
+        
+        // Generate dynamic mappings
+        this.toggleMappings = this.generateToggleMappings();
+        this.statMappings = this.generateStatMappings();
     }
 
-    // Load settings from Chrome storage
-    async loadSettings() {
-        return new Promise((resolve) => {
-            const defaults = BiasConfig.getDefaultSettings();
-            chrome.storage.sync.get(defaults, (items) => {
-                this.currentSettings = BiasConfig.validateSettings(items);
-                this.notifyListeners('loaded', this.currentSettings);
-                resolve(this.currentSettings);
-            });
-        });
-    }
-
-    // Save settings to Chrome storage
-    async saveSettings(newSettings) {
-        return new Promise((resolve, reject) => {
-            const validatedSettings = BiasConfig.validateSettings(newSettings);
-            
-            chrome.storage.sync.set(validatedSettings, () => {
-                if (chrome.runtime.lastError) {
-                    reject(new Error(chrome.runtime.lastError.message));
-                    return;
-                }
-                
-                const oldSettings = { ...this.currentSettings };
-                this.currentSettings = validatedSettings;
-                
-                this.notifyListeners('changed', this.currentSettings, oldSettings);
-                resolve(this.currentSettings);
-            });
-        });
-    }
-
-    // Update specific setting
-    async updateSetting(key, value) {
-        const newSettings = { 
-            ...this.currentSettings,
-            [key]: value 
+    /**
+     * Generate toggle element ID to setting key mappings
+     */
+    generateToggleMappings() {
+        const mappings = {
+            'enableToggle': 'enableAnalysis'
         };
-        return await this.saveSettings(newSettings);
-    }
 
-    // Get current settings
-    getSettings() {
-        return { ...this.currentSettings };
-    }
-
-    // Get setting value
-    getSetting(key) {
-        return this.currentSettings[key];
-    }
-
-    // Send settings to content script
-    async sendToContentScript(settings = this.currentSettings) {
-        return new Promise((resolve, reject) => {
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                if (!tabs[0]) {
-                    reject(new Error('No active tab found'));
-                    return;
-                }
-
-                chrome.tabs.sendMessage(tabs[0].id, {
-                    action: "updateSettings",
-                    settings: settings
-                }, (response) => {
-                    if (chrome.runtime.lastError) {
-                        reject(new Error(chrome.runtime.lastError.message));
-                    } else {
-                        resolve(response);
-                    }
-                });
-            });
+        // Add bias type toggles
+        this.biasTypes.forEach(biasType => {
+            const toggleId = this.getToggleId(biasType.id);
+            mappings[toggleId] = biasType.settingKey;
         });
+
+        // Add excellence type toggles
+        Object.values(this.excellenceTypes).forEach(excellenceType => {
+            const toggleId = this.getExcellenceToggleId(excellenceType.id);
+            mappings[toggleId] = excellenceType.settingKey;
+        });
+
+        return mappings;
     }
 
-    // Add settings change listener
-    addListener(listener) {
-        this.listeners.add(listener);
+    /**
+     * Generate stat element ID to stat key mappings
+     */
+    generateStatMappings() {
+        const mappings = {};
+
+        // Add bias type stats
+        this.biasTypes.forEach(biasType => {
+            mappings[biasType.statKey] = biasType.statKey;
+        });
+
+        // Add excellence type stats
+        Object.values(this.excellenceTypes).forEach(excellenceType => {
+            mappings[excellenceType.statKey] = excellenceType.statKey;
+        });
+
+        return mappings;
     }
 
-    // Remove settings change listener
-    removeListener(listener) {
-        this.listeners.delete(listener);
+    /**
+     * Get toggle element ID for a bias type
+     */
+    getToggleId(biasTypeId) {
+        // Convert bias type ID to toggle ID (e.g., 'opinion' -> 'opinionToggle')
+        const idMappings = {
+            'opinion': 'opinionToggle',
+            'tobe': 'ePrimeToggle',
+            'absolute': 'absoluteToggle',
+            'passive': 'passiveToggle',
+            'weasel': 'weaselToggle',
+            'presupposition': 'presuppositionToggle',
+            'metaphor': 'metaphorToggle',
+            'minimizer': 'minimizerToggle',
+            'maximizer': 'maximizerToggle',
+            'falsebalance': 'falseBalanceToggle',
+            'euphemism': 'euphemismToggle',
+            'emotional': 'emotionalToggle',
+            'gaslighting': 'gaslightingToggle',
+            'falsedilemma': 'falseDilemmaToggle',
+            'probability': 'probabilityToggle'
+        };
+        
+        return idMappings[biasTypeId] || `${biasTypeId}Toggle`;
     }
 
-    // Notify all listeners of changes
-    notifyListeners(event, settings, oldSettings = null) {
-        for (const listener of this.listeners) {
-            try {
-                listener(event, settings, oldSettings);
-            } catch (error) {
-                console.error('Error in settings listener:', error);
+    /**
+     * Get excellence toggle element ID
+     */
+    getExcellenceToggleId(excellenceTypeId) {
+        return `${excellenceTypeId}ExcellenceToggle`;
+    }
+
+    /**
+     * Get all toggle mappings
+     */
+    getToggleMappings() {
+        return this.toggleMappings;
+    }
+
+    /**
+     * Get all stat mappings  
+     */
+    getStatMappings() {
+        return this.statMappings;
+    }
+
+    /**
+     * Get default settings
+     */
+    getDefaultSettings() {
+        return this.defaultSettings;
+    }
+
+    /**
+     * Get setting key from toggle element
+     */
+    getSettingKeyFromToggle(toggleId) {
+        return this.toggleMappings[toggleId];
+    }
+
+    /**
+     * Validate settings object against known settings
+     */
+    validateSettings(settings) {
+        const validatedSettings = {};
+        const allSettingKeys = Object.values(this.toggleMappings);
+        
+        // Copy only known settings
+        allSettingKeys.forEach(settingKey => {
+            if (settings.hasOwnProperty(settingKey)) {
+                validatedSettings[settingKey] = settings[settingKey];
             }
-        }
-    }
+        });
 
-    // Reset to default settings
-    async resetToDefaults() {
-        const defaults = BiasConfig.getDefaultSettings();
-        return await this.saveSettings(defaults);
-    }
-
-    // Export settings as JSON
-    exportSettings() {
-        return JSON.stringify(this.currentSettings, null, 2);
-    }
-
-    // Import settings from JSON
-    async importSettings(jsonString) {
-        try {
-            const importedSettings = JSON.parse(jsonString);
-            return await this.saveSettings(importedSettings);
-        } catch (error) {
-            throw new Error('Invalid settings JSON: ' + error.message);
-        }
-    }
-
-    // Get settings organized by category
-    getSettingsByCategory() {
-        const categorized = BiasConfig.getSettingsByCategory();
-        const result = {};
-
-        for (const [category, biasTypes] of Object.entries(categorized)) {
-            result[category] = {
-                ...BiasConfig.CATEGORIES[category],
-                biasTypes: biasTypes.map(config => ({
-                    ...config,
-                    enabled: this.currentSettings[config.settingKey]
-                }))
-            };
+        // Add analysis mode if present
+        if (settings.hasOwnProperty('analysisMode')) {
+            validatedSettings.analysisMode = settings.analysisMode;
         }
 
-        return result;
+        return validatedSettings;
     }
 
-    // Check if any advanced features are enabled
-    hasAdvancedFeaturesEnabled() {
-        const advancedTypes = Object.values(BiasConfig.BIAS_TYPES)
-            .filter(config => config.category !== 'basic');
-            
-        return advancedTypes.some(config => this.currentSettings[config.settingKey]);
+    /**
+     * Get all bias types for UI generation
+     */
+    getAllBiasTypes() {
+        return this.biasTypes;
     }
 
-    // Get enabled bias types count
-    getEnabledCount() {
-        let count = 0;
-        for (const config of Object.values(BiasConfig.BIAS_TYPES)) {
-            if (this.currentSettings[config.settingKey]) {
-                count++;
-            }
-        }
-        return count;
+    /**
+     * Get all excellence types for UI generation
+     */
+    getAllExcellenceTypes() {
+        return Object.values(this.excellenceTypes);
     }
 }

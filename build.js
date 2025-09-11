@@ -28,7 +28,7 @@ function copyStaticFiles() {
   const filesToCopy = [
     'manifest.json',
     'popup.html', 
-    'popup.js',
+    'src/popup/popup-dynamic.js',
     'src/excellence-styles.css',
     'info.html'
   ];
@@ -37,8 +37,10 @@ function copyStaticFiles() {
     const source = path.join(__dirname, file);
     let destFile = file.includes('/') ? path.basename(file) : file;
     
-    // Keep original filename for popup.js
-    // (removed popup-dynamic.js renaming)
+    // Rename popup-dynamic.js to popup.js
+    if (destFile === 'popup-dynamic.js') {
+      destFile = 'popup.js';
+    }
     
     const dest = path.join(__dirname, 'dist', destFile);
     
