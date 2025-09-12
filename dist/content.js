@@ -1564,7 +1564,7 @@
     "scarcely",
     "slightly",
     "somewhat",
-    "a\\s+bit\\s",
+    "a\\s+bit\\b",
     "a\\s+little",
     "minor",
     "small",
