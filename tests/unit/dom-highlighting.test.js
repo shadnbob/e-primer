@@ -1,13 +1,14 @@
 // tests/unit/dom-highlighting.test.js
 
 /**
- * TESTING TUTORIAL: DOM Testing with JSDOM
+ * TESTING TUTORIAL: DOM Testing with JSDOM + Vitest
  * 
  * JSDOM creates a fake browser environment in Node.js
  * This lets us test DOM manipulation without a real browser
+ * Vitest has built-in JSDOM support configured in vitest.config.js
  */
 
-const { JSDOM } = require('jsdom');
+import { JSDOM } from 'jsdom';
 
 // Create a simple DOM highlighting function to test
 function highlightBiasInElement(element, biasWords, highlightClass) {
