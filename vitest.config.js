@@ -24,8 +24,8 @@ export default defineConfig({
       ]
     },
     
-    // Timeout for tests
-    testTimeout: 10000,
+    // Timeout for tests (increased for integration tests)
+    testTimeout: 30000,
     
     // Setup files if needed
     // setupFiles: ['./tests/setup.js']
