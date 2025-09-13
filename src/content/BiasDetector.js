@@ -73,7 +73,9 @@ export class BiasDetector {
                     }
                 }
             } catch (error) {
-                console.warn(`Error with pattern ${pattern.source}:`, error);
+                // Defensive error handling - avoid potential instanceof issues
+                const errorMessage = error && error.message ? error.message : String(error);
+                console.warn(`Error with pattern ${pattern.source}:`, errorMessage);
                 continue;
             }
         }
@@ -116,7 +118,9 @@ export class BiasDetector {
             return this.stats;
             
         } catch (error) {
-            console.error('Document analysis failed:', error);
+            // Defensive error handling - avoid potential instanceof issues
+            const errorMessage = error && error.message ? error.message : String(error);
+            console.error('Document analysis failed:', errorMessage);
             return this.createEmptyStats();
         }
     }
@@ -127,7 +131,9 @@ export class BiasDetector {
             try {
                 await this.processTextNode(node);
             } catch (error) {
-                console.warn('Error processing text node:', error);
+                // Defensive error handling - avoid potential instanceof issues
+                const errorMessage = error && error.message ? error.message : String(error);
+                console.warn('Error processing text node:', errorMessage);
                 continue;
             }
         }
@@ -227,6 +233,7 @@ export class BiasDetector {
     async updateSettings(newSettings) {
         const oldSettings = { ...this.settings };
         this.settings = { ...newSettings };
+        
 
         // Handle analysis enable/disable
         if (oldSettings.enableAnalysis !== newSettings.enableAnalysis) {
@@ -268,7 +275,27 @@ export class BiasDetector {
         }
 
         if (needsReanalysis) {
-            await this.analyzeDocument();
+            // Re-analyze but preserve stats for disabled detectors
+            await this.analyzeDocumentPreservingDisabled();
+        }
+    }
+
+    // Analyze document while preserving stats for disabled detectors
+    async analyzeDocumentPreservingDisabled() {
+        // Store current disabled detector stats
+        const preservedStats = {};
+        for (const [key, detector] of this.compiledDetectors) {
+            if (!detector.isEnabled()) {
+                preservedStats[detector.statKey] = this.stats[detector.statKey];
+            }
+        }
+
+        // Run normal analysis
+        await this.analyzeDocument();
+
+        // Restore stats for disabled detectors
+        for (const [statKey, value] of Object.entries(preservedStats)) {
+            this.stats[statKey] = value;
         }
     }
 
