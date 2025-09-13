@@ -11,7 +11,10 @@ This is the E-Prime Bias Detector, a Chrome extension that detects biased langua
 - **Build**: `npm run build` - Builds the extension for production
 - **Watch**: `npm run watch` - Builds and watches for changes during development  
 - **Development**: `npm run dev` - Alias for watch mode
-- **Test**: Use test files in `test-files/` directory for manual testing
+- **Test**: `npm test` - Run comprehensive test suite with Vitest
+- **Test Coverage**: `npm run test:coverage` - Generate coverage reports
+- **Test Watch**: `npm run test:watch` - Auto-run tests on file changes
+- **Manual Testing**: Use test files in `test-files/` directory for browser testing
 - **No linting/type checking**: This project does not have lint or typecheck commands configured
 
 ## Build System
@@ -89,11 +92,25 @@ For detailed guidance on adding new bias types, excellence patterns, and categor
 
 ## Testing
 
-- Manual testing using HTML files in `test-files/`
+The project has a comprehensive automated test suite using Vitest. See `tests/README.md` for detailed testing documentation.
+
+**Automated Testing:**
+- **Unit tests**: Pattern matching, configuration validation, DOM processing
+- **Integration tests**: Real source file testing with full coverage
+- **Performance tests**: Large document processing benchmarks
+- **Data quality**: Dictionary validation and consistency checks
+
+**Manual Testing:**
+- HTML test files in `test-files/` directory
 - Test on real websites by loading the extension in Chrome
 - Check browser console for errors during development
 - Verify all bias types work correctly in popup settings
 - Test performance with large documents
+
+**Test Commands:**
+- `npm test` - Run all tests
+- `npm run test:coverage` - Coverage report  
+- `npm run test:watch` - Auto-run on changes
 
 ## Chrome Extension Loading
 
