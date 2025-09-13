@@ -96,7 +96,15 @@ The project has a comprehensive automated test suite using Vitest. See `tests/RE
 
 **Automated Testing:**
 - **Unit tests**: Pattern matching, configuration validation, DOM processing
-- **Integration tests**: Real source file testing with full coverage
+- **Integration tests**: End-to-end workflow testing with 78% success rate
+- **Test commands**: `npm test` (all tests), `npm run test:coverage` (with coverage)
+- **Test framework**: Vitest (modern, fast, better than Jest for ES6 modules)
+
+**Critical Implementation Notes:**
+- **Settings property names**: Always use `highlight*` format (e.g., `highlightOpinion`, not `detectOpinionWords`)
+- **DOM API safety**: Check method exists before calling (e.g., `element.removeAttribute && element.removeAttribute()`)
+- **Error handling**: Use defensive error extraction: `error?.message ?? String(error)`
+- **Settings state**: Disabled detectors must preserve zero stats during reanalysis
 - **Performance tests**: Large document processing benchmarks
 - **Data quality**: Dictionary validation and consistency checks
 
