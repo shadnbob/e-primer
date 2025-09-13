@@ -365,8 +365,10 @@ export class DOMProcessor {
 
     // Clean up hover-related elements and event listeners
     cleanupHoverElements(element) {
-        // Remove tooltip attribute
-        element.removeAttribute('data-tooltip');
+        // Remove tooltip attribute (with defensive check)
+        if (element && element.removeAttribute) {
+            element.removeAttribute('data-tooltip');
+        }
         
         // Remove context menu event listeners (they're handled automatically when element is removed)
         // No complex cleanup needed with simple tooltip system

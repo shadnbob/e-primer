@@ -189,7 +189,9 @@ export class StatsDisplay {
         for (const element of this.statElements.values()) {
             if (element) {
                 element.classList.remove('error');
-                element.removeAttribute('title');
+                if (element.removeAttribute) {
+                    element.removeAttribute('title');
+                }
             }
         }
     }
