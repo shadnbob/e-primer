@@ -58,7 +58,7 @@ export const opinionWords = {
             "deplorable", "lamentable", "pathetic", "pitiful", "regrettable", "miserable",
             "wretched", "dismal", "grim", "bleak", "dire", "grave", "severe", "unfortunate",
             "unfavorable", "disagreeable", "unpleasant", "distressing", "troublesome",
-            "problematic", "objectionable", "reprehensible", "repugnant", "detestable"
+            "problematic", "objectionable", "reprehensible", "repugnant", "detestable", "bad"
         ]
     },
 

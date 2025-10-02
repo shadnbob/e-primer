@@ -30,7 +30,7 @@ export const presuppositionMarkers = [
     // Temporal presuppositions
     "no\\s+longer",
     "not\\s+anymore",
-    "used\\s+to",
+    "\\bused\\s+to\\b",
     
     // Additional presupposition markers
     "manages\\s+to",

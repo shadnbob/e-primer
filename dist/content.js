@@ -987,7 +987,8 @@
         "objectionable",
         "reprehensible",
         "repugnant",
-        "detestable"
+        "detestable",
+        "bad"
       ]
     },
     emotional_charge: {
@@ -1502,7 +1503,7 @@
     // Temporal presuppositions
     "no\\s+longer",
     "not\\s+anymore",
-    "used\\s+to",
+    "\\bused\\s+to\\b",
     // Additional presupposition markers
     "manages\\s+to",
     "happens\\s+to",
@@ -2883,7 +2884,9 @@
     }
     // Clean up hover-related elements and event listeners
     cleanupHoverElements(element) {
-      element.removeAttribute("data-tooltip");
+      if (element && element.removeAttribute) {
+        element.removeAttribute("data-tooltip");
+      }
     }
     // Remove specific type of highlights
     removeSpecificHighlights(type) {
@@ -3348,7 +3351,8 @@
             }
           }
         } catch (error) {
-          console.warn(`Error with pattern ${pattern.source}:`, error);
+          const errorMessage = error && error.message ? error.message : String(error);
+          console.warn(`Error with pattern ${pattern.source}:`, errorMessage);
           continue;
         }
       }
@@ -3377,7 +3381,8 @@
         console.log(`Analysis completed in ${duration.toFixed(2)}ms`);
         return this.stats;
       } catch (error) {
-        console.error("Document analysis failed:", error);
+        const errorMessage = error && error.message ? error.message : String(error);
+        console.error("Document analysis failed:", errorMessage);
         return this.createEmptyStats();
       }
     }
@@ -3387,7 +3392,8 @@
         try {
           await this.processTextNode(node);
         } catch (error) {
-          console.warn("Error processing text node:", error);
+          const errorMessage = error && error.message ? error.message : String(error);
+          console.warn("Error processing text node:", errorMessage);
           continue;
         }
       }
@@ -3494,7 +3500,20 @@
         }
       }
       if (needsReanalysis) {
-        await this.analyzeDocument();
+        await this.analyzeDocumentPreservingDisabled();
+      }
+    }
+    // Analyze document while preserving stats for disabled detectors
+    async analyzeDocumentPreservingDisabled() {
+      const preservedStats = {};
+      for (const [key, detector] of this.compiledDetectors) {
+        if (!detector.isEnabled()) {
+          preservedStats[detector.statKey] = this.stats[detector.statKey];
+        }
+      }
+      await this.analyzeDocument();
+      for (const [statKey, value] of Object.entries(preservedStats)) {
+        this.stats[statKey] = value;
       }
     }
     // Utility methods
