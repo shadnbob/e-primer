@@ -147,6 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupCategoryCollapse();
         setupModeSelector();
         setupInfoLink();
+        setupSectionToggleButtons();
     }
 
     function setupDynamicToggleListeners() {
@@ -283,6 +284,102 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function setupSectionToggleButtons() {
+        // Use event delegation for section toggle buttons
+        document.addEventListener('click', (event) => {
+            if (event.target.matches('.section-toggle-btn')) {
+                event.stopPropagation(); // Prevent header collapse
+                
+                const section = event.target.dataset.section;
+                const action = event.target.dataset.action;
+                
+                handleSectionToggle(section, action);
+            }
+        });
+    }
+
+    function handleSectionToggle(section, action) {
+        const shouldCheck = action === 'all-on';
+        
+        // Define which toggles belong to each section
+        const sectionMappings = {
+            excellence: [
+                'attributionExcellenceToggle',
+                'nuanceExcellenceToggle', 
+                'transparencyExcellenceToggle',
+                'discourseExcellenceToggle',
+                'evidenceExcellenceToggle'
+            ],
+            basic: [
+                'opinionToggle',
+                'ePrimeToggle',
+                'absoluteToggle'
+            ],
+            advanced: [
+                'passiveToggle',
+                'weaselToggle',
+                'presuppositionToggle',
+                'probabilityToggle'
+            ],
+            framing: [
+                'metaphorToggle',
+                'minimizerToggle',
+                'maximizerToggle',
+                'falseBalanceToggle',
+                'euphemismToggle'
+            ],
+            manipulation: [
+                'emotionalToggle',
+                'gaslightingToggle',
+                'falseDilemmaToggle'
+            ]
+        };
+
+        const toggleIds = sectionMappings[section];
+        if (!toggleIds) return;
+
+        // Update each toggle in the section
+        toggleIds.forEach(toggleId => {
+            const toggle = document.getElementById(toggleId);
+            if (toggle) {
+                toggle.checked = shouldCheck;
+                
+                // Find the corresponding setting key and update
+                const settingKey = toggle.dataset.settingKey || getSettingKeyFromToggleId(toggleId);
+                if (settingKey) {
+                    handleSettingChange(settingKey, shouldCheck);
+                }
+            }
+        });
+    }
+
+    function getSettingKeyFromToggleId(toggleId) {
+        // Map toggle IDs to setting keys for backwards compatibility
+        const mappings = {
+            'opinionToggle': 'highlightOpinion',
+            'ePrimeToggle': 'highlightToBe',
+            'absoluteToggle': 'highlightAbsolutes',
+            'passiveToggle': 'highlightPassive',
+            'weaselToggle': 'highlightWeasel',
+            'presuppositionToggle': 'highlightPresupposition',
+            'metaphorToggle': 'highlightMetaphors',
+            'minimizerToggle': 'highlightMinimizers',
+            'maximizerToggle': 'highlightMaximizers',
+            'falseBalanceToggle': 'highlightFalseBalance',
+            'euphemismToggle': 'highlightEuphemism',
+            'emotionalToggle': 'highlightEmotional',
+            'gaslightingToggle': 'highlightGaslighting',
+            'falseDilemmaToggle': 'highlightFalseDilemma',
+            'probabilityToggle': 'highlightProbability',
+            'attributionExcellenceToggle': 'highlightAttributionExcellence',
+            'nuanceExcellenceToggle': 'highlightNuanceExcellence',
+            'transparencyExcellenceToggle': 'highlightTransparencyExcellence',
+            'discourseExcellenceToggle': 'highlightDiscourseExcellence',
+            'evidenceExcellenceToggle': 'highlightEvidenceExcellence'
+        };
+        return mappings[toggleId];
+    }
+
     function sendSettingsToContentScript() {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {
@@ -329,40 +426,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Update health score
-        updateHealthScore(stats.healthScore);
+        // Health score removed - no longer updating
     }
     
-    function updateHealthScore(score) {
-        const healthScore = document.getElementById('healthScore');
-        const healthFill = document.getElementById('healthFill');
-        
-        if (healthScore && healthFill) {
-            if (score === undefined || score === null) {
-                healthScore.textContent = '--';
-                healthScore.className = 'health-score';
-                healthFill.style.width = '0%';
-                healthFill.className = 'health-fill';
-            } else {
-                healthScore.textContent = score + '/100';
-                
-                // Update color based on score
-                if (score >= 70) {
-                    healthScore.className = 'health-score health-good';
-                    healthFill.className = 'health-fill health-good';
-                } else if (score >= 40) {
-                    healthScore.className = 'health-score health-medium';
-                    healthFill.className = 'health-fill health-medium';
-                } else {
-                    healthScore.className = 'health-score health-poor';
-                    healthFill.className = 'health-fill health-poor';
-                }
-                
-                // Update bar width
-                healthFill.style.width = score + '%';
-            }
-        }
-    }
 
     function handleInitializationError(error) {
         console.error('Popup initialization failed, using fallback mode:', error);

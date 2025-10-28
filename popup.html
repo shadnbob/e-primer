@@ -63,42 +63,6 @@
             color: #1976d2;
         }
         
-        /* Health Score */
-        .health-score-container {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .health-score-label {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .health-score {
-            font-size: 36px;
-            font-weight: bold;
-            margin: 8px 0;
-        }
-        .health-good { color: #28a745; }
-        .health-medium { color: #ffc107; }
-        .health-poor { color: #dc3545; }
-        .health-bar {
-            width: 100%;
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-        .health-fill {
-            height: 100%;
-            transition: width 0.5s ease;
-        }
         
         .master-toggle {
             background: #333;
@@ -136,6 +100,34 @@
             justify-content: space-between;
             align-items: center;
             user-select: none;
+        }
+        .category-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .category-header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-toggle-buttons {
+            display: flex;
+            gap: 4px;
+        }
+        .section-toggle-btn {
+            padding: 2px 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background: white;
+            color: #666;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .section-toggle-btn:hover {
+            background: #e9ecef;
+            border-color: #999;
         }
         .category-header:hover {
             background: #f0f1f3;
@@ -374,14 +366,6 @@
     </div>
 </div>
 
-<!-- Health Score -->
-<div class="health-score-container">
-    <div class="health-score-label">Document Health</div>
-    <div class="health-score" id="healthScore">--</div>
-    <div class="health-bar">
-        <div class="health-fill" id="healthFill"></div>
-    </div>
-</div>
 
 <div class="master-toggle">
     <span class="toggle-label">Enable Analysis</span>
@@ -394,8 +378,16 @@
 <!-- Excellence Detection -->
 <div class="category-section">
     <div class="category-header">
-        <span>Excellence Detection ✨</span>
-        <span class="chevron">▼</span>
+        <div class="category-header-left">
+            <span>Excellence Detection ✨</span>
+        </div>
+        <div class="category-header-right">
+            <div class="section-toggle-buttons">
+                <button class="section-toggle-btn" data-section="excellence" data-action="all-on">All On</button>
+                <button class="section-toggle-btn" data-section="excellence" data-action="all-off">All Off</button>
+            </div>
+            <span class="chevron">▼</span>
+        </div>
     </div>
     <div class="category-body">
         <div class="toggle-container">
@@ -453,8 +445,16 @@
 
 <div class="category-section">
     <div class="category-header">
-        <span>Basic Detection</span>
-        <span class="chevron">▼</span>
+        <div class="category-header-left">
+            <span>Basic Detection</span>
+        </div>
+        <div class="category-header-right">
+            <div class="section-toggle-buttons">
+                <button class="section-toggle-btn" data-section="basic" data-action="all-on">All On</button>
+                <button class="section-toggle-btn" data-section="basic" data-action="all-off">All Off</button>
+            </div>
+            <span class="chevron">▼</span>
+        </div>
     </div>
     <div class="category-body">
         <div class="toggle-container">
@@ -490,10 +490,18 @@
     </div>
 </div>
 
-<div class="category-section collapsed">
+<div class="category-section">
     <div class="category-header">
-        <span>Advanced Detection</span>
-        <span class="chevron">▼</span>
+        <div class="category-header-left">
+            <span>Advanced Detection</span>
+        </div>
+        <div class="category-header-right">
+            <div class="section-toggle-buttons">
+                <button class="section-toggle-btn" data-section="advanced" data-action="all-on">All On</button>
+                <button class="section-toggle-btn" data-section="advanced" data-action="all-off">All Off</button>
+            </div>
+            <span class="chevron">▼</span>
+        </div>
     </div>
     <div class="category-body">
         <div class="toggle-container">
@@ -502,7 +510,7 @@
                 <span>Passive Voice</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="passiveToggle">
+                <input type="checkbox" id="passiveToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -512,7 +520,7 @@
                 <span>Weasel Words</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="weaselToggle">
+                <input type="checkbox" id="weaselToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -522,7 +530,7 @@
                 <span>Presuppositions</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="presuppositionToggle">
+                <input type="checkbox" id="presuppositionToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -532,17 +540,25 @@
                 <span>Probability Perception</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="probabilityToggle">
+                <input type="checkbox" id="probabilityToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
     </div>
 </div>
 
-<div class="category-section collapsed">
+<div class="category-section">
     <div class="category-header">
-        <span>Framing & Rhetoric</span>
-        <span class="chevron">▼</span>
+        <div class="category-header-left">
+            <span>Framing & Rhetoric</span>
+        </div>
+        <div class="category-header-right">
+            <div class="section-toggle-buttons">
+                <button class="section-toggle-btn" data-section="framing" data-action="all-on">All On</button>
+                <button class="section-toggle-btn" data-section="framing" data-action="all-off">All Off</button>
+            </div>
+            <span class="chevron">▼</span>
+        </div>
     </div>
     <div class="category-body">
         <div class="toggle-container">
@@ -551,7 +567,7 @@
                 <span>War Metaphors</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="metaphorToggle">
+                <input type="checkbox" id="metaphorToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -561,7 +577,7 @@
                 <span>Minimizers</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="minimizerToggle">
+                <input type="checkbox" id="minimizerToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -571,7 +587,7 @@
                 <span>Maximizers</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="maximizerToggle">
+                <input type="checkbox" id="maximizerToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -581,7 +597,7 @@
                 <span>False Balance</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="falseBalanceToggle">
+                <input type="checkbox" id="falseBalanceToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -591,17 +607,25 @@
                 <span>Euphemisms</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="euphemismToggle">
+                <input type="checkbox" id="euphemismToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
     </div>
 </div>
 
-<div class="category-section collapsed">
+<div class="category-section">
     <div class="category-header">
-        <span>Manipulation Tactics</span>
-        <span class="chevron">▼</span>
+        <div class="category-header-left">
+            <span>Manipulation Tactics</span>
+        </div>
+        <div class="category-header-right">
+            <div class="section-toggle-buttons">
+                <button class="section-toggle-btn" data-section="manipulation" data-action="all-on">All On</button>
+                <button class="section-toggle-btn" data-section="manipulation" data-action="all-off">All Off</button>
+            </div>
+            <span class="chevron">▼</span>
+        </div>
     </div>
     <div class="category-body">
         <div class="toggle-container">
@@ -610,7 +634,7 @@
                 <span>Emotional Manipulation</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="emotionalToggle">
+                <input type="checkbox" id="emotionalToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -620,7 +644,7 @@
                 <span>Gaslighting</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="gaslightingToggle">
+                <input type="checkbox" id="gaslightingToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
@@ -630,7 +654,7 @@
                 <span>False Dilemmas</span>
             </div>
             <label class="toggle">
-                <input type="checkbox" id="falseDilemmaToggle">
+                <input type="checkbox" id="falseDilemmaToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
