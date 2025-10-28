@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context-Aware Detection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .test-title { font-weight: bold; color: #333; margin-bottom: 10px; }
+        .expected { font-size: 0.9em; color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>Context-Aware Detection Test Cases</h1>
+    
+    <div class="test-section">
+        <div class="test-title">Test 1: "It seems" + Evidence (Should be EXCELLENCE)</div>
+        <p>It seems the data supports this hypothesis with strong statistical significance.</p>
+        <div class="expected">Expected: Excellence highlight for nuanced language</div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 2: "It seems" + False Certainty (Should be WEASEL)</div>
+        <p>It seems obvious that climate change is a hoax without any evidence.</p>
+        <div class="expected">Expected: Weasel highlight for false certainty</div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 3: "It seems to me" + Reasoning (Should be EXCELLENCE)</div>
+        <p>It seems to me, based on the evidence, that this approach has merit.</p>
+        <div class="expected">Expected: Excellence highlight for transparent opinion</div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 4: "It seems" + Vague Attribution (Should be WEASEL)</div>
+        <p>It seems like everyone agrees this is the best solution.</p>
+        <div class="expected">Expected: Weasel highlight for vague attribution</div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 5: "Studies show" + Citation (Should be EXCELLENCE)</div>
+        <p>Recent studies show that exercise improves mental health (Johnson et al. 2023).</p>
+        <div class="expected">Expected: Excellence highlight for specific attribution</div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 6: "Studies show" + No Citation (Should be WEASEL)</div>
+        <p>Studies show that this treatment is completely safe and effective.</p>
+        <div class="expected">Expected: Weasel highlight for vague attribution</div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 7: "Appears" + Evidence Basis (Should be EXCELLENCE)</div>
+        <p>This approach appears promising based on preliminary results from the trial.</p>
+        <div class="expected">Expected: Excellence highlight for qualified observation</div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 8: "Appears" + False Certainty (Should be WEASEL)</div>
+        <p>It appears obvious that this policy will fail completely.</p>
+        <div class="expected">Expected: Weasel highlight for false certainty</div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 9: Mixed Context - Complex Sentence</div>
+        <p>According to Dr. Smith, it seems the research indicates positive outcomes, though experts believe more studies are needed.</p>
+        <div class="expected">Expected: Excellence for "it seems" with attribution, weasel for "experts believe"</div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 10: Neutral Case</div>
+        <p>It seems reasonable to consider this option among others.</p>
+        <div class="expected">Expected: Possibly neutral (no strong bias or excellence signal)</div>
+    </div>
+    
+    <h2>Testing Instructions</h2>
+    <ol>
+        <li>Build the extension: <code>npm run build</code></li>
+        <li>Load the extension in Chrome developer mode</li>
+        <li>Navigate to this test file</li>
+        <li>Check the highlighting patterns against expected results</li>
+        <li>Verify tooltips show contextual reasoning</li>
+    </ol>
+</body>
+</html>

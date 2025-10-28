@@ -4,6 +4,7 @@ import { BiasPatterns } from '../dictionaries/index.js';
 import { DOMProcessor } from '../utils/DOMProcessor.js';
 import { PerformanceMonitor } from '../utils/PerformanceMonitor.js';
 import { ExcellenceDetector } from '../utils/ExcellenceDetector.js';
+import { ContextAwareDetector } from '../utils/ContextAwareDetector.js';
 
 export class BiasDetector {
     constructor() {
@@ -11,6 +12,7 @@ export class BiasDetector {
         this.patterns = new BiasPatterns();
         this.domProcessor = new DOMProcessor();
         this.excellenceDetector = new ExcellenceDetector();
+        this.contextAwareDetector = new ContextAwareDetector();
         this.stats = this.createEmptyStats();
         this.observer = null;
         this.performanceMonitor = new PerformanceMonitor();
@@ -167,6 +169,27 @@ export class BiasDetector {
                     allMatches.push(...matchesWithIntensity);
                 }
             }
+            
+            // Run context-aware detection for overlapping patterns
+            const contextualMatches = this.contextAwareDetector.detectAll(text);
+            for (const match of contextualMatches) {
+                // Convert contextual matches to standard format
+                const standardMatch = {
+                    index: match.index,
+                    length: match.length,
+                    text: match.text,
+                    type: match.classification === 'weasel' ? 'weasel' : match.classification,
+                    isContextual: true,
+                    contextReasoning: match.reasoning,
+                    confidence: match.confidence
+                };
+                
+                // Only add as problem if classified as weasel or other bias type
+                if (match.classification === 'weasel' || match.classification === 'bias') {
+                    standardMatch.intensity = 2; // Default to medium intensity
+                    allMatches.push(standardMatch);
+                }
+            }
         }
         
         // Detect excellence if mode is 'excellence' or 'balanced'
@@ -178,6 +201,25 @@ export class BiasDetector {
                 return config && this.settings[config.settingKey] !== false;
             });
             allMatches.push(...enabledExcellence);
+            
+            // Add contextual excellence matches
+            const contextualMatches = this.contextAwareDetector.detectAll(text);
+            for (const match of contextualMatches) {
+                if (match.classification === 'excellence') {
+                    const excellenceMatch = {
+                        index: match.index,
+                        length: match.length,
+                        text: match.text,
+                        type: 'nuance', // Map to existing excellence type
+                        className: 'excellence-nuance',
+                        tooltip: `✓ ${match.reasoning}`,
+                        isExcellence: true,
+                        isContextual: true,
+                        confidence: match.confidence
+                    };
+                    allMatches.push(excellenceMatch);
+                }
+            }
         }
 
         if (allMatches.length > 0) {
@@ -209,13 +251,35 @@ export class BiasDetector {
         }
     }
 
-    // Remove overlapping matches, preferring longer matches
+    // Remove overlapping matches, preferring contextual matches and higher confidence
     deduplicateMatches(matches) {
         const sorted = matches.sort((a, b) => {
             if (a.index !== b.index) return a.index - b.index;
+            
+            // Prefer contextual matches over regular matches
+            if (a.isContextual && !b.isContextual) return -1;
+            if (!a.isContextual && b.isContextual) return 1;
+            
+            // If both contextual, prefer higher confidence
+            if (a.isContextual && b.isContextual) {
+                const aConf = a.confidence || 0.5;
+                const bConf = b.confidence || 0.5;
+                if (aConf !== bConf) return bConf - aConf;
+            }
+            
             return b.length - a.length; // Prefer longer matches
         });
 
+        // Resolve conflicts using context-aware detector
+        const contextualMatches = matches.filter(m => m.isContextual);
+        const regularMatches = matches.filter(m => !m.isContextual);
+        
+        if (contextualMatches.length > 0) {
+            const resolved = this.contextAwareDetector.resolveConflicts([...contextualMatches, ...regularMatches]);
+            return resolved.sort((a, b) => a.index - b.index);
+        }
+
+        // Fall back to simple deduplication
         const deduplicated = [];
         let lastEnd = -1;
 
