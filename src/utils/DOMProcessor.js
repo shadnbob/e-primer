@@ -234,8 +234,14 @@ export class DOMProcessor {
     addSimpleTooltip(spanElement, match) {
         // Add tooltip data attribute
         let tooltipText;
-        if (match.isExcellence) {
-            tooltipText = this.getExcellenceTooltipText(match.type);
+        
+        // Check if this is a contextual match with specific reasoning
+        if (match.isContextual && match.contextReasoning) {
+            const prefix = match.isExcellence ? '✓' : '⚠️';
+            const confidenceText = match.confidence ? ` (${(match.confidence * 100).toFixed(0)}% confidence)` : '';
+            tooltipText = `${prefix} ${match.contextReasoning}${confidenceText}`;
+        } else if (match.isExcellence) {
+            tooltipText = match.tooltip || this.getExcellenceTooltipText(match.type);
         } else {
             // For opinion words, try subcategory first, then fallback
             if (match.subCategory && match.type.startsWith('opinion_')) {

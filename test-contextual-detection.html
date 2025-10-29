@@ -74,13 +74,35 @@
         <div class="expected">Expected: Possibly neutral (no strong bias or excellence signal)</div>
     </div>
     
+    <h2>What to Look For</h2>
+    <p><strong>Enhanced Contextual Tooltips:</strong> Phrases like "it seems" will now show different explanations based on context:</p>
+    <ul>
+        <li><strong>Hover tooltips:</strong> Show specific reasoning with confidence levels</li>
+        <li><strong>Click tooltips:</strong> Show detailed "Context Analysis" section with full reasoning</li>
+        <li><strong>Different classifications:</strong> Same phrase can be excellence, weasel, or neutral based on surrounding words</li>
+    </ul>
+
+    <h2>Expected Tooltip Examples</h2>
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+        <strong>"It seems the data supports..."</strong><br>
+        <em>Hover:</em> ✓ Uses 'seems' appropriately with evidence (90% confidence)<br>
+        <em>Click:</em> Shows "Context Analysis" explaining why evidence-based hedging is excellent
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+        <strong>"It seems obvious that..."</strong><br>
+        <em>Hover:</em> ⚠️ Creates false certainty without evidence (90% confidence)<br>
+        <em>Click:</em> Shows "Context Analysis" explaining why this creates false certainty
+    </div>
+
     <h2>Testing Instructions</h2>
     <ol>
         <li>Build the extension: <code>npm run build</code></li>
         <li>Load the extension in Chrome developer mode</li>
         <li>Navigate to this test file</li>
         <li>Check the highlighting patterns against expected results</li>
-        <li>Verify tooltips show contextual reasoning</li>
+        <li><strong>Hover over highlights</strong> to see brief contextual reasoning</li>
+        <li><strong>Click on highlights</strong> to see detailed context analysis</li>
     </ol>
 </body>
 </html>

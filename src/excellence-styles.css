@@ -192,6 +192,52 @@
     font-size: 12px;
 }
 
+/* Contextual Reasoning Styles */
+.hover-card-contextual-reasoning {
+    margin: 10px 0;
+    padding: 10px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 6px;
+    border-left: 4px solid #17a2b8;
+}
+
+.hover-card-contextual-reasoning .hover-card-section-title {
+    font-weight: bold;
+    color: #17a2b8;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.context-reasoning {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.confidence-indicator {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.confidence-label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.confidence-value {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
 .hover-card-portrayal {
     margin-top: 6px;
     font-size: 12px;

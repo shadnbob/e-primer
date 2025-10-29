@@ -2435,6 +2435,7 @@
       const intensityLabel = ["Mild", "Moderate", "Severe"][intensity - 1];
       let content = `<div class="hover-card ${isExcellence ? "hover-card-excellence" : "hover-card-problem"}">`;
       const biasConfig = isExcellence ? BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()] : BiasConfig.getBiasTypeConfig(type);
+      const isContextual = match.isContextual && match.contextReasoning;
       if (isExcellence) {
         content += `<div class="hover-card-header">\u2713 ${this.getTypeName(type, true)}</div>`;
       } else {
@@ -2459,6 +2460,22 @@
         }
       }
       content += `<div class="hover-card-text">"${match.text}"</div>`;
+      if (isContextual) {
+        const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : "Unknown";
+        const reasoningIcon = isExcellence ? "\u2728" : "\u{1F50D}";
+        content += `<div class="hover-card-contextual-reasoning">
+                <div class="hover-card-section">
+                    <div class="hover-card-section-title">${reasoningIcon} Context Analysis:</div>
+                    <div class="hover-card-section-content context-reasoning">
+                        ${match.contextReasoning}
+                        <div class="confidence-indicator">
+                            <span class="confidence-label">Confidence:</span>
+                            <span class="confidence-value">${confidencePercentage}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+      }
       if (match.subCategory) {
         content += `<div class="hover-card-implication">
                 <strong>Implication:</strong> ${match.subCategory.implication}
@@ -2793,8 +2810,12 @@
     // Add simple tooltip and right-click functionality
     addSimpleTooltip(spanElement, match) {
       let tooltipText;
-      if (match.isExcellence) {
-        tooltipText = this.getExcellenceTooltipText(match.type);
+      if (match.isContextual && match.contextReasoning) {
+        const prefix = match.isExcellence ? "\u2713" : "\u26A0\uFE0F";
+        const confidenceText = match.confidence ? ` (${(match.confidence * 100).toFixed(0)}% confidence)` : "";
+        tooltipText = `${prefix} ${match.contextReasoning}${confidenceText}`;
+      } else if (match.isExcellence) {
+        tooltipText = match.tooltip || this.getExcellenceTooltipText(match.type);
       } else {
         if (match.subCategory && match.type.startsWith("opinion_")) {
           tooltipText = this.getTooltipText(match.type);

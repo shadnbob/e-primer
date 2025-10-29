@@ -186,6 +186,9 @@ export class HoverContentGenerator {
         const biasConfig = isExcellence ? 
             BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()] : 
             BiasConfig.getBiasTypeConfig(type);
+            
+        // Check if this is a contextual match with specific reasoning
+        const isContextual = match.isContextual && match.contextReasoning;
         
         // Header section
         if (isExcellence) {
@@ -216,6 +219,24 @@ export class HoverContentGenerator {
         
         // Quoted text
         content += `<div class="hover-card-text">"${match.text}"</div>`;
+        
+        // Contextual reasoning section (prioritized)
+        if (isContextual) {
+            const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : 'Unknown';
+            const reasoningIcon = isExcellence ? '✨' : '🔍';
+            content += `<div class="hover-card-contextual-reasoning">
+                <div class="hover-card-section">
+                    <div class="hover-card-section-title">${reasoningIcon} Context Analysis:</div>
+                    <div class="hover-card-section-content context-reasoning">
+                        ${match.contextReasoning}
+                        <div class="confidence-indicator">
+                            <span class="confidence-label">Confidence:</span>
+                            <span class="confidence-value">${confidencePercentage}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
         
         // Sub-category implication (for opinion words)
         if (match.subCategory) {
