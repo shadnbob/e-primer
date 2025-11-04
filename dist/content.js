@@ -2661,6 +2661,8 @@
     createPopupElement() {
       this.popup = document.createElement("div");
       this.popup.className = "bias-popup";
+      this.popup.setAttribute("data-e-prime-popup", "true");
+      this.popup.setAttribute("data-skip-analysis", "true");
       this.popup.style.cssText = `
             position: fixed;
             background: white;
@@ -2697,6 +2699,8 @@
       this.popup.appendChild(closeBtn);
       this.contentContainer = document.createElement("div");
       this.contentContainer.className = "popup-content";
+      this.contentContainer.setAttribute("data-e-prime-popup", "true");
+      this.contentContainer.setAttribute("data-skip-analysis", "true");
       this.popup.appendChild(this.contentContainer);
       document.body.appendChild(this.popup);
     }
@@ -2918,7 +2922,22 @@
     }
     shouldSkipElement(element) {
       const skipTags = ["SCRIPT", "STYLE", "NOSCRIPT", "SVG", "HEAD", "META", "LINK"];
-      return skipTags.includes(element.nodeName);
+      if (skipTags.includes(element.nodeName)) {
+        return true;
+      }
+      if (element.classList) {
+        if (element.classList.contains("bias-popup") || element.classList.contains("popup-content") || element.classList.contains("popup-close")) {
+          return true;
+        }
+      }
+      if (element.hasAttribute && (element.hasAttribute("data-e-prime-popup") || element.hasAttribute("data-skip-analysis"))) {
+        return true;
+      }
+      const popupParent = element.closest(".bias-popup, [data-e-prime-popup]");
+      if (popupParent) {
+        return true;
+      }
+      return false;
     }
     isOwnHighlight(element) {
       if (!element.classList)
@@ -4178,9 +4197,25 @@
         if (this.domProcessor.isOwnHighlight(mutation.target)) {
           return false;
         }
-        return mutation.addedNodes.length > 0 && Array.from(mutation.addedNodes).some(
-          (node) => this.domProcessor.isSignificantContent(node)
-        );
+        if (mutation.target.classList) {
+          if (mutation.target.classList.contains("bias-popup") || mutation.target.classList.contains("popup-content") || mutation.target.classList.contains("popup-close")) {
+            return false;
+          }
+        }
+        if (mutation.target.closest && mutation.target.closest(".bias-popup")) {
+          return false;
+        }
+        return mutation.addedNodes.length > 0 && Array.from(mutation.addedNodes).some((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.classList && (node.classList.contains("bias-popup") || node.classList.contains("popup-content") || node.classList.contains("popup-close"))) {
+              return false;
+            }
+            if (node.closest && node.closest(".bias-popup")) {
+              return false;
+            }
+          }
+          return this.domProcessor.isSignificantContent(node);
+        });
       });
     }
     async handleContentChange(mutations) {

@@ -513,12 +513,42 @@ export class BiasDetector {
             if (this.domProcessor.isOwnHighlight(mutation.target)) {
                 return false;
             }
+            
+            // Skip popup-related mutations
+            if (mutation.target.classList) {
+                if (mutation.target.classList.contains('bias-popup') ||
+                    mutation.target.classList.contains('popup-content') ||
+                    mutation.target.classList.contains('popup-close')) {
+                    return false;
+                }
+            }
+            
+            // Skip if target is inside a popup
+            if (mutation.target.closest && mutation.target.closest('.bias-popup')) {
+                return false;
+            }
 
-            // Check for significant content changes
+            // Check for significant content changes, but exclude popup nodes
             return mutation.addedNodes.length > 0 &&
-                Array.from(mutation.addedNodes).some(node => 
-                    this.domProcessor.isSignificantContent(node)
-                );
+                Array.from(mutation.addedNodes).some(node => {
+                    // Skip popup nodes
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        if (node.classList && (
+                            node.classList.contains('bias-popup') ||
+                            node.classList.contains('popup-content') ||
+                            node.classList.contains('popup-close')
+                        )) {
+                            return false;
+                        }
+                        
+                        // Skip nodes inside popups
+                        if (node.closest && node.closest('.bias-popup')) {
+                            return false;
+                        }
+                    }
+                    
+                    return this.domProcessor.isSignificantContent(node);
+                });
         });
     }
 

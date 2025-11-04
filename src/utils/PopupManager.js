@@ -21,6 +21,10 @@ export class PopupManager {
         // Create the singleton popup element
         this.popup = document.createElement('div');
         this.popup.className = 'bias-popup';
+        
+        // Add data attributes to exclude from analysis
+        this.popup.setAttribute('data-e-prime-popup', 'true');
+        this.popup.setAttribute('data-skip-analysis', 'true');
         this.popup.style.cssText = `
             position: fixed;
             background: white;
@@ -62,6 +66,8 @@ export class PopupManager {
         // Add content container
         this.contentContainer = document.createElement('div');
         this.contentContainer.className = 'popup-content';
+        this.contentContainer.setAttribute('data-e-prime-popup', 'true');
+        this.contentContainer.setAttribute('data-skip-analysis', 'true');
         this.popup.appendChild(this.contentContainer);
         
         document.body.appendChild(this.popup);

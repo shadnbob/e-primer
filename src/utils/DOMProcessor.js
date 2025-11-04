@@ -63,7 +63,36 @@ export class DOMProcessor {
 
     shouldSkipElement(element) {
         const skipTags = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'SVG', 'HEAD', 'META', 'LINK'];
-        return skipTags.includes(element.nodeName);
+        
+        // Skip if it's a known tag to skip
+        if (skipTags.includes(element.nodeName)) {
+            return true;
+        }
+        
+        // Skip our popup elements by class
+        if (element.classList) {
+            if (element.classList.contains('bias-popup') || 
+                element.classList.contains('popup-content') ||
+                element.classList.contains('popup-close')) {
+                return true;
+            }
+        }
+        
+        // Skip elements marked with our data attributes
+        if (element.hasAttribute && (
+            element.hasAttribute('data-e-prime-popup') ||
+            element.hasAttribute('data-skip-analysis')
+        )) {
+            return true;
+        }
+        
+        // Skip if element is inside a popup
+        const popupParent = element.closest('.bias-popup, [data-e-prime-popup]');
+        if (popupParent) {
+            return true;
+        }
+        
+        return false;
     }
 
     isOwnHighlight(element) {
