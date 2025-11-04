@@ -71,7 +71,7 @@
     <div class="test-section">
         <div class="test-title">Test 10: Neutral Case</div>
         <p>It seems reasonable to consider this option among others.</p>
-        <div class="expected">Expected: Possibly neutral (no strong bias or excellence signal)</div>
+        <div class="expected">Expected: No highlighting (neutral usage overrides regular weasel detection)</div>
     </div>
     
     <h2>What to Look For</h2>
@@ -86,23 +86,62 @@
     <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
         <strong>"It seems the data supports..."</strong><br>
         <em>Hover:</em> ✓ Uses 'seems' appropriately with evidence (90% confidence)<br>
-        <em>Click:</em> Shows "Context Analysis" explaining why evidence-based hedging is excellent
+        <em>Click:</em> Shows:<br>
+        &nbsp;&nbsp;• <strong>ANALYZED TEXT:</strong> "It seems the data supports this hypothesis with strong statistical significance"<br>
+        &nbsp;&nbsp;• <strong>Context Analysis:</strong> Uses 'seems' appropriately with evidence<br>
+        &nbsp;&nbsp;• <strong>Confidence:</strong> 90%
     </div>
     
     <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
         <strong>"It seems obvious that..."</strong><br>
         <em>Hover:</em> ⚠️ Creates false certainty without evidence (90% confidence)<br>
-        <em>Click:</em> Shows "Context Analysis" explaining why this creates false certainty
+        <em>Click:</em> Shows:<br>
+        &nbsp;&nbsp;• <strong>ANALYZED TEXT:</strong> "It seems obvious that climate change is a hoax without any evidence"<br>
+        &nbsp;&nbsp;• <strong>Context Analysis:</strong> Creates false certainty without evidence<br>
+        &nbsp;&nbsp;• <strong>Confidence:</strong> 90%
+    </div>
+    
+    <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ffc107;">
+        <strong>🎯 Key Enhancement:</strong> The tooltip now shows the <strong>full analyzed context window</strong> (up to 100 characters before/after the phrase) with the matched phrase highlighted in yellow. This helps you understand exactly what text the AI analyzed to reach its conclusion.
+    </div>
+    
+    <div style="background: #d1ecf1; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #17a2b8;">
+        <strong>🔄 Neutral Override:</strong> When the context analysis determines a phrase is <strong>neutral</strong> (appropriate usage), it overrides the regular bias detection and shows <strong>no highlighting</strong>. This prevents false positives where contextually appropriate language would otherwise be flagged.
     </div>
 
     <h2>Testing Instructions</h2>
     <ol>
         <li>Build the extension: <code>npm run build</code></li>
         <li>Load the extension in Chrome developer mode</li>
+        <li><strong>IMPORTANT:</strong> If you had the extension loaded before, click the "🔄" reload button in chrome://extensions to ensure the new code is loaded</li>
         <li>Navigate to this test file</li>
         <li>Check the highlighting patterns against expected results</li>
         <li><strong>Hover over highlights</strong> to see brief contextual reasoning</li>
         <li><strong>Click on highlights</strong> to see detailed context analysis</li>
     </ol>
+    
+    <h2>Troubleshooting</h2>
+    <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ffc107;">
+        <strong>⚠️ If neutral case still shows as weasel:</strong>
+        <ol>
+            <li><strong>Reload the extension</strong> - Click the reload button (🔄) in chrome://extensions</li>
+            <li><strong>Check settings</strong> - Make sure "Weasel Words" is enabled in the popup</li>
+            <li><strong>Check mode</strong> - Make sure analysis mode is "Balanced" or "Problems", not "Excellence only"</li>
+            <li><strong>Hard refresh</strong> - Reload this page with Ctrl+F5 or Cmd+R</li>
+            <li><strong>Debug console</strong> - Open DevTools (F12) and look for console logs starting with "[BiasDetector]"</li>
+        </ol>
+    </div>
+    
+    <div style="background: #e1f5fe; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #0288d1;">
+        <strong>🔍 Debug Mode Active:</strong> The extension now logs detailed information to the browser console. For Test 10 ("It seems reasonable..."), you should see:
+        <ul>
+            <li><code>[BiasDetector] Contextual matches found: [{ text: "it seems", classification: "neutral", reasoning: "Appropriate uncertainty expression" }]</code></li>
+            <li><code>[BiasDetector] Added neutral override for: it seems</code></li>
+            <li><code>[BiasDetector] Neutral overrides found: 1</code></li>
+            <li><code>[BiasDetector] Removing overlapping match: It seems weasel</code></li>
+            <li><code>[BiasDetector] Matches to highlight: 0</code></li>
+        </ul>
+        If you don't see these logs, there may be a deeper issue with the extension loading.
+    </div>
 </body>
 </html>

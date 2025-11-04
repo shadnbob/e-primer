@@ -1433,7 +1433,6 @@
     "many people say",
     "some say",
     "experts believe",
-    "studies show",
     "it is said",
     "they say",
     "people think",
@@ -1455,8 +1454,6 @@
     "research suggests",
     "evidence suggests",
     "data indicates",
-    "it appears",
-    "it seems",
     "arguably",
     "presumably",
     "in some cases",
@@ -2463,11 +2460,27 @@
       if (isContextual) {
         const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : "Unknown";
         const reasoningIcon = isExcellence ? "\u2728" : "\u{1F50D}";
+        let contextDisplay = "";
+        if (match.context && match.context.trim()) {
+          const contextText = match.context.trim();
+          const matchedPhrase = match.text;
+          const highlightedContext = contextText.replace(
+            new RegExp(`(${matchedPhrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi"),
+            '<mark class="context-highlight">$1</mark>'
+          );
+          contextDisplay = `
+                    <div class="analyzed-context">
+                        <div class="context-label">Analyzed text:</div>
+                        <div class="context-text">"${highlightedContext}"</div>
+                    </div>
+                `;
+        }
         content += `<div class="hover-card-contextual-reasoning">
                 <div class="hover-card-section">
                     <div class="hover-card-section-title">${reasoningIcon} Context Analysis:</div>
                     <div class="hover-card-section-content context-reasoning">
-                        ${match.contextReasoning}
+                        ${contextDisplay}
+                        <div class="reasoning-explanation">${match.contextReasoning}</div>
                         <div class="confidence-indicator">
                             <span class="confidence-label">Confidence:</span>
                             <span class="confidence-value">${confidencePercentage}%</span>
@@ -3687,6 +3700,14 @@
       }
       const allMatches = [];
       const mode = this.settings.analysisMode || "balanced";
+      const contextualMatches = this.contextAwareDetector.detectAll(text);
+      if (contextualMatches.length > 0) {
+        console.log("[BiasDetector] Contextual matches found:", contextualMatches.map((m) => ({
+          text: m.text,
+          classification: m.classification,
+          reasoning: m.reasoning
+        })));
+      }
       if (mode === "problems" || mode === "balanced") {
         for (const [type, detector] of this.compiledDetectors) {
           if (detector.isEnabled()) {
@@ -3700,20 +3721,34 @@
             allMatches.push(...matchesWithIntensity);
           }
         }
-        const contextualMatches = this.contextAwareDetector.detectAll(text);
         for (const match of contextualMatches) {
-          const standardMatch = {
-            index: match.index,
-            length: match.length,
-            text: match.text,
-            type: match.classification === "weasel" ? "weasel" : match.classification,
-            isContextual: true,
-            contextReasoning: match.reasoning,
-            confidence: match.confidence
-          };
           if (match.classification === "weasel" || match.classification === "bias") {
-            standardMatch.intensity = 2;
+            const standardMatch = {
+              index: match.index,
+              length: match.length,
+              text: match.text,
+              type: "weasel",
+              isContextual: true,
+              contextReasoning: match.reasoning,
+              confidence: match.confidence,
+              context: match.context,
+              intensity: 2
+            };
             allMatches.push(standardMatch);
+          } else if (match.classification === "neutral") {
+            const standardMatch = {
+              index: match.index,
+              length: match.length,
+              text: match.text,
+              type: "neutral",
+              isContextual: true,
+              contextReasoning: match.reasoning,
+              confidence: match.confidence,
+              context: match.context,
+              isNeutralOverride: true
+            };
+            allMatches.push(standardMatch);
+            console.log("[BiasDetector] Added neutral override for:", match.text);
           }
         }
       }
@@ -3724,7 +3759,6 @@
           return config && this.settings[config.settingKey] !== false;
         });
         allMatches.push(...enabledExcellence);
-        const contextualMatches = this.contextAwareDetector.detectAll(text);
         for (const match of contextualMatches) {
           if (match.classification === "excellence") {
             const excellenceMatch = {
@@ -3737,14 +3771,20 @@
               tooltip: `\u2713 ${match.reasoning}`,
               isExcellence: true,
               isContextual: true,
-              confidence: match.confidence
+              confidence: match.confidence,
+              context: match.context
             };
             allMatches.push(excellenceMatch);
           }
         }
       }
       if (allMatches.length > 0) {
-        this.highlightMatches(node, allMatches);
+        console.log("[BiasDetector] All matches before filtering:", allMatches.map((m) => `"${m.text}" -> ${m.type} (contextual: ${m.isContextual})`));
+        const matchesToHighlight = allMatches.filter((match) => match.type !== "neutral");
+        console.log("[BiasDetector] Matches to highlight:", matchesToHighlight.length);
+        if (matchesToHighlight.length > 0) {
+          this.highlightMatches(node, matchesToHighlight);
+        }
       }
     }
     // Highlight matches in a text node
@@ -3780,8 +3820,27 @@
         }
         return b.length - a.length;
       });
-      const contextualMatches = matches.filter((m) => m.isContextual);
-      const regularMatches = matches.filter((m) => !m.isContextual);
+      const neutralOverrides = matches.filter((m) => m.isNeutralOverride);
+      console.log("[BiasDetector] Neutral overrides found:", neutralOverrides.length);
+      let filteredMatches = matches;
+      for (const neutralMatch of neutralOverrides) {
+        console.log("[BiasDetector] Processing neutral override for:", neutralMatch.text);
+        const beforeCount = filteredMatches.length;
+        filteredMatches = filteredMatches.filter((match) => {
+          if (match.isContextual || match === neutralMatch)
+            return true;
+          const matchEnd = match.index + match.length;
+          const neutralEnd = neutralMatch.index + neutralMatch.length;
+          const hasOverlap = !(matchEnd <= neutralMatch.index || neutralEnd <= match.index);
+          if (hasOverlap) {
+            console.log("[BiasDetector] Removing overlapping match:", match.text, match.type);
+          }
+          return !hasOverlap;
+        });
+        console.log("[BiasDetector] Filtered matches:", beforeCount, "->", filteredMatches.length);
+      }
+      const contextualMatches = filteredMatches.filter((m) => m.isContextual);
+      const regularMatches = filteredMatches.filter((m) => !m.isContextual);
       if (contextualMatches.length > 0) {
         const resolved = this.contextAwareDetector.resolveConflicts([...contextualMatches, ...regularMatches]);
         return resolved.sort((a, b) => a.index - b.index);

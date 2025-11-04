@@ -224,11 +224,32 @@ export class HoverContentGenerator {
         if (isContextual) {
             const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : 'Unknown';
             const reasoningIcon = isExcellence ? '✨' : '🔍';
+            
+            // Show the analyzed context if available
+            let contextDisplay = '';
+            if (match.context && match.context.trim()) {
+                // Highlight the matched phrase within the context
+                const contextText = match.context.trim();
+                const matchedPhrase = match.text;
+                const highlightedContext = contextText.replace(
+                    new RegExp(`(${matchedPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'),
+                    '<mark class="context-highlight">$1</mark>'
+                );
+                
+                contextDisplay = `
+                    <div class="analyzed-context">
+                        <div class="context-label">Analyzed text:</div>
+                        <div class="context-text">"${highlightedContext}"</div>
+                    </div>
+                `;
+            }
+            
             content += `<div class="hover-card-contextual-reasoning">
                 <div class="hover-card-section">
                     <div class="hover-card-section-title">${reasoningIcon} Context Analysis:</div>
                     <div class="hover-card-section-content context-reasoning">
-                        ${match.contextReasoning}
+                        ${contextDisplay}
+                        <div class="reasoning-explanation">${match.contextReasoning}</div>
                         <div class="confidence-indicator">
                             <span class="confidence-label">Confidence:</span>
                             <span class="confidence-value">${confidencePercentage}%</span>

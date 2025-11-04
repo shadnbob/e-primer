@@ -153,6 +153,16 @@ export class BiasDetector {
         const allMatches = [];
         const mode = this.settings.analysisMode || 'balanced';
 
+        // Run context-aware detection once for all modes
+        const contextualMatches = this.contextAwareDetector.detectAll(text);
+        if (contextualMatches.length > 0) {
+            console.log('[BiasDetector] Contextual matches found:', contextualMatches.map(m => ({
+                text: m.text,
+                classification: m.classification,
+                reasoning: m.reasoning
+            })));
+        }
+
         // Detect problems if mode is 'problems' or 'balanced'
         if (mode === 'problems' || mode === 'balanced') {
             // Run all enabled detectors
@@ -170,24 +180,36 @@ export class BiasDetector {
                 }
             }
             
-            // Run context-aware detection for overlapping patterns
-            const contextualMatches = this.contextAwareDetector.detectAll(text);
+            // Process contextual matches for problems
             for (const match of contextualMatches) {
-                // Convert contextual matches to standard format
-                const standardMatch = {
-                    index: match.index,
-                    length: match.length,
-                    text: match.text,
-                    type: match.classification === 'weasel' ? 'weasel' : match.classification,
-                    isContextual: true,
-                    contextReasoning: match.reasoning,
-                    confidence: match.confidence
-                };
-                
-                // Only add as problem if classified as weasel or other bias type
                 if (match.classification === 'weasel' || match.classification === 'bias') {
-                    standardMatch.intensity = 2; // Default to medium intensity
+                    const standardMatch = {
+                        index: match.index,
+                        length: match.length,
+                        text: match.text,
+                        type: 'weasel',
+                        isContextual: true,
+                        contextReasoning: match.reasoning,
+                        confidence: match.confidence,
+                        context: match.context,
+                        intensity: 2
+                    };
                     allMatches.push(standardMatch);
+                } else if (match.classification === 'neutral') {
+                    // Add neutral matches but mark them specially so they can override regular matches
+                    const standardMatch = {
+                        index: match.index,
+                        length: match.length,
+                        text: match.text,
+                        type: 'neutral',
+                        isContextual: true,
+                        contextReasoning: match.reasoning,
+                        confidence: match.confidence,
+                        context: match.context,
+                        isNeutralOverride: true
+                    };
+                    allMatches.push(standardMatch);
+                    console.log('[BiasDetector] Added neutral override for:', match.text);
                 }
             }
         }
@@ -202,8 +224,7 @@ export class BiasDetector {
             });
             allMatches.push(...enabledExcellence);
             
-            // Add contextual excellence matches
-            const contextualMatches = this.contextAwareDetector.detectAll(text);
+            // Process contextual matches for excellence
             for (const match of contextualMatches) {
                 if (match.classification === 'excellence') {
                     const excellenceMatch = {
@@ -215,7 +236,8 @@ export class BiasDetector {
                         tooltip: `✓ ${match.reasoning}`,
                         isExcellence: true,
                         isContextual: true,
-                        confidence: match.confidence
+                        confidence: match.confidence,
+                        context: match.context
                     };
                     allMatches.push(excellenceMatch);
                 }
@@ -223,7 +245,16 @@ export class BiasDetector {
         }
 
         if (allMatches.length > 0) {
-            this.highlightMatches(node, allMatches);
+            console.log('[BiasDetector] All matches before filtering:', allMatches.map(m => `"${m.text}" -> ${m.type} (contextual: ${m.isContextual})`));
+            
+            // Filter out neutral matches since they don't need highlighting
+            const matchesToHighlight = allMatches.filter(match => match.type !== 'neutral');
+            
+            console.log('[BiasDetector] Matches to highlight:', matchesToHighlight.length);
+            
+            if (matchesToHighlight.length > 0) {
+                this.highlightMatches(node, matchesToHighlight);
+            }
         }
     }
 
@@ -270,9 +301,37 @@ export class BiasDetector {
             return b.length - a.length; // Prefer longer matches
         });
 
-        // Resolve conflicts using context-aware detector
-        const contextualMatches = matches.filter(m => m.isContextual);
-        const regularMatches = matches.filter(m => !m.isContextual);
+        // Handle neutral overrides first - remove any regular matches that overlap with neutral contextual matches
+        const neutralOverrides = matches.filter(m => m.isNeutralOverride);
+        console.log('[BiasDetector] Neutral overrides found:', neutralOverrides.length);
+        let filteredMatches = matches;
+        
+        for (const neutralMatch of neutralOverrides) {
+            console.log('[BiasDetector] Processing neutral override for:', neutralMatch.text);
+            const beforeCount = filteredMatches.length;
+            
+            // Remove any regular (non-contextual) matches that overlap with this neutral match
+            filteredMatches = filteredMatches.filter(match => {
+                if (match.isContextual || match === neutralMatch) return true;
+                
+                // Check for overlap
+                const matchEnd = match.index + match.length;
+                const neutralEnd = neutralMatch.index + neutralMatch.length;
+                const hasOverlap = !(matchEnd <= neutralMatch.index || neutralEnd <= match.index);
+                
+                if (hasOverlap) {
+                    console.log('[BiasDetector] Removing overlapping match:', match.text, match.type);
+                }
+                
+                return !hasOverlap; // Keep if no overlap
+            });
+            
+            console.log('[BiasDetector] Filtered matches:', beforeCount, '->', filteredMatches.length);
+        }
+        
+        // Now resolve conflicts using context-aware detector for remaining matches
+        const contextualMatches = filteredMatches.filter(m => m.isContextual);
+        const regularMatches = filteredMatches.filter(m => !m.isContextual);
         
         if (contextualMatches.length > 0) {
             const resolved = this.contextAwareDetector.resolveConflicts([...contextualMatches, ...regularMatches]);
