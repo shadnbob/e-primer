@@ -1,6 +1,7 @@
 // content/content-script.js - Main content script using refactored architecture
 import { BiasDetector } from './BiasDetector.js';
 import { BiasConfig } from '../config/BiasConfig.js';
+import { getPopupManager } from '../utils/PopupManager.js';
 
 // Main content script using the refactored BiasDetector
 (function() {
@@ -16,6 +17,11 @@ import { BiasConfig } from '../config/BiasConfig.js';
         
         try {
             biasDetector = new BiasDetector();
+            
+            // Initialize popup manager for efficient popup handling
+            const popupManager = getPopupManager();
+            console.log('PopupManager initialized');
+            
             setupMessageListeners();
             loadSettingsAndStart();
             isInitialized = true;

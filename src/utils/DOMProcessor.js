@@ -1,5 +1,6 @@
 // utils/DOMProcessor.js - DOM manipulation utilities
 import { HoverContentGenerator } from './HoverContentGenerator.js';
+import { getPopupManager } from './PopupManager.js';
 
 export class DOMProcessor {
     constructor() {
@@ -7,6 +8,9 @@ export class DOMProcessor {
         this.excellenceClassPrefix = 'excellence-';
         this.processedParents = new Set();
         this.hoverGenerator = new HoverContentGenerator();
+        
+        // Initialize popup manager on first use
+        this.popupManager = null;
     }
 
     // Collect all text nodes from a root element
@@ -126,8 +130,8 @@ export class DOMProcessor {
             
             span.textContent = match.text;
             
-            // Add simple tooltip and right-click functionality
-            this.addSimpleTooltip(span, match);
+            // Add data attributes for popup content instead of event listeners
+            this.addDataAttributes(span, match);
             
             fragment.appendChild(span);
 
@@ -230,12 +234,40 @@ export class DOMProcessor {
         return nearby;
     }
 
-    // Add simple tooltip and right-click functionality
-    addSimpleTooltip(spanElement, match) {
-        // Add tooltip data attribute
-        let tooltipText;
+    // Add data attributes for popup content (replaces individual event listeners)
+    addDataAttributes(spanElement, match) {
+        // Ensure popup manager is initialized
+        if (!this.popupManager) {
+            this.popupManager = getPopupManager();
+        }
         
-        // Check if this is a contextual match with specific reasoning
+        // Store match data in data attributes for popup manager to use
+        // Store contextual data
+        if (match.isContextual) {
+            spanElement.setAttribute('data-contextual', 'true');
+            if (match.contextReasoning) {
+                spanElement.setAttribute('data-context-reasoning', match.contextReasoning);
+            }
+            if (match.confidence) {
+                spanElement.setAttribute('data-confidence', match.confidence.toString());
+            }
+            if (match.context) {
+                spanElement.setAttribute('data-context', match.context);
+            }
+        }
+        
+        // Store subcategory data
+        if (match.subCategory) {
+            spanElement.setAttribute('data-sub-category', JSON.stringify(match.subCategory));
+        }
+        
+        // Store portrayal data
+        if (match.portrayal) {
+            spanElement.setAttribute('data-portrayal', JSON.stringify(match.portrayal));
+        }
+        
+        // Generate basic tooltip for quick reference
+        let tooltipText;
         if (match.isContextual && match.contextReasoning) {
             const prefix = match.isExcellence ? '✓' : '⚠️';
             const confidenceText = match.confidence ? ` (${(match.confidence * 100).toFixed(0)}% confidence)` : '';
@@ -243,103 +275,24 @@ export class DOMProcessor {
         } else if (match.isExcellence) {
             tooltipText = match.tooltip || this.getExcellenceTooltipText(match.type);
         } else {
-            // For opinion words, try subcategory first, then fallback
             if (match.subCategory && match.type.startsWith('opinion_')) {
                 tooltipText = this.getTooltipText(match.type);
             } else if (match.type === 'opinion' && match.subCategory) {
-                // If type is still 'opinion' but we have subcategory info, use it
                 tooltipText = this.getTooltipText(`opinion_${match.subCategory.id}`);
             } else {
                 tooltipText = this.getTooltipText(match.type);
             }
         }
         
-        spanElement.setAttribute('data-tooltip', tooltipText);
-        
-        // Add click handler to show hover card
-        spanElement.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.showContextMenu(e, match);
-        });
-        
-        // Add right-click context menu
-        spanElement.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            this.showContextMenu(e, match);
-        });
+        // Don't use 'title' attribute as it creates native browser tooltips
+        // Store tooltip text as data attribute instead
+        spanElement.setAttribute('data-tooltip-text', tooltipText);
     }
 
-    // Show context menu on right-click
+    // Legacy method - now handled by PopupManager
+    // Keeping for backward compatibility but it's no longer used
     showContextMenu(event, match) {
-        // Remove any existing context menus
-        const existingMenus = document.querySelectorAll('.context-menu');
-        existingMenus.forEach(menu => menu.remove());
-        
-        // Create context menu using HoverContentGenerator
-        const hoverCard = this.createHoverCard(match);
-        if (!hoverCard) return;
-        
-        // Convert hover card to context menu
-        const menu = document.createElement('div');
-        menu.className = `context-menu ${match.isExcellence ? 'excellence' : 'problem'}`;
-        
-        // Use the generated hover content, but add close button
-        menu.innerHTML = hoverCard.innerHTML;
-        
-        // Add close button to the header
-        const header = menu.querySelector('.hover-card-header');
-        if (header) {
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'context-menu-close';
-            closeBtn.innerHTML = '×';
-            header.appendChild(closeBtn);
-        }
-        
-        // Position menu (use clientX/clientY for viewport-relative positioning)
-        menu.style.left = event.clientX + 'px';
-        menu.style.top = event.clientY + 'px';
-        menu.style.display = 'block';
-        
-        // Add to document
-        document.body.appendChild(menu);
-        
-        // Close menu on click outside or close button
-        const closeMenu = () => menu.remove();
-        
-        menu.querySelector('.context-menu-close').addEventListener('click', closeMenu);
-        
-        // Close on click outside
-        setTimeout(() => {
-            document.addEventListener('click', function closeOnOutside(e) {
-                if (!menu.contains(e.target)) {
-                    closeMenu();
-                    document.removeEventListener('click', closeOnOutside);
-                }
-            });
-        }, 10);
-        
-        // Close on escape key
-        document.addEventListener('keydown', function closeOnEscape(e) {
-            if (e.key === 'Escape') {
-                closeMenu();
-                document.removeEventListener('keydown', closeOnEscape);
-            }
-        });
-        
-        // Adjust position if menu goes off-screen
-        setTimeout(() => {
-            const rect = menu.getBoundingClientRect();
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            
-            if (rect.right > viewportWidth) {
-                menu.style.left = (event.clientX - rect.width) + 'px';
-            }
-            
-            if (rect.bottom > viewportHeight) {
-                menu.style.top = (event.clientY - rect.height) + 'px';
-            }
-        }, 10);
+        console.warn('showContextMenu is deprecated - popup handling now managed by PopupManager');
     }
 
     // Remove all bias highlights
@@ -369,15 +322,23 @@ export class DOMProcessor {
         this.processedParents.clear();
     }
 
-    // Clean up hover-related elements and event listeners
+    // Clean up data attributes (event listeners are handled by PopupManager)
     cleanupHoverElements(element) {
-        // Remove tooltip attribute (with defensive check)
+        // Remove data attributes (with defensive check)
         if (element && element.removeAttribute) {
+            element.removeAttribute('title');
             element.removeAttribute('data-tooltip');
+            element.removeAttribute('data-tooltip-text');
+            element.removeAttribute('data-contextual');
+            element.removeAttribute('data-context-reasoning');
+            element.removeAttribute('data-confidence');
+            element.removeAttribute('data-context');
+            element.removeAttribute('data-sub-category');
+            element.removeAttribute('data-portrayal');
         }
         
-        // Remove context menu event listeners (they're handled automatically when element is removed)
-        // No complex cleanup needed with simple tooltip system
+        // Event listeners are now handled by PopupManager's delegation system
+        // No individual cleanup needed
     }
 
     // Remove specific type of highlights
