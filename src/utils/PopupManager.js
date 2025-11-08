@@ -87,12 +87,12 @@ export class PopupManager {
             }
         }, true); // Use capture phase to ensure we get the event first
         
-        // Handle right-click as well
+        // Handle right-click to remove highlights
         document.addEventListener('contextmenu', (e) => {
             const target = e.target.closest('[class*="bias-highlight-"], [class*="excellence-"]');
             if (target) {
                 e.preventDefault();
-                this.show(target, e);
+                this.removeHighlight(target);
             }
         });
         
@@ -143,6 +143,9 @@ export class PopupManager {
             // Fallback if structure is different
             this.contentContainer.innerHTML = content;
         }
+        
+        // Add remove highlight button
+        this.addRemoveHighlightButton();
         
         // Position and show immediately
         this.updatePosition(event);
@@ -274,6 +277,71 @@ export class PopupManager {
         
         this.popup.style.left = newX + 'px';
         this.popup.style.top = newY + 'px';
+    }
+    
+    addRemoveHighlightButton() {
+        // Check if button already exists
+        if (this.contentContainer.querySelector('.remove-highlight-btn')) {
+            return;
+        }
+        
+        // Create remove highlight button
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-highlight-btn';
+        removeBtn.textContent = 'Remove Highlight';
+        removeBtn.style.cssText = `
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        `;
+        
+        // Add hover effect
+        removeBtn.addEventListener('mouseenter', () => {
+            removeBtn.style.backgroundColor = '#c82333';
+        });
+        removeBtn.addEventListener('mouseleave', () => {
+            removeBtn.style.backgroundColor = '#dc3545';
+        });
+        
+        // Add click handler
+        removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.removeCurrentHighlight();
+        });
+        
+        this.contentContainer.appendChild(removeBtn);
+    }
+    
+    removeCurrentHighlight() {
+        if (!this.currentTarget) return;
+        this.removeHighlight(this.currentTarget);
+        this.hide();
+    }
+    
+    removeHighlight(target) {
+        if (!target) return;
+        
+        // Get the parent node before removing
+        const parent = target.parentNode;
+        
+        // Create a text node with the highlighted text
+        const textNode = document.createTextNode(target.textContent);
+        
+        // Replace the highlighted element with plain text
+        parent.replaceChild(textNode, target);
+        
+        // Normalize the parent to merge adjacent text nodes
+        if (parent && parent.normalize) {
+            parent.normalize();
+        }
     }
     
     // Public methods for external control
