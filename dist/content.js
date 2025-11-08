@@ -2719,7 +2719,7 @@
         const target = e.target.closest('[class*="bias-highlight-"], [class*="excellence-"]');
         if (target) {
           e.preventDefault();
-          this.removeHighlight(target);
+          this.show(target, e);
         }
       });
       document.addEventListener("keydown", (e) => {
@@ -2753,7 +2753,6 @@
       } else {
         this.contentContainer.innerHTML = content;
       }
-      this.addRemoveHighlightButton();
       this.updatePosition(event);
       this.popup.style.display = "block";
       this.popup.style.opacity = "1";
@@ -2851,54 +2850,6 @@
       }
       this.popup.style.left = newX + "px";
       this.popup.style.top = newY + "px";
-    }
-    addRemoveHighlightButton() {
-      if (this.contentContainer.querySelector(".remove-highlight-btn")) {
-        return;
-      }
-      const removeBtn = document.createElement("button");
-      removeBtn.className = "remove-highlight-btn";
-      removeBtn.textContent = "Remove Highlight";
-      removeBtn.style.cssText = `
-            display: block;
-            width: 100%;
-            margin-top: 12px;
-            padding: 8px 12px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-        `;
-      removeBtn.addEventListener("mouseenter", () => {
-        removeBtn.style.backgroundColor = "#c82333";
-      });
-      removeBtn.addEventListener("mouseleave", () => {
-        removeBtn.style.backgroundColor = "#dc3545";
-      });
-      removeBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        this.removeCurrentHighlight();
-      });
-      this.contentContainer.appendChild(removeBtn);
-    }
-    removeCurrentHighlight() {
-      if (!this.currentTarget)
-        return;
-      this.removeHighlight(this.currentTarget);
-      this.hide();
-    }
-    removeHighlight(target) {
-      if (!target)
-        return;
-      const parent = target.parentNode;
-      const textNode = document.createTextNode(target.textContent);
-      parent.replaceChild(textNode, target);
-      if (parent && parent.normalize) {
-        parent.normalize();
-      }
     }
     // Public methods for external control
     isPopupVisible() {
