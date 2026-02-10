@@ -136,3 +136,4 @@ After building, load the extension in Chrome:
 - **Build Output**: `dist/content.js` - Bundled content script
 - **Extension Files**: All files in `dist/` after building
 - **Extension Guide**: `EXTENDING.md` - Detailed extension procedures
+- **Runtime Behavior**: `RUNTIME_BEHAVIOR.md` - Explanation of extension behavior

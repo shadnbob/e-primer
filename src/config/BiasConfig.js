@@ -71,8 +71,8 @@ export class BiasConfig {
                     'success is hard work',
                     'the problem is immigrants',
                     'happiness is money',
-                    'violence is never the answer',
-                    'government is the enemy'
+                    'the electron is a particle.',
+                    'the government is corrupt'
                 ],
                 acceptable: [
                     'water is H2O',

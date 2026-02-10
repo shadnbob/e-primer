@@ -108,15 +108,13 @@ import { getPopupManager } from '../utils/PopupManager.js';
         const validatedSettings = BiasConfig.validateSettings(request.settings);
         await biasDetector.updateSettings(validatedSettings);
         
-        // Small delay to ensure processing is complete before sending stats
-        setTimeout(() => {
-            const stats = biasDetector.getStats();
-            sendResponse({ 
-                success: true, 
-                stats: stats,
-                message: 'Settings updated successfully' 
-            });
-        }, 100);
+        // Get stats after settings update is fully complete
+        const stats = biasDetector.getStats();
+        sendResponse({ 
+            success: true, 
+            stats: stats,
+            message: 'Settings updated successfully' 
+        });
     }
 
     // Handle stats request
@@ -126,15 +124,24 @@ import { getPopupManager } from '../utils/PopupManager.js';
         sendResponse(stats);
     }
 
-    // Handle force analyze request
+    // Handle force analyze request - also re-enables analysis
     async function handleForceAnalyze(sendResponse) {
-        console.log('Force analyze requested');
+        console.log('Force analyze requested - enabling analysis');
         
         try {
+            // Disconnect observer FIRST to prevent race conditions
+            // where clearing highlights triggers mutations that re-analyze
+            biasDetector.disconnectObserver();
             biasDetector.clearHighlights();
             
-            // Small delay to ensure DOM is updated
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // Re-enable analysis
+            biasDetector.settings.enableAnalysis = true;
+            
+            // Persist enabled state to storage so popup toggle stays in sync
+            chrome.storage.sync.set({ enableAnalysis: true });
+            
+            // Small delay to ensure DOM is settled after highlight removal
+            await new Promise(resolve => setTimeout(resolve, 50));
             
             const stats = await biasDetector.forceAnalyze();
             biasDetector.setupMutationObserver();
@@ -142,9 +149,13 @@ import { getPopupManager } from '../utils/PopupManager.js';
             sendResponse({ 
                 success: true, 
                 stats: stats,
+                analysisEnabled: true,
                 message: 'Analysis completed successfully' 
             });
         } catch (error) {
+            console.error('Force analyze failed:', error);
+            // Try to restore observer even on failure
+            try { biasDetector.setupMutationObserver(); } catch(e) {}
             sendResponse({ 
                 success: false, 
                 error: error.message 
@@ -152,17 +163,27 @@ import { getPopupManager } from '../utils/PopupManager.js';
         }
     }
 
-    // Handle clear highlights request
+    // Handle clear highlights request - also disables analysis
     function handleClearHighlights(sendResponse) {
-        console.log('Clear highlights requested');
+        console.log('Clear highlights requested - disabling analysis');
         
+        // Disconnect observer FIRST to prevent mutation-triggered re-analysis
+        biasDetector.disconnectObserver();
         biasDetector.clearHighlights();
+        
+        // Disable analysis in detector settings
+        biasDetector.settings.enableAnalysis = false;
+        
+        // Persist disabled state to storage so popup toggle stays in sync
+        chrome.storage.sync.set({ enableAnalysis: false });
+        
         const stats = biasDetector.getStats();
         
         sendResponse({ 
             success: true, 
             stats: stats,
-            message: 'Highlights cleared successfully' 
+            analysisEnabled: false,
+            message: 'Highlights cleared and analysis disabled' 
         });
     }
 

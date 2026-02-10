@@ -269,6 +269,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (response && response.success) {
                     updateStats(response.stats);
+                    
+                    // Sync the enable toggle - refresh turns analysis back on
+                    if (response.analysisEnabled !== undefined) {
+                        currentSettings.enableAnalysis = response.analysisEnabled;
+                        const enableToggle = document.getElementById('enableToggle');
+                        if (enableToggle) {
+                            isUpdating = true;
+                            enableToggle.checked = response.analysisEnabled;
+                            isUpdating = false;
+                        }
+                    }
+                    
                     setTimeout(() => {
                         refreshButton.disabled = false;
                         refreshButton.textContent = 'Refresh Analysis';
@@ -295,6 +307,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (response && response.success) {
                     updateStats(response.stats);
+                    
+                    // Sync the enable toggle - clear turns analysis off
+                    if (response.analysisEnabled !== undefined) {
+                        currentSettings.enableAnalysis = response.analysisEnabled;
+                        const enableToggle = document.getElementById('enableToggle');
+                        if (enableToggle) {
+                            isUpdating = true;
+                            enableToggle.checked = response.analysisEnabled;
+                            isUpdating = false;
+                        }
+                    }
+                    
                     setTimeout(() => {
                         clearButton.disabled = false;
                     }, 500);

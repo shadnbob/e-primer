@@ -370,6 +370,32 @@ export class DOMProcessor {
         // No individual cleanup needed
     }
 
+    // Remove specific excellence type highlights
+    removeExcellenceHighlights(type) {
+        const selector = `.${this.excellenceClassPrefix}${type}`;
+        const highlights = document.querySelectorAll(selector);
+        
+        this.processedParents.clear();
+
+        highlights.forEach(highlight => {
+            this.cleanupHoverElements(highlight);
+            
+            const parent = highlight.parentNode;
+            const textNode = document.createTextNode(highlight.textContent);
+            parent.replaceChild(textNode, highlight);
+            this.processedParents.add(parent);
+        });
+
+        // Normalize affected parent nodes
+        this.processedParents.forEach(parent => {
+            if (parent && parent.normalize) {
+                parent.normalize();
+            }
+        });
+
+        this.processedParents.clear();
+    }
+
     // Remove specific type of highlights
     removeSpecificHighlights(type) {
         const selector = `.${this.highlightClassPrefix}${type}`;

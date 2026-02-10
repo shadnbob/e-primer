@@ -93,6 +93,10 @@ export class BiasDetector {
 
         this.performanceMonitor.start('document-analysis');
         
+        // Disconnect observer during analysis to prevent mutation feedback loops
+        const hadObserver = !!this.observer;
+        this.disconnectObserver();
+        
         try {
             // Clear existing highlights first
             this.domProcessor.removeAllHighlights();
@@ -117,12 +121,21 @@ export class BiasDetector {
             const duration = this.performanceMonitor.end('document-analysis');
             console.log(`Analysis completed in ${duration.toFixed(2)}ms`);
             
+            // Restore observer if it was previously connected
+            if (hadObserver) {
+                this.setupMutationObserver();
+            }
+            
             return this.stats;
             
         } catch (error) {
             // Defensive error handling - avoid potential instanceof issues
             const errorMessage = error && error.message ? error.message : String(error);
             console.error('Document analysis failed:', errorMessage);
+            // Restore observer even on failure
+            if (hadObserver) {
+                this.setupMutationObserver();
+            }
             return this.createEmptyStats();
         }
     }
@@ -361,9 +374,9 @@ export class BiasDetector {
         // Handle analysis enable/disable
         if (oldSettings.enableAnalysis !== newSettings.enableAnalysis) {
             if (!newSettings.enableAnalysis) {
+                this.disconnectObserver();
                 this.domProcessor.removeAllHighlights();
                 this.resetStats();
-                this.disconnectObserver();
                 return;
             } else {
                 await this.analyzeDocument();
@@ -382,14 +395,17 @@ export class BiasDetector {
     async handleDetectorChanges(oldSettings, newSettings) {
         let needsReanalysis = false;
 
+        // Check bias type detector changes
         for (const [key, detector] of this.compiledDetectors) {
             const settingKey = detector.settingKey;
             
             if (oldSettings[settingKey] !== newSettings[settingKey]) {
                 if (!newSettings[settingKey]) {
-                    // Detector disabled - remove its highlights
+                    // Detector disabled - disconnect observer, remove its highlights, reconnect
+                    this.disconnectObserver();
                     this.domProcessor.removeSpecificHighlights(detector.id);
                     this.stats[detector.statKey] = 0;
+                    this.setupMutationObserver();
                 } else {
                     // Detector enabled - need reanalysis
                     needsReanalysis = true;
@@ -397,9 +413,29 @@ export class BiasDetector {
             }
         }
 
+        // Check excellence type detector changes
+        for (const [key, config] of Object.entries(BiasConfig.EXCELLENCE_TYPES)) {
+            const settingKey = config.settingKey;
+            
+            if (oldSettings[settingKey] !== newSettings[settingKey]) {
+                if (!newSettings[settingKey]) {
+                    // Excellence detector disabled - remove its highlights
+                    this.disconnectObserver();
+                    this.domProcessor.removeExcellenceHighlights(config.id);
+                    this.stats[config.statKey] = 0;
+                    this.setupMutationObserver();
+                } else {
+                    // Excellence detector enabled - need reanalysis
+                    needsReanalysis = true;
+                }
+            }
+        }
+
         if (needsReanalysis) {
-            // Re-analyze but preserve stats for disabled detectors
+            // Disconnect observer during re-analysis to prevent race conditions
+            this.disconnectObserver();
             await this.analyzeDocumentPreservingDisabled();
+            this.setupMutationObserver();
         }
     }
 
@@ -410,6 +446,13 @@ export class BiasDetector {
         for (const [key, detector] of this.compiledDetectors) {
             if (!detector.isEnabled()) {
                 preservedStats[detector.statKey] = this.stats[detector.statKey];
+            }
+        }
+        
+        // Also preserve stats for disabled excellence detectors
+        for (const [key, config] of Object.entries(BiasConfig.EXCELLENCE_TYPES)) {
+            if (this.settings[config.settingKey] === false) {
+                preservedStats[config.statKey] = this.stats[config.statKey];
             }
         }
 
@@ -580,6 +623,9 @@ export class BiasDetector {
     }
 
     clearHighlights() {
+        // Disconnect observer BEFORE removing highlights to prevent
+        // mutation callbacks from re-analyzing the cleared nodes
+        this.disconnectObserver();
         this.domProcessor.removeAllHighlights();
         this.resetStats();
     }
