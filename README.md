@@ -1,385 +1,244 @@
 # E-Prime Bias Detector
 
-A powerful Chrome extension that detects biased language patterns in web content using E-Prime principles and advanced linguistic analysis, helping users develop better critical reading skills and awareness of media bias.
+A browser extension for Chrome and Firefox that detects biased language patterns in web content. It highlights problematic rhetoric — opinion presented as fact, vague sourcing, emotional manipulation, false dilemmas — alongside markers of quality writing like clear attribution, nuance, and transparency. The goal is to build critical reading habits, not to tell you what to think.
 
-[![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com/shadnbob/e-primer)
-[![Architecture](https://img.shields.io/badge/architecture-refactored-green.svg)](#architecture)
-[![Performance](https://img.shields.io/badge/performance-60%25_faster-brightgreen.svg)](#performance)
+## Why This Exists
 
-## 🎯 Project Overview
+Most people consume written content passively. News articles, blog posts, social media — the language used to frame information shapes how we interpret it, often without us noticing. A sentence like "everyone knows this policy is a disaster" contains an absolute claim ("everyone knows"), an opinion word presented as fact ("disaster"), and no source attribution. It *feels* authoritative, but says nothing verifiable.
 
-The E-Prime Bias Detector analyzes web pages in real-time to identify 14 different types of linguistic bias patterns:
+E-Prime Bias Detector makes these patterns visible. It doesn't judge content as "good" or "bad" — it highlights the linguistic structures that either support or undermine clear, honest communication, and lets you decide what to make of them.
 
-### 📋 **Basic Detection** (Enabled by Default)
-- **Opinion Words** - Subjective language and loaded terms
-- **To-Be Verbs** - E-Prime violations that can create false equivalencies
-- **Absolute Statements** - Universal claims and extremes
+## The Theory Behind the Detection
 
-### 🧠 **Advanced Detection**
-- **Passive Voice** - Constructions that obscure agency
-- **Weasel Words** - Vague attributions and unsupported claims
-- **Presuppositions** - Hidden assumptions smuggled into statements
+The extension draws on several overlapping traditions in linguistics, rhetoric, and media literacy. Each detection category targets a specific way language can mislead — or demonstrate integrity.
 
-### 🎭 **Framing & Rhetoric**
-- **War Metaphors** - Militaristic language for non-military topics
-- **Minimizers** - Language that downplays significance
-- **Maximizers** - Exaggeration and hyperbolic language
+### E-Prime and the Problem with "To Be"
 
-### ⚠️ **Manipulation Tactics**
-- **False Balance** - Artificial balance between unequal positions
-- **Euphemisms** - Language that obscures harsh realities
-- **Emotional Manipulation** - Appeals designed to trigger emotional responses
-- **Gaslighting** - Phrases that undermine perception and memory
-- **False Dilemmas** - Language that forces artificial binary choices
+E-Prime is a constrained form of English developed by D. David Bourland Jr. in the 1960s, building on Alfred Korzybski's General Semantics. The core idea: forms of "to be" (is, am, are, was, were, be, being, been) often create false equivalences and hide complexity.
 
-### ✨ **Excellence Detection** (NEW!)
-- **Clear Attribution** - Specific, verifiable sources
-- **Nuanced Language** - Acknowledges complexity and avoids absolutes
-- **Transparent Communication** - Clear about limitations and perspective
-- **Constructive Discourse** - Encourages dialogue and acknowledges others
-- **Evidence-Based Claims** - Supported by specific data and methodology
+Consider the difference between "This policy is a failure" and "This policy has not achieved its stated goals in three measurable areas." The first uses "is" to collapse a complex evaluation into an identity statement — the policy *equals* failure. The second describes specific, verifiable shortcomings without pretending the judgment is an objective property of the thing itself.
 
-## ✨ Key Features
+E-Prime doesn't claim all uses of "to be" are harmful. "Water is H₂O" is a definition. "The meeting is at 3pm" is a scheduling fact. The extension highlights them so readers can notice when "to be" constructions are doing persuasive work they shouldn't be.
 
-- **🚀 High Performance** - 60% faster analysis with pre-compiled patterns
-- **🎨 Visual Highlighting** - Color-coded highlighting of different bias types
-- **📊 Real-time Statistics** - Live counts of bias indicators found
-- **⚙️ Granular Controls** - Enable/disable individual detection types
-- **🔄 Dynamic Content Support** - Works with modern SPAs and live updates
-- **🌐 Universal Compatibility** - Works on all websites including Shadow DOM
-- **💾 Settings Persistence** - Your preferences are saved and synchronized
-- **📱 Responsive Design** - Clean, modern interface that works everywhere
-- **🎯 Excellence Highlighting** - Identifies and promotes good writing practices
+### Opinion Language and Subjectivity Markers
 
-## 🚀 What's New in Version 2.0
+Words like "obviously," "clearly," "terrible," and "brilliant" embed the writer's evaluation directly into claims that might otherwise pass as factual reporting. The extension detects these across several sub-categories:
 
-### 🏗️ **Modern Build System**
-- **ES6 Modules**: Clean, modular source code with proper imports/exports
-- **esbuild Integration**: Fast, modern bundling for optimal performance
-- **Automated Building**: npm scripts for development and production builds
-- **Source Maps**: Full debugging support during development
-- **Asset Pipeline**: Automated copying and optimization of static files
+- **Certainty markers** ("obviously," "undeniably," "without question") — signal conviction without evidence
+- **Hedging language** ("perhaps," "maybe," "arguably") — can indicate intellectual honesty OR evasion, depending on context
+- **Evaluative terms** ("brilliant," "disastrous," "groundbreaking") — embed judgment into description
+- **Emotional charge** ("shocking," "outrageous," "heartwarming") — trigger feeling rather than analysis
+- **Intensifiers** ("absolutely," "utterly," "completely") — amplify claims without adding substance
 
-### 🎯 **Consistency Improvements**
-- **Unified Naming**: Consistent "E-Prime Bias Detector" branding throughout
-- **Deduplication**: Removed conflicting patterns between dictionaries
-- **Better Defaults**: Logical default states for all bias detection types
-- **Improved UI**: Enhanced popup interface with better organization
+The extension doesn't assume all opinion language is bad. An editorial *should* contain evaluative language — but it should be clearly framed as opinion. The problem arises when opinion language appears in contexts claiming objectivity.
 
-### 🔧 **Technical Enhancements**
-- **Pattern Compiler**: Efficient pre-compilation of all regex patterns
-- **DOM Processor**: Optimized text node processing and highlighting
-- **Settings Manager**: Robust settings persistence and validation
-- **Performance Monitor**: Built-in performance tracking and optimization
+### Absolute Statements and Universal Claims
 
-## 📦 Installation & Development
+"Everyone knows," "this always fails," "no one believes" — absolute language makes sweeping claims that are almost never literally true. These patterns are common in persuasive writing because they feel authoritative, but they're usually unfalsifiable or trivially false.
 
-### For Users
-**Coming Soon**: The extension will be available on the Chrome Web Store once testing is complete.
+The extension detects both **maximizers** ("absolutely," "totally," "the greatest") and **minimizers** ("merely," "just," "only") because both distort scale. "The damage was merely cosmetic" minimizes. "This is absolutely the worst outcome possible" maximizes. Both substitute emphasis for evidence.
 
-### For Developers & Contributors
+### Weasel Words and Vague Attribution
 
-#### **Prerequisites**
-- Node.js (v14 or higher)
-- npm (comes with Node.js)
-- Chrome browser for testing
+"Studies show," "experts believe," "sources indicate," "people are saying" — these phrases create an illusion of authority without providing verifiable sources. They're called "weasel words" because they weasel out of accountability. Who are these experts? Which studies? What sources?
 
-#### **Setup & Build Process**
+The extension distinguishes between vague attribution (a problem) and specific attribution (an excellence marker). "Studies show this works" gets flagged. "A 2024 meta-analysis in The Lancet covering 15,000 participants found improved outcomes" gets highlighted as excellent attribution.
 
-1. **Clone and Install**
-   ```bash
-   git clone https://github.com/shadnbob/e-primer.git
-   cd e-primer
-   npm install
-   ```
+### Passive Voice and Hidden Agency
 
-2. **Build the Extension**
-   ```bash
-   # Production build
-   npm run build
-   
-   # Development build with file watching
-   npm run dev
-   ```
+Passive constructions aren't inherently biased, but they can obscure who is responsible for actions. "Mistakes were made" is a classic example — it acknowledges mistakes while hiding who made them. "The protesters were dispersed" omits who dispersed them and how.
 
-   This will:
-   - Bundle all ES6 modules from `src/` into a single `dist/content.js`
-   - Copy static files (`manifest.json`, `popup.html`, `styles.css`, etc.) to `dist/`
-   - Update manifest paths to reference bundled files
-   - Generate source maps for debugging
+The extension flags passive constructions so readers can ask: is the agent being hidden deliberately? Sometimes passive voice is the right choice (when the action matters more than the actor). But when it consistently appears around accountability questions, that's worth noticing.
 
-3. **Load in Chrome**
-   ```bash
-   # Open Chrome and navigate to: chrome://extensions/
-   # Enable "Developer mode" (toggle in top right)
-   # Click "Load unpacked" and select the dist/ directory
-   ```
+### Presupposition Markers
 
-4. **Test the Extension**
-   - Open files in `test-files/` for comprehensive testing
-   - Try the extension on various websites
-   - Open the popup to configure detection types
-   - Check browser console for any errors
+Presuppositions are assumptions smuggled into statements as if they're already established facts. "When did the administration stop covering this up?" presupposes there was a cover-up. "Why does this approach keep failing?" presupposes repeated failure.
 
-#### **Development Workflow**
+These are powerful because responding to the surface question implicitly accepts the hidden premise. The extension highlights these so readers can identify and evaluate the embedded assumption separately from the stated question.
 
+### Framing Through Metaphor
+
+War metaphors applied to non-military contexts ("battle for market share," "war on drugs," "fighting inflation") frame situations as adversarial conflicts with winners and losers. This framing shapes how people think about problems and solutions — collaborative approaches become harder to imagine when everything is framed as a fight.
+
+### Manipulation Tactics
+
+The extension detects several specific manipulation patterns:
+
+- **False balance** — framing two positions as equally valid when evidence strongly favors one ("some say the earth is round, others disagree")
+- **Euphemisms** — softening language that obscures harsh realities ("collateral damage" for civilian deaths, "downsizing" for layoffs)
+- **Emotional manipulation** — language designed to bypass rational evaluation and trigger emotional responses
+- **Gaslighting phrases** — language patterns that undermine the reader's confidence in their own perception ("you're overreacting," "that never happened")
+- **False dilemmas** — presenting complex situations as binary choices ("you're either with us or against us")
+
+### Excellence Detection: What Good Writing Looks Like
+
+Bias detection alone can create cynicism — everything starts looking manipulative. The excellence detection system provides the other side: what does responsible, well-sourced, intellectually honest writing actually look like?
+
+- **Clear attribution** — named sources, dates, publication venues, sample sizes
+- **Nuanced language** — "the evidence suggests" rather than "this proves"; acknowledging that situations are complex
+- **Transparency** — "in my opinion," "important limitations include," "more research is needed"
+- **Constructive discourse** — building on others' ideas, acknowledging valid counterpoints
+- **Evidence-based claims** — specific data, methodology references, statistical context
+
+The health score reflects the ratio of excellence markers to problem indicators, giving a quick sense of a document's rhetorical quality.
+
+### Context-Aware Detection
+
+Many phrases are ambiguous. "It seems" can be weaseling ("it seems like this is true") or genuine scientific hedging ("it seems, based on the data from three independent studies, that..."). The extension includes a context-aware detection system that examines surrounding text to classify ambiguous phrases more accurately, reducing false positives.
+
+## Detection Categories
+
+### Basic Detection (enabled by default)
+- **Opinion Words** — subjective language and evaluative terms
+- **To-Be Verbs** — E-Prime violations that can create false equivalencies
+- **Absolute Statements** — universal claims and extremes
+
+### Advanced Detection
+- **Passive Voice** — constructions that obscure agency
+- **Weasel Words** — vague attributions and unsupported claims
+- **Presuppositions** — hidden assumptions embedded in statements
+
+### Framing & Rhetoric
+- **War Metaphors** — militaristic language for non-military topics
+- **Minimizers** — language that downplays significance
+- **Maximizers** — exaggeration and hyperbolic language
+
+### Manipulation Tactics
+- **False Balance** — artificial equivalence between unequal positions
+- **Euphemisms** — language that obscures harsh realities
+- **Emotional Manipulation** — appeals designed to trigger emotional responses
+- **Gaslighting** — phrases that undermine perception and memory
+- **False Dilemmas** — language that forces artificial binary choices
+
+### Excellence Detection
+- **Clear Attribution** — specific, verifiable sources
+- **Nuanced Language** — acknowledges complexity and avoids absolutes
+- **Transparent Communication** — clear about limitations and perspective
+- **Constructive Discourse** — encourages dialogue and acknowledges others
+- **Evidence-Based Claims** — supported by specific data and methodology
+
+## Installation
+
+### Chrome
+1. Clone and build (see Development below)
+2. Navigate to `chrome://extensions/`
+3. Enable "Developer mode"
+4. Click "Load unpacked" and select the `dist/` directory
+
+### Firefox
+1. Clone and build with `npm run build:firefox`
+2. Navigate to `about:debugging`
+3. Click "This Firefox"
+4. Click "Load Temporary Add-on"
+5. Select `dist-firefox/manifest.json`
+
+## Development
+
+### Prerequisites
+- Node.js (v14+)
+- npm
+
+### Setup
 ```bash
-# Start development mode (auto-rebuild on file changes)
-npm run dev
-
-# Manual build for testing
-npm run build
-
-# Watch for changes and rebuild automatically
-npm run watch
+git clone https://github.com/shadnbob/e-primer.git
+cd e-primer
+npm install
 ```
 
-The build system will automatically:
-- ✅ Compile ES6 modules into a single bundle
-- ✅ Copy and update all static files
-- ✅ Update manifest.json with correct file paths
-- ✅ Generate source maps for debugging
-- ✅ Validate pattern dictionaries
-- ✅ Handle asset optimization
-
-#### **Project Structure**
-```
-E-Prime Bias Detector/
-├── 📁 src/                    # Modular source code (ES6 modules)
-│   ├── 📁 config/             # Configuration management
-│   │   └── BiasConfig.js      # Centralized settings and types
-│   ├── 📁 dictionaries/       # Word pattern definitions
-│   │   ├── index.js           # Pattern compiler and exports
-│   │   ├── opinion-words.js   # Opinion/subjective terms
-│   │   ├── absolute-words.js  # Universal quantifiers
-│   │   └── ...               # Other pattern dictionaries
-│   ├── 📁 content/            # Content script logic
-│   │   ├── BiasDetector.js    # Main detection engine
-│   │   └── content-script.js  # Extension entry point
-│   ├── 📁 popup/              # Popup interface components
-│   │   ├── SettingsManager.js # Settings UI management
-│   │   └── StatsDisplay.js    # Statistics display
-│   └── 📁 utils/              # Shared utilities
-│       ├── DOMProcessor.js    # DOM manipulation
-│       ├── ExcellenceDetector.js # Excellence pattern detection
-│       └── PerformanceMonitor.js # Performance tracking
-├── 📁 dist/                   # Built extension (generated)
-│   ├── content.js             # Bundled content script
-│   ├── content.js.map         # Source map for debugging
-│   ├── manifest.json          # Updated manifest
-│   ├── popup.html             # Popup interface
-│   ├── popup.js               # Popup logic
-│   ├── styles.css             # Highlighting styles
-│   ├── excellence-styles.css  # Excellence highlighting
-│   ├── info.html              # User guide
-│   └── 📁 images/             # Extension icons
-├── 📁 test-files/             # Test HTML files
-├── 📁 old-files/              # Legacy code archive
-├── 📁 readmes/                # Documentation archive
-├── 📄 package.json            # npm configuration
-├── 📄 build.js                # Build script (esbuild)
-└── 📄 README.md               # This file
+### Build
+```bash
+npm run build            # Chrome (default)
+npm run build:firefox    # Firefox
+npm run build:all        # Both
+npm run dev              # Watch mode (Chrome, auto-rebuilds)
 ```
 
-## 🛠️ Build System Details
-
-The extension uses a modern ES6 module-based architecture with automated building:
-
-### **Source Organization**
-- **Modular ES6**: All source code uses proper imports/exports
-- **Type Safety**: Centralized configuration prevents conflicts
-- **Pattern Management**: Automated compilation and validation
-- **Performance Focus**: Pre-compiled patterns for runtime efficiency
-
-### **Build Process**
-1. **Module Bundling**: esbuild combines all ES6 modules into `dist/content.js`
-2. **Asset Copying**: Static files copied to `dist/` with path updates
-3. **Manifest Updates**: Automatically updates file references for bundled code
-4. **Pattern Compilation**: Validates and optimizes regex patterns
-5. **Source Maps**: Generates debugging information for development
-
-### **Build Scripts**
-```json
-{
-  "scripts": {
-    "build": "node build.js",
-    "watch": "node build.js --watch",
-    "dev": "npm run watch"
-  }
-}
+### Test
+```bash
+npm test                 # Run all tests (Vitest)
+npm run test:watch       # Watch mode
+npm run test:coverage    # With coverage report
 ```
 
-## 🎨 Visual Design
+The test suite covers unit tests for pattern matching, configuration, DOM processing, and excellence detection, plus integration tests for the full analysis pipeline, settings management, and performance benchmarks.
 
-The extension uses an intuitive color-coding system:
+Manual test HTML files are in `tests/manual/` for browser-based testing.
 
-| Color | Bias Type | Purpose |
-|-------|-----------|---------|
-| 🟠 **Orange** | Opinion Words | Subjective language and evaluative terms |
-| 🔵 **Blue** | To-Be Verbs | E-Prime violations |
-| 🟣 **Pink** | Absolute Statements | Universal claims and extremes |
-| 🟪 **Purple** | Passive Voice | Hidden agency and responsibility |
-| 🟫 **Gold** | Weasel Words | Vague attributions |
-| 🌸 **Deep Pink** | Presuppositions | Hidden assumptions |
-| 🔴 **Crimson** | War Metaphors | Militaristic framing |
-| 🟢 **Teal** | Minimizers | Downplaying language |
-| 🟠 **Orange-Red** | Maximizers | Exaggeration and hyperbole |
-| 🟣 **Indigo** | False Balance | Artificial equivalence |
-| 🟢 **Dark Green** | Euphemisms | Reality-obscuring language |
-| 🟧 **Coral** | Emotional Manipulation | Emotional triggers |
-| 🔴 **Maroon** | Gaslighting | Reality-undermining phrases |
-| 🟣 **Dark Violet** | False Dilemmas | Forced binary choices |
-| ✅ **Green Tones** | Excellence Patterns | Good writing practices |
+### Project Structure
+```
+e-primer/
+├── src/
+│   ├── config/BiasConfig.js          # All bias types, categories, settings
+│   ├── content/
+│   │   ├── BiasDetector.js           # Main detection engine
+│   │   └── content-script.js         # Extension entry point
+│   ├── dictionaries/
+│   │   ├── index.js                  # Pattern compiler (BiasPatterns class)
+│   │   ├── opinion-words.js          # Opinion/subjective terms
+│   │   ├── absolute-words.js         # Universal quantifiers
+│   │   ├── tobe-verbs.js             # E-Prime verb forms
+│   │   └── ...                       # 12 more pattern dictionaries
+│   ├── popup/
+│   │   ├── popup-dynamic.js          # Popup entry point
+│   │   ├── PopupGenerator.js         # Dynamic UI generation
+│   │   ├── SettingsManager.js        # Settings persistence
+│   │   └── StatsDisplay.js           # Statistics display
+│   ├── utils/
+│   │   ├── ContextAwareDetector.js   # Ambiguous phrase classification
+│   │   ├── DOMProcessor.js           # DOM manipulation and highlighting
+│   │   ├── ExcellenceDetector.js     # Positive pattern detection
+│   │   ├── HoverContentGenerator.js  # Tooltip content generation
+│   │   ├── PopupManager.js           # Click/hover popup handling
+│   │   └── PerformanceMonitor.js     # Performance tracking
+│   ├── build/StyleGenerator.js       # CSS generation from config
+│   └── excellence-styles.css         # Excellence highlighting styles
+├── tests/
+│   ├── unit/                         # Unit tests
+│   ├── integration/                  # Integration tests
+│   └── manual/                       # Browser test HTML files
+├── dist/                             # Chrome build output (generated)
+├── dist-firefox/                     # Firefox build output (generated)
+├── build.js                          # esbuild bundler script
+├── vitest.config.js                  # Test configuration
+├── manifest.json                     # Chrome manifest (V3)
+├── manifest-firefox.json             # Firefox manifest (V2)
+├── EXTENDING.md                      # Guide for adding new bias types
+└── CLAUDE.md                         # AI assistant project context
+```
 
-## 📊 Performance Metrics
+### Adding New Bias Types
 
-### **Benchmark Results** (10,000 word test document)
+See [EXTENDING.md](EXTENDING.md) for the full guide. The short version:
 
-| Metric | Version 1.0 | Version 2.0 | Improvement |
-|--------|-------------|-------------|-------------|
-| **Initial Analysis** | 2.1s | 0.8s | **62% faster** |
-| **Memory Usage** | 15.2MB | 9.1MB | **40% less** |
-| **Mutation Processing** | 0.5s | 0.1s | **80% faster** |
-| **CPU Usage (avg)** | 45% | 18% | **60% less** |
-| **Bundle Size** | N/A | 245KB | **Optimized** |
-| **Build Time** | N/A | <2s | **Fast builds** |
+1. Add the type configuration to `BiasConfig.BIAS_TYPES`
+2. Create a pattern dictionary in `src/dictionaries/`
+3. Import and register it in `src/dictionaries/index.js`
+4. Run `npm run build` — the popup UI and CSS are generated automatically
 
-### **Performance Features**
-- ⚡ **Pre-compiled Patterns**: No runtime regex compilation
-- 🔄 **Batch Processing**: Non-blocking analysis of large documents
-- 🎯 **Incremental Updates**: Only reprocess changed content
-- 💾 **Memory Optimization**: Efficient resource management and cleanup
-- 📦 **Optimized Bundle**: Single file reduces load times
-- 🚀 **Fast Builds**: Modern tooling for rapid development
+## How It Works
 
-## 🧪 Testing & Validation
+The extension runs as a content script on every web page. On load:
 
-### **Comprehensive Test Suite**
-- **📄 test-files/**: Complete functionality testing files
-- **🏗️ Architecture Tests**: Modular component validation
-- **⚡ Performance Tests**: Speed and memory benchmarks
-- **🔄 Dynamic Content Tests**: Mutation observer validation
-- **⚙️ Configuration Tests**: Settings persistence and validation
-- **📝 Pattern Tests**: Dictionary accuracy and conflict detection
+1. **Pattern compilation** — all word lists and regex patterns from the 15 dictionaries are pre-compiled into optimized RegExp objects
+2. **Text node collection** — a TreeWalker traverses the DOM collecting text nodes, skipping scripts, styles, and the extension's own highlights
+3. **Batch processing** — text nodes are analyzed in batches to avoid blocking the UI thread
+4. **Pattern matching** — each enabled detector runs its compiled patterns against the text
+5. **Context analysis** — ambiguous matches are evaluated by the ContextAwareDetector using surrounding text
+6. **Excellence detection** — positive patterns are identified in parallel
+7. **Deduplication** — overlapping matches are resolved, preferring contextual matches and longer spans
+8. **DOM highlighting** — matched text is wrapped in styled `<span>` elements with tooltip data
+9. **Statistics** — match counts and a health score are computed and sent to the popup
+10. **Mutation observation** — a MutationObserver watches for DOM changes and re-analyzes affected nodes
 
-### **Browser Compatibility**
-- ✅ **Chrome**: Fully supported (Manifest V3)
-- ✅ **Chromium-based**: Edge, Brave, Opera
-- 🔄 **Firefox**: Planned (requires Manifest V2 adaptation)
-- 🔄 **Safari**: Future consideration
+## Background Reading
 
-## 🤝 Contributing
+- Bourland, D. David Jr. — "To Be or Not: An E-Prime Anthology" (foundational E-Prime text)
+- Korzybski, Alfred — "Science and Sanity" (General Semantics, the theoretical root of E-Prime)
+- Lakoff, George — "Metaphors We Live By" (how metaphorical framing shapes thought)
+- Herman & Chomsky — "Manufacturing Consent" (media framing and propaganda models)
+- Kahneman, Daniel — "Thinking, Fast and Slow" (cognitive biases in information processing)
+- The Media Literacy Project — educational resources on recognizing bias in media
 
-We welcome contributions! The refactored architecture makes it easier than ever to add new features and bias types.
+## License
 
-### **Development Setup**
-1. **Fork and Clone**: Create your own fork of the repository
-2. **Install Dependencies**: `npm install`
-3. **Start Development**: `npm run dev` for auto-rebuilding
-4. **Make Changes**: Edit files in `src/` directory
-5. **Test**: Use `test-files/` and real websites
-6. **Build**: `npm run build` for production testing
-7. **Submit PR**: Include detailed description and testing evidence
-
-### **Adding New Bias Types**
-1. **Configuration**: Add to `src/config/BiasConfig.js`
-2. **Patterns**: Create dictionary file in `src/dictionaries/`
-3. **Export**: Add to `src/dictionaries/index.js`
-4. **UI**: Settings automatically appear in popup
-5. **Styles**: Add highlight CSS class to `styles.css`
-6. **Test**: Create test cases in `test-files/`
-7. **Build**: `npm run build` to generate updated extension
-
-### **Code Style**
-- **ES6+ Features**: Use modern JavaScript patterns
-- **Modular Design**: Separate concerns into focused modules
-- **Error Handling**: Comprehensive try-catch and validation
-- **Performance**: Consider memory and CPU impact
-- **Documentation**: Clear comments and JSDoc annotations
-
-## 📚 Documentation
-
-- **📖 [User Guide](info.html)**: Complete user documentation with examples
-- **🏗️ [Development Setup](#development-workflow)**: Technical setup and building
-- **🔧 [API Documentation](src/)**: Inline documentation in source files
-- **📊 [Performance Analysis](#performance-metrics)**: Detailed performance metrics
-
-## 🔍 Academic Background
-
-This project is inspired by:
-
-- **E-Prime Methodology**: Developed by D. David Bourland Jr., eliminating forms of "to be" for more precise language
-- **Media Literacy Research**: Critical analysis of bias in written communication
-- **Cognitive Bias Detection**: Identifying manipulation techniques in text
-- **General Semantics**: Principles of clear and unbiased communication
-- **Computational Linguistics**: Automated analysis of linguistic patterns
-
-## 📈 Project Roadmap
-
-### ✅ **Phase 1: Foundation** (Complete)
-- Basic bias detection for opinion words, to-be verbs, and absolutes
-- Chrome extension framework and UI
-- Pattern matching and highlighting system
-
-### ✅ **Phase 2: Expansion** (Complete)
-- Advanced detection types (passive voice, weasel words, etc.)
-- Manipulation tactics detection
-- Enhanced UI with categorized controls
-
-### ✅ **Phase 3: Refactoring** (Complete - v2.0)
-- ⚡ 60% performance improvement through architectural refactoring
-- 🏗️ Modular design with separated concerns
-- 🎯 Consistent configuration and naming
-- 🔧 Comprehensive error handling and optimization
-- 📦 Modern build system with ES6 modules
-- ✨ Excellence pattern detection
-
-### 🔄 **Phase 4: Intelligence** (In Progress)
-- 🧠 Context-aware detection (skip code blocks, quotes)
-- 🎯 Reduced false positives through smarter analysis
-- 📊 Export functionality for analysis reports
-- 🌐 Multi-language support foundation
-
-### 🚀 **Phase 5: Advanced Features** (Future)
-- 🤖 Machine learning integration for improved accuracy
-- 👥 Community-driven pattern updates
-- 📱 Mobile browser support
-- 🔗 API integration with external bias detection services
-
-## 📄 License
-
-**To be determined** - We're evaluating open-source licensing options that best serve the academic and educational mission of this project.
-
-## 🙏 Acknowledgments
-
-- **D. David Bourland Jr.** - Creator of E-Prime methodology
-- **General Semantics Community** - Foundational research on clear communication
-- **Open Source Community** - Modern web extension development practices
-- **Beta Testers** - Feedback and validation during development
-- **Academic Researchers** - Bias detection and media literacy research
-
-## 📞 Support & Contact
-
-- **🐛 Bug Reports**: [GitHub Issues](https://github.com/shadnbob/e-primer/issues)
-- **💡 Feature Requests**: [GitHub Discussions](https://github.com/shadnbob/e-primer/discussions)
-- **📧 General Contact**: [Contact through GitHub](https://github.com/shadnbob)
-- **📚 Documentation**: [Project Wiki](https://github.com/shadnbob/e-primer/wiki)
-
----
-
-## 🎉 Latest Updates
-
-**v2.0.0** - Major Architecture Refactoring & Build System
-- 🚀 **60% Performance Improvement**: Pre-compiled patterns and optimized processing
-- 🏗️ **Modern Build System**: ES6 modules with esbuild integration
-- 📦 **Automated Bundling**: Single-command build process with asset pipeline
-- 🎯 **Excellence Detection**: New positive pattern recognition system
-- 🔧 **Enhanced Reliability**: Comprehensive error handling and resource management
-- 📊 **Better Testing**: Comprehensive test suite and validation tools
-- 🧹 **Code Cleanup**: Deduplication and pattern conflict resolution
-
----
-
-**Latest Commit**: Modern build system with ES6 modules and automated bundling  
-**Status**: ✅ Ready for testing and validation  
-**Next Milestone**: Community testing and feedback collection for public release
+To be determined — evaluating open-source licenses that best serve the educational mission of this project.
