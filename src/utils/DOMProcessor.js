@@ -326,7 +326,7 @@ export class DOMProcessor {
 
     // Remove all bias highlights
     removeAllHighlights() {
-        const selector = Object.keys(this.getHighlightSelectors()).join(', ');
+        const selector = Object.values(this.getHighlightSelectors()).join(', ');
         const highlights = document.querySelectorAll(selector);
         
         this.processedParents.clear();

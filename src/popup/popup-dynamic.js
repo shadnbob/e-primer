@@ -143,6 +143,19 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSettings = {};
     let isUpdating = false;
 
+    // Section toggle mapping: section toggle ID -> child toggle IDs
+    const sectionToggleMap = {
+        'excellenceSectionToggle': [
+            'attributionExcellenceToggle', 'nuanceExcellenceToggle',
+            'transparencyExcellenceToggle', 'discourseExcellenceToggle',
+            'evidenceExcellenceToggle'
+        ],
+        'basicSectionToggle': ['opinionToggle', 'ePrimeToggle', 'absoluteToggle'],
+        'advancedSectionToggle': ['passiveToggle', 'weaselToggle', 'presuppositionToggle', 'probabilityToggle'],
+        'framingSectionToggle': ['metaphorToggle', 'minimizerToggle', 'maximizerToggle', 'falseBalanceToggle', 'euphemismToggle'],
+        'manipulationSectionToggle': ['emotionalToggle', 'gaslightingToggle', 'falseDilemmaToggle']
+    };
+
     // Initialize settings
     loadSettings();
 
@@ -150,6 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupToggleListeners();
     setupButtonListeners();
     setupCategoryCollapse();
+    setupSectionToggles();
     setupModeSelector();
     setupInfoLink();
 
@@ -163,6 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
             currentSettings = items;
             updateUI();
             updateModeUI();
+            updateAllSectionToggleStates();
         });
     }
 
@@ -330,11 +345,80 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupCategoryCollapse() {
         const headers = document.querySelectorAll('.category-header');
         headers.forEach(header => {
-            header.addEventListener('click', function() {
+            header.addEventListener('click', function(e) {
+                // Don't collapse when clicking the section toggle switch
+                if (e.target.closest('.section-toggle')) return;
                 const section = this.parentElement;
                 section.classList.toggle('collapsed');
             });
         });
+    }
+    
+    function setupSectionToggles() {
+        for (const [sectionToggleId, childToggleIds] of Object.entries(sectionToggleMap)) {
+            const sectionToggle = document.getElementById(sectionToggleId);
+            if (!sectionToggle) continue;
+
+            // Handle section toggle change
+            sectionToggle.addEventListener('change', function() {
+                const checked = this.checked;
+                isUpdating = true;
+                
+                childToggleIds.forEach(childId => {
+                    const childToggle = document.getElementById(childId);
+                    if (childToggle) {
+                        childToggle.checked = checked;
+                        const settingKey = toggleMappings[childId];
+                        if (settingKey) {
+                            currentSettings[settingKey] = checked;
+                        }
+                    }
+                });
+                
+                isUpdating = false;
+                
+                // Save and send to content script
+                chrome.storage.sync.set(currentSettings, function() {
+                    sendSettingsToContentScript();
+                });
+            });
+
+            // When an individual child toggle changes, update the section toggle state
+            childToggleIds.forEach(childId => {
+                const childToggle = document.getElementById(childId);
+                if (childToggle) {
+                    childToggle.addEventListener('change', function() {
+                        updateSectionToggleState(sectionToggleId, childToggleIds);
+                    });
+                }
+            });
+        }
+    }
+
+    function updateSectionToggleState(sectionToggleId, childToggleIds) {
+        const sectionToggle = document.getElementById(sectionToggleId);
+        if (!sectionToggle) return;
+        
+        const allChecked = childToggleIds.every(id => {
+            const el = document.getElementById(id);
+            return el && el.checked;
+        });
+        const noneChecked = childToggleIds.every(id => {
+            const el = document.getElementById(id);
+            return el && !el.checked;
+        });
+        
+        isUpdating = true;
+        sectionToggle.checked = allChecked;
+        // If some are on and some off, show as unchecked (will turn all on when toggled)
+        sectionToggle.indeterminate = !allChecked && !noneChecked;
+        isUpdating = false;
+    }
+
+    function updateAllSectionToggleStates() {
+        for (const [sectionToggleId, childToggleIds] of Object.entries(sectionToggleMap)) {
+            updateSectionToggleState(sectionToggleId, childToggleIds);
+        }
     }
     
     function setupModeSelector() {

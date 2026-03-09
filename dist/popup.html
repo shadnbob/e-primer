@@ -111,33 +111,61 @@
             align-items: center;
             gap: 8px;
         }
-        .section-toggle-buttons {
-            display: flex;
-            gap: 4px;
+        .section-toggle {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 16px;
         }
-        .section-toggle-btn {
-            padding: 2px 6px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            background: white;
-            color: #666;
-            font-size: 10px;
+        .section-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .section-toggle .slider {
+            position: absolute;
             cursor: pointer;
-            transition: all 0.2s;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 16px;
         }
-        .section-toggle-btn:hover {
-            background: #e9ecef;
-            border-color: #999;
+        .section-toggle .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        .section-toggle input:checked + .slider {
+            background-color: #2196F3;
+        }
+        .section-toggle input:checked + .slider:before {
+            transform: translateX(14px);
         }
         .category-header:hover {
             background: #f0f1f3;
         }
         .chevron {
             transition: transform 0.2s;
-            font-size: 10px;
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid #999;
+            border-bottom: 2px solid #999;
+            transform: rotate(45deg);
+            margin-bottom: 2px;
         }
         .collapsed .chevron {
-            transform: rotate(-90deg);
+            transform: rotate(-45deg);
+            margin-bottom: -2px;
         }
         .category-body {
             max-height: 500px;
@@ -379,14 +407,14 @@
 <div class="category-section">
     <div class="category-header">
         <div class="category-header-left">
-            <span>Excellence Detection ✨</span>
+            <span>Excellence Detection</span>
         </div>
         <div class="category-header-right">
-            <div class="section-toggle-buttons">
-                <button class="section-toggle-btn" data-section="excellence" data-action="all-on">All On</button>
-                <button class="section-toggle-btn" data-section="excellence" data-action="all-off">All Off</button>
-            </div>
-            <span class="chevron">▼</span>
+            <label class="section-toggle" title="Toggle all excellence detectors">
+                <input type="checkbox" id="excellenceSectionToggle" checked>
+                <span class="slider"></span>
+            </label>
+            <span class="chevron"></span>
         </div>
     </div>
     <div class="category-body">
@@ -449,11 +477,11 @@
             <span>Basic Detection</span>
         </div>
         <div class="category-header-right">
-            <div class="section-toggle-buttons">
-                <button class="section-toggle-btn" data-section="basic" data-action="all-on">All On</button>
-                <button class="section-toggle-btn" data-section="basic" data-action="all-off">All Off</button>
-            </div>
-            <span class="chevron">▼</span>
+            <label class="section-toggle" title="Toggle all basic detectors">
+                <input type="checkbox" id="basicSectionToggle" checked>
+                <span class="slider"></span>
+            </label>
+            <span class="chevron"></span>
         </div>
     </div>
     <div class="category-body">
@@ -496,11 +524,11 @@
             <span>Advanced Detection</span>
         </div>
         <div class="category-header-right">
-            <div class="section-toggle-buttons">
-                <button class="section-toggle-btn" data-section="advanced" data-action="all-on">All On</button>
-                <button class="section-toggle-btn" data-section="advanced" data-action="all-off">All Off</button>
-            </div>
-            <span class="chevron">▼</span>
+            <label class="section-toggle" title="Toggle all advanced detectors">
+                <input type="checkbox" id="advancedSectionToggle" checked>
+                <span class="slider"></span>
+            </label>
+            <span class="chevron"></span>
         </div>
     </div>
     <div class="category-body">
@@ -553,11 +581,11 @@
             <span>Framing & Rhetoric</span>
         </div>
         <div class="category-header-right">
-            <div class="section-toggle-buttons">
-                <button class="section-toggle-btn" data-section="framing" data-action="all-on">All On</button>
-                <button class="section-toggle-btn" data-section="framing" data-action="all-off">All Off</button>
-            </div>
-            <span class="chevron">▼</span>
+            <label class="section-toggle" title="Toggle all framing detectors">
+                <input type="checkbox" id="framingSectionToggle" checked>
+                <span class="slider"></span>
+            </label>
+            <span class="chevron"></span>
         </div>
     </div>
     <div class="category-body">
@@ -620,11 +648,11 @@
             <span>Manipulation Tactics</span>
         </div>
         <div class="category-header-right">
-            <div class="section-toggle-buttons">
-                <button class="section-toggle-btn" data-section="manipulation" data-action="all-on">All On</button>
-                <button class="section-toggle-btn" data-section="manipulation" data-action="all-off">All Off</button>
-            </div>
-            <span class="chevron">▼</span>
+            <label class="section-toggle" title="Toggle all manipulation detectors">
+                <input type="checkbox" id="manipulationSectionToggle" checked>
+                <span class="slider"></span>
+            </label>
+            <span class="chevron"></span>
         </div>
     </div>
     <div class="category-body">
