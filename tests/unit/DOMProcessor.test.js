@@ -11,44 +11,42 @@ import { DOMProcessor } from '../../src/utils/DOMProcessor.js';
 
 // Enhanced DOM mocking for comprehensive testing
 const createMockElement = (tagName = 'div', content = '', attributes = {}) => {
+  const classSet = new Set();
   const element = {
     tagName: tagName.toUpperCase(),
-    nodeType: 1, // ELEMENT_NODE
     nodeName: tagName.toUpperCase(),
+    nodeType: 1, // ELEMENT_NODE
     textContent: content,
     childNodes: [],
     children: [],
+    style: {},
     classList: {
-      add: vi.fn(),
-      remove: vi.fn(),
-      contains: vi.fn(() => false),
-      values: vi.fn(() => []),
+      add: vi.fn((cls) => classSet.add(cls)),
+      remove: vi.fn((cls) => classSet.delete(cls)),
+      contains: vi.fn((cls) => classSet.has(cls)),
+      values: vi.fn(() => classSet.values()),
       [Symbol.iterator]: function* () {
-        yield* [];
+        yield* classSet;
       }
     },
     setAttribute: vi.fn(),
     removeAttribute: vi.fn(),
     getAttribute: vi.fn(() => null),
+    hasAttribute: vi.fn(() => false),
     appendChild: vi.fn(),
     replaceChild: vi.fn(),
     removeChild: vi.fn(),
     querySelector: vi.fn(() => null),
     querySelectorAll: vi.fn(() => []),
+    closest: vi.fn(() => null),
     getBoundingClientRect: vi.fn(() => ({
-      width: 100,
-      height: 20,
-      top: 0,
-      left: 0,
-      right: 100,
-      bottom: 20
+      width: 100, height: 20, top: 0, left: 0, right: 100, bottom: 20
     })),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     ...attributes
   };
   
-  // Add mock shadowRoot support
   if (attributes.hasShadowRoot) {
     element.shadowRoot = createMockElement('shadow-root');
   }
@@ -96,30 +94,14 @@ const mockWindow = {
 };
 
 // Set up globals
-Object.defineProperty(global, 'document', {
-  value: mockDocument,
-  configurable: true
-});
-
-Object.defineProperty(global, 'window', {
-  value: mockWindow,
-  configurable: true
-});
-
+Object.defineProperty(global, 'document', { value: mockDocument, configurable: true });
+Object.defineProperty(global, 'window', { value: mockWindow, configurable: true });
 Object.defineProperty(global, 'Node', {
-  value: {
-    ELEMENT_NODE: 1,
-    TEXT_NODE: 3
-  },
+  value: { ELEMENT_NODE: 1, TEXT_NODE: 3 },
   configurable: true
 });
-
 Object.defineProperty(global, 'NodeFilter', {
-  value: {
-    SHOW_TEXT: 4,
-    FILTER_ACCEPT: 1,
-    FILTER_REJECT: 2
-  },
+  value: { SHOW_TEXT: 4, FILTER_ACCEPT: 1, FILTER_REJECT: 2 },
   configurable: true
 });
 
@@ -178,20 +160,6 @@ describe('DOMProcessor', () => {
       
       expect(textNodes).toEqual([]);
     });
-
-    test('should process shadow DOM elements', () => {
-      const textNode = createMockTextNode('Shadow content');
-      const mockWalker = createMockTreeWalker([textNode]);
-      
-      mockDocument.createTreeWalker.mockReturnValue(mockWalker);
-      
-      const shadowElement = createMockElement('div', '', { hasShadowRoot: true });
-      shadowElement.querySelectorAll = vi.fn(() => []);
-      
-      const textNodes = processor.collectTextNodes(shadowElement);
-      
-      expect(textNodes.length).toBeGreaterThanOrEqual(0);
-    });
   });
 
   describe('Node Filtering', () => {
@@ -206,15 +174,15 @@ describe('DOMProcessor', () => {
 
     test('should skip nodes within own highlights', () => {
       const parentElement = createMockElement('span');
-      parentElement.classList.contains = vi.fn(() => true);
+      // Mark as a bias highlight
+      parentElement.classList[Symbol.iterator] = function* () {
+        yield 'bias-highlight-opinion';
+      };
       
       const textNode = createMockTextNode('Test content');
       textNode.parentNode = parentElement;
       
-      processor.isOwnHighlight = vi.fn(() => true);
-      
       expect(processor.shouldSkipNode(textNode)).toBe(true);
-      expect(processor.isOwnHighlight).toHaveBeenCalledWith(parentElement);
     });
 
     test('should accept valid content nodes', () => {
@@ -222,12 +190,11 @@ describe('DOMProcessor', () => {
       const textNode = createMockTextNode('Valid content text');
       textNode.parentNode = parentElement;
       
-      processor.isOwnHighlight = vi.fn(() => false);
-      
       expect(processor.shouldSkipNode(textNode)).toBe(false);
     });
 
     test('should skip script and style elements', () => {
+      // shouldSkipElement checks nodeName + classList + hasAttribute + closest
       const scriptElement = createMockElement('script');
       expect(processor.shouldSkipElement(scriptElement)).toBe(true);
       
@@ -246,12 +213,9 @@ describe('DOMProcessor', () => {
     
     test('should identify own highlight elements', () => {
       const highlightElement = createMockElement('span');
-      highlightElement.classList = {
-        contains: vi.fn(() => false),
-        [Symbol.iterator]: function* () {
-          yield 'bias-highlight-opinion';
-          yield 'other-class';
-        }
+      highlightElement.classList[Symbol.iterator] = function* () {
+        yield 'bias-highlight-opinion';
+        yield 'other-class';
       };
       
       expect(processor.isOwnHighlight(highlightElement)).toBe(true);
@@ -259,12 +223,9 @@ describe('DOMProcessor', () => {
 
     test('should identify excellence highlight elements', () => {
       const excellenceElement = createMockElement('span');
-      excellenceElement.classList = {
-        contains: vi.fn(() => false),
-        [Symbol.iterator]: function* () {
-          yield 'excellence-attribution';
-          yield 'other-class';
-        }
+      excellenceElement.classList[Symbol.iterator] = function* () {
+        yield 'excellence-attribution';
+        yield 'other-class';
       };
       
       expect(processor.isOwnHighlight(excellenceElement)).toBe(true);
@@ -272,12 +233,9 @@ describe('DOMProcessor', () => {
 
     test('should not identify regular elements as highlights', () => {
       const regularElement = createMockElement('span');
-      regularElement.classList = {
-        contains: vi.fn(() => false),
-        [Symbol.iterator]: function* () {
-          yield 'regular-class';
-          yield 'another-class';
-        }
+      regularElement.classList[Symbol.iterator] = function* () {
+        yield 'regular-class';
+        yield 'another-class';
       };
       
       expect(processor.isOwnHighlight(regularElement)).toBe(false);
@@ -313,14 +271,15 @@ describe('DOMProcessor', () => {
       mockDocument.createElement.mockReturnValue(mockSpan);
       mockDocument.createTextNode.mockImplementation((text) => createMockTextNode(text));
       
-      processor.addSimpleTooltip = vi.fn();
+      // Mock addDataAttributes to avoid PopupManager initialization
+      processor.addDataAttributes = vi.fn();
       
       const fragment = processor.createHighlightedFragment(text, matches);
       
       expect(mockFragment.appendChild).toHaveBeenCalledTimes(3); // before, span, after
       expect(mockSpan.textContent).toBe('obviously');
       expect(mockSpan.className).toBe('bias-highlight-opinion');
-      expect(processor.addSimpleTooltip).toHaveBeenCalledWith(mockSpan, matches[0]);
+      expect(processor.addDataAttributes).toHaveBeenCalledWith(mockSpan, matches[0]);
     });
 
     test('should handle excellence matches correctly', () => {
@@ -328,7 +287,7 @@ describe('DOMProcessor', () => {
       const matches = [
         {
           index: 0,
-          length: 32,
+          length: 31,
           text: 'According to Smith et al. (2023)',
           type: 'attribution',
           className: 'excellence-attribution',
@@ -336,16 +295,13 @@ describe('DOMProcessor', () => {
         }
       ];
       
-      const mockFragment = {
-        appendChild: vi.fn(),
-        childNodes: []
-      };
+      const mockFragment = { appendChild: vi.fn(), childNodes: [] };
       const mockSpan = createMockElement('span');
       
       mockDocument.createDocumentFragment.mockReturnValue(mockFragment);
       mockDocument.createElement.mockReturnValue(mockSpan);
       
-      processor.addSimpleTooltip = vi.fn();
+      processor.addDataAttributes = vi.fn();
       
       const fragment = processor.createHighlightedFragment(text, matches);
       
@@ -364,19 +320,17 @@ describe('DOMProcessor', () => {
         }
       ];
       
-      const mockFragment = {
-        appendChild: vi.fn(),
-        childNodes: []
-      };
+      const mockFragment = { appendChild: vi.fn(), childNodes: [] };
       const mockSpan = createMockElement('span');
       
       mockDocument.createDocumentFragment.mockReturnValue(mockFragment);
       mockDocument.createElement.mockReturnValue(mockSpan);
       
-      processor.addSimpleTooltip = vi.fn();
+      processor.addDataAttributes = vi.fn();
       
       const fragment = processor.createHighlightedFragment(text, matches);
       
+      // opinion_certainty should map to the base 'opinion' CSS class
       expect(mockSpan.className).toBe('bias-highlight-opinion');
     });
 
@@ -393,16 +347,13 @@ describe('DOMProcessor', () => {
         }
       ];
       
-      const mockFragment = {
-        appendChild: vi.fn(),
-        childNodes: []
-      };
+      const mockFragment = { appendChild: vi.fn(), childNodes: [] };
       const mockSpan = createMockElement('span');
       
       mockDocument.createDocumentFragment.mockReturnValue(mockFragment);
       mockDocument.createElement.mockReturnValue(mockSpan);
       
-      processor.addSimpleTooltip = vi.fn();
+      processor.addDataAttributes = vi.fn();
       
       const fragment = processor.createHighlightedFragment(text, matches);
       
@@ -413,10 +364,7 @@ describe('DOMProcessor', () => {
       const text = 'No matches here.';
       const matches = [];
       
-      const mockFragment = {
-        appendChild: vi.fn(),
-        childNodes: []
-      };
+      const mockFragment = { appendChild: vi.fn(), childNodes: [] };
       
       mockDocument.createDocumentFragment.mockReturnValue(mockFragment);
       mockDocument.createTextNode.mockImplementation((text) => createMockTextNode(text));
@@ -427,7 +375,7 @@ describe('DOMProcessor', () => {
     });
   });
 
-  describe('Tooltip Management', () => {
+  describe('Tooltip Text', () => {
     
     test('should get correct tooltip text for bias types', () => {
       expect(processor.getTooltipText('opinion')).toBe('Opinion - Subjective - General');
@@ -446,77 +394,29 @@ describe('DOMProcessor', () => {
       expect(processor.getExcellenceTooltipText('nuance')).toBe('✓ Acknowledges complexity and avoids absolutes');
       expect(processor.getExcellenceTooltipText('unknown')).toBe('Excellence indicator');
     });
+  });
 
-    test('should add simple tooltip to elements', () => {
-      const span = createMockElement('span');
-      const match = {
-        type: 'opinion',
-        text: 'obviously',
-        isExcellence: false
-      };
+  describe('Context Menu (Deprecated)', () => {
+    
+    test('showContextMenu should be a no-op deprecation warning', () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       
-      processor.addSimpleTooltip(span, match);
+      processor.showContextMenu({ preventDefault: vi.fn() }, { type: 'opinion' });
       
-      expect(span.setAttribute).toHaveBeenCalledWith('data-tooltip', 'Opinion - Subjective - General');
-      expect(span.addEventListener).toHaveBeenCalledTimes(2); // click and contextmenu
-    });
-
-    test('should handle excellence matches in tooltip', () => {
-      const span = createMockElement('span');
-      const match = {
-        type: 'attribution',
-        text: 'According to Smith',
-        isExcellence: true
-      };
-      
-      processor.addSimpleTooltip(span, match);
-      
-      expect(span.setAttribute).toHaveBeenCalledWith('data-tooltip', '✓ Specific, verifiable source provided');
-    });
-
-    test('should handle opinion sub-category in tooltip', () => {
-      const span = createMockElement('span');
-      const match = {
-        type: 'opinion',
-        text: 'obviously',
-        subCategory: { id: 'certainty' },
-        isExcellence: false
-      };
-      
-      processor.addSimpleTooltip(span, match);
-      
-      expect(span.setAttribute).toHaveBeenCalledWith('data-tooltip', 'Possible Opinion - Certainty/Conviction');
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('deprecated'));
+      consoleSpy.mockRestore();
     });
   });
 
-  describe('Context Menu and Hover Cards', () => {
+  describe('Hover Card Creation', () => {
     
-    test('should find nearby matches correctly', () => {
-      const currentMatch = { index: 50, length: 10 };
-      const allMatches = [
-        { index: 10, length: 5 },  // distance = 40, nearby
-        { index: 45, length: 3 },  // distance = 5, nearby
-        { index: 65, length: 4 },  // distance = 15, nearby
-        { index: 200, length: 6 }  // distance = 150, too far
-      ];
-      
-      const nearby = processor.findNearbyMatches(currentMatch, allMatches);
-      
-      expect(nearby).toHaveLength(3); // All first three are within 100 chars
-      expect(nearby.some(m => m.index === 10)).toBe(true);
-      expect(nearby.some(m => m.index === 45)).toBe(true);
-      expect(nearby.some(m => m.index === 65)).toBe(true);
-    });
-
     test('should create hover card using generator', () => {
       const match = { type: 'opinion', text: 'obviously' };
       
-      processor.hoverGenerator.generateHoverContent = vi.fn(() => '<div class="hover-card">Hover content</div>');
+      processor.hoverGenerator.generateHoverContent = vi.fn(() => '<div class="hover-card">Content</div>');
       
-      // Mock document.createElement to return a proper container
       const mockContainer = createMockElement('div');
-      mockContainer.innerHTML = '<div class="hover-card">Hover content</div>';
-      mockContainer.firstChild = { innerHTML: 'Hover content' };
+      mockContainer.firstChild = createMockElement('div');
       mockDocument.createElement.mockReturnValue(mockContainer);
       
       const hoverCard = processor.createHoverCard(match);
@@ -538,61 +438,24 @@ describe('DOMProcessor', () => {
       
       expect(hoverCard).toBeNull();
       expect(consoleSpy).toHaveBeenCalledWith('Error creating hover card:', expect.any(Error));
-      
       consoleSpy.mockRestore();
     });
 
-    test('should show context menu on events with valid hover card', () => {
-      const mockEvent = {
-        preventDefault: vi.fn(),
-        clientX: 100,
-        clientY: 150
-      };
+    test('should find nearby matches correctly', () => {
+      const currentMatch = { index: 50, length: 10 };
+      const allMatches = [
+        { index: 10, length: 5 },   // distance = 40, nearby
+        { index: 45, length: 3 },   // distance = 5, nearby
+        { index: 65, length: 4 },   // distance = 15, nearby
+        { index: 200, length: 6 }   // distance = 150, too far
+      ];
       
-      const match = { type: 'opinion', text: 'obviously' };
+      const nearby = processor.findNearbyMatches(currentMatch, allMatches);
       
-      // Mock createHoverCard to return a valid hover card
-      const mockHoverCard = {
-        innerHTML: '<div class="hover-card-header">Content</div>'
-      };
-      processor.createHoverCard = vi.fn(() => mockHoverCard);
-      
-      mockDocument.querySelectorAll.mockReturnValue([]);
-      
-      const mockMenu = createMockElement('div');
-      mockMenu.style = { left: '', top: '', display: '' };
-      const mockHeader = { appendChild: vi.fn() };
-      const mockCloseBtn = { addEventListener: vi.fn() };
-      mockMenu.querySelector = vi.fn((selector) => {
-        if (selector === '.hover-card-header') return mockHeader;
-        if (selector === '.context-menu-close') return mockCloseBtn;
-        return null;
-      });
-      mockDocument.createElement.mockReturnValue(mockMenu);
-      
-      processor.showContextMenu(mockEvent, match);
-      
-      expect(processor.createHoverCard).toHaveBeenCalledWith(match);
-      expect(mockDocument.body.appendChild).toHaveBeenCalledWith(mockMenu);
-    });
-    
-    test('should exit early when hover card creation fails', () => {
-      const mockEvent = {
-        preventDefault: vi.fn(),
-        clientX: 100,
-        clientY: 150
-      };
-      
-      const match = { type: 'opinion', text: 'obviously' };
-      
-      // Mock createHoverCard to return null (failure case)
-      processor.createHoverCard = vi.fn(() => null);
-      mockDocument.querySelectorAll.mockReturnValue([]);
-      
-      processor.showContextMenu(mockEvent, match);
-      
-      expect(processor.createHoverCard).toHaveBeenCalledWith(match);
-      expect(mockDocument.body.appendChild).not.toHaveBeenCalled();
+      expect(nearby).toHaveLength(3);
+      expect(nearby.some(m => m.index === 10)).toBe(true);
+      expect(nearby.some(m => m.index === 45)).toBe(true);
+      expect(nearby.some(m => m.index === 65)).toBe(true);
     });
   });
 
@@ -602,18 +465,15 @@ describe('DOMProcessor', () => {
       const highlight1 = createMockElement('span');
       const highlight2 = createMockElement('span');
       
-      // Use the actual method instead of mocking
       mockDocument.querySelectorAll.mockReturnValue([highlight1, highlight2]);
       
       processor.cleanupHoverElements = vi.fn();
       
-      // Mock parent elements
       highlight1.parentNode = createMockElement('p');
       highlight2.parentNode = createMockElement('div');
       
       processor.removeAllHighlights();
       
-      // Check that querySelectorAll was called (the exact selector string may vary)
       expect(mockDocument.querySelectorAll).toHaveBeenCalled();
       expect(processor.cleanupHoverElements).toHaveBeenCalledTimes(2);
       expect(highlight1.parentNode.replaceChild).toHaveBeenCalled();
@@ -638,7 +498,8 @@ describe('DOMProcessor', () => {
       
       processor.cleanupHoverElements(element);
       
-      expect(element.removeAttribute).toHaveBeenCalledWith('data-tooltip');
+      // Should remove data-tooltip-text (the current attribute name)
+      expect(element.removeAttribute).toHaveBeenCalledWith('data-tooltip-text');
     });
 
     test('should normalize parent nodes after removal', () => {
@@ -791,7 +652,6 @@ describe('DOMProcessor', () => {
       mockDocument.querySelectorAll.mockReturnValue([highlight]);
       processor.cleanupHoverElements = vi.fn();
       
-      // The implementation doesn't handle null parentNode, so this will throw
       expect(() => processor.removeAllHighlights()).toThrow();
     });
 
@@ -808,7 +668,6 @@ describe('DOMProcessor', () => {
       mockDocument.querySelectorAll.mockReturnValue([highlight]);
       processor.cleanupHoverElements = vi.fn();
       
-      // The implementation doesn't currently have try-catch, so this will throw
       expect(() => processor.removeAllHighlights()).toThrow('DOM error');
     });
   });

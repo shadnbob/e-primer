@@ -71,8 +71,8 @@
             "success is hard work",
             "the problem is immigrants",
             "happiness is money",
-            "violence is never the answer",
-            "government is the enemy"
+            "the electron is a particle.",
+            "the government is corrupt"
           ],
           acceptable: [
             "water is H2O",
@@ -3196,6 +3196,25 @@
         element.removeAttribute("data-portrayal");
       }
     }
+    // Remove specific excellence type highlights
+    removeExcellenceHighlights(type) {
+      const selector = `.${this.excellenceClassPrefix}${type}`;
+      const highlights = document.querySelectorAll(selector);
+      this.processedParents.clear();
+      highlights.forEach((highlight) => {
+        this.cleanupHoverElements(highlight);
+        const parent = highlight.parentNode;
+        const textNode = document.createTextNode(highlight.textContent);
+        parent.replaceChild(textNode, highlight);
+        this.processedParents.add(parent);
+      });
+      this.processedParents.forEach((parent) => {
+        if (parent && parent.normalize) {
+          parent.normalize();
+        }
+      });
+      this.processedParents.clear();
+    }
     // Remove specific type of highlights
     removeSpecificHighlights(type) {
       const selector = `.${this.highlightClassPrefix}${type}`;
@@ -3932,6 +3951,8 @@
         return this.createEmptyStats();
       }
       this.performanceMonitor.start("document-analysis");
+      const hadObserver = !!this.observer;
+      this.disconnectObserver();
       try {
         this.domProcessor.removeAllHighlights();
         this.resetStats();
@@ -3947,10 +3968,16 @@
         }
         const duration = this.performanceMonitor.end("document-analysis");
         console.log(`Analysis completed in ${duration.toFixed(2)}ms`);
+        if (hadObserver) {
+          this.setupMutationObserver();
+        }
         return this.stats;
       } catch (error) {
         const errorMessage = error && error.message ? error.message : String(error);
         console.error("Document analysis failed:", errorMessage);
+        if (hadObserver) {
+          this.setupMutationObserver();
+        }
         return this.createEmptyStats();
       }
     }
@@ -4135,9 +4162,9 @@
       this.settings = { ...newSettings };
       if (oldSettings.enableAnalysis !== newSettings.enableAnalysis) {
         if (!newSettings.enableAnalysis) {
+          this.disconnectObserver();
           this.domProcessor.removeAllHighlights();
           this.resetStats();
-          this.disconnectObserver();
           return;
         } else {
           await this.analyzeDocument();
@@ -4156,15 +4183,32 @@
         const settingKey = detector.settingKey;
         if (oldSettings[settingKey] !== newSettings[settingKey]) {
           if (!newSettings[settingKey]) {
+            this.disconnectObserver();
             this.domProcessor.removeSpecificHighlights(detector.id);
             this.stats[detector.statKey] = 0;
+            this.setupMutationObserver();
+          } else {
+            needsReanalysis = true;
+          }
+        }
+      }
+      for (const [key, config] of Object.entries(BiasConfig.EXCELLENCE_TYPES)) {
+        const settingKey = config.settingKey;
+        if (oldSettings[settingKey] !== newSettings[settingKey]) {
+          if (!newSettings[settingKey]) {
+            this.disconnectObserver();
+            this.domProcessor.removeExcellenceHighlights(config.id);
+            this.stats[config.statKey] = 0;
+            this.setupMutationObserver();
           } else {
             needsReanalysis = true;
           }
         }
       }
       if (needsReanalysis) {
+        this.disconnectObserver();
         await this.analyzeDocumentPreservingDisabled();
+        this.setupMutationObserver();
       }
     }
     // Analyze document while preserving stats for disabled detectors
@@ -4173,6 +4217,11 @@
       for (const [key, detector] of this.compiledDetectors) {
         if (!detector.isEnabled()) {
           preservedStats[detector.statKey] = this.stats[detector.statKey];
+        }
+      }
+      for (const [key, config] of Object.entries(BiasConfig.EXCELLENCE_TYPES)) {
+        if (this.settings[config.settingKey] === false) {
+          preservedStats[config.statKey] = this.stats[config.statKey];
         }
       }
       await this.analyzeDocument();
@@ -4288,6 +4337,7 @@
       return await this.analyzeDocument();
     }
     clearHighlights() {
+      this.disconnectObserver();
       this.domProcessor.removeAllHighlights();
       this.resetStats();
     }
@@ -4385,14 +4435,12 @@
       console.log("Content script received new settings:", request.settings);
       const validatedSettings = BiasConfig.validateSettings(request.settings);
       await biasDetector.updateSettings(validatedSettings);
-      setTimeout(() => {
-        const stats = biasDetector.getStats();
-        sendResponse({
-          success: true,
-          stats,
-          message: "Settings updated successfully"
-        });
-      }, 100);
+      const stats = biasDetector.getStats();
+      sendResponse({
+        success: true,
+        stats,
+        message: "Settings updated successfully"
+      });
     }
     function handleGetStats(sendResponse) {
       const stats = biasDetector.getStats();
@@ -4400,18 +4448,27 @@
       sendResponse(stats);
     }
     async function handleForceAnalyze(sendResponse) {
-      console.log("Force analyze requested");
+      console.log("Force analyze requested - enabling analysis");
       try {
+        biasDetector.disconnectObserver();
         biasDetector.clearHighlights();
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        biasDetector.settings.enableAnalysis = true;
+        chrome.storage.sync.set({ enableAnalysis: true });
+        await new Promise((resolve) => setTimeout(resolve, 50));
         const stats = await biasDetector.forceAnalyze();
         biasDetector.setupMutationObserver();
         sendResponse({
           success: true,
           stats,
+          analysisEnabled: true,
           message: "Analysis completed successfully"
         });
       } catch (error) {
+        console.error("Force analyze failed:", error);
+        try {
+          biasDetector.setupMutationObserver();
+        } catch (e) {
+        }
         sendResponse({
           success: false,
           error: error.message
@@ -4419,13 +4476,17 @@
       }
     }
     function handleClearHighlights(sendResponse) {
-      console.log("Clear highlights requested");
+      console.log("Clear highlights requested - disabling analysis");
+      biasDetector.disconnectObserver();
       biasDetector.clearHighlights();
+      biasDetector.settings.enableAnalysis = false;
+      chrome.storage.sync.set({ enableAnalysis: false });
       const stats = biasDetector.getStats();
       sendResponse({
         success: true,
         stats,
-        message: "Highlights cleared successfully"
+        analysisEnabled: false,
+        message: "Highlights cleared and analysis disabled"
       });
     }
     function handleGetPerformanceMetrics(sendResponse) {

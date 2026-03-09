@@ -19,7 +19,7 @@ export default defineConfig({
       include: ['src/**/*'],
       exclude: [
         'src/**/*.test.js',
-        'src/**/*.cjs', // We'll remove these soon
+        'src/**/*.cjs',
         'node_modules/**'
       ]
     },

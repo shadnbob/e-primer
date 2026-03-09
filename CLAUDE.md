@@ -4,13 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the E-Prime Bias Detector, a Chrome extension that detects biased language patterns in web content using E-Prime principles and advanced linguistic analysis. The extension identifies 14 different types of linguistic bias patterns and includes an excellence detection system that highlights good writing practices.
+This is the E-Prime Bias Detector, a browser extension that detects biased language patterns in web content using E-Prime principles and advanced linguistic analysis. The extension identifies 14 different types of linguistic bias patterns and includes an excellence detection system that highlights good writing practices.
 
 ## Development Commands
 
-- **Build**: `npm run build` - Builds the extension for production
-- **Watch**: `npm run watch` - Builds and watches for changes during development  
+### Build Commands
+- **Build Chrome**: `npm run build:chrome` - Builds Chrome extension to `/dist`
+- **Build Firefox**: `npm run build:firefox` - Builds Firefox extension to `/dist-firefox`
+- **Build All**: `npm run build:all` - Builds both Chrome and Firefox versions
+- **Build (Default)**: `npm run build` - Builds Chrome extension for production
+- **Watch Chrome**: `npm run watch:chrome` - Builds and watches Chrome version during development
+- **Watch (Default)**: `npm run watch` - Alias for Chrome watch mode
 - **Development**: `npm run dev` - Alias for watch mode
+
+### Testing Commands
 - **Test**: `npm test` - Run comprehensive test suite with Vitest
 - **Test Coverage**: `npm run test:coverage` - Generate coverage reports
 - **Test Watch**: `npm run test:watch` - Auto-run tests on file changes
@@ -19,13 +26,20 @@ This is the E-Prime Bias Detector, a Chrome extension that detects biased langua
 
 ## Build System
 
-The project uses a modern ES6 module architecture with esbuild for bundling:
+The project uses a modern ES6 module architecture with esbuild for multi-target bundling:
 
+### Multi-Target Support
+- **Chrome Extension**: Uses Manifest V3, outputs to `/dist`
+- **Firefox Extension**: Uses Manifest V2, outputs to `/dist-firefox`
+- **Build Script**: `build.js` handles target selection, bundling, static file copying, and manifest updates
+- **Target Selection**: `--target=chrome|firefox|all` parameter controls build output
+
+### Build Configuration
 - **Entry Point**: `src/content/content-script.js`
-- **Output**: `dist/content.js` (bundled)
-- **Build Script**: `build.js` handles bundling, static file copying, and manifest updates
+- **Chrome Output**: `dist/content.js` (Manifest V3)
+- **Firefox Output**: `dist-firefox/content.js` (Manifest V2)
 - **Source Maps**: Generated for debugging during development
-- **Static Files**: `manifest.json`, `popup.html`, `popup.js`, `styles.css`, `info.html`, and `images/` are copied to `dist/`
+- **Static Files**: Appropriate manifest, `popup.html`, `popup.js`, `styles.css`, `info.html`, and `images/` copied to target directories
 
 ## Architecture
 
@@ -120,13 +134,22 @@ The project has a comprehensive automated test suite using Vitest. See `tests/RE
 - `npm run test:coverage` - Coverage report  
 - `npm run test:watch` - Auto-run on changes
 
-## Chrome Extension Loading
+## Browser Extension Loading
 
-After building, load the extension in Chrome:
+### Chrome Extension Loading
+After building with `npm run build:chrome`:
 1. Navigate to `chrome://extensions/`
 2. Enable "Developer mode"
 3. Click "Load unpacked" and select the `dist/` directory
 4. The extension will be available in the browser toolbar
+
+### Firefox Extension Loading
+After building with `npm run build:firefox`:
+1. Navigate to `about:debugging`
+2. Click "This Firefox"
+3. Click "Load Temporary Add-on"
+4. Select the `dist-firefox/manifest.json` file
+5. The extension will be available in the browser toolbar
 
 ## Important File Locations
 
