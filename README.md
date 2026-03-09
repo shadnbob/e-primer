@@ -8,6 +8,35 @@ Most people consume written content passively. News articles, blog posts, social
 
 E-Prime Bias Detector makes these patterns visible. It doesn't judge content as "good" or "bad" — it highlights the linguistic structures that either support or undermine clear, honest communication, and lets you decide what to make of them.
 
+## Using the Extension
+
+Once installed, the extension runs automatically on every web page. Highlighted words appear inline — color-coded by category — and clicking any highlighted word opens an informational popup explaining what was detected and why it matters.
+
+For example, clicking a highlighted instance of "everyone" produces a popup like this:
+
+> **Absolute Statements** — Moderate
+>
+> **"everyone"**
+>
+> Absolute terms that rarely reflect reality accurately
+>
+> **When to be concerned:**
+> When used for opinions, complex social issues, or persuasion
+>
+> **When it's acceptable:**
+> For mathematical facts, scientific laws, logical definitions
+>
+> **Look for:**
+> Is this factually absolute? Is this about a complex topic? Used for emphasis or fact? Are there any exceptions to this claim?
+>
+> **Examples:**
+> *Concerning:* "all politicians are corrupt," "everyone knows this," "nobody cares about the environment"
+> *Acceptable:* "all triangles have three sides," "every participant signed consent," "never mix these chemicals"
+
+Each detection category provides this kind of contextual guidance — not just flagging the word, but helping you evaluate whether the usage is genuinely problematic or perfectly reasonable in context. The extension doesn't tell you something is wrong; it asks you to look more closely.
+
+The popup in the browser toolbar gives you controls for toggling individual detection categories on and off, switching between analysis modes (problems only, excellence only, or balanced), and viewing real-time statistics for the current page. Section toggles let you enable or disable entire categories at once.
+
 ## The Theory Behind the Detection
 
 The extension draws on several overlapping traditions in linguistics, rhetoric, and media literacy. Each detection category targets a specific way language can mislead — or demonstrate integrity.
