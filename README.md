@@ -274,4 +274,4 @@ The extension runs as a content script on every web page. On load:
 
 ## License
 
-To be determined — evaluating open-source licenses that best serve the educational mission of this project.
+This project is licensed under the [GNU General Public License v3.0](LICENSE.md).
