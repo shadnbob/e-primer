@@ -384,17 +384,17 @@
         }
 
         /* --- EXCELLENCE --- */
-        .excellence-section {
+        .exc-section {
             padding: 100px 40px;
             background: var(--paper);
         }
 
-        .excellence-inner {
+        .exc-inner {
             max-width: 900px;
             margin: 0 auto;
         }
 
-        .excellence-grid {
+        .exc-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
@@ -522,10 +522,10 @@
         /* --- RESPONSIVE --- */
         @media (max-width: 640px) {
             .hero { padding: 60px 24px; min-height: 80vh; }
-            .demo-section, .theory-section, .excellence-section, .install-section { padding: 60px 24px; }
+            .demo-section, .theory-section, .exc-section, .install-section { padding: 60px 24px; }
             .demo-content { padding: 24px; }
             .demo-legend { padding: 12px 24px 20px; }
-            .category-grid, .excellence-grid, .install-steps { grid-template-columns: 1fr; }
+            .category-grid, .exc-grid, .install-steps { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -696,15 +696,15 @@
 </section>
 
 <!-- EXCELLENCE -->
-<section class="excellence-section" id="excellence">
-    <div class="excellence-inner">
+<section class="exc-section" id="exc">
+    <div class="exc-inner">
         <div class="section-label">The Other Side</div>
         <h2 class="section-title">What good writing looks like.</h2>
         <p class="section-intro">
             Bias detection alone creates cynicism. The excellence system shows what responsible, intellectually honest writing actually looks like &mdash; so you can recognize and reward it.
         </p>
 
-        <div class="excellence-grid" data-skip-analysis="true">
+        <div class="exc-grid" data-skip-analysis="true">
             <div class="exc-card">
                 <h3>Clear Attribution</h3>
                 <p>Named sources, dates, publication venues, sample sizes. Verifiable claims you can actually check.</p>
@@ -1046,7 +1046,7 @@
 
         // Scale font size for long phrases vs single words
         var wordEl = document.getElementById('popupWord');
-        wordEl.style.fontSize = word.length > 30 ? '15px' : '22px';
+        wordEl.style.fontSize = word.length > 20 ? '15px' : '22px';
         wordEl.style.background = isExc ? '#f0f7f2' : '#fafaf8';
         document.getElementById('popupDesc').textContent = info.desc;
 
