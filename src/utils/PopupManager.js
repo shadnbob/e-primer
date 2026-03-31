@@ -84,6 +84,9 @@ export class PopupManager {
         document.addEventListener('click', (e) => {
             const target = e.target.closest('[class*="bias-highlight-"], [class*="excellence-"]');
             if (target) {
+                // Don't intercept clicks inside data-skip-analysis containers
+                if (target.closest('[data-skip-analysis]')) return;
+                
                 e.preventDefault();
                 e.stopPropagation();
                 this.show(target, e);
@@ -97,6 +100,9 @@ export class PopupManager {
         document.addEventListener('contextmenu', (e) => {
             const target = e.target.closest('[class*="bias-highlight-"], [class*="excellence-"]');
             if (target) {
+                // Don't intercept inside data-skip-analysis containers
+                if (target.closest('[data-skip-analysis]')) return;
+                
                 e.preventDefault();
                 this.removeHighlight(target);
             }

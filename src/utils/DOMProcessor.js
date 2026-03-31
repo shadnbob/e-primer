@@ -58,6 +58,11 @@ export class DOMProcessor {
             return true;
         }
 
+        // Skip nodes inside elements marked with data-skip-analysis
+        if (parent && parent.closest && parent.closest('[data-skip-analysis]')) {
+            return true;
+        }
+
         return false;
     }
 

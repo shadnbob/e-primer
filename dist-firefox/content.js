@@ -2714,6 +2714,8 @@
       document.addEventListener("click", (e) => {
         const target = e.target.closest('[class*="bias-highlight-"], [class*="excellence-"]');
         if (target) {
+          if (target.closest("[data-skip-analysis]"))
+            return;
           e.preventDefault();
           e.stopPropagation();
           this.show(target, e);
@@ -2724,6 +2726,8 @@
       document.addEventListener("contextmenu", (e) => {
         const target = e.target.closest('[class*="bias-highlight-"], [class*="excellence-"]');
         if (target) {
+          if (target.closest("[data-skip-analysis]"))
+            return;
           e.preventDefault();
           this.removeHighlight(target);
         }
@@ -2996,6 +3000,9 @@
         return true;
       }
       if (parent && this.shouldSkipElement(parent)) {
+        return true;
+      }
+      if (parent && parent.closest && parent.closest("[data-skip-analysis]")) {
         return true;
       }
       return false;

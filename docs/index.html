@@ -592,7 +592,7 @@
             <p class="section-intro" style="margin-bottom: 24px;">
                 Click any highlight to see contextual guidance &mdash; not just what was detected, but how to evaluate whether it matters:
             </p>
-            <div class="popup-card">
+            <div class="popup-card" data-skip-analysis="true">
                 <h4>Absolute Statement</h4>
                 <div class="popup-severity">Moderate</div>
                 <div class="popup-word">"everyone"</div>
@@ -619,7 +619,7 @@
             Each category targets a specific way language can mislead or demonstrate integrity. The extension doesn't assume any pattern is inherently bad &mdash; it makes it visible so you can decide.
         </p>
 
-        <div class="category-grid">
+        <div class="category-grid" data-skip-analysis="true">
             <div class="cat-group-label">Basic Detection</div>
 
             <div class="cat-card">
@@ -704,7 +704,7 @@
             Bias detection alone creates cynicism. The excellence system shows what responsible, intellectually honest writing actually looks like &mdash; so you can recognize and reward it.
         </p>
 
-        <div class="excellence-grid">
+        <div class="excellence-grid" data-skip-analysis="true">
             <div class="exc-card">
                 <h3>Clear Attribution</h3>
                 <p>Named sources, dates, publication venues, sample sizes. Verifiable claims you can actually check.</p>
@@ -1042,6 +1042,10 @@
         document.getElementById('popupType').style.color = info.color;
         document.getElementById('popupSeverity').textContent = info.severity;
         document.getElementById('popupWord').textContent = '\u201c' + word + '\u201d';
+
+        // Scale font size for long phrases vs single words
+        var wordEl = document.getElementById('popupWord');
+        wordEl.style.fontSize = word.length > 20 ? '15px' : '22px';
         document.getElementById('popupDesc').textContent = info.desc;
 
         var bodyHTML = '';
