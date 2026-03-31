@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Prime Bias Detector</title>
+    <meta name="description" content="A browser extension that detects biased language patterns in web content using E-Prime principles and linguistic analysis.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --ink: #1a1a1a;
+            --paper: #f6f4f0;
+            --paper-warm: #eee9e0;
+            --accent: #c44b2b;
+            --accent-soft: #e8d5cc;
+            --green: #2d7a4f;
+            --green-soft: #d4e8dc;
+            --blue-gray: #5a6b7a;
+            --muted: #8a8078;
+            --rule: #d4cfc7;
+            --opinion: #ff8c00;
+            --tobe: #87ceeb;
+            --absolute: #ff69b4;
+            --passive: #800080;
+            --weasel: #b8860b;
+            --excellence: #28a745;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            background: var(--paper);
+            line-height: 1.7;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- HEADER --- */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 40px;
+            background: var(--ink);
+            color: var(--paper);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(196,75,43,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-eyebrow {
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-family: 'Newsreader', serif;
+            font-size: clamp(42px, 6vw, 72px);
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 32px;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            line-height: 1.7;
+            color: #b0aaa0;
+            max-width: 640px;
+            margin-bottom: 48px;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 6px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(196,75,43,0.3);
+        }
+
+        .hero-cta svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* --- DEMO SECTION --- */
+        .demo-section {
+            padding: 100px 40px;
+            background: var(--paper);
+        }
+
+        .demo-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-family: 'Newsreader', serif;
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-intro {
+            font-size: 18px;
+            color: var(--blue-gray);
+            max-width: 640px;
+            margin-bottom: 48px;
+            line-height: 1.7;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 12px 48px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        .demo-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 20px;
+            background: #f8f7f5;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .demo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--rule);
+        }
+
+        .demo-url {
+            flex: 1;
+            margin-left: 8px;
+            padding: 6px 14px;
+            background: white;
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid var(--rule);
+        }
+
+        .demo-content {
+            padding: 40px;
+            font-family: 'Newsreader', serif;
+            font-size: 19px;
+            line-height: 1.8;
+        }
+
+        .demo-content p {
+            margin-bottom: 20px;
+        }
+
+        .hl {
+            padding: 2px 4px;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            transition: filter 0.15s;
+        }
+
+        .hl:hover { filter: brightness(0.92); }
+
+        .hl-opinion { background: rgba(255,140,0,0.25); border-bottom: 2px solid var(--opinion); }
+        .hl-tobe { background: rgba(135,206,235,0.25); border-bottom: 2px solid var(--tobe); }
+        .hl-absolute { background: rgba(255,105,180,0.25); border-bottom: 2px solid var(--absolute); }
+        .hl-weasel { background: rgba(184,134,11,0.25); border-bottom: 2px solid var(--weasel); }
+        .hl-excellence { background: rgba(40,167,69,0.2); border-bottom: 2px solid var(--excellence); }
+
+        .demo-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 16px 40px 24px;
+            border-top: 1px solid var(--rule);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        /* --- POPUP PREVIEW --- */
+        .popup-preview {
+            margin-top: 48px;
+        }
+
+        .popup-card {
+            max-width: 420px;
+            background: white;
+            border-radius: 10px;
+            padding: 28px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+            border-left: 4px solid var(--absolute);
+        }
+
+        .popup-card h4 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--absolute);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .popup-card .popup-severity {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .popup-card .popup-word {
+            font-family: 'Newsreader', serif;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .popup-card .popup-desc {
+            color: var(--blue-gray);
+            font-size: 15px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .popup-guidance {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .popup-guidance dt {
+            font-weight: 600;
+            margin-top: 12px;
+            margin-bottom: 2px;
+        }
+
+        .popup-guidance dt:first-child { margin-top: 0; }
+
+        .popup-guidance dd {
+            color: var(--blue-gray);
+            margin-left: 0;
+        }
+
+        /* --- THEORY / CATEGORIES --- */
+        .theory-section {
+            padding: 100px 40px;
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        .theory-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .theory-section .section-label { color: var(--accent); }
+
+        .theory-section .section-intro {
+            color: #a09a90;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 48px;
+        }
+
+        .cat-card {
+            padding: 28px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .cat-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.07);
+        }
+
+        .cat-card-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .cat-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .cat-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #a09a90;
+        }
+
+        .cat-group-label {
+            grid-column: 1 / -1;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 600;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin-top: 8px;
+        }
+
+        .cat-group-label:first-child {
+            border-top: none;
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        /* --- EXCELLENCE --- */
+        .excellence-section {
+            padding: 100px 40px;
+            background: var(--paper);
+        }
+
+        .excellence-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .excellence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 48px;
+        }
+
+        .exc-card {
+            padding: 28px;
+            border-radius: 10px;
+            background: white;
+            border: 1px solid var(--rule);
+            border-left: 4px solid var(--green);
+        }
+
+        .exc-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--green);
+        }
+
+        .exc-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--blue-gray);
+        }
+
+        .exc-card .exc-example {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: var(--green-soft);
+            border-radius: 6px;
+            font-size: 13px;
+            font-style: italic;
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        /* --- INSTALL --- */
+        .install-section {
+            padding: 100px 40px;
+            background: var(--paper-warm);
+        }
+
+        .install-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .install-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 28px;
+            margin-top: 48px;
+        }
+
+        .install-step {
+            padding: 28px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid var(--rule);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--ink);
+            color: var(--paper);
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .install-step h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .install-step p {
+            font-size: 14px;
+            color: var(--blue-gray);
+            line-height: 1.6;
+        }
+
+        .install-step code {
+            display: block;
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: var(--ink);
+            color: var(--paper);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        /* --- FOOTER --- */
+        .site-footer {
+            padding: 60px 40px;
+            background: var(--ink);
+            color: #706a60;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .site-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer a:hover { text-decoration: underline; }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 640px) {
+            .hero { padding: 60px 24px; min-height: 80vh; }
+            .demo-section, .theory-section, .excellence-section, .install-section { padding: 60px 24px; }
+            .demo-content { padding: 24px; }
+            .demo-legend { padding: 12px 24px 20px; }
+            .category-grid, .excellence-grid, .install-steps { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-eyebrow">Browser Extension for Chrome &amp; Firefox</div>
+        <h1>Read between<br>the lines.</h1>
+        <p class="hero-subtitle">
+            E-Prime Bias Detector highlights the linguistic patterns that shape how you interpret information &mdash; opinion disguised as fact, vague sourcing, emotional manipulation &mdash; alongside markers of quality writing. The goal is sharper reading, not prescribed conclusions.
+        </p>
+        <a href="https://github.com/shadnbob/e-primer" class="hero-cta">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            View on GitHub
+        </a>
+    </div>
+</section>
+
+<!-- INTERACTIVE DEMO -->
+<section class="demo-section" id="demo">
+    <div class="demo-inner">
+        <div class="section-label">See It In Action</div>
+        <h2 class="section-title">Every word is a choice.<br>This tool makes those choices visible.</h2>
+        <p class="section-intro">
+            The extension runs on any web page, highlighting patterns in real time. Here's what a typical analysis looks like:
+        </p>
+
+        <div class="demo-card">
+            <div class="demo-toolbar">
+                <div class="demo-dot"></div>
+                <div class="demo-dot"></div>
+                <div class="demo-dot"></div>
+                <div class="demo-url">example-news.com/article/policy-analysis</div>
+            </div>
+            <div class="demo-content">
+                <p>
+                    <span class="hl hl-weasel">Experts say</span> the new policy
+                    <span class="hl hl-tobe">is</span>
+                    <span class="hl hl-opinion">clearly</span> a step in the right direction.
+                    <span class="hl hl-absolute">Everyone</span>
+                    <span class="hl hl-opinion">agrees</span> that change
+                    <span class="hl hl-tobe">was</span> long overdue.
+                </p>
+                <p>
+                    <span class="hl hl-excellence">According to Dr. Chen et al. (2024)</span>,
+                    the data <span class="hl hl-excellence">suggests a possible correlation</span>,
+                    though <span class="hl hl-excellence">important limitations include</span>
+                    the sample size and geographic scope.
+                </p>
+            </div>
+            <div class="demo-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--opinion)"></div> Opinion</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--tobe)"></div> To-Be Verb</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--absolute)"></div> Absolute</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--weasel)"></div> Weasel Word</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--excellence)"></div> Excellence</div>
+            </div>
+        </div>
+
+        <!-- Popup Preview -->
+        <div class="popup-preview">
+            <p class="section-intro" style="margin-bottom: 24px;">
+                Click any highlight to see contextual guidance &mdash; not just what was detected, but how to evaluate whether it matters:
+            </p>
+            <div class="popup-card">
+                <h4>Absolute Statement</h4>
+                <div class="popup-severity">Moderate</div>
+                <div class="popup-word">"everyone"</div>
+                <p class="popup-desc">Absolute terms that rarely reflect reality accurately</p>
+                <dl class="popup-guidance">
+                    <dt>When to be concerned:</dt>
+                    <dd>When used for opinions, complex social issues, or persuasion</dd>
+                    <dt>When it's acceptable:</dt>
+                    <dd>For mathematical facts, scientific laws, logical definitions</dd>
+                    <dt>Look for:</dt>
+                    <dd>Is this factually absolute? Is this about a complex topic? Used for emphasis or fact? Are there any exceptions?</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DETECTION CATEGORIES -->
+<section class="theory-section" id="categories">
+    <div class="theory-inner">
+        <div class="section-label">19 Detection Categories</div>
+        <h2 class="section-title">What the extension looks for &mdash; and why.</h2>
+        <p class="section-intro">
+            Each category targets a specific way language can mislead or demonstrate integrity. The extension doesn't assume any pattern is inherently bad &mdash; it makes it visible so you can decide.
+        </p>
+
+        <div class="category-grid">
+            <div class="cat-group-label">Basic Detection</div>
+
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:var(--opinion)"></span> Opinion Words</h3>
+                <p>Subjective language and evaluative terms like "obviously," "terrible," "brilliant" &mdash; judgment embedded in description.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:var(--tobe)"></span> To-Be Verbs</h3>
+                <p>E-Prime violations that can create false equivalencies. "This policy is a failure" collapses complex evaluation into identity.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:var(--absolute)"></span> Absolutes</h3>
+                <p>Universal claims like "everyone," "always," "never" &mdash; sweeping statements that are almost never literally true.</p>
+            </div>
+
+            <div class="cat-group-label">Advanced Detection</div>
+
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:var(--passive)"></span> Passive Voice</h3>
+                <p>Constructions that obscure who is responsible. "Mistakes were made" hides who made them.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:var(--weasel)"></span> Weasel Words</h3>
+                <p>Vague attributions like "experts say," "studies show," "people are saying" &mdash; authority without accountability.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#ff1493"></span> Presuppositions</h3>
+                <p>Hidden assumptions smuggled into statements as established fact. The embedded premise goes unquestioned.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#4169e1"></span> Probability Language</h3>
+                <p>Words that shape how likely we perceive events to be, often misaligning perception with statistical reality.</p>
+            </div>
+
+            <div class="cat-group-label">Framing &amp; Rhetoric</div>
+
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#dc143c"></span> War Metaphors</h3>
+                <p>Militaristic language applied to non-military topics. Framing everything as a fight constrains how we think about solutions.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#008080"></span> Minimizers</h3>
+                <p>Language that downplays significance: "merely," "just," "only." Distorts scale by making things seem smaller than they are.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#ff4500"></span> Maximizers</h3>
+                <p>Exaggeration and hyperbole: "absolutely," "the greatest," "unprecedented." Emphasis substituted for evidence.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#4b0082"></span> False Balance</h3>
+                <p>Presenting two positions as equally valid when evidence strongly favors one. Creates artificial equivalence.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#006400"></span> Euphemisms</h3>
+                <p>Softening language that obscures harsh realities. "Collateral damage" for civilian deaths, "downsizing" for layoffs.</p>
+            </div>
+
+            <div class="cat-group-label">Manipulation Tactics</div>
+
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#ff7f50"></span> Emotional Manipulation</h3>
+                <p>Language designed to bypass rational evaluation and trigger emotional responses instead of analysis.</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#800000"></span> Gaslighting</h3>
+                <p>Phrases that undermine confidence in perception: "you're overreacting," "that never happened."</p>
+            </div>
+            <div class="cat-card">
+                <h3><span class="cat-card-dot" style="background:#9400d3"></span> False Dilemmas</h3>
+                <p>Presenting complex situations as binary choices: "you're either with us or against us." Reality is rarely that simple.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EXCELLENCE -->
+<section class="excellence-section" id="excellence">
+    <div class="excellence-inner">
+        <div class="section-label">The Other Side</div>
+        <h2 class="section-title">What good writing looks like.</h2>
+        <p class="section-intro">
+            Bias detection alone creates cynicism. The excellence system shows what responsible, intellectually honest writing actually looks like &mdash; so you can recognize and reward it.
+        </p>
+
+        <div class="excellence-grid">
+            <div class="exc-card">
+                <h3>Clear Attribution</h3>
+                <p>Named sources, dates, publication venues, sample sizes. Verifiable claims you can actually check.</p>
+                <div class="exc-example">"According to Smith et al. (2024), a study of 15,000 participants found..."</div>
+            </div>
+            <div class="exc-card">
+                <h3>Nuanced Language</h3>
+                <p>Acknowledging complexity rather than pretending certainty. "The evidence suggests" rather than "this proves."</p>
+                <div class="exc-example">"The data might indicate a trend, though alternative explanations exist."</div>
+            </div>
+            <div class="exc-card">
+                <h3>Transparency</h3>
+                <p>Being upfront about limitations, perspective, and uncertainty. Saying "in my opinion" when it is one.</p>
+                <div class="exc-example">"Important limitations include the sample size and geographic scope."</div>
+            </div>
+            <div class="exc-card">
+                <h3>Constructive Discourse</h3>
+                <p>Building on others' ideas, acknowledging valid counterpoints, inviting dialogue rather than shutting it down.</p>
+                <div class="exc-example">"Building on Johnson's observation, an additional factor worth considering..."</div>
+            </div>
+            <div class="exc-card">
+                <h3>Evidence-Based Claims</h3>
+                <p>Specific data, methodology references, statistical context. Claims grounded in verifiable information.</p>
+                <div class="exc-example">"The 95% confidence interval (p &lt; 0.01) across 3 independent studies..."</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- INSTALL -->
+<section class="install-section" id="install">
+    <div class="install-inner">
+        <div class="section-label">Get Started</div>
+        <h2 class="section-title">Install in under a minute.</h2>
+        <p class="section-intro">
+            Available for Chrome and Firefox. Clone the repo, build, and load as a developer extension.
+        </p>
+
+        <div class="install-steps">
+            <div class="install-step">
+                <div class="step-number">1</div>
+                <h3>Clone &amp; install</h3>
+                <p>Get the source code and install dependencies.</p>
+                <code>git clone https://github.com/shadnbob/e-primer.git<br>cd e-primer &amp;&amp; npm install</code>
+            </div>
+            <div class="install-step">
+                <div class="step-number">2</div>
+                <h3>Build</h3>
+                <p>Bundle the extension for your target browser.</p>
+                <code>npm run build&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Chrome<br>npm run build:firefox # Firefox</code>
+            </div>
+            <div class="install-step">
+                <div class="step-number">3</div>
+                <h3>Load</h3>
+                <p><strong>Chrome:</strong> Go to <em>chrome://extensions</em>, enable Developer mode, click "Load unpacked" and select the <em>dist/</em> folder.</p>
+                <p style="margin-top:8px"><strong>Firefox:</strong> Go to <em>about:debugging</em>, click "Load Temporary Add-on" and select <em>dist-firefox/manifest.json</em>.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="footer-links">
+        <a href="https://github.com/shadnbob/e-primer">GitHub</a>
+        <a href="https://github.com/shadnbob/e-primer/issues">Issues</a>
+        <a href="https://github.com/shadnbob/e-primer/blob/main/EXTENDING.md">Extend</a>
+    </div>
+    <p>E-Prime Bias Detector &mdash; built to make language visible.</p>
+</footer>
+
+</body>
+</html>
