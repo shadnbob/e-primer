@@ -148,18 +148,22 @@ Many phrases are ambiguous. "It seems" can be weaseling ("it seems like this is 
 
 ## Installation
 
+Pre-built extensions are included in the repository, so you can install directly without building from source.
+
 ### Chrome
-1. Clone and build (see Development below)
+1. Download or clone the repo: `git clone https://github.com/shadnbob/e-primer.git`
 2. Navigate to `chrome://extensions/`
 3. Enable "Developer mode"
-4. Click "Load unpacked" and select the `dist/` directory
+4. Click "Load unpacked" and select the `dist/` folder
 
 ### Firefox
-1. Clone and build with `npm run build:firefox`
+1. Download or clone the repo: `git clone https://github.com/shadnbob/e-primer.git`
 2. Navigate to `about:debugging`
 3. Click "This Firefox"
 4. Click "Load Temporary Add-on"
 5. Select `dist-firefox/manifest.json`
+
+If you'd rather build from source (or want to modify the extension), see Development below.
 
 ## Development
 

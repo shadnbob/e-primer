@@ -192,7 +192,7 @@ export class HoverContentGenerator {
         
         // Header section
         if (isExcellence) {
-            content += `<div class="hover-card-header">✓ ${this.getTypeName(type, true)}</div>`;
+            content += `<div class="hover-card-header">${this.getTypeName(type, true)}</div>`;
         } else {
             // For opinion words with sub-categories, show the sub-category name
             let typeName;
@@ -202,7 +202,7 @@ export class HoverContentGenerator {
                 
                 content += `
                     <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
-                        ⚠ ${typeName}
+                        ${typeName}
                         <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
                     </div>
                 `;
@@ -210,7 +210,7 @@ export class HoverContentGenerator {
                 typeName = this.getTypeName(type, false);
                 content += `
                     <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
-                        ⚠ ${typeName}
+                        ${typeName}
                         <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
                     </div>
                 `;
@@ -223,7 +223,6 @@ export class HoverContentGenerator {
         // Contextual reasoning section (prioritized)
         if (isContextual) {
             const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : 'Unknown';
-            const reasoningIcon = isExcellence ? '✨' : '🔍';
             
             // Show the analyzed context if available
             let contextDisplay = '';
@@ -246,7 +245,7 @@ export class HoverContentGenerator {
             
             content += `<div class="hover-card-contextual-reasoning">
                 <div class="hover-card-section">
-                    <div class="hover-card-section-title">${reasoningIcon} Context Analysis:</div>
+                    <div class="hover-card-section-title">Context Analysis:</div>
                     <div class="hover-card-section-content context-reasoning">
                         ${contextDisplay}
                         <div class="reasoning-explanation">${match.contextReasoning}</div>
@@ -280,14 +279,14 @@ export class HoverContentGenerator {
                 // Excellence-specific sections
                 if (biasConfig.whenExcellent) {
                     content += `<div class="hover-card-section">
-                        <div class="hover-card-section-title">✨ Why this is excellent:</div>
+                        <div class="hover-card-section-title">Why this is excellent:</div>
                         <div class="hover-card-section-content">${biasConfig.whenExcellent}</div>
                     </div>`;
                 }
                 
                 if (biasConfig.howToEnhance) {
                     content += `<div class="hover-card-section">
-                        <div class="hover-card-section-title">🚀 How to enhance further:</div>
+                        <div class="hover-card-section-title">How to enhance further:</div>
                         <div class="hover-card-section-content">${biasConfig.howToEnhance}</div>
                     </div>`;
                 }
@@ -295,14 +294,14 @@ export class HoverContentGenerator {
                 // Problem-specific sections
                 if (biasConfig.whenConcerning) {
                     content += `<div class="hover-card-section">
-                        <div class="hover-card-section-title">⚠️ When to be concerned:</div>
+                        <div class="hover-card-section-title">When to be concerned:</div>
                         <div class="hover-card-section-content">${biasConfig.whenConcerning}</div>
                     </div>`;
                 }
                 
                 if (biasConfig.whenAcceptable) {
                     content += `<div class="hover-card-section">
-                        <div class="hover-card-section-title">✅ When it's acceptable:</div>
+                        <div class="hover-card-section-title">When it's acceptable:</div>
                         <div class="hover-card-section-content">${biasConfig.whenAcceptable}</div>
                     </div>`;
                 }
@@ -311,7 +310,7 @@ export class HoverContentGenerator {
             // Look for checklist
             if (biasConfig.lookFor && biasConfig.lookFor.length > 0) {
                 content += `<div class="hover-card-section">
-                    <div class="hover-card-section-title">🔍 Look for:</div>
+                    <div class="hover-card-section-title">Look for:</div>
                     <ul class="hover-card-checklist">`;
                 biasConfig.lookFor.forEach(item => {
                     content += `<li>${item}</li>`;
@@ -322,7 +321,7 @@ export class HoverContentGenerator {
             // Examples section
             if (biasConfig.examples) {
                 content += `<div class="hover-card-section">
-                    <div class="hover-card-section-title">📝 Examples:</div>`;
+                    <div class="hover-card-section-title">Examples:</div>`;
                 
                 if (isExcellence) {
                     // Excellence examples
@@ -374,7 +373,7 @@ export class HoverContentGenerator {
                 content += `<div class="hover-card-expanded">`;
                 
                 if (desc.suggestion) {
-                    content += `<div class="hover-card-suggestion">💡 ${desc.suggestion}</div>`;
+                    content += `<div class="hover-card-suggestion">${desc.suggestion}</div>`;
                 }
                 
                 if (desc.examples) {
@@ -401,9 +400,6 @@ export class HoverContentGenerator {
     
     // Get custom styling for sub-categories
     getSubCategoryStyle(match) {
-        if (match.subCategory && match.subCategory.color) {
-            return ` style="border-left: 4px solid ${match.subCategory.color}; background-color: ${match.subCategory.color}10;"`;
-        }
         return '';
     }
     
@@ -414,18 +410,18 @@ export class HoverContentGenerator {
             // opinion: 'Opinion Words',
             
             // Opinion Sub-Categories
-            opinion_certainty: '🎯 Certainty/Conviction',
-            opinion_hedging: '❓ Hedging/Uncertainty',
-            opinion_evaluative_positive: '👍 Positive Evaluation',
-            opinion_evaluative_negative: '👎 Negative Evaluation',
-            opinion_emotional_charge: '⚡ Emotional Charge',
-            opinion_comparative: '📊 Comparative/Superlative',
-            opinion_political_framing: '🏛️ Political Framing',
-            opinion_intensifiers: '🔥 Intensifiers',
-            opinion_credibility_undermining: '🗣️ Credibility Undermining',
-            opinion_loaded_political: '⚖️ Loaded Political Terms',
-            opinion_moral_judgments: '⚖️ Moral/Ethical Judgments',
-            opinion_emotional_appeals: '💭 Emotional Appeals',
+            opinion_certainty: 'Certainty/Conviction',
+            opinion_hedging: 'Hedging/Uncertainty',
+            opinion_evaluative_positive: 'Positive Evaluation',
+            opinion_evaluative_negative: 'Negative Evaluation',
+            opinion_emotional_charge: 'Emotional Charge',
+            opinion_comparative: 'Comparative/Superlative',
+            opinion_political_framing: 'Political Framing',
+            opinion_intensifiers: 'Intensifiers',
+            opinion_credibility_undermining: 'Credibility Undermining',
+            opinion_loaded_political: 'Loaded Political Terms',
+            opinion_moral_judgments: 'Moral/Ethical Judgments',
+            opinion_emotional_appeals: 'Emotional Appeals',
             
             // Other Problems
             tobe: 'To-Be Verbs',

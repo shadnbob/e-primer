@@ -193,12 +193,11 @@
     padding: 10px;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: 6px;
-    border-left: 4px solid #17a2b8;
 }
 
 .hover-card-contextual-reasoning .hover-card-section-title {
     font-weight: bold;
-    color: #17a2b8;
+    color: #1a1a1a;
     margin-bottom: 6px;
     font-size: 13px;
 }
@@ -598,11 +597,10 @@
     padding: 12px;
     background: #f8f9fa !important;
     border-radius: 6px;
-    border-left: 3px solid #17a2b8;
 }
 
 .bias-popup .hover-card-contextual-reasoning .hover-card-section-title {
-    color: #17a2b8;
+    color: #1a1a1a;
 }
 
 .bias-popup .confidence-indicator {

@@ -740,27 +740,27 @@
         <div class="section-label">Get Started</div>
         <h2 class="section-title">Install in under a minute.</h2>
         <p class="section-intro">
-            Available for Chrome and Firefox. Clone the repo, build, and load as a developer extension.
+            Pre-built extensions are included in the repo &mdash; no build step required. Just clone and load.
         </p>
 
         <div class="install-steps">
             <div class="install-step">
                 <div class="step-number">1</div>
-                <h3>Clone &amp; install</h3>
-                <p>Get the source code and install dependencies.</p>
-                <code>git clone https://github.com/shadnbob/e-primer.git<br>cd e-primer &amp;&amp; npm install</code>
+                <h3>Clone the repo</h3>
+                <p>Or download it as a ZIP from GitHub.</p>
+                <code>git clone https://github.com/shadnbob/e-primer.git</code>
             </div>
             <div class="install-step">
                 <div class="step-number">2</div>
-                <h3>Build</h3>
-                <p>Bundle the extension for your target browser.</p>
-                <code>npm run build&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Chrome<br>npm run build:firefox # Firefox</code>
+                <h3>Load the extension</h3>
+                <p><strong>Chrome:</strong> Go to <em>chrome://extensions</em>, enable Developer mode, click "Load unpacked" and select the <em>dist/</em> folder.</p>
+                <p style="margin-top:8px"><strong>Firefox:</strong> Go to <em>about:debugging</em>, click "Load Temporary Add-on" and select <em>dist-firefox/manifest.json</em>.</p>
             </div>
             <div class="install-step">
                 <div class="step-number">3</div>
-                <h3>Load</h3>
-                <p><strong>Chrome:</strong> Go to <em>chrome://extensions</em>, enable Developer mode, click "Load unpacked" and select the <em>dist/</em> folder.</p>
-                <p style="margin-top:8px"><strong>Firefox:</strong> Go to <em>about:debugging</em>, click "Load Temporary Add-on" and select <em>dist-firefox/manifest.json</em>.</p>
+                <h3>Build from source (optional)</h3>
+                <p>Only needed if you want to modify the extension.</p>
+                <code>cd e-primer &amp;&amp; npm install<br>npm run build&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Chrome<br>npm run build:firefox # Firefox</code>
             </div>
         </div>
     </div>
