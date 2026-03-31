@@ -131,9 +131,9 @@ export class ExcellenceDetector {
                 3: ['everyone knows', 'it\'s a fact that', 'proven', 'undisputed']
             },
             gaslighting: {
-                1: ['perhaps you\'re mistaken', 'that\'s unusual', 'are you sure'],
-                2: ['you\'re overreacting', 'being dramatic', 'too sensitive'],
-                3: ['that never happened', 'you\'re imagining things', 'you\'re crazy']
+                1: ['perhaps you\'re mistaken', 'that\'s unusual', 'are you sure about that'],
+                2: ['concerns are overblown', 'being dramatic', 'reading too much into it'],
+                3: ['that never happened', 'the public is imagining things', 'a fabricated controversy']
             }
         };
         

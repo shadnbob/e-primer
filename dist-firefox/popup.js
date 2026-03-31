@@ -143,6 +143,19 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSettings = {};
     let isUpdating = false;
 
+    // Section toggle mapping: section toggle ID -> child toggle IDs
+    const sectionToggleMap = {
+        'excellenceSectionToggle': [
+            'attributionExcellenceToggle', 'nuanceExcellenceToggle',
+            'transparencyExcellenceToggle', 'discourseExcellenceToggle',
+            'evidenceExcellenceToggle'
+        ],
+        'basicSectionToggle': ['opinionToggle', 'ePrimeToggle', 'absoluteToggle'],
+        'advancedSectionToggle': ['passiveToggle', 'weaselToggle', 'presuppositionToggle', 'probabilityToggle'],
+        'framingSectionToggle': ['metaphorToggle', 'minimizerToggle', 'maximizerToggle', 'falseBalanceToggle', 'euphemismToggle'],
+        'manipulationSectionToggle': ['emotionalToggle', 'gaslightingToggle', 'falseDilemmaToggle']
+    };
+
     // Initialize settings
     loadSettings();
 
@@ -341,19 +354,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Section toggle mapping: section toggle ID -> child toggle IDs
-    const sectionToggleMap = {
-        'excellenceSectionToggle': [
-            'attributionExcellenceToggle', 'nuanceExcellenceToggle', 
-            'transparencyExcellenceToggle', 'discourseExcellenceToggle', 
-            'evidenceExcellenceToggle'
-        ],
-        'basicSectionToggle': ['opinionToggle', 'ePrimeToggle', 'absoluteToggle'],
-        'advancedSectionToggle': ['passiveToggle', 'weaselToggle', 'presuppositionToggle', 'probabilityToggle'],
-        'framingSectionToggle': ['metaphorToggle', 'minimizerToggle', 'maximizerToggle', 'falseBalanceToggle', 'euphemismToggle'],
-        'manipulationSectionToggle': ['emotionalToggle', 'gaslightingToggle', 'falseDilemmaToggle']
-    };
-
     function setupSectionToggles() {
         for (const [sectionToggleId, childToggleIds] of Object.entries(sectionToggleMap)) {
             const sectionToggle = document.getElementById(sectionToggleId);

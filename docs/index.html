@@ -555,7 +555,7 @@
             The extension runs on any web page, highlighting patterns in real time. Here's what a typical analysis looks like:
         </p>
 
-        <div class="demo-card">
+        <div class="demo-card" data-skip-analysis="true">
             <div class="demo-toolbar">
                 <div class="demo-dot"></div>
                 <div class="demo-dot"></div>
@@ -564,17 +564,17 @@
             </div>
             <div class="demo-content">
                 <p>
-                    <span class="hl hl-weasel">Experts say</span> the new policy
-                    <span class="hl hl-tobe">is</span>
-                    <span class="hl hl-opinion">clearly</span> a step in the right direction.
-                    <span class="hl hl-absolute">Everyone</span>
-                    <span class="hl hl-opinion">agrees</span> that change
-                    <span class="hl hl-tobe">was</span> long overdue.
+                    <span class="hl hl-weasel" data-type="weasel" data-word="Experts say">Experts say</span> the new policy
+                    <span class="hl hl-tobe" data-type="tobe" data-word="is">is</span>
+                    <span class="hl hl-opinion" data-type="opinion" data-word="clearly">clearly</span> a step in the right direction.
+                    <span class="hl hl-absolute" data-type="absolute" data-word="Everyone">Everyone</span>
+                    <span class="hl hl-opinion" data-type="opinion" data-word="agrees">agrees</span> that change
+                    <span class="hl hl-tobe" data-type="tobe" data-word="was">was</span> long overdue.
                 </p>
                 <p>
-                    <span class="hl hl-excellence">According to Dr. Chen et al. (2024)</span>,
-                    the data <span class="hl hl-excellence">suggests a possible correlation</span>,
-                    though <span class="hl hl-excellence">important limitations include</span>
+                    <span class="hl hl-excellence" data-type="attribution" data-word="According to Dr. Chen et al. (2024)">According to Dr. Chen et al. (2024)</span>,
+                    the data <span class="hl hl-excellence" data-type="nuance" data-word="suggests a possible correlation">suggests a possible correlation</span>,
+                    though <span class="hl hl-excellence" data-type="transparency" data-word="important limitations include">important limitations include</span>
                     the sample size and geographic scope.
                 </p>
             </div>
@@ -685,7 +685,7 @@
             </div>
             <div class="cat-card">
                 <h3><span class="cat-card-dot" style="background:#800000"></span> Gaslighting</h3>
-                <p>Phrases that undermine confidence in perception: "you're overreacting," "that never happened."</p>
+                <p>Phrases that undermine confidence in documented facts: "that never happened," "concerns are overblown."</p>
             </div>
             <div class="cat-card">
                 <h3><span class="cat-card-dot" style="background:#9400d3"></span> False Dilemmas</h3>
@@ -775,6 +775,359 @@
     </div>
     <p>E-Prime Bias Detector &mdash; built to make language visible.</p>
 </footer>
+
+<!-- Interactive popup for demo highlights -->
+<style>
+    .live-popup-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+    }
+    .live-popup {
+        display: none;
+        position: absolute;
+        z-index: 1000;
+        max-width: 400px;
+        width: calc(100vw - 32px);
+        background: white;
+        border-radius: 10px;
+        padding: 0;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.08);
+        overflow: hidden;
+        font-family: 'DM Sans', sans-serif;
+        animation: popupIn 0.18s ease-out;
+    }
+    @keyframes popupIn {
+        from { opacity: 0; transform: translateY(6px) scale(0.97); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .live-popup-header {
+        padding: 20px 24px 12px;
+        border-bottom: 1px solid var(--rule);
+    }
+    .live-popup-type {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 2px;
+    }
+    .live-popup-severity {
+        font-size: 11px;
+        color: var(--muted);
+    }
+    .live-popup-word {
+        font-family: 'Newsreader', serif;
+        font-size: 22px;
+        font-weight: 600;
+        padding: 12px 24px;
+        background: #fafaf8;
+    }
+    .live-popup-desc {
+        padding: 12px 24px;
+        font-size: 14px;
+        color: var(--blue-gray);
+        line-height: 1.5;
+        border-bottom: 1px solid var(--rule);
+    }
+    .live-popup-body {
+        padding: 16px 24px 20px;
+        font-size: 13px;
+        line-height: 1.6;
+        max-height: 320px;
+        overflow-y: auto;
+    }
+    .live-popup-body dt {
+        font-weight: 600;
+        margin-top: 10px;
+        font-size: 12px;
+    }
+    .live-popup-body dt:first-child { margin-top: 0; }
+    .live-popup-body dd {
+        margin-left: 0;
+        color: var(--blue-gray);
+    }
+    .live-popup-body .popup-examples {
+        margin-top: 10px;
+        padding: 10px 12px;
+        background: #f8f7f5;
+        border-radius: 6px;
+        font-size: 12px;
+    }
+    .live-popup-body .popup-examples strong {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .live-popup-close {
+        position: absolute;
+        top: 12px;
+        right: 14px;
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: transparent;
+        font-size: 20px;
+        color: var(--muted);
+        cursor: pointer;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .live-popup-close:hover { background: #f0efed; color: var(--ink); }
+</style>
+
+<div class="live-popup-overlay" id="popupOverlay"></div>
+<div class="live-popup" id="livePopup">
+    <button class="live-popup-close" id="popupClose">&times;</button>
+    <div class="live-popup-header">
+        <div class="live-popup-type" id="popupType"></div>
+        <div class="live-popup-severity" id="popupSeverity"></div>
+    </div>
+    <div class="live-popup-word" id="popupWord"></div>
+    <div class="live-popup-desc" id="popupDesc"></div>
+    <div class="live-popup-body" id="popupBody"></div>
+</div>
+
+<script>
+(function() {
+    var data = {
+        opinion: {
+            label: 'Opinion Words',
+            color: '#ff8c00',
+            severity: 'Moderate',
+            desc: 'Subjective language that reveals the writer\'s personal stance or evaluation. These words signal opinion rather than fact.',
+            concerned: 'When presented as fact or without supporting evidence',
+            acceptable: 'When clearly marked as opinion or expert assessment in their domain',
+            lookFor: [
+                'Is this presented as fact?',
+                'Is there supporting evidence?',
+                'Is this expert opinion in their field?',
+                'Is the subjectivity acknowledged?'
+            ],
+            examples: {
+                concerning: '"obviously the best solution," "terrible policy" stated as fact, "clearly demonstrates," "undeniably effective"',
+                acceptable: '"In my opinion, this is effective," "Dr. Johnson considers this promising," "Critics argue this is problematic"'
+            }
+        },
+        tobe: {
+            label: 'To-Be Verb (E-Prime)',
+            color: '#87ceeb',
+            severity: 'Low',
+            desc: 'Forms of "to be" that can create false equivalencies or unclear relationships. E-Prime writing avoids these to encourage precision.',
+            concerned: 'When creating false equivalence or stating identity inappropriately',
+            acceptable: 'In definitions, classifications, essential descriptions',
+            lookFor: [
+                'Does this create false equivalence?',
+                'Is this a definition?',
+                'Is this stating identity?',
+                'Could this be more precise?'
+            ],
+            examples: {
+                concerning: '"success is hard work," "the problem is immigrants," "the government is corrupt"',
+                acceptable: '"water is H2O," "the meeting is at 3pm," "this is a butterfly"'
+            }
+        },
+        absolute: {
+            label: 'Absolute Statement',
+            color: '#ff69b4',
+            severity: 'Moderate',
+            desc: 'Universal quantifiers that make categorical claims. Reality rarely fits such absolutes, making these terms often inaccurate.',
+            concerned: 'When used for opinions, complex social issues, or persuasion',
+            acceptable: 'For mathematical facts, scientific laws, logical definitions',
+            lookFor: [
+                'Is this factually absolute?',
+                'Is this about a complex topic?',
+                'Used for emphasis or fact?',
+                'Are there any exceptions to this claim?'
+            ],
+            examples: {
+                concerning: '"all politicians are corrupt," "everyone knows this," "nobody cares," "always fails"',
+                acceptable: '"all triangles have three sides," "every participant signed consent," "never mix these chemicals"'
+            }
+        },
+        weasel: {
+            label: 'Weasel Word',
+            color: '#b8860b',
+            severity: 'Moderate',
+            desc: 'Vague attributions and unsupported claims that avoid specificity. These phrases make statements without providing verifiable sources.',
+            concerned: 'When used without specific sources, citations, or evidence',
+            acceptable: 'When followed by citations, named sources, or quantified data',
+            lookFor: [
+                'Are specific sources provided?',
+                'Are there citations nearby?',
+                'Is this quantified with actual data?',
+                'Can the claim be verified?'
+            ],
+            examples: {
+                concerning: '"experts believe," "studies show" (without citation), "many people say," "sources indicate"',
+                acceptable: '"Johnson et al. (2023) found," "According to Dr. Smith from Harvard," "A 2023 study by the CDC showed"'
+            }
+        },
+        attribution: {
+            label: 'Clear Attribution',
+            color: '#28a745',
+            severity: 'Excellence',
+            desc: 'Specific, verifiable sources that allow readers to check claims. This builds trust and accountability.',
+            isExcellence: true,
+            whenExcellent: 'When sources are named, dated, and easily verifiable by readers',
+            howToEnhance: 'Add page numbers, direct links, or timestamps to make sources even more accessible',
+            lookFor: [
+                'Named authors and publications',
+                'Specific dates and page numbers',
+                'Institutional affiliations',
+                'Direct quotes with citations'
+            ],
+            examples: {
+                excellent: '"According to Smith et al. (2023, p. 45)," "The WHO reported on March 15, 2024," "Dr. Johnson from Harvard Medical School stated"',
+                enhance: 'Add DOI links for academic papers, include specific page numbers, provide direct URLs when possible'
+            }
+        },
+        nuance: {
+            label: 'Nuanced Language',
+            color: '#218838',
+            severity: 'Excellence',
+            desc: 'Language that acknowledges complexity and avoids oversimplification. Shows intellectual honesty about difficult topics.',
+            isExcellence: true,
+            whenExcellent: 'When acknowledging multiple perspectives, limitations, or contextual factors',
+            howToEnhance: 'Continue showing complexity while keeping main arguments clear and accessible',
+            lookFor: [
+                'Conditional language (might, could, seems)',
+                'Acknowledgment of exceptions',
+                'Recognition of multiple factors',
+                'Context-dependent statements'
+            ],
+            examples: {
+                excellent: '"While generally true, exceptions include...," "This trend shows X, though Y factors also influence...," "The relationship appears complex"',
+                enhance: 'Explain why something is complex, acknowledge competing theories, show how context matters'
+            }
+        },
+        transparency: {
+            label: 'Transparent Communication',
+            color: '#28a745',
+            severity: 'Excellence',
+            desc: 'Open communication about limitations, biases, and uncertainties. Builds trust through honesty.',
+            isExcellence: true,
+            whenExcellent: 'When openly discussing methodology, limitations, or potential biases',
+            howToEnhance: 'Consider discussing funding sources, methodology details, or personal stakes',
+            lookFor: [
+                'Acknowledgment of limitations',
+                'Discussion of uncertainty',
+                'Methodological transparency',
+                'Bias acknowledgment'
+            ],
+            examples: {
+                excellent: '"This analysis has limitations...," "The data is preliminary and requires further research," "I should note my background in X"',
+                enhance: 'Explain specific limitations, disclose conflicts of interest, discuss methodology constraints'
+            }
+        }
+    };
+
+    var popup = document.getElementById('livePopup');
+    var overlay = document.getElementById('popupOverlay');
+
+    function showPopup(el) {
+        var type = el.dataset.type;
+        var word = el.dataset.word;
+        var info = data[type];
+        if (!info) return;
+
+        var isExc = !!info.isExcellence;
+
+        document.getElementById('popupType').textContent = info.label;
+        document.getElementById('popupType').style.color = info.color;
+        document.getElementById('popupSeverity').textContent = info.severity;
+        document.getElementById('popupWord').textContent = '\u201c' + word + '\u201d';
+        document.getElementById('popupDesc').textContent = info.desc;
+
+        var bodyHTML = '';
+
+        if (isExc) {
+            // Excellence format - matches real extension
+            bodyHTML += '<dl>';
+            bodyHTML += '<dt style="color:var(--green)">Why this is excellent:</dt>';
+            bodyHTML += '<dd>' + info.whenExcellent + '</dd>';
+            bodyHTML += '<dt style="color:var(--green)">How to enhance further:</dt>';
+            bodyHTML += '<dd>' + info.howToEnhance + '</dd>';
+            bodyHTML += '</dl>';
+        } else {
+            // Problem format - matches real extension
+            bodyHTML += '<dl>';
+            bodyHTML += '<dt>When to be concerned:</dt>';
+            bodyHTML += '<dd>' + info.concerned + '</dd>';
+            bodyHTML += '<dt>When it\'s acceptable:</dt>';
+            bodyHTML += '<dd>' + info.acceptable + '</dd>';
+            bodyHTML += '</dl>';
+        }
+
+        // Look for checklist
+        if (info.lookFor) {
+            bodyHTML += '<div style="margin-top:10px"><strong style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Look for:</strong>';
+            bodyHTML += '<ul style="margin:4px 0 0 16px;padding:0;color:var(--blue-gray)">';
+            for (var i = 0; i < info.lookFor.length; i++) {
+                bodyHTML += '<li style="margin-bottom:2px">' + info.lookFor[i] + '</li>';
+            }
+            bodyHTML += '</ul></div>';
+        }
+
+        // Examples
+        if (info.examples) {
+            bodyHTML += '<div class="popup-examples">';
+            if (isExc) {
+                bodyHTML += '<strong>Excellent:</strong> ' + info.examples.excellent + '<br><br>';
+                bodyHTML += '<strong>Enhance:</strong> ' + info.examples.enhance;
+            } else {
+                bodyHTML += '<strong>Concerning:</strong> ' + info.examples.concerning + '<br><br>';
+                bodyHTML += '<strong>Acceptable:</strong> ' + info.examples.acceptable;
+            }
+            bodyHTML += '</div>';
+        }
+
+        document.getElementById('popupBody').innerHTML = bodyHTML;
+
+        // Color the border
+        popup.style.borderTop = '3px solid ' + info.color;
+
+        // Position near the clicked element
+        var rect = el.getBoundingClientRect();
+        var scrollY = window.scrollY || window.pageYOffset;
+        var top = rect.bottom + scrollY + 10;
+        var left = rect.left;
+
+        if (left + 400 > window.innerWidth) left = window.innerWidth - 416;
+        if (left < 16) left = 16;
+
+        popup.style.position = 'absolute';
+        popup.style.top = top + 'px';
+        popup.style.left = left + 'px';
+        popup.style.display = 'block';
+        overlay.style.display = 'block';
+    }
+
+    function hidePopup() {
+        popup.style.display = 'none';
+        overlay.style.display = 'none';
+    }
+
+    document.querySelectorAll('.hl[data-type]').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showPopup(this);
+        });
+    });
+
+    overlay.addEventListener('click', hidePopup);
+    document.getElementById('popupClose').addEventListener('click', hidePopup);
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') hidePopup();
+    });
+})();
+</script>
 
 </body>
 </html>

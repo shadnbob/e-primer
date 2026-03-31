@@ -47,7 +47,7 @@ function copyStaticFiles(targetName) {
     manifestFile,
     'popup.html', 
     'src/popup/popup-dynamic.js',
-    'src/excellence-styles.css',
+    'src/highlight-styles.css',
     'info.html'
   ];
 
@@ -143,7 +143,7 @@ function updateManifest(targetName) {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   
   manifest.content_scripts[0].js = ['content.js'];
-  manifest.content_scripts[0].css = ['styles.css', 'excellence-styles.css'];
+  manifest.content_scripts[0].css = ['styles.css', 'highlight-styles.css'];
   
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
   console.log(`Updated ${outputDir}/manifest.json`);

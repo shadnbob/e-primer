@@ -128,36 +128,28 @@
     pointer-events: none;
 }
 
-/* OLD HOVER CARDS - DISABLED FOR NEW POPUP SYSTEM */
+/* OLD HOVER CARDS - Hidden outside popup context */
 .hover-card {
-    display: none !important; /* Disable old hover cards completely */
+    display: none; /* Hidden by default, shown inside .bias-popup */
 }
 
 /* OLD HOVER TRIGGERS - DISABLED */
 *[class*="excellence-"]:hover .hover-card,
 *[class*="bias-"]:hover .hover-card {
-    display: none !important; /* Disable old hover functionality */
+    display: none !important; /* Disable old hover-triggered display */
 }
 
-/* OLD HOVER CARD COMPONENTS - DISABLED */
+/* OLD HOVER CARD COMPONENTS - Hidden outside popup */
 .hover-card::after {
     display: none !important;
 }
 
 .hover-card-excellence {
-    display: none !important;
-}
-
-.hover-card-excellence .hover-card-header {
-    display: none !important;
+    display: none; /* Shown inside .bias-popup via more specific rule */
 }
 
 .hover-card-problem {
-    display: none !important;
-}
-
-.hover-card-problem .hover-card-header {
-    display: none !important;
+    display: none; /* Shown inside .bias-popup via more specific rule */
 }
 
 /* Intensity badges */
@@ -374,94 +366,283 @@
 
 /* Optimized Popup Styles */
 .bias-popup {
-    border: 2px solid #6c757d;
-    background: white !important;
-    color: #333 !important;
+    background: #fff !important;
+    color: #1a1a1a !important;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    border: none !important;
+    border-top: 3px solid #6c757d !important;
 }
 
 .bias-popup.excellence {
-    border-color: #28a745 !important;
+    border-top-color: #28a745 !important;
 }
 
 .bias-popup.problem {
-    border-color: #dc3545 !important;
+    /* border-top color is set dynamically by PopupManager */
 }
 
 .bias-popup .popup-close {
     background: none;
     border: none;
     cursor: pointer;
-    color: #666 !important;
+    color: #8a8078 !important;
 }
 
 .bias-popup .popup-close:hover {
-    color: #333 !important;
+    color: #1a1a1a !important;
+    background: #f0efed;
 }
 
 .bias-popup .popup-content {
-    margin-top: 8px;
+    margin-top: 0;
 }
 
-/* Ensure hover card content displays properly in popup */
+/* Hover card header - type name and intensity */
+.bias-popup .hover-card {
+    display: block !important;
+}
+
 .bias-popup .hover-card-header {
-    margin-bottom: 8px;
-    font-weight: bold;
+    padding: 16px 48px 10px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid #eee9e0;
+    margin-bottom: 0;
 }
 
+.bias-popup .hover-card-excellence .hover-card-header {
+    display: block !important;
+    color: #28a745;
+}
+
+.bias-popup .hover-card-problem .hover-card-header {
+    display: block !important;
+}
+
+.bias-popup .hover-card-excellence,
+.bias-popup .hover-card-problem {
+    display: block !important;
+}
+
+/* Intensity badge */
+.intensity-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.intensity-badge.intensity-1 { background: #fff3cd; color: #856404; }
+.intensity-badge.intensity-2 { background: #ffe0cc; color: #c44b2b; }
+.intensity-badge.intensity-3 { background: #f8d7da; color: #721c24; }
+
+/* Quoted text */
 .bias-popup .hover-card-text {
-    font-style: italic;
-    color: #666 !important;
-    margin: 8px 0;
-    padding: 8px;
-    background: #f8f9fa !important;
-    border-radius: 4px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px;
+    font-weight: 600;
+    font-style: normal;
+    color: #1a1a1a !important;
+    padding: 10px 20px;
+    margin: 0;
+    background: #fafaf8 !important;
+    border-radius: 0;
+    border-bottom: 1px solid #eee9e0;
 }
 
-.bias-popup .hover-card-reason {
-    color: #333 !important;
+/* Implication / sub-category */
+.bias-popup .hover-card-implication {
+    padding: 8px 20px;
     font-size: 13px;
-    margin-bottom: 10px;
+    color: #5a6b7a;
+    background: #fafaf8;
+    border-bottom: 1px solid #eee9e0;
 }
 
+/* Basic description */
+.bias-popup .hover-card-reason {
+    color: #5a6b7a !important;
+    font-size: 14px;
+    padding: 12px 20px;
+    margin-bottom: 0;
+    line-height: 1.6;
+    border-bottom: 1px solid #eee9e0;
+}
+
+/* Expanded content area */
+.bias-popup .hover-card-expanded {
+    padding: 14px 20px 16px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+/* Section styling */
 .bias-popup .hover-card-section {
-    margin: 10px 0;
+    margin: 0 0 12px 0;
+}
+
+.bias-popup .hover-card-section:last-child {
+    margin-bottom: 0;
 }
 
 .bias-popup .hover-card-section-title {
-    font-weight: bold;
-    margin-bottom: 6px;
-    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #1a1a1a;
 }
 
 .bias-popup .hover-card-section-content {
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.5;
+    color: #5a6b7a;
+}
+
+/* Look-for checklist */
+.bias-popup .hover-card-checklist {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+}
+
+.bias-popup .hover-card-checklist li {
+    padding: 2px 0 2px 18px;
+    position: relative;
+    font-size: 13px;
+    color: #5a6b7a;
+    line-height: 1.5;
+}
+
+.bias-popup .hover-card-checklist li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    border: 1.5px solid #d4cfc7;
+    border-radius: 2px;
+}
+
+/* Examples sections */
+.bias-popup .hover-card-examples-problematic,
+.bias-popup .hover-card-examples-acceptable {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 6px;
+}
+
+.bias-popup .hover-card-examples-problematic {
+    background: #fdf5f3;
+    color: #5a6b7a;
+}
+
+.bias-popup .hover-card-examples-problematic strong {
+    color: #c44b2b;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.bias-popup .hover-card-examples-acceptable {
+    background: #f0f7f2;
+    color: #5a6b7a;
+}
+
+.bias-popup .hover-card-examples-acceptable strong {
+    color: #2d7a4f;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* Suggestion */
+.bias-popup .hover-card-suggestion {
+    padding: 8px 12px;
+    background: #f8f7f5;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #5a6b7a;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+/* Hover card examples (legacy) */
+.bias-popup .hover-card-examples {
+    padding: 8px 12px;
+    background: #f8f7f5;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #5a6b7a;
+    margin-top: 6px;
+    line-height: 1.5;
 }
 
 /* Fix contextual reasoning styles in popup */
 .bias-popup .hover-card-contextual-reasoning {
-    margin: 10px 0;
-    padding: 10px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    margin: 0 0 12px;
+    padding: 12px;
+    background: #f8f9fa !important;
     border-radius: 6px;
-    border-left: 4px solid #17a2b8;
+    border-left: 3px solid #17a2b8;
+}
+
+.bias-popup .hover-card-contextual-reasoning .hover-card-section-title {
+    color: #17a2b8;
 }
 
 .bias-popup .confidence-indicator {
     margin-top: 8px;
     padding-top: 6px;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid #eee9e0;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .bias-popup .confidence-value {
-    font-size: 12px;
-    font-weight: bold;
-    padding: 2px 6px;
-    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
     background: #e3f2fd !important;
     color: #1976d2 !important;
+}
+
+/* Portrayal indicator */
+.bias-popup .hover-card-portrayal {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #eee9e0;
+    color: #8a8078;
+    font-size: 12px;
+}
+
+/* Context display */
+.bias-popup .hover-card-context {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #eee9e0;
+    color: #8a8078;
+    font-size: 12px;
+}
+
+/* Remove highlight button - styled by PopupManager inline */
+.bias-popup .remove-highlight-btn {
+    margin: 0 20px 16px !important;
+    width: calc(100% - 40px) !important;
 }

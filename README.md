@@ -96,7 +96,7 @@ The extension detects several specific manipulation patterns:
 - **False balance** — framing two positions as equally valid when evidence strongly favors one ("some say the earth is round, others disagree")
 - **Euphemisms** — softening language that obscures harsh realities ("collateral damage" for civilian deaths, "downsizing" for layoffs)
 - **Emotional manipulation** — language designed to bypass rational evaluation and trigger emotional responses
-- **Gaslighting phrases** — language patterns that undermine the reader's confidence in their own perception ("you're overreacting," "that never happened")
+- **Gaslighting phrases** — language patterns that undermine confidence in established facts or documented events ("that never happened," "concerns are overblown")
 - **False dilemmas** — presenting complex situations as binary choices ("you're either with us or against us")
 
 ### Excellence Detection: What Good Writing Looks Like
@@ -220,7 +220,7 @@ e-primer/
 │   │   ├── PopupManager.js           # Click/hover popup handling
 │   │   └── PerformanceMonitor.js     # Performance tracking
 │   ├── build/StyleGenerator.js       # CSS generation from config
-│   └── excellence-styles.css         # Excellence highlighting styles
+│   └── highlight-styles.css          # Highlight and popup styles
 ├── tests/
 │   ├── unit/                         # Unit tests
 │   ├── integration/                  # Integration tests

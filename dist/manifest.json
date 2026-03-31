@@ -42,7 +42,7 @@
       ],
       "css": [
         "styles.css",
-        "excellence-styles.css"
+        "highlight-styles.css"
       ]
     }
   ]

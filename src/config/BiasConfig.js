@@ -553,17 +553,17 @@ export class BiasConfig {
             examples: {
                 problematic: [
                     'that never happened',
-                    'you\'re overreacting',
-                    'you\'re imagining things',
-                    'you\'re being too sensitive',
-                    'that\'s not what I said'
+                    'the public is misremembering the facts',
+                    'concerns about this are overblown',
+                    'people who believe this are confused',
+                    'that\'s not what the record shows'
                 ],
                 acceptable: [
                     'I have a different recollection',
                     'the evidence shows otherwise',
                     'according to the records',
-                    'that seems disproportionate',
-                    'let me clarify what I meant'
+                    'the response may be disproportionate to the data',
+                    'let me clarify what was meant'
                 ]
             },
             contextualGuidance: {

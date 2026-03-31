@@ -27,16 +27,18 @@ export class PopupManager {
         this.popup.setAttribute('data-skip-analysis', 'true');
         this.popup.style.cssText = `
             position: fixed;
-            background: white;
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            max-width: 400px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 0;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.08);
+            max-width: 420px;
             z-index: 10000;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
             display: none;
             pointer-events: auto;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
         `;
         
         // Add close button
@@ -45,19 +47,22 @@ export class PopupManager {
         closeBtn.innerHTML = '×';
         closeBtn.style.cssText = `
             position: absolute;
-            top: 8px;
-            right: 8px;
-            background: none;
+            top: 10px;
+            right: 10px;
+            background: transparent;
             border: none;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             padding: 0;
-            color: #666;
-            width: 24px;
-            height: 24px;
+            color: #8a8078;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 4px;
+            z-index: 1;
+            transition: background 0.15s, color 0.15s;
         `;
         
         closeBtn.addEventListener('click', () => this.hide());
@@ -68,6 +73,7 @@ export class PopupManager {
         this.contentContainer.className = 'popup-content';
         this.contentContainer.setAttribute('data-e-prime-popup', 'true');
         this.contentContainer.setAttribute('data-skip-analysis', 'true');
+        this.contentContainer.style.cssText = 'margin-top: 0;';
         this.popup.appendChild(this.contentContainer);
         
         document.body.appendChild(this.popup);
@@ -222,12 +228,19 @@ export class PopupManager {
         
         if (matchData.isExcellence) {
             this.popup.classList.add('excellence');
-            this.popup.style.borderColor = '#28a745';
-            this.popup.style.backgroundColor = 'white';
+            this.popup.style.borderTopColor = '#28a745';
         } else {
             this.popup.classList.add('problem');
-            this.popup.style.borderColor = '#dc3545';
-            this.popup.style.backgroundColor = 'white';
+            // Use the type's color from BiasConfig if available
+            const typeColors = {
+                opinion: '#ff8c00', tobe: '#87ceeb', absolute: '#ff69b4',
+                passive: '#800080', weasel: '#b8860b', presupposition: '#ff1493',
+                metaphor: '#dc143c', minimizer: '#008080', maximizer: '#ff4500',
+                falsebalance: '#4b0082', euphemism: '#006400', emotional: '#ff7f50',
+                gaslighting: '#800000', falsedilemma: '#9400d3', probability: '#4169e1'
+            };
+            const baseType = matchData.type.startsWith('opinion_') ? 'opinion' : matchData.type;
+            this.popup.style.borderTopColor = typeColors[baseType] || '#dc3545';
         }
         
         // Add intensity styling for problems
@@ -235,18 +248,20 @@ export class PopupManager {
             this.popup.classList.add(`intensity-${matchData.intensity}`);
         }
         
-        // Ensure popup is visible and has proper styling
         this.popup.style.opacity = '1';
         this.popup.style.visibility = 'visible';
     }
     
     updatePosition(event) {
-        const x = event.clientX;
-        const y = event.clientY;
-        
-        // Initial positioning
-        this.popup.style.left = x + 'px';
-        this.popup.style.top = y + 'px';
+        // Position below the clicked element rather than at cursor
+        if (this.currentTarget) {
+            const rect = this.currentTarget.getBoundingClientRect();
+            this.popup.style.left = rect.left + 'px';
+            this.popup.style.top = (rect.bottom + 8) + 'px';
+        } else {
+            this.popup.style.left = event.clientX + 'px';
+            this.popup.style.top = event.clientY + 'px';
+        }
     }
     
     adjustPositionIfNeeded() {
@@ -294,21 +309,25 @@ export class PopupManager {
             width: 100%;
             margin-top: 12px;
             padding: 8px 12px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
+            background: #f8f7f5;
+            color: #8a8078;
+            border: 1px solid #d4cfc7;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
+            transition: all 0.15s;
         `;
         
-        // Add hover effect
         removeBtn.addEventListener('mouseenter', () => {
-            removeBtn.style.backgroundColor = '#c82333';
+            removeBtn.style.backgroundColor = '#dc3545';
+            removeBtn.style.color = 'white';
+            removeBtn.style.borderColor = '#dc3545';
         });
         removeBtn.addEventListener('mouseleave', () => {
-            removeBtn.style.backgroundColor = '#dc3545';
+            removeBtn.style.backgroundColor = '#f8f7f5';
+            removeBtn.style.color = '#8a8078';
+            removeBtn.style.borderColor = '#d4cfc7';
         });
         
         // Add click handler
