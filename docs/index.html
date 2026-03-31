@@ -572,9 +572,9 @@
                     <span class="hl hl-tobe" data-type="tobe" data-word="was">was</span> long overdue.
                 </p>
                 <p>
-                    <span class="hl hl-excellence" data-type="attribution" data-word="According to Dr. Chen et al. (2024)">According to Dr. Chen et al. (2024)</span>,
-                    the data <span class="hl hl-excellence" data-type="nuance" data-word="suggests a possible correlation">suggests a possible correlation</span>,
-                    though <span class="hl hl-excellence" data-type="transparency" data-word="important limitations include">important limitations include</span>
+                    <span class="hl hl-excellence" data-type="attribution" data-word="Dr. Chen et al. (2024)">According to Dr. Chen et al. (2024)</span>,
+                    the data <span class="hl hl-excellence" data-type="nuance" data-word="suggests">suggests</span> a possible correlation,
+                    though <span class="hl hl-excellence" data-type="transparency" data-word="limitations include">important limitations include</span>
                     the sample size and geographic scope.
                 </p>
             </div>
@@ -823,6 +823,7 @@
         font-weight: 600;
         padding: 12px 24px;
         background: #fafaf8;
+        border-bottom: 1px solid var(--rule);
     }
     .live-popup-desc {
         padding: 12px 24px;
@@ -1045,7 +1046,8 @@
 
         // Scale font size for long phrases vs single words
         var wordEl = document.getElementById('popupWord');
-        wordEl.style.fontSize = word.length > 20 ? '15px' : '22px';
+        wordEl.style.fontSize = word.length > 30 ? '15px' : '22px';
+        wordEl.style.background = isExc ? '#f0f7f2' : '#fafaf8';
         document.getElementById('popupDesc').textContent = info.desc;
 
         var bodyHTML = '';
