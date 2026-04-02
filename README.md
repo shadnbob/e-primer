@@ -126,6 +126,7 @@ Many phrases are ambiguous. "It seems" can be weaseling ("it seems like this is 
 - **Passive Voice** — constructions that obscure agency
 - **Weasel Words** — vague attributions and unsupported claims
 - **Presuppositions** — hidden assumptions embedded in statements
+- **Probability Perception** — vague probability language that distorts risk perception
 
 ### Framing & Rhetoric
 - **War Metaphors** — militaristic language for non-military topics
@@ -210,7 +211,7 @@ e-primer/
 │   │   ├── opinion-words.js          # Opinion/subjective terms
 │   │   ├── absolute-words.js         # Universal quantifiers
 │   │   ├── tobe-verbs.js             # E-Prime verb forms
-│   │   └── ...                       # 12 more pattern dictionaries
+│   │   └── ...                       # 11 more pattern dictionaries
 │   ├── popup/
 │   │   ├── popup-dynamic.js          # Popup entry point
 │   │   ├── PopupGenerator.js         # Dynamic UI generation

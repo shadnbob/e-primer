@@ -44,6 +44,188 @@
           news: "Red flag when opinion words are used in supposedly objective reporting",
           opinion: "Expected, but should be clearly distinguished from factual claims",
           instructions: "Generally inappropriate unless describing user experience or preferences"
+        },
+        subCategories: {
+          certainty: {
+            id: "certainty",
+            name: "Certainty/Conviction",
+            icon: "\u{1F3AF}",
+            color: "#ff6b6b",
+            description: "Words that push readers toward unquestioning acceptance by conveying false certainty about debatable topics.",
+            implication: "Creates false authority and discourages critical thinking by presenting opinions as indisputable facts.",
+            suggestion: "Use more tentative language that acknowledges uncertainty and invites evaluation.",
+            examples: 'Instead of "obviously wrong" \u2192 "appears to contradict" or "I believe this is incorrect"',
+            settingKey: "highlightOpinionCertainty",
+            statKey: "opinionCertaintyCount",
+            basicTip: "Words that push readers toward unquestioning acceptance by conveying false certainty about debatable topics.",
+            whenConcerning: "When presenting debatable positions as settled fact",
+            whenAcceptable: "When stating truly established facts"
+          },
+          hedging: {
+            id: "hedging",
+            name: "Hedging/Uncertainty",
+            icon: "\u2753",
+            color: "#ffa726",
+            description: "Words that create unnecessary doubt or vagueness, often to avoid taking responsibility for claims.",
+            implication: "Undermines confidence and can signal the writer is unsure of their position or trying to avoid accountability.",
+            suggestion: "Be more definitive when you have evidence, or explain the specific reasons for uncertainty.",
+            examples: 'Instead of "maybe true" \u2192 "requires further investigation" or "preliminary evidence suggests"',
+            settingKey: "highlightOpinionHedging",
+            statKey: "opinionHedgingCount",
+            basicTip: "Words that create unnecessary doubt or vagueness, often to avoid taking responsibility for claims.",
+            whenConcerning: "When avoiding accountability for claims that have evidence",
+            whenAcceptable: "When genuinely uncertain and expressing honest doubt"
+          },
+          evaluative_positive: {
+            id: "evaluative_positive",
+            name: "Positive Evaluation",
+            icon: "\u{1F44D}",
+            color: "#66bb6a",
+            description: "Subjective positive judgments that reveal the writer's approval without objective criteria.",
+            implication: "Biases readers toward positive evaluation without providing evidence or reasoning for the judgment.",
+            suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
+            examples: 'Instead of "excellent performance" \u2192 "achieved 95% accuracy" or "I consider this performance strong because..."',
+            settingKey: "highlightOpinionEvaluativePositive",
+            statKey: "opinionEvaluativePositiveCount",
+            basicTip: "Subjective positive judgments that reveal the writer's approval without objective criteria.",
+            whenConcerning: "When positive evaluation is presented without supporting evidence",
+            whenAcceptable: "When clearly framed as personal opinion with reasoning"
+          },
+          evaluative_negative: {
+            id: "evaluative_negative",
+            name: "Negative Evaluation",
+            icon: "\u{1F44E}",
+            color: "#ef5350",
+            description: "Subjective negative judgments that reveal the writer's disapproval without objective criteria.",
+            implication: "Biases readers toward negative evaluation without providing evidence or reasoning for the judgment.",
+            suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
+            examples: 'Instead of "poor quality" \u2192 "failed to meet safety standards" or "I find this concerning because..."',
+            settingKey: "highlightOpinionEvaluativeNegative",
+            statKey: "opinionEvaluativeNegativeCount",
+            basicTip: "Subjective negative judgments that reveal the writer's disapproval without objective criteria.",
+            whenConcerning: "When negative evaluation is presented without supporting evidence",
+            whenAcceptable: "When clearly framed as personal opinion with reasoning"
+          },
+          emotional_charge: {
+            id: "emotional_charge",
+            name: "Emotional Charge",
+            icon: "\u26A1",
+            color: "#ab47bc",
+            description: "Words designed to trigger strong emotional responses that bypass logical evaluation.",
+            implication: "Manipulates readers through emotion rather than reason, potentially clouding judgment.",
+            suggestion: "Use neutral language that allows readers to form their own emotional responses based on facts.",
+            examples: 'Instead of "heartwarming story" \u2192 "story about community support" or "horrifying event" \u2192 "traumatic incident"',
+            settingKey: "highlightOpinionEmotionalCharge",
+            statKey: "opinionEmotionalChargeCount",
+            basicTip: "Words designed to trigger strong emotional responses that bypass logical evaluation.",
+            whenConcerning: "When emotional language substitutes for factual reporting",
+            whenAcceptable: "When describing genuinely emotional situations with appropriate context"
+          },
+          comparative: {
+            id: "comparative",
+            name: "Comparative/Superlative",
+            icon: "\u{1F4CA}",
+            color: "#42a5f5",
+            description: "Words that create artificial rankings or comparisons without context or criteria.",
+            implication: "Establishes hierarchies without justification, potentially misleading readers about relative importance or quality.",
+            suggestion: "Provide specific criteria for comparison or use measured language that acknowledges context.",
+            examples: 'Instead of "the best solution" \u2192 "an effective solution" or "the most efficient approach we tested"',
+            settingKey: "highlightOpinionComparative",
+            statKey: "opinionComparativeCount",
+            basicTip: "Words that create artificial rankings or comparisons without context or criteria.",
+            whenConcerning: "When rankings lack criteria or context",
+            whenAcceptable: "When based on specific, measurable criteria"
+          },
+          political_framing: {
+            id: "political_framing",
+            name: "Political Framing",
+            icon: "\u{1F3DB}\uFE0F",
+            color: "#8d6e63",
+            description: "Words that frame issues in political terms, potentially polarizing neutral topics.",
+            implication: "Activates political identity and tribal thinking, making objective evaluation more difficult.",
+            suggestion: "Use neutral, descriptive language that focuses on specific policies or actions rather than political labels.",
+            examples: 'Instead of "radical proposal" \u2192 "proposal that differs significantly from current policy" or describe specific elements',
+            settingKey: "highlightOpinionPoliticalFraming",
+            statKey: "opinionPoliticalFramingCount",
+            basicTip: "Words that frame issues in political terms, potentially polarizing neutral topics.",
+            whenConcerning: "When political labels replace substantive analysis",
+            whenAcceptable: "When discussing actual political positions or platforms"
+          },
+          intensifiers: {
+            id: "intensifiers",
+            name: "Intensifiers",
+            icon: "\u{1F525}",
+            color: "#ff7043",
+            description: "Words that amplify or exaggerate without adding meaningful information.",
+            implication: "Creates artificial emphasis that can distort the actual significance of events or characteristics.",
+            suggestion: "Use specific, measurable descriptions or remove unnecessary intensification.",
+            examples: 'Instead of "extremely important" \u2192 "critical for project success" or "increased by 300%"',
+            settingKey: "highlightOpinionIntensifiers",
+            statKey: "opinionIntensifiersCount",
+            basicTip: "Words that amplify or exaggerate without adding meaningful information.",
+            whenConcerning: "When intensifiers substitute for specific evidence",
+            whenAcceptable: "When emphasis is proportionate and supported by evidence"
+          },
+          credibility_undermining: {
+            id: "credibility_undermining",
+            name: "Credibility Undermining",
+            icon: "\u{1F5E3}\uFE0F",
+            color: "#78909c",
+            description: "Words that question or attack credibility without providing evidence or reasoning.",
+            implication: "Weakens trust in sources through insinuation rather than substantive critique.",
+            suggestion: "Address specific claims with evidence rather than attacking the source's credibility.",
+            examples: 'Instead of "so-called expert" \u2192 "Dr. Smith, whose methodology differs from mainstream approaches" or address specific claims',
+            settingKey: "highlightOpinionCredibilityUndermining",
+            statKey: "opinionCredibilityUnderminingCount",
+            basicTip: "Words that question or attack credibility without providing evidence or reasoning.",
+            whenConcerning: "When attacking credibility without addressing the actual claims",
+            whenAcceptable: "When raising legitimate questions about methodology or credentials"
+          },
+          loaded_political: {
+            id: "loaded_political",
+            name: "Loaded Political Terms",
+            icon: "\u2696\uFE0F",
+            color: "#5d4037",
+            description: "Words that carry heavy political or ideological baggage, triggering partisan responses.",
+            implication: "Activates political identity and bias, making neutral evaluation difficult.",
+            suggestion: "Use specific, descriptive language that focuses on actions or policies rather than loaded terms.",
+            examples: 'Instead of "socialist policies" \u2192 "government-funded programs" or "authoritarian regime" \u2192 "government that restricts civil liberties"',
+            settingKey: "highlightOpinionLoadedPolitical",
+            statKey: "opinionLoadedPoliticalCount",
+            basicTip: "Words that carry heavy political or ideological baggage, triggering partisan responses.",
+            whenConcerning: "When loaded terms replace substantive policy discussion",
+            whenAcceptable: "When accurately describing self-identified political positions"
+          },
+          moral_judgments: {
+            id: "moral_judgments",
+            name: "Moral/Ethical Judgments",
+            icon: "\u2696\uFE0F",
+            color: "#7e57c2",
+            description: "Words that impose moral frameworks without acknowledging their subjective nature.",
+            implication: "Presents moral judgments as universal truths rather than perspective-dependent evaluations.",
+            suggestion: "Acknowledge the subjective nature of moral judgments or specify the ethical framework being used.",
+            examples: 'Instead of "immoral behavior" \u2192 "behavior that violates principle X" or "I consider this unethical because..."',
+            settingKey: "highlightOpinionMoralJudgments",
+            statKey: "opinionMoralJudgmentsCount",
+            basicTip: "Words that impose moral frameworks without acknowledging their subjective nature.",
+            whenConcerning: "When moral judgments are presented as objective facts",
+            whenAcceptable: "When the ethical framework is explicitly stated"
+          },
+          emotional_appeals: {
+            id: "emotional_appeals",
+            name: "Emotional Appeals",
+            icon: "\u{1F4AD}",
+            color: "#26a69a",
+            description: "Words that bypass logical evaluation by directly targeting emotional responses.",
+            implication: "Manipulates emotional state to influence opinion without providing rational justification.",
+            suggestion: "Focus on factual information that allows readers to form their own emotional responses.",
+            examples: 'Instead of "promising developments" \u2192 "developments that may lead to improved outcomes" or provide specific evidence',
+            settingKey: "highlightOpinionEmotionalAppeals",
+            statKey: "opinionEmotionalAppealsCount",
+            basicTip: "Words that bypass logical evaluation by directly targeting emotional responses.",
+            whenConcerning: "When emotional appeals substitute for evidence-based arguments",
+            whenAcceptable: "When emotions are relevant and accompanied by factual context"
+          }
         }
       },
       TO_BE: {
@@ -132,7 +314,7 @@
           instructions: "Appropriate for safety rules and procedural requirements"
         }
       },
-      // Advanced Detection (disabled by default)
+      // Advanced Detection
       PASSIVE: {
         id: "passive",
         name: "Passive Voice",
@@ -214,6 +396,83 @@
           news: "Acceptable when protecting sources, but should specify their expertise",
           opinion: "Watch for unsupported generalizations masquerading as fact",
           instructions: "Generally inappropriate unless referring to established consensus"
+        },
+        subCategories: {
+          unnamed_sources: {
+            id: "unnamed_sources",
+            name: "Unnamed Sources",
+            icon: "\u{1F464}",
+            color: "#5d4037",
+            description: "References to anonymous or vague sources that cannot be verified or held accountable.",
+            implication: "Allows claims to appear sourced without any verifiable attribution, making fact-checking impossible.",
+            suggestion: "Ask: WHO specifically said this? Name the person, organization, or publication.",
+            examples: 'Instead of "sources indicate" \u2192 "a senior official at the EPA told Reuters"',
+            settingKey: "highlightWeaselUnnamed",
+            statKey: "weaselUnnamedCount",
+            basicTip: "Vague source references that cannot be verified or held accountable.",
+            whenConcerning: "When anonymous attribution is used for claims that could be verified",
+            whenAcceptable: "When protecting whistleblowers or sources at genuine risk"
+          },
+          hedged_evidence: {
+            id: "hedged_evidence",
+            name: "Hedged Evidence",
+            icon: "\u{1F4CB}",
+            color: "#00838f",
+            description: "References to evidence, research, or data without providing specific citations or details.",
+            implication: "Creates an appearance of evidence-based reasoning while avoiding any verifiable claim.",
+            suggestion: "Ask: WHICH study? Published WHERE? By WHOM? Provide the actual citation.",
+            examples: 'Instead of "research suggests" \u2192 "a 2024 study by Smith et al. in Nature found..."',
+            settingKey: "highlightWeaselHedged",
+            statKey: "weaselHedgedCount",
+            basicTip: "References to evidence without specific citations or details.",
+            whenConcerning: "When vague evidence claims substitute for actual citations",
+            whenAcceptable: "When summarizing a well-known body of research in informal contexts"
+          },
+          vague_quantifiers: {
+            id: "vague_quantifiers",
+            name: "Vague Quantifiers",
+            icon: "\u{1F4CA}",
+            color: "#7b1fa2",
+            description: "Imprecise frequency or quantity words that avoid committing to specific numbers or rates.",
+            implication: "Obscures actual rates and magnitudes, allowing the reader to imagine whatever quantity supports the argument.",
+            suggestion: "Ask: HOW MANY exactly? Replace with specific numbers, percentages, or ranges.",
+            examples: 'Instead of "in many cases" \u2192 "in 73% of cases" or "in 8 out of 12 trials"',
+            settingKey: "highlightWeaselVague",
+            statKey: "weaselVagueCount",
+            basicTip: "Imprecise quantity words that avoid specific numbers.",
+            whenConcerning: "When vague quantities substitute for available specific data",
+            whenAcceptable: "When precise data is genuinely unavailable and the imprecision is acknowledged"
+          },
+          appeal_to_authority: {
+            id: "appeal_to_authority",
+            name: "Appeal to Authority",
+            icon: "\u{1F393}",
+            color: "#1565c0",
+            description: "Invocations of unnamed experts or consensus to lend credibility without verifiable backing.",
+            implication: "Borrows authority from unnamed or unqualified sources rather than presenting evidence directly.",
+            suggestion: "Ask: Which SPECIFIC experts? In what FIELD? Is this their area of expertise?",
+            examples: 'Instead of "experts believe" \u2192 "Dr. Chen, a climate scientist at MIT, found..."',
+            settingKey: "highlightWeaselAuthority",
+            statKey: "weaselAuthorityCount",
+            basicTip: "Unnamed expert or consensus claims used to borrow credibility.",
+            whenConcerning: "When unnamed authority substitutes for evidence or named experts",
+            whenAcceptable: "When referring to genuinely established scientific consensus"
+          },
+          passive_attribution: {
+            id: "passive_attribution",
+            name: "Passive Attribution",
+            icon: "\u{1F32B}\uFE0F",
+            color: "#546e7a",
+            description: "Qualifying words that distance the writer from claims, adding plausible deniability.",
+            implication: "Lets the writer advance claims while retaining the ability to disown them if challenged.",
+            suggestion: "Notice the writer is not committing to the claim \u2014 ask what they actually believe and why.",
+            examples: 'Instead of "reportedly" \u2192 state the claim directly and cite the source',
+            settingKey: "highlightWeaselPassive",
+            statKey: "weaselPassiveCount",
+            basicTip: "Qualifying words that add plausible deniability to claims.",
+            whenConcerning: "When used to advance claims without accountability",
+            whenAcceptable: "When genuinely reporting unverified information with appropriate caution"
+          }
         }
       },
       PRESUPPOSITION: {
@@ -259,7 +518,7 @@
           instructions: "Generally inappropriate as it can confuse or mislead"
         }
       },
-      // Framing & Rhetoric (disabled by default)
+      // Framing & Rhetoric
       METAPHOR: {
         id: "metaphor",
         name: "War Metaphors",
@@ -387,9 +646,86 @@
           news: "Red flag when sensationalizing normal events or minor issues",
           opinion: "Common for emphasis but can mislead about actual severity",
           instructions: "Generally inappropriate unless describing genuine emergencies"
+        },
+        subCategories: {
+          scale_inflation: {
+            id: "scale_inflation",
+            name: "Scale Inflation",
+            icon: "\u{1F4CF}",
+            color: "#6a1b9a",
+            description: "Words that inflate physical or numerical magnitude without comparative context.",
+            implication: "Creates a false sense of scale by using extreme size language for things that may be moderate or normal.",
+            suggestion: "Ask: compared to what baseline? Replace with specific measurements or comparisons.",
+            examples: 'Instead of "massive increase" \u2192 "a 15% increase" or "an increase three times the annual average"',
+            settingKey: "highlightMaximizerScale",
+            statKey: "maximizerScaleCount",
+            basicTip: "Extreme size language that inflates magnitude without context.",
+            whenConcerning: "When size language lacks comparative context or specific measurements",
+            whenAcceptable: "When describing genuinely large things with appropriate context"
+          },
+          catastrophizing: {
+            id: "catastrophizing",
+            name: "Catastrophizing",
+            icon: "\u{1F6A8}",
+            color: "#b71c1c",
+            description: "Crisis and disaster language applied to situations that may not warrant emergency framing.",
+            implication: "Triggers fear responses for non-emergency situations, distorting risk perception and urgency.",
+            suggestion: "Ask: is this genuinely a crisis? Replace with proportionate language and specific impact data.",
+            examples: 'Instead of "crisis" \u2192 "a growing concern" or "a problem affecting 5% of users"',
+            settingKey: "highlightMaximizerCatastrophe",
+            statKey: "maximizerCatastropheCount",
+            basicTip: "Crisis and disaster language applied to non-emergency situations.",
+            whenConcerning: "When crisis framing is applied to non-emergency situations",
+            whenAcceptable: "When describing genuine crises, disasters, or emergencies"
+          },
+          dramatic_verbs: {
+            id: "dramatic_verbs",
+            name: "Dramatic Verbs",
+            icon: "\u{1F4A5}",
+            color: "#e65100",
+            description: "Verbs that exaggerate the degree of change or destruction beyond what the facts support.",
+            implication: "Replaces measured description with violent or extreme action language, distorting actual impact.",
+            suggestion: "Ask: what are the actual numbers? Replace with precise verbs that describe the real magnitude.",
+            examples: 'Instead of "costs skyrocketed" \u2192 "costs increased by 40%"',
+            settingKey: "highlightMaximizerDramatic",
+            statKey: "maximizerDramaticCount",
+            basicTip: "Verbs that exaggerate the degree of change beyond what facts support.",
+            whenConcerning: "When dramatic verbs substitute for specific measurements of change",
+            whenAcceptable: "When the degree of change is genuinely extreme and supported by data"
+          },
+          superlative_hype: {
+            id: "superlative_hype",
+            name: "Superlative Hype",
+            icon: "\u2728",
+            color: "#1565c0",
+            description: "Adjectives of extreme impressiveness that create false uniqueness or exceptionality.",
+            implication: "Makes ordinary things sound extraordinary, inflating expectations and distorting significance.",
+            suggestion: "Ask: unprecedented compared to what? Replace with specific evidence of what makes this notable.",
+            examples: 'Instead of "unprecedented" \u2192 "the first since 2008" or "exceeds previous records by 12%"',
+            settingKey: "highlightMaximizerSuperlative",
+            statKey: "maximizerSuperlativeCount",
+            basicTip: "Adjectives that create false uniqueness or exceptionality.",
+            whenConcerning: "When superlatives lack comparative context or evidence",
+            whenAcceptable: "When something is genuinely unprecedented with supporting evidence"
+          },
+          paradigm_shift: {
+            id: "paradigm_shift",
+            name: "Paradigm Shift",
+            icon: "\u{1F504}",
+            color: "#2e7d32",
+            description: "Claims of transformative, game-changing impact that imply everything has fundamentally changed.",
+            implication: "Overstates the significance of changes, implying a complete transformation when the reality may be incremental.",
+            suggestion: "Ask: what specifically changed? Replace with concrete descriptions of what is different and how.",
+            examples: 'Instead of "game changing" \u2192 "introduces a new approach to X that reduces cost by 30%"',
+            settingKey: "highlightMaximizerParadigm",
+            statKey: "maximizerParadigmCount",
+            basicTip: "Claims of transformative impact that overstate significance.",
+            whenConcerning: "When transformation claims lack specific evidence of what changed",
+            whenAcceptable: "When describing genuinely transformative events with specific evidence"
+          }
         }
       },
-      // Manipulation Tactics (disabled by default)
+      // Manipulation Tactics
       FALSE_BALANCE: {
         id: "falsebalance",
         name: "False Balance",
@@ -474,6 +810,113 @@
           news: "Red flag when hiding the severity of events or issues",
           opinion: "Watch for language that softens or hardens perception unfairly",
           instructions: "Generally inappropriate unless for social sensitivity"
+        },
+        subCategories: {
+          political_euphemism: {
+            id: "political_euphemism",
+            name: "Political Euphemism",
+            icon: "\u{1F3DB}\uFE0F",
+            color: "#5c6bc0",
+            description: "Government and policy language that obscures controversial actions behind neutral-sounding terminology.",
+            implication: "Conceals the true nature of government actions, making harmful policies harder to evaluate and oppose.",
+            suggestion: "Replace with direct language that describes what actually happens.",
+            examples: 'Instead of "enhanced interrogation" \u2192 "torture" or "coercive interrogation techniques"',
+            settingKey: "highlightEuphemismPolitical",
+            statKey: "euphemismPoliticalCount",
+            basicTip: "Government language that obscures controversial actions behind neutral terminology.",
+            whenConcerning: "When government or policy language hides the true nature of actions",
+            whenAcceptable: "Rarely \u2014 political euphemisms almost always serve to obscure"
+          },
+          corporate_euphemism: {
+            id: "corporate_euphemism",
+            name: "Corporate Euphemism",
+            icon: "\u{1F4BC}",
+            color: "#78909c",
+            description: "Business language that softens negative outcomes like job losses, price increases, and failures.",
+            implication: "Disguises harm to workers, consumers, and communities behind professional-sounding jargon.",
+            suggestion: "Use plain language that makes the impact on people clear.",
+            examples: 'Instead of "rightsizing" \u2192 "laying off employees" or "cutting 200 jobs"',
+            settingKey: "highlightEuphemismCorporate",
+            statKey: "euphemismCorporateCount",
+            basicTip: "Business language that softens negative outcomes like job losses and failures.",
+            whenConcerning: "When corporate jargon hides impact on workers or consumers",
+            whenAcceptable: "When used in appropriate business context without obscuring harm"
+          },
+          social_euphemism: {
+            id: "social_euphemism",
+            name: "Social Euphemism",
+            icon: "\u{1F91D}",
+            color: "#66bb6a",
+            description: "Socially polite substitutions used out of sensitivity, courtesy, or respect for dignity.",
+            implication: "Often well-intentioned and appropriate, but can sometimes obscure issues that need direct discussion.",
+            suggestion: "Consider whether the euphemism serves genuine respect or avoids a conversation that needs directness.",
+            examples: '"Passed away" is appropriate for sensitive contexts; "economically disadvantaged" may obscure systemic poverty',
+            settingKey: "highlightEuphemismSocial",
+            statKey: "euphemismSocialCount",
+            basicTip: "Socially polite substitutions \u2014 often appropriate but can obscure important issues.",
+            whenConcerning: "When politeness prevents necessary direct discussion of systemic issues",
+            whenAcceptable: "When showing genuine respect, sensitivity, or social courtesy"
+          },
+          military_euphemism: {
+            id: "military_euphemism",
+            name: "Military Euphemism",
+            icon: "\u{1F396}\uFE0F",
+            color: "#b71c1c",
+            description: "Military jargon that sanitizes violence, casualties, and the human cost of warfare.",
+            implication: "Makes warfare and its consequences more palatable, reducing public scrutiny of military actions.",
+            suggestion: "Describe the actual human impact rather than using sanitized military terminology.",
+            examples: 'Instead of "surgical strike" \u2192 "bombing that killed 12 people"',
+            settingKey: "highlightEuphemismMilitary",
+            statKey: "euphemismMilitaryCount",
+            basicTip: "Military jargon that sanitizes violence and the human cost of warfare.",
+            whenConcerning: "When military language hides civilian casualties or human suffering",
+            whenAcceptable: "In technical military communication between professionals"
+          },
+          dysphemism: {
+            id: "dysphemism",
+            name: "Dysphemism",
+            icon: "\u{1F525}",
+            color: "#e65100",
+            description: "Loaded negative framing that inflames perception \u2014 the rhetorical opposite of a euphemism.",
+            implication: "Provokes hostility and negative emotional reactions by replacing neutral terms with inflammatory ones.",
+            suggestion: "Replace with neutral, descriptive language that allows readers to form their own judgments.",
+            examples: 'Instead of "death tax" \u2192 "estate tax"; instead of "illegal aliens" \u2192 "undocumented immigrants"',
+            settingKey: "highlightEuphemismDysphemism",
+            statKey: "euphemismDysphemismCount",
+            basicTip: "Loaded negative framing \u2014 the opposite of a euphemism, designed to inflame.",
+            whenConcerning: "When inflammatory language replaces neutral terms to provoke reaction",
+            whenAcceptable: "Rarely \u2014 dysphemisms almost always serve to inflame rather than inform"
+          },
+          medical_euphemism: {
+            id: "medical_euphemism",
+            name: "Medical Euphemism",
+            icon: "\u{1F3E5}",
+            color: "#00897b",
+            description: "Healthcare language that softens or obscures medical errors, patient outcomes, and end-of-life realities.",
+            implication: "Can impair informed consent and obscure accountability for medical errors or treatment risks.",
+            suggestion: "Use clear, direct language \u2014 especially when patients need accurate information to make decisions.",
+            examples: 'Instead of "negative patient outcome" \u2192 "the patient died"',
+            settingKey: "highlightEuphemismMedical",
+            statKey: "euphemismMedicalCount",
+            basicTip: "Healthcare language that obscures medical errors and patient outcomes.",
+            whenConcerning: "When medical language impairs informed consent or hides errors",
+            whenAcceptable: "When showing sensitivity to patients and families in acute grief"
+          },
+          environmental_euphemism: {
+            id: "environmental_euphemism",
+            name: "Environmental Euphemism",
+            icon: "\u{1F33F}",
+            color: "#2e7d32",
+            description: "Environmental language that minimizes ecological damage or greenwashes harmful practices.",
+            implication: "Makes environmental destruction sound manageable or even positive, reducing urgency for action.",
+            suggestion: "Describe the actual environmental impact directly and specifically.",
+            examples: 'Instead of "clean coal" \u2192 "coal with reduced but still significant emissions"',
+            settingKey: "highlightEuphemismEnvironmental",
+            statKey: "euphemismEnvironmentalCount",
+            basicTip: "Environmental language that minimizes ecological damage or greenwashes.",
+            whenConcerning: "When environmental language obscures actual ecological harm",
+            whenAcceptable: "When describing genuine environmental improvements with specific data"
+          }
         }
       },
       EMOTIONAL: {
@@ -517,6 +960,98 @@
           news: "Red flag when emotional language replaces factual reporting",
           opinion: "Common but should be balanced with rational arguments",
           instructions: "Generally inappropriate unless describing emotional contexts"
+        },
+        subCategories: {
+          fear_appeal: {
+            id: "fear_appeal",
+            name: "Fear Appeal",
+            icon: "\u{1F628}",
+            color: "#c62828",
+            description: "Language designed to trigger fear and threat perception, bypassing rational risk assessment.",
+            implication: "Activates the brain's threat response, making readers more susceptible to persuasion and less able to evaluate claims critically.",
+            suggestion: "Ask what specific evidence supports the claimed danger and evaluate actual risk levels.",
+            examples: 'Instead of "existential threat" \u2192 "a significant challenge" or provide specific risk data',
+            settingKey: "highlightEmotionalFear",
+            statKey: "emotionalFearCount",
+            basicTip: "Language that triggers fear to bypass rational risk assessment.",
+            whenConcerning: "When fear language substitutes for evidence about actual dangers",
+            whenAcceptable: "When describing genuinely dangerous situations with supporting evidence"
+          },
+          guilt_induction: {
+            id: "guilt_induction",
+            name: "Guilt Induction",
+            icon: "\u{1F614}",
+            color: "#6a1b9a",
+            description: "Language designed to trigger guilt and moral responsibility, pressuring agreement through shame.",
+            implication: "Bypasses rational evaluation by making disagreement feel morally wrong, regardless of the actual merits.",
+            suggestion: "Evaluate whether the responsibility claim is supported by evidence, separate from the emotional pressure.",
+            examples: 'Instead of "blood on your hands" \u2192 "shares responsibility for the outcome" with specific evidence',
+            settingKey: "highlightEmotionalGuilt",
+            statKey: "emotionalGuiltCount",
+            basicTip: "Language that pressures agreement through guilt and shame.",
+            whenConcerning: "When guilt is used to shut down legitimate debate or analysis",
+            whenAcceptable: "When genuine accountability is supported by evidence of responsibility"
+          },
+          flattery_manipulation: {
+            id: "flattery_manipulation",
+            name: "Flattery Manipulation",
+            icon: "\u{1F3AD}",
+            color: "#f57f17",
+            description: "Compliments and in-group identity appeals designed to bias the reader toward agreement.",
+            implication: "Creates social pressure to agree by implying that disagreement means you lack intelligence, virtue, or sophistication.",
+            suggestion: "Recognize the appeal to identity and evaluate the argument on its own merits.",
+            examples: 'Instead of "smart people like you understand" \u2192 present the argument independently',
+            settingKey: "highlightEmotionalFlattery",
+            statKey: "emotionalFlatteryCount",
+            basicTip: "In-group identity appeals that bias readers toward agreement.",
+            whenConcerning: "When flattery substitutes for substantive argument",
+            whenAcceptable: "Rarely \u2014 flattery in persuasive writing almost always serves to manipulate"
+          },
+          outrage_fuel: {
+            id: "outrage_fuel",
+            name: "Outrage Fuel",
+            icon: "\u{1F92C}",
+            color: "#d84315",
+            description: "Language designed to trigger moral outrage, bypassing careful analysis with indignation.",
+            implication: "Replaces factual evaluation with emotional reaction, making readers more likely to share and amplify without verification.",
+            suggestion: "Look past the outrage language to identify the actual facts and evaluate them independently.",
+            examples: 'Instead of "shocking revelation" \u2192 "new information shows..." with specific details',
+            settingKey: "highlightEmotionalOutrage",
+            statKey: "emotionalOutrageCount",
+            basicTip: "Language that triggers moral outrage to bypass careful analysis.",
+            whenConcerning: "When outrage language replaces factual reporting or evidence",
+            whenAcceptable: "When describing genuinely outrageous situations with full factual context"
+          },
+          sympathy_exploitation: {
+            id: "sympathy_exploitation",
+            name: "Sympathy Exploitation",
+            icon: "\u{1F494}",
+            color: "#1565c0",
+            description: "Uses vulnerable populations to weaponize compassion and bypass rational evaluation of arguments.",
+            implication: "Makes disagreement feel heartless, even when the emotional appeal has no logical connection to the argument.",
+            suggestion: "Ask how the emotional appeal specifically connects to the policy or argument being advanced.",
+            examples: 'Instead of "think of the children" \u2192 describe specific impacts on children with evidence',
+            settingKey: "highlightEmotionalSympathy",
+            statKey: "emotionalSympathyCount",
+            basicTip: "Weaponizes compassion for vulnerable groups to bypass rational evaluation.",
+            whenConcerning: "When sympathy appeals are disconnected from the actual argument",
+            whenAcceptable: "When vulnerable populations are genuinely and directly affected"
+          },
+          false_urgency: {
+            id: "false_urgency",
+            name: "False Urgency",
+            icon: "\u23F0",
+            color: "#ef6c00",
+            description: "Creates artificial time pressure to prevent careful deliberation and force hasty decisions.",
+            implication: "Prevents thoughtful evaluation by implying that delay equals failure, even when no real deadline exists.",
+            suggestion: "Ask what evidence exists for the claimed deadline and whether careful consideration would actually cause harm.",
+            examples: `Instead of "act now before it's too late" \u2192 "this decision would benefit from timely attention because..."`,
+            settingKey: "highlightEmotionalUrgency",
+            statKey: "emotionalUrgencyCount",
+            basicTip: "Artificial time pressure that prevents careful deliberation.",
+            whenConcerning: "When urgency is manufactured to prevent careful thought",
+            whenAcceptable: "When genuine deadlines exist and are supported by evidence"
+          }
         }
       },
       GASLIGHTING: {
@@ -560,6 +1095,83 @@
           news: "Red flag when systematically undermining credible sources",
           opinion: "Watch for patterns of reality-questioning language",
           instructions: "Generally inappropriate unless providing evidence-based corrections"
+        },
+        subCategories: {
+          reality_denial: {
+            id: "reality_denial",
+            name: "Reality Denial",
+            icon: "\u{1F6AB}",
+            color: "#b71c1c",
+            description: "Direct denial that events occurred or facts exist, attacking objective reality itself.",
+            implication: "The strongest form of gaslighting \u2014 attempts to make the target doubt their own perception of verified events.",
+            suggestion: "Check independent records, documents, or witnesses. Trust verifiable evidence over assertions.",
+            examples: `Instead of "that never happened" \u2192 "I have a different recollection \u2014 let's check the record"`,
+            settingKey: "highlightGaslightingReality",
+            statKey: "gaslightingRealityCount",
+            basicTip: "Direct denial of facts or events \u2014 the strongest form of gaslighting.",
+            whenConcerning: "When denying documented or widely witnessed events",
+            whenAcceptable: "Rarely \u2014 reality denial is almost always manipulative"
+          },
+          emotional_invalidation: {
+            id: "emotional_invalidation",
+            name: "Emotional Invalidation",
+            icon: "\u{1F4A2}",
+            color: "#6a1b9a",
+            description: "Dismissing emotional responses as irrational or disproportionate to undermine confidence in one's own feelings.",
+            implication: "Teaches the target to distrust their own emotional responses, making them more dependent on the gaslighter's framing.",
+            suggestion: "Your emotional responses are valid data. Evaluate the situation independently of how others characterize your reaction.",
+            examples: `Instead of "you're overreacting" \u2192 "I see this differently \u2014 can we discuss our perspectives?"`,
+            settingKey: "highlightGaslightingInvalidation",
+            statKey: "gaslightingInvalidationCount",
+            basicTip: "Dismissing emotional responses as irrational or disproportionate.",
+            whenConcerning: "When used to silence legitimate concerns or feelings",
+            whenAcceptable: "When genuinely helping someone recognize a cognitive distortion, with care and evidence"
+          },
+          memory_manipulation: {
+            id: "memory_manipulation",
+            name: "Memory Manipulation",
+            icon: "\u{1F9E0}",
+            color: "#00838f",
+            description: "Undermining confidence in one's own memory to replace recollections with a preferred narrative.",
+            implication: "Erodes trust in episodic memory, making the target increasingly reliant on the manipulator's version of events.",
+            suggestion: "Keep written records. Check notes, emails, or texts. Verify with other witnesses when possible.",
+            examples: `Instead of "you're misremembering" \u2192 "my recollection differs \u2014 let's look at the meeting notes"`,
+            settingKey: "highlightGaslightingMemory",
+            statKey: "gaslightingMemoryCount",
+            basicTip: "Language that undermines confidence in one's own memory.",
+            whenConcerning: "When used to replace someone's recollection with a preferred narrative",
+            whenAcceptable: "When providing documented evidence of a genuine misunderstanding"
+          },
+          credibility_attack: {
+            id: "credibility_attack",
+            name: "Credibility Attack",
+            icon: "\u{1F3AF}",
+            color: "#e65100",
+            description: "Attacking the person's mental fitness, judgment, or competence rather than addressing their actual argument.",
+            implication: "Ad hominem disguised as concern \u2014 undermines self-confidence to make the target doubt their own perceptions.",
+            suggestion: "Evaluate the ARGUMENT being made, not the personal attack. Competence attacks do not address substance.",
+            examples: `Instead of "you're being paranoid" \u2192 "I don't see the same pattern \u2014 here's why..."`,
+            settingKey: "highlightGaslightingCredibility",
+            statKey: "gaslightingCredibilityCount",
+            basicTip: "Attacking mental fitness or judgment instead of addressing the argument.",
+            whenConcerning: "When personal attacks substitute for addressing the actual argument",
+            whenAcceptable: "Rarely \u2014 credibility attacks almost always avoid the substantive issue"
+          },
+          deflection: {
+            id: "deflection",
+            name: "Deflection",
+            icon: "\u21A9\uFE0F",
+            color: "#546e7a",
+            description: "Redirecting attention away from the actual issue to avoid accountability or addressing the concern.",
+            implication: "Prevents resolution by continually shifting focus, leaving the original concern unaddressed.",
+            suggestion: "Ask: has the original concern been addressed? Return focus to the specific issue at hand.",
+            examples: 'Instead of "what about when you..." \u2192 "I hear your point about X, and I also want to address Y"',
+            settingKey: "highlightGaslightingDeflection",
+            statKey: "gaslightingDeflectionCount",
+            basicTip: "Redirecting attention to avoid addressing the actual concern.",
+            whenConcerning: "When topic changes prevent addressing the original issue",
+            whenAcceptable: "When genuinely raising a relevant related issue while still addressing the original"
+          }
         }
       },
       FALSE_DILEMMA: {
@@ -796,6 +1408,11 @@
       };
       for (const [key, config] of Object.entries(this.BIAS_TYPES)) {
         settings[config.settingKey] = config.enabled;
+        if (config.subCategories) {
+          for (const sub of Object.values(config.subCategories)) {
+            settings[sub.settingKey] = config.enabled;
+          }
+        }
       }
       for (const [key, config] of Object.entries(this.EXCELLENCE_TYPES)) {
         settings[config.settingKey] = config.enabled;
@@ -825,10 +1442,43 @@
         (config) => settings[config.settingKey]
       );
     }
+    static hasSubCategories(biasTypeId) {
+      const config = this.getBiasTypeConfig(biasTypeId);
+      return config && config.subCategories && Object.keys(config.subCategories).length > 0;
+    }
+    static getSubCategories(biasTypeId) {
+      const config = this.getBiasTypeConfig(biasTypeId);
+      return config && config.subCategories ? config.subCategories : {};
+    }
+    static getSubCategory(biasTypeId, subCategoryId) {
+      return this.getSubCategories(biasTypeId)[subCategoryId] || null;
+    }
+    static resolveType(compositeType) {
+      for (const config of Object.values(this.BIAS_TYPES)) {
+        if (config.id === compositeType)
+          return { parentId: config.id, subCategoryId: null };
+        if (config.subCategories) {
+          for (const subId of Object.keys(config.subCategories)) {
+            if (`${config.id}_${subId}` === compositeType) {
+              return { parentId: config.id, subCategoryId: subId };
+            }
+          }
+        }
+      }
+      return { parentId: compositeType, subCategoryId: null };
+    }
+    static getCompositeType(parentId, subCategoryId) {
+      return subCategoryId ? `${parentId}_${subCategoryId}` : parentId;
+    }
     static createEmptyStats() {
       const stats = { healthScore: 50 };
       for (const config of Object.values(this.BIAS_TYPES)) {
         stats[config.statKey] = 0;
+        if (config.subCategories) {
+          for (const sub of Object.values(config.subCategories)) {
+            stats[sub.statKey] = 0;
+          }
+        }
       }
       for (const config of Object.values(this.EXCELLENCE_TYPES)) {
         stats[config.statKey] = 0;
@@ -840,7 +1490,14 @@
       for (const [key, value] of Object.entries(settings)) {
         if (key === "enableAnalysis" || key === "analysisMode") {
           validated[key] = key === "analysisMode" ? value : Boolean(value);
-        } else if (Object.values(this.BIAS_TYPES).some((config) => config.settingKey === key) || Object.values(this.EXCELLENCE_TYPES).some((config) => config.settingKey === key)) {
+        } else if (Object.values(this.BIAS_TYPES).some((config) => {
+          if (config.settingKey === key)
+            return true;
+          if (config.subCategories) {
+            return Object.values(config.subCategories).some((sub) => sub.settingKey === key);
+          }
+          return false;
+        }) || Object.values(this.EXCELLENCE_TYPES).some((config) => config.settingKey === key)) {
           validated[key] = Boolean(value);
         }
       }
@@ -1429,47 +2086,139 @@
   ];
 
   // src/dictionaries/weasel-phrases.js
-  var weaselPhrases = [
-    "many people say",
-    "some say",
-    "experts believe",
-    "it is said",
-    "they say",
-    "people think",
-    "some argue",
-    "critics claim",
-    "supporters maintain",
-    "observers note",
-    "sources indicate",
-    "reportedly",
-    "allegedly",
-    "supposedly",
-    "it is believed",
-    "it is thought",
-    "widely known",
-    "widely believed",
-    "generally accepted",
-    "commonly believed",
-    "often said",
-    "research suggests",
-    "evidence suggests",
-    "data indicates",
-    "arguably",
-    "presumably",
-    "in some cases",
-    "in many cases",
-    "frequently",
-    "typically",
-    "tends to",
-    "may indicate",
-    "could suggest",
-    "might imply",
-    "some experts say",
-    "authorities believe",
-    "insiders claim",
-    "unnamed sources",
-    "according to reports"
-  ];
+  var weaselWords = {
+    unnamed_sources: {
+      icon: "\u{1F464}",
+      color: "#5d4037",
+      name: "Unnamed Sources",
+      description: "References to anonymous or vague sources that cannot be verified or held accountable.",
+      implication: "Allows claims to appear sourced without any verifiable attribution, making fact-checking impossible.",
+      suggestion: "Ask: WHO specifically said this? Name the person, organization, or publication.",
+      examples: 'Instead of "sources indicate" \u2192 "a senior official at the EPA told Reuters" or name the specific source',
+      words: [
+        "many people say",
+        "some say",
+        "they say",
+        "people think",
+        "some argue",
+        "critics claim",
+        "supporters maintain",
+        "observers note",
+        "sources indicate",
+        "unnamed sources",
+        "according to reports",
+        "insiders claim",
+        "some experts say",
+        "authorities believe",
+        "well-placed sources",
+        "those familiar with the matter",
+        "people close to the situation",
+        "those in the know"
+      ]
+    },
+    hedged_evidence: {
+      icon: "\u{1F4CB}",
+      color: "#00838f",
+      name: "Hedged Evidence",
+      description: "References to evidence, research, or data without providing specific citations or details.",
+      implication: "Creates an appearance of evidence-based reasoning while avoiding any verifiable claim.",
+      suggestion: "Ask: WHICH study? Published WHERE? By WHOM? Provide the actual citation.",
+      examples: 'Instead of "research suggests" \u2192 "a 2024 study by Smith et al. in Nature found..."',
+      words: [
+        "research suggests",
+        "evidence suggests",
+        "data indicates",
+        "experts believe",
+        "it is believed",
+        "it is thought",
+        "it is said",
+        "may indicate",
+        "could suggest",
+        "might imply",
+        "studies have shown",
+        "science tells us",
+        "the data shows",
+        "findings indicate",
+        "analysis reveals",
+        "polls suggest"
+      ]
+    },
+    vague_quantifiers: {
+      icon: "\u{1F4CA}",
+      color: "#7b1fa2",
+      name: "Vague Quantifiers",
+      description: "Imprecise frequency or quantity words that avoid committing to specific numbers or rates.",
+      implication: "Obscures actual rates and magnitudes, allowing the reader to imagine whatever quantity supports the argument.",
+      suggestion: "Ask: HOW MANY exactly? Replace with specific numbers, percentages, or ranges.",
+      examples: 'Instead of "in many cases" \u2192 "in 73% of cases" or "in 8 out of 12 trials"',
+      words: [
+        "in some cases",
+        "in many cases",
+        "frequently",
+        "typically",
+        "tends to",
+        "in most cases",
+        "on occasion",
+        "from time to time",
+        "more often than not",
+        "time and again",
+        "as often as not",
+        "in certain situations",
+        "under some circumstances"
+      ]
+    },
+    appeal_to_authority: {
+      icon: "\u{1F393}",
+      color: "#1565c0",
+      name: "Appeal to Authority",
+      description: "Invocations of unnamed experts or consensus to lend credibility without verifiable backing.",
+      implication: "Borrows authority from unnamed or unqualified sources rather than presenting evidence directly.",
+      suggestion: "Ask: Which SPECIFIC experts? In what FIELD? Is this their area of expertise?",
+      examples: 'Instead of "experts believe" \u2192 "Dr. Chen, a climate scientist at MIT, found..."',
+      words: [
+        "widely known",
+        "widely believed",
+        "generally accepted",
+        "commonly believed",
+        "often said",
+        "the consensus is",
+        "it is well established",
+        "leading experts agree",
+        "top scientists confirm",
+        "the scientific community agrees",
+        "scholars maintain",
+        "mainstream opinion holds"
+      ]
+    },
+    passive_attribution: {
+      icon: "\u{1F32B}\uFE0F",
+      color: "#546e7a",
+      name: "Passive Attribution",
+      description: "Qualifying words that distance the writer from claims, adding plausible deniability.",
+      implication: "Lets the writer advance claims while retaining the ability to disown them if challenged.",
+      suggestion: "Notice the writer is not committing to the claim \u2014 ask what they actually believe and why.",
+      examples: 'Instead of "reportedly" \u2192 state the claim directly and cite the source, or acknowledge uncertainty explicitly',
+      words: [
+        "reportedly",
+        "allegedly",
+        "supposedly",
+        "arguably",
+        "presumably",
+        "ostensibly",
+        "purportedly",
+        "apparently",
+        "seemingly",
+        "it would appear",
+        "one might say",
+        "it has been suggested",
+        "there are those who say",
+        "some would argue",
+        "it could be said"
+      ]
+    }
+  };
+  var weaselPhrasesFlat = Object.values(weaselWords).flatMap((category) => category.words);
+  var weaselPhrases = weaselPhrasesFlat;
 
   // src/dictionaries/presupposition-markers.js
   var presuppositionMarkers = [
@@ -1581,40 +2330,134 @@
   ];
 
   // src/dictionaries/maximizers.js
-  var maximizers = [
-    "massive",
-    "huge",
-    "enormous",
-    "gigantic",
-    "colossal",
-    "crisis",
-    "disaster",
-    "catastrophe",
-    "epidemic",
-    "plague",
-    "explosion",
-    "skyrocket",
-    "plummet",
-    "devastate",
-    "destroy",
-    "annihilate",
-    "obliterate",
-    "decimate",
-    "revolutionary",
-    "unprecedented",
-    "extraordinary",
-    "incredible",
-    "amazing",
-    "astonishing",
-    "staggering",
-    "monumental",
-    "tremendous",
-    "spectacular",
-    "phenomenal",
-    "breakthrough",
-    "game\\s+changing",
-    "earth\\s+shattering"
-  ];
+  var maximizerWords = {
+    scale_inflation: {
+      icon: "\u{1F4CF}",
+      color: "#6a1b9a",
+      name: "Scale Inflation",
+      description: "Words that inflate physical or numerical magnitude without comparative context.",
+      implication: "Creates a false sense of scale by using extreme size language for things that may be moderate or normal.",
+      suggestion: "Ask: compared to what baseline? Replace with specific measurements or comparisons.",
+      examples: 'Instead of "massive increase" \u2192 "a 15% increase" or "an increase three times the annual average"',
+      words: [
+        "massive",
+        "huge",
+        "enormous",
+        "gigantic",
+        "colossal",
+        "vast",
+        "immense",
+        "towering",
+        "overwhelming",
+        "mammoth",
+        "gargantuan",
+        "titanic"
+      ]
+    },
+    catastrophizing: {
+      icon: "\u{1F6A8}",
+      color: "#b71c1c",
+      name: "Catastrophizing",
+      description: "Crisis and disaster language applied to situations that may not warrant emergency framing.",
+      implication: "Triggers fear responses for non-emergency situations, distorting risk perception and urgency.",
+      suggestion: "Ask: is this genuinely a crisis? Replace with proportionate language and specific impact data.",
+      examples: 'Instead of "crisis" \u2192 "a growing concern" or "a problem affecting 5% of users"',
+      words: [
+        "crisis",
+        "disaster",
+        "catastrophe",
+        "epidemic",
+        "plague",
+        "explosion",
+        "apocalyptic",
+        "calamity",
+        "cataclysm",
+        "meltdown",
+        "fiasco",
+        "debacle",
+        "train wreck"
+      ]
+    },
+    dramatic_verbs: {
+      icon: "\u{1F4A5}",
+      color: "#e65100",
+      name: "Dramatic Verbs",
+      description: "Verbs that exaggerate the degree of change or destruction beyond what the facts support.",
+      implication: "Replaces measured description with violent or extreme action language, distorting actual impact.",
+      suggestion: "Ask: what are the actual numbers? Replace with precise verbs that describe the real magnitude.",
+      examples: 'Instead of "costs skyrocketed" \u2192 "costs increased by 40%" or "costs rose sharply over six months"',
+      words: [
+        "skyrocket",
+        "plummet",
+        "devastate",
+        "destroy",
+        "annihilate",
+        "obliterate",
+        "decimate",
+        "implode",
+        "explode",
+        "torpedo",
+        "shatter",
+        "ravage",
+        "gut",
+        "eviscerate",
+        "cripple"
+      ]
+    },
+    superlative_hype: {
+      icon: "\u2728",
+      color: "#1565c0",
+      name: "Superlative Hype",
+      description: "Adjectives of extreme impressiveness that create false uniqueness or exceptionality.",
+      implication: "Makes ordinary things sound extraordinary, inflating expectations and distorting significance.",
+      suggestion: "Ask: unprecedented compared to what? Replace with specific evidence of what makes this notable.",
+      examples: 'Instead of "unprecedented" \u2192 "the first since 2008" or "exceeds previous records by 12%"',
+      words: [
+        "revolutionary",
+        "unprecedented",
+        "extraordinary",
+        "incredible",
+        "amazing",
+        "astonishing",
+        "staggering",
+        "spectacular",
+        "phenomenal",
+        "unparalleled",
+        "unrivaled",
+        "unmatched",
+        "mind-blowing",
+        "jaw-dropping",
+        "awe-inspiring"
+      ]
+    },
+    paradigm_shift: {
+      icon: "\u{1F504}",
+      color: "#2e7d32",
+      name: "Paradigm Shift",
+      description: "Claims of transformative, game-changing impact that imply everything has fundamentally changed.",
+      implication: "Overstates the significance of changes, implying a complete transformation when the reality may be incremental.",
+      suggestion: "Ask: what specifically changed? Replace with concrete descriptions of what is different and how.",
+      examples: 'Instead of "game changing" \u2192 "introduces a new approach to X that reduces cost by 30%"',
+      words: [
+        "monumental",
+        "tremendous",
+        "breakthrough",
+        "game\\s+changing",
+        "earth\\s+shattering",
+        "paradigm\\s+shifting",
+        "world\\s+changing",
+        "transformative",
+        "disruptive",
+        "landmark",
+        "watershed",
+        "sea\\s+change",
+        "tipping\\s+point",
+        "turning\\s+point"
+      ]
+    }
+  };
+  var maximizersFlat = Object.values(maximizerWords).flatMap((category) => category.words);
+  var maximizers = maximizersFlat;
 
   // src/dictionaries/false-balance.js
   var falseBalancePhrases = [
@@ -1668,257 +2511,544 @@
   ];
 
   // src/dictionaries/euphemisms.js
-  var euphemisms = [
-    // Political euphemisms
-    "enhanced interrogation",
-    "collateral damage",
-    "friendly fire",
-    "extraordinary rendition",
-    "neutralize",
-    "pacification",
-    "strategic withdrawal",
-    "tactical redeployment",
-    "kinetic action",
-    "regime change",
-    "nation building",
-    "peacekeeping operation",
-    // Corporate euphemisms
-    "rightsizing",
-    "downsizing",
-    "restructuring",
-    "optimization",
-    "streamlining",
-    "synergy realization",
-    "workforce adjustment",
-    "negative growth",
-    "deferred success",
-    "challenging market conditions",
-    "revenue enhancement",
-    "price adjustment",
-    "value engineering",
-    // Social euphemisms
-    "passed away",
-    "departed",
-    "no longer with us",
-    "resting in peace",
-    "economically disadvantaged",
-    "underprivileged",
-    "underserved",
-    "differently abled",
-    "physically challenged",
-    "special needs",
-    "senior citizens",
-    "golden years",
-    "twilight years",
-    // Military euphemisms
-    "surgical strike",
-    "precision bombing",
-    "smart weapons",
-    "soft targets",
-    "hard targets",
-    "assets",
-    "resources",
-    "theater of operations",
-    "rules of engagement",
-    "force projection",
-    // Dysphemisms (loaded negative framing)
-    "death tax",
-    "government takeover",
-    "job killers",
-    "tax and spend",
-    "bleeding heart",
-    "welfare queen",
-    "anchor babies",
-    "illegal aliens",
-    "chain migration",
-    "socialized medicine",
-    "nanny state",
-    "big government",
-    // Medical/health euphemisms
-    "therapeutic misadventure",
-    "negative patient outcome",
-    "terminal illness",
-    "life-limiting condition",
-    "comfort care",
-    "pregnancy termination",
-    "medical assistance in dying",
-    // Environmental euphemisms
-    "climate change",
-    "global warming",
-    "carbon footprint",
-    "sustainable development",
-    "clean coal",
-    "energy independence",
-    "managed retreat",
-    "controlled burn",
-    "wildlife management"
-  ];
+  var euphemismWords = {
+    political_euphemism: {
+      icon: "\u{1F3DB}\uFE0F",
+      color: "#5c6bc0",
+      name: "Political Euphemism",
+      description: "Government and policy language that obscures controversial actions behind neutral-sounding terminology.",
+      implication: "Conceals the true nature of government actions, making harmful policies harder to evaluate and oppose.",
+      suggestion: "Replace with direct language that describes what actually happens.",
+      examples: 'Instead of "enhanced interrogation" \u2192 "torture" or "coercive interrogation techniques"',
+      words: [
+        "enhanced interrogation",
+        "collateral damage",
+        "friendly fire",
+        "extraordinary rendition",
+        "neutralize",
+        "pacification",
+        "strategic withdrawal",
+        "tactical redeployment",
+        "kinetic action",
+        "regime change",
+        "nation building",
+        "peacekeeping operation",
+        "police action",
+        "security operation",
+        "freedom fighters",
+        "detainee",
+        "unlawful combatant",
+        "rendition program"
+      ]
+    },
+    corporate_euphemism: {
+      icon: "\u{1F4BC}",
+      color: "#78909c",
+      name: "Corporate Euphemism",
+      description: "Business language that softens negative outcomes like job losses, price increases, and failures.",
+      implication: "Disguises harm to workers, consumers, and communities behind professional-sounding jargon.",
+      suggestion: "Use plain language that makes the impact on people clear.",
+      examples: 'Instead of "rightsizing" \u2192 "laying off employees" or "cutting 200 jobs"',
+      words: [
+        "rightsizing",
+        "downsizing",
+        "restructuring",
+        "optimization",
+        "streamlining",
+        "synergy realization",
+        "workforce adjustment",
+        "negative growth",
+        "deferred success",
+        "challenging market conditions",
+        "revenue enhancement",
+        "price adjustment",
+        "value engineering",
+        "headcount reduction",
+        "involuntary separation",
+        "career transition",
+        "operational efficiency",
+        "resource reallocation",
+        "sunset"
+      ]
+    },
+    social_euphemism: {
+      icon: "\u{1F91D}",
+      color: "#66bb6a",
+      name: "Social Euphemism",
+      description: "Socially polite substitutions used out of sensitivity, courtesy, or respect for dignity.",
+      implication: "Often well-intentioned and appropriate, but can sometimes obscure issues that need direct discussion.",
+      suggestion: "Consider whether the euphemism serves genuine respect or avoids a conversation that needs directness.",
+      examples: '"Passed away" is appropriate for sensitive contexts; "economically disadvantaged" may obscure systemic poverty',
+      words: [
+        "passed away",
+        "departed",
+        "no longer with us",
+        "resting in peace",
+        "economically disadvantaged",
+        "underprivileged",
+        "underserved",
+        "differently abled",
+        "physically challenged",
+        "special needs",
+        "senior citizens",
+        "golden years",
+        "twilight years",
+        "between jobs",
+        "let go",
+        "expecting",
+        "correctional facility",
+        "substance abuse",
+        "unhoused"
+      ]
+    },
+    military_euphemism: {
+      icon: "\u{1F396}\uFE0F",
+      color: "#b71c1c",
+      name: "Military Euphemism",
+      description: "Military jargon that sanitizes violence, casualties, and the human cost of warfare.",
+      implication: "Makes warfare and its consequences more palatable, reducing public scrutiny of military actions.",
+      suggestion: "Describe the actual human impact rather than using sanitized military terminology.",
+      examples: 'Instead of "surgical strike" \u2192 "bombing that killed 12 people" or "targeted airstrike on a residential area"',
+      words: [
+        "surgical strike",
+        "precision bombing",
+        "smart weapons",
+        "soft targets",
+        "hard targets",
+        "assets",
+        "resources",
+        "theater of operations",
+        "rules of engagement",
+        "force projection",
+        "boots on the ground",
+        "area denial",
+        "neutralization",
+        "ordnance delivery",
+        "servicing the target",
+        "engage the enemy"
+      ]
+    },
+    dysphemism: {
+      icon: "\u{1F525}",
+      color: "#e65100",
+      name: "Dysphemism",
+      description: "Loaded negative framing that inflames perception \u2014 the rhetorical opposite of a euphemism.",
+      implication: "Provokes hostility and negative emotional reactions by replacing neutral terms with inflammatory ones.",
+      suggestion: "Replace with neutral, descriptive language that allows readers to form their own judgments.",
+      examples: 'Instead of "death tax" \u2192 "estate tax" or "inheritance tax"; instead of "illegal aliens" \u2192 "undocumented immigrants"',
+      words: [
+        "death tax",
+        "government takeover",
+        "job killers",
+        "tax and spend",
+        "bleeding heart",
+        "welfare queen",
+        "anchor babies",
+        "illegal aliens",
+        "chain migration",
+        "socialized medicine",
+        "nanny state",
+        "big government",
+        "bureaucrats",
+        "handouts",
+        "entitlements",
+        "radical agenda",
+        "open borders",
+        "activist judges"
+      ]
+    },
+    medical_euphemism: {
+      icon: "\u{1F3E5}",
+      color: "#00897b",
+      name: "Medical Euphemism",
+      description: "Healthcare language that softens or obscures medical errors, patient outcomes, and end-of-life realities.",
+      implication: "Can impair informed consent and obscure accountability for medical errors or treatment risks.",
+      suggestion: "Use clear, direct language \u2014 especially when patients need accurate information to make decisions.",
+      examples: 'Instead of "negative patient outcome" \u2192 "the patient died" or "the surgery caused complications"',
+      words: [
+        "therapeutic misadventure",
+        "negative patient outcome",
+        "terminal illness",
+        "life-limiting condition",
+        "comfort care",
+        "pregnancy termination",
+        "medical assistance in dying",
+        "adverse event",
+        "treatment failure",
+        "non-responsive",
+        "palliative sedation",
+        "failure to thrive",
+        "code blue"
+      ]
+    },
+    environmental_euphemism: {
+      icon: "\u{1F33F}",
+      color: "#2e7d32",
+      name: "Environmental Euphemism",
+      description: "Environmental language that minimizes ecological damage or greenwashes harmful practices.",
+      implication: "Makes environmental destruction sound manageable or even positive, reducing urgency for action.",
+      suggestion: "Describe the actual environmental impact directly and specifically.",
+      examples: 'Instead of "clean coal" \u2192 "coal with reduced but still significant emissions" or describe specific pollution levels',
+      words: [
+        "climate change",
+        "global warming",
+        "carbon footprint",
+        "sustainable development",
+        "clean coal",
+        "energy independence",
+        "managed retreat",
+        "controlled burn",
+        "wildlife management",
+        "natural gas",
+        "harvest",
+        "emissions trading",
+        "carbon neutral",
+        "green growth",
+        "responsible mining"
+      ]
+    }
+  };
+  var euphemismsFlat = Object.values(euphemismWords).flatMap((category) => category.words);
+  var euphemisms = euphemismsFlat;
 
   // src/dictionaries/emotional-triggers.js
-  var emotionalTriggers = [
-    // Fear appeals
-    "dangerous precedent",
-    "slippery slope",
-    "existential threat",
-    "grave danger",
-    "serious threat",
-    "dire consequences",
-    "catastrophic results",
-    "devastating impact",
-    "irreversible damage",
-    "point of no return",
-    "ticking time bomb",
-    "imminent danger",
-    "clear and present danger",
-    "looming crisis",
-    "impending doom",
-    // Guilt triggers
-    "shame on",
-    "how dare",
-    "blood on your hands",
-    "morally responsible",
-    "complicit in",
-    "turning a blind eye",
-    "failed to act",
-    "stood by while",
-    "allowed to happen",
-    "could have prevented",
-    "chose to ignore",
-    "willfully neglected",
-    "betrayed the trust",
-    "let down",
-    "abandoned their duty",
-    // Flattery patterns
-    "smart people like you",
-    "educated readers understand",
-    "discerning individuals",
-    "those who truly care",
-    "people of conscience",
-    "thoughtful citizens",
-    "intelligent observers",
-    "wise enough to see",
-    "sophisticated thinkers",
-    "enlightened minds",
-    "those with common sense",
-    "reasonable people agree",
-    // Outrage fuel
-    "shocking revelation",
-    "unbelievable scandal",
-    "absolute outrage",
-    "disgusting display",
-    "appalling behavior",
-    "unconscionable act",
-    "beyond the pale",
-    "crosses the line",
-    "new low",
-    "height of hypocrisy",
-    "blatant corruption",
-    "flagrant violation",
-    "egregious abuse",
-    "stunning betrayal",
-    "jaw-dropping",
-    // Sympathy exploitation
-    "think of the children",
-    "vulnerable victims",
-    "innocent lives",
-    "helpless elderly",
-    "suffering families",
-    "heartbroken parents",
-    "orphaned children",
-    "widows and orphans",
-    "defenseless animals",
-    "voiceless victims",
-    "forgotten souls",
-    "human tragedy",
-    "real people suffering",
-    "faces behind the statistics",
-    // Urgency creation
-    "act now",
-    "before it's too late",
-    "time is running out",
-    "last chance",
-    "final opportunity",
-    "narrow window",
-    "critical moment",
-    "now or never",
-    "decisive moment",
-    "crucial juncture",
-    "make or break",
-    "do or die"
-  ];
+  var emotionalTriggerWords = {
+    fear_appeal: {
+      icon: "\u{1F628}",
+      color: "#c62828",
+      name: "Fear Appeal",
+      description: "Language designed to trigger fear and threat perception, bypassing rational risk assessment.",
+      implication: "Activates the brain's threat response, making readers more susceptible to persuasion and less able to evaluate claims critically.",
+      suggestion: "Ask what specific evidence supports the claimed danger and evaluate actual risk levels.",
+      examples: 'Instead of "existential threat" \u2192 "a significant challenge" or provide specific risk data',
+      words: [
+        "dangerous precedent",
+        "slippery slope",
+        "existential threat",
+        "grave danger",
+        "serious threat",
+        "dire consequences",
+        "catastrophic results",
+        "devastating impact",
+        "irreversible damage",
+        "point of no return",
+        "ticking time bomb",
+        "imminent danger",
+        "clear and present danger",
+        "looming crisis",
+        "impending doom",
+        "mortal threat",
+        "doomsday scenario",
+        "nightmare scenario",
+        "worst case scenario",
+        "on the brink",
+        "spiraling out of control"
+      ]
+    },
+    guilt_induction: {
+      icon: "\u{1F614}",
+      color: "#6a1b9a",
+      name: "Guilt Induction",
+      description: "Language designed to trigger guilt and moral responsibility, pressuring agreement through shame.",
+      implication: "Bypasses rational evaluation by making disagreement feel morally wrong, regardless of the actual merits.",
+      suggestion: "Evaluate whether the responsibility claim is supported by evidence, separate from the emotional pressure.",
+      examples: 'Instead of "blood on your hands" \u2192 "shares responsibility for the outcome" with specific evidence',
+      words: [
+        "shame on",
+        "how dare",
+        "blood on your hands",
+        "morally responsible",
+        "complicit in",
+        "turning a blind eye",
+        "failed to act",
+        "stood by while",
+        "allowed to happen",
+        "could have prevented",
+        "chose to ignore",
+        "willfully neglected",
+        "betrayed the trust",
+        "let down",
+        "abandoned their duty",
+        "on your conscience",
+        "history will judge",
+        "answerable for",
+        "dereliction of duty",
+        "looked the other way",
+        "washed their hands of"
+      ]
+    },
+    flattery_manipulation: {
+      icon: "\u{1F3AD}",
+      color: "#f57f17",
+      name: "Flattery Manipulation",
+      description: "Compliments and in-group identity appeals designed to bias the reader toward agreement.",
+      implication: "Creates social pressure to agree by implying that disagreement means you lack intelligence, virtue, or sophistication.",
+      suggestion: "Recognize the appeal to identity and evaluate the argument on its own merits.",
+      examples: 'Instead of "smart people like you understand" \u2192 present the argument and let readers evaluate it independently',
+      words: [
+        "smart people like you",
+        "educated readers understand",
+        "discerning individuals",
+        "those who truly care",
+        "people of conscience",
+        "thoughtful citizens",
+        "intelligent observers",
+        "wise enough to see",
+        "sophisticated thinkers",
+        "enlightened minds",
+        "those with common sense",
+        "reasonable people agree",
+        "anyone with half a brain",
+        "thinking people know",
+        "informed citizens realize",
+        "astute observers recognize",
+        "those who pay attention",
+        "right-thinking people"
+      ]
+    },
+    outrage_fuel: {
+      icon: "\u{1F92C}",
+      color: "#d84315",
+      name: "Outrage Fuel",
+      description: "Language designed to trigger moral outrage, bypassing careful analysis with indignation.",
+      implication: "Replaces factual evaluation with emotional reaction, making readers more likely to share and amplify without verification.",
+      suggestion: "Look past the outrage language to identify the actual facts and evaluate them independently.",
+      examples: 'Instead of "shocking revelation" \u2192 "new information shows..." with specific details',
+      words: [
+        "shocking revelation",
+        "unbelievable scandal",
+        "absolute outrage",
+        "disgusting display",
+        "appalling behavior",
+        "unconscionable act",
+        "beyond the pale",
+        "crosses the line",
+        "new low",
+        "height of hypocrisy",
+        "blatant corruption",
+        "flagrant violation",
+        "egregious abuse",
+        "stunning betrayal",
+        "jaw-dropping",
+        "slap in the face",
+        "travesty of justice",
+        "moral bankruptcy",
+        "utter contempt",
+        "brazen disregard",
+        "shameless exploitation"
+      ]
+    },
+    sympathy_exploitation: {
+      icon: "\u{1F494}",
+      color: "#1565c0",
+      name: "Sympathy Exploitation",
+      description: "Uses vulnerable populations to weaponize compassion and bypass rational evaluation of arguments.",
+      implication: "Makes disagreement feel heartless, even when the emotional appeal has no logical connection to the argument being made.",
+      suggestion: "Ask how the emotional appeal specifically connects to the policy or argument being advanced.",
+      examples: 'Instead of "think of the children" \u2192 describe specific impacts on children with evidence',
+      words: [
+        "think of the children",
+        "vulnerable victims",
+        "innocent lives",
+        "helpless elderly",
+        "suffering families",
+        "heartbroken parents",
+        "orphaned children",
+        "widows and orphans",
+        "defenseless animals",
+        "voiceless victims",
+        "forgotten souls",
+        "human tragedy",
+        "real people suffering",
+        "faces behind the statistics",
+        "their blood cries out",
+        "who will speak for them",
+        "left to fend for themselves",
+        "prey upon the weak",
+        "the most vulnerable among us",
+        "those who cannot help themselves"
+      ]
+    },
+    false_urgency: {
+      icon: "\u23F0",
+      color: "#ef6c00",
+      name: "False Urgency",
+      description: "Creates artificial time pressure to prevent careful deliberation and force hasty decisions.",
+      implication: "Prevents thoughtful evaluation by implying that delay equals failure, even when no real deadline exists.",
+      suggestion: "Ask what evidence exists for the claimed deadline and whether careful consideration would actually cause harm.",
+      examples: `Instead of "act now before it's too late" \u2192 "this decision would benefit from timely attention because..."`,
+      words: [
+        "act now",
+        "before it's too late",
+        "time is running out",
+        "last chance",
+        "final opportunity",
+        "narrow window",
+        "critical moment",
+        "now or never",
+        "decisive moment",
+        "crucial juncture",
+        "make or break",
+        "do or die",
+        "the clock is ticking",
+        "every second counts",
+        "running out of time",
+        "at the eleventh hour",
+        "no time to waste",
+        "urgent action needed"
+      ]
+    }
+  };
+  var emotionalTriggersFlat = Object.values(emotionalTriggerWords).flatMap((category) => category.words);
+  var emotionalTriggers = emotionalTriggersFlat;
 
   // src/dictionaries/gaslighting.js
-  var gaslightingPhrases = [
-    // Reality denial
-    "that never happened",
-    "you're imagining things",
-    "that's not true",
-    "you're making it up",
-    "completely fabricated",
-    "pure fiction",
-    "didn't happen that way",
-    "false memory",
-    "revisionist history",
-    "twisting the facts",
-    "distorting reality",
-    "alternative facts",
-    // Minimizing concerns
-    "you're overreacting",
-    "making a big deal",
-    "blowing it out of proportion",
-    "being dramatic",
-    "overly sensitive",
-    "too emotional",
-    "getting worked up over nothing",
-    "making mountains out of molehills",
-    "need to calm down",
-    "being hysterical",
-    "irrational response",
-    "taking it too seriously",
-    "reading too much into it",
-    // Memory manipulation
-    "you're misremembering",
-    "that's not what was said",
-    "you're confused",
-    "mixing things up",
-    "got it backwards",
-    "faulty recollection",
-    "selective memory",
-    "conveniently forgetting",
-    "memory is playing tricks",
-    "not how I remember it",
-    "you must be mistaken",
-    "false impression",
-    // Credibility attacks
-    "you're being paranoid",
-    "too sensitive",
-    "crazy to think",
-    "lost touch with reality",
-    "delusional thinking",
-    "conspiracy theorist",
-    "seeing things that aren't there",
-    "jumping to conclusions",
-    "wild accusations",
-    "baseless claims",
-    "unfounded fears",
-    "irrational beliefs",
-    "unstable behavior",
-    "not thinking clearly",
-    // Deflection phrases
-    "the real issue is",
-    "what about",
-    "more importantly",
-    "you're missing the point",
-    "that's not the problem",
-    "focusing on the wrong thing",
-    "beside the point",
-    "irrelevant detail",
-    "distracting from",
-    "changing the subject",
-    "let's talk about",
-    "but what about when",
-    "conveniently ignoring"
-  ];
+  var gaslightingWords = {
+    reality_denial: {
+      icon: "\u{1F6AB}",
+      color: "#b71c1c",
+      name: "Reality Denial",
+      description: "Direct denial that events occurred or facts exist, attacking objective reality itself.",
+      implication: "The strongest form of gaslighting \u2014 attempts to make the target doubt their own perception of verified events.",
+      suggestion: "Check independent records, documents, or witnesses. Trust verifiable evidence over assertions.",
+      examples: `Instead of "that never happened" \u2192 "I have a different recollection \u2014 let's check the record"`,
+      words: [
+        "that never happened",
+        "you're imagining things",
+        "that's not true",
+        "you're making it up",
+        "completely fabricated",
+        "pure fiction",
+        "didn't happen that way",
+        "false memory",
+        "revisionist history",
+        "twisting the facts",
+        "distorting reality",
+        "alternative facts",
+        "total fabrication",
+        "that's a lie",
+        "never said that",
+        "you're inventing things",
+        "fantasy",
+        "fiction not fact"
+      ]
+    },
+    emotional_invalidation: {
+      icon: "\u{1F4A2}",
+      color: "#6a1b9a",
+      name: "Emotional Invalidation",
+      description: "Dismissing emotional responses as irrational or disproportionate to undermine confidence in one's own feelings.",
+      implication: "Teaches the target to distrust their own emotional responses, making them more dependent on the gaslighter's framing.",
+      suggestion: "Your emotional responses are valid data. Evaluate the situation independently of how others characterize your reaction.",
+      examples: `Instead of "you're overreacting" \u2192 "I see this differently \u2014 can we discuss our perspectives?"`,
+      words: [
+        "you're overreacting",
+        "making a big deal",
+        "blowing it out of proportion",
+        "being dramatic",
+        "overly sensitive",
+        "too emotional",
+        "getting worked up over nothing",
+        "making mountains out of molehills",
+        "need to calm down",
+        "being hysterical",
+        "irrational response",
+        "taking it too seriously",
+        "reading too much into it",
+        "stop being so sensitive",
+        "you're too thin-skinned",
+        "learn to take a joke",
+        "lighten up"
+      ]
+    },
+    memory_manipulation: {
+      icon: "\u{1F9E0}",
+      color: "#00838f",
+      name: "Memory Manipulation",
+      description: "Undermining confidence in one's own memory to replace recollections with a preferred narrative.",
+      implication: "Erodes trust in episodic memory, making the target increasingly reliant on the manipulator's version of events.",
+      suggestion: "Keep written records. Check notes, emails, or texts. Verify with other witnesses when possible.",
+      examples: `Instead of "you're misremembering" \u2192 "my recollection differs \u2014 let's look at the meeting notes"`,
+      words: [
+        "you're misremembering",
+        "that's not what was said",
+        "you're confused",
+        "mixing things up",
+        "got it backwards",
+        "faulty recollection",
+        "selective memory",
+        "conveniently forgetting",
+        "memory is playing tricks",
+        "not how I remember it",
+        "you must be mistaken",
+        "false impression",
+        "your memory is unreliable",
+        "you always get this wrong",
+        "that's not what happened at all",
+        "you're rewriting history"
+      ]
+    },
+    credibility_attack: {
+      icon: "\u{1F3AF}",
+      color: "#e65100",
+      name: "Credibility Attack",
+      description: "Attacking the person's mental fitness, judgment, or competence rather than addressing their actual argument.",
+      implication: "Ad hominem disguised as concern \u2014 undermines self-confidence to make the target doubt their own perceptions and judgment.",
+      suggestion: "Evaluate the ARGUMENT being made, not the personal attack. Competence attacks do not address the substance of a claim.",
+      examples: `Instead of "you're being paranoid" \u2192 "I don't see the same pattern \u2014 here's why..."`,
+      words: [
+        "you're being paranoid",
+        "too sensitive",
+        "crazy to think",
+        "lost touch with reality",
+        "delusional thinking",
+        "conspiracy theorist",
+        "seeing things that aren't there",
+        "jumping to conclusions",
+        "wild accusations",
+        "baseless claims",
+        "unfounded fears",
+        "irrational beliefs",
+        "unstable behavior",
+        "not thinking clearly",
+        "you need help",
+        "you're losing it",
+        "unhinged",
+        "out of your mind",
+        "not in your right mind"
+      ]
+    },
+    deflection: {
+      icon: "\u21A9\uFE0F",
+      color: "#546e7a",
+      name: "Deflection",
+      description: "Redirecting attention away from the actual issue to avoid accountability or addressing the concern.",
+      implication: "Prevents resolution by continually shifting focus, leaving the original concern unaddressed while exhausting the target.",
+      suggestion: "Ask: has the original concern been addressed? Return focus to the specific issue at hand.",
+      examples: 'Instead of "what about when you..." \u2192 "I hear your point about X, and I also want to address Y"',
+      words: [
+        "the real issue is",
+        "what about",
+        "more importantly",
+        "you're missing the point",
+        "that's not the problem",
+        "focusing on the wrong thing",
+        "beside the point",
+        "irrelevant detail",
+        "distracting from",
+        "changing the subject",
+        "let's talk about",
+        "but what about when",
+        "conveniently ignoring",
+        "you're deflecting",
+        "nice try changing the topic",
+        "stop trying to distract",
+        "that's whataboutism"
+      ]
+    }
+  };
+  var gaslightingPhrasesFlat = Object.values(gaslightingWords).flatMap((category) => category.words);
+  var gaslightingPhrases = gaslightingPhrasesFlat;
 
   // src/dictionaries/false-dilemma.js
   var falseDilemmaPhrases = [
@@ -2149,6 +3279,8 @@
   var BiasPatterns = class {
     constructor() {
       this.rawPatterns = this.loadRawPatterns();
+      this.subCategoryDictionaries = this.loadSubCategoryDictionaries();
+      this.subCategoryMaps = this.buildSubCategoryMaps();
       this.compiledPatterns = /* @__PURE__ */ new Map();
       this.compileAllPatterns();
     }
@@ -2172,21 +3304,56 @@
         probability: probabilityLanguage
       };
     }
-    // Get opinion word sub-categories for enhanced detection
+    loadSubCategoryDictionaries() {
+      const dictionaries = /* @__PURE__ */ new Map();
+      dictionaries.set("opinion", opinionWords);
+      dictionaries.set("euphemism", euphemismWords);
+      dictionaries.set("weasel", weaselWords);
+      dictionaries.set("maximizer", maximizerWords);
+      dictionaries.set("emotional", emotionalTriggerWords);
+      dictionaries.set("gaslighting", gaslightingWords);
+      return dictionaries;
+    }
+    buildSubCategoryMaps() {
+      const maps = /* @__PURE__ */ new Map();
+      for (const config of Object.values(BiasConfig.BIAS_TYPES)) {
+        if (!config.subCategories)
+          continue;
+        const wordMap = /* @__PURE__ */ new Map();
+        const dictionary = this.subCategoryDictionaries.get(config.id);
+        if (dictionary) {
+          for (const [subId, entry] of Object.entries(dictionary)) {
+            const words = Array.isArray(entry) ? entry : entry.words;
+            if (!words)
+              continue;
+            for (const word of words) {
+              wordMap.set(word.toLowerCase(), {
+                id: subId,
+                ...config.subCategories[subId]
+              });
+            }
+          }
+        }
+        maps.set(config.id, wordMap);
+      }
+      return maps;
+    }
+    getSubCategory(biasTypeId, matchedWord) {
+      const wordMap = this.subCategoryMaps.get(biasTypeId);
+      if (!wordMap)
+        return null;
+      return wordMap.get(matchedWord.toLowerCase()) || null;
+    }
+    getSubCategories(biasTypeId) {
+      return BiasConfig.getSubCategories(biasTypeId);
+    }
+    // @deprecated Use getSubCategories('opinion') instead
     getOpinionSubCategories() {
       return opinionWords;
     }
-    // Get sub-category for a specific opinion word
+    // @deprecated Use getSubCategory('opinion', word) instead
     getOpinionSubCategory(word) {
-      for (const [categoryId, category] of Object.entries(opinionWords)) {
-        if (category.words.includes(word.toLowerCase())) {
-          return {
-            id: categoryId,
-            ...category
-          };
-        }
-      }
-      return null;
+      return this.getSubCategory("opinion", word);
     }
     compileAllPatterns() {
       for (const [type, patterns] of Object.entries(this.rawPatterns)) {
@@ -2261,72 +3428,10 @@
   var HoverContentGenerator = class {
     constructor() {
       this.enhancedDescriptions = {
-        // Basic Detection
         opinion: {
           description: "Subjective language that reveals the writer's personal stance or evaluation. These words signal opinion rather than fact.",
           suggestion: "Consider using more objective language or acknowledging the subjective nature of the statement.",
           examples: "Instead of 'This is obviously wrong' \u2192 'This appears to contradict the evidence' or 'I believe this is incorrect'"
-        },
-        // Opinion Sub-Categories
-        opinion_certainty: {
-          description: "Words that push readers toward unquestioning acceptance by conveying false certainty about debatable topics.",
-          suggestion: "Use more tentative language that acknowledges uncertainty and invites evaluation.",
-          examples: "Instead of 'obviously wrong' \u2192 'appears to contradict' or 'I believe this is incorrect'"
-        },
-        opinion_hedging: {
-          description: "Words that create unnecessary doubt or vagueness, often to avoid taking responsibility for claims.",
-          suggestion: "Be more definitive when you have evidence, or explain the specific reasons for uncertainty.",
-          examples: "Instead of 'maybe true' \u2192 'requires further investigation' or 'preliminary evidence suggests'"
-        },
-        opinion_evaluative_positive: {
-          description: "Subjective positive judgments that reveal the writer's approval without objective criteria.",
-          suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
-          examples: "Instead of 'excellent performance' \u2192 'achieved 95% accuracy' or 'I consider this performance strong because...'"
-        },
-        opinion_evaluative_negative: {
-          description: "Subjective negative judgments that reveal the writer's disapproval without objective criteria.",
-          suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
-          examples: "Instead of 'poor quality' \u2192 'failed to meet safety standards' or 'I find this concerning because...'"
-        },
-        opinion_emotional_charge: {
-          description: "Words designed to trigger strong emotional responses that bypass logical evaluation.",
-          suggestion: "Use neutral language that allows readers to form their own emotional responses based on facts.",
-          examples: "Instead of 'heartwarming story' \u2192 'story about community support' or 'horrifying event' \u2192 'traumatic incident'"
-        },
-        opinion_comparative: {
-          description: "Words that create artificial rankings or comparisons without context or criteria.",
-          suggestion: "Provide specific criteria for comparison or use measured language that acknowledges context.",
-          examples: "Instead of 'the best solution' \u2192 'an effective solution' or 'the most efficient approach we tested'"
-        },
-        opinion_political_framing: {
-          description: "Words that frame issues in political terms, potentially polarizing neutral topics.",
-          suggestion: "Use neutral, descriptive language that focuses on specific policies or actions rather than political labels.",
-          examples: "Instead of 'radical proposal' \u2192 'proposal that differs significantly from current policy' or describe specific elements"
-        },
-        opinion_intensifiers: {
-          description: "Words that amplify or exaggerate without adding meaningful information.",
-          suggestion: "Use specific, measurable descriptions or remove unnecessary intensification.",
-          examples: "Instead of 'extremely important' \u2192 'critical for project success' or 'increased by 300%'"
-        },
-        opinion_credibility_undermining: {
-          description: "Words that question or attack credibility without providing evidence or reasoning.",
-          suggestion: "Address specific claims with evidence rather than attacking the source's credibility.",
-          examples: "Instead of 'so-called expert' \u2192 'Dr. Smith, whose methodology differs from mainstream approaches' or address specific claims"
-        },
-        opinion_loaded_political: {
-          description: "Words that carry heavy political or ideological baggage, triggering partisan responses.",
-          suggestion: "Use specific, descriptive language that focuses on actions or policies rather than loaded terms.",
-          examples: "Instead of 'socialist policies' \u2192 'government-funded programs' or 'authoritarian regime' \u2192 'government that restricts civil liberties'"
-        },
-        opinion_moral_judgments: {
-          description: "Words that impose moral frameworks without acknowledging their subjective nature.",
-          suggestion: "Acknowledge the subjective nature of moral judgments or specify the ethical framework being used.",
-          examples: "Instead of 'immoral behavior' \u2192 'behavior that violates principle X' or 'I consider this unethical because...'"
-        },
-        opinion_emotional_appeals: {
-          description: "Words that bypass logical evaluation by directly targeting emotional responses.",
-          suggestion: "Focus on factual information that allows readers to form their own emotional responses.",
-          examples: "Instead of 'promising developments' \u2192 'developments that may lead to improved outcomes' or provide specific evidence"
         },
         tobe: {
           description: "Forms of 'to be' that can create false equivalencies or unclear relationships. E-Prime writing avoids these to encourage precision.",
@@ -2431,30 +3536,26 @@
       const intensity = match.intensity || 2;
       const intensityLabel = ["Mild", "Moderate", "Severe"][intensity - 1];
       let content = `<div class="hover-card ${isExcellence ? "hover-card-excellence" : "hover-card-problem"}">`;
-      const biasConfig = isExcellence ? BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()] : BiasConfig.getBiasTypeConfig(type);
+      let biasConfig;
+      const subConfig = match.subCategory || null;
+      if (isExcellence) {
+        biasConfig = BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()];
+      } else if (match.parentType) {
+        biasConfig = BiasConfig.getBiasTypeConfig(match.parentType);
+      } else {
+        biasConfig = BiasConfig.getBiasTypeConfig(type);
+      }
       const isContextual = match.isContextual && match.contextReasoning;
       if (isExcellence) {
         content += `<div class="hover-card-header">${this.getTypeName(type, true)}</div>`;
       } else {
-        let typeName;
-        if (match.subCategory && type === "opinion") {
-          const subCategoryType = `opinion_${match.subCategory.id}`;
-          typeName = this.getTypeName(subCategoryType, false);
-          content += `
-                    <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
-                        ${typeName}
-                        <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
-                    </div>
-                `;
-        } else {
-          typeName = this.getTypeName(type, false);
-          content += `
-                    <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
-                        ${typeName}
-                        <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
-                    </div>
-                `;
-        }
+        const typeName = subConfig ? subConfig.name : this.getTypeName(type, false);
+        content += `
+                <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
+                    ${typeName}
+                    <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
+                </div>
+            `;
       }
       content += `<div class="hover-card-text">"${match.text}"</div>`;
       if (isContextual) {
@@ -2488,44 +3589,48 @@
                 </div>
             </div>`;
       }
-      if (match.subCategory) {
+      if (subConfig && subConfig.implication) {
         content += `<div class="hover-card-implication">
-                <strong>Implication:</strong> ${match.subCategory.implication}
+                <strong>Implication:</strong> ${subConfig.implication}
             </div>`;
       }
-      if (biasConfig) {
-        if (biasConfig.basicTip) {
-          content += `<div class="hover-card-reason">${biasConfig.basicTip}</div>`;
+      const effectiveConfig = subConfig || biasConfig;
+      if (effectiveConfig) {
+        const tipText = subConfig && subConfig.basicTip || biasConfig && biasConfig.basicTip;
+        if (tipText) {
+          content += `<div class="hover-card-reason">${tipText}</div>`;
         }
         content += `<div class="hover-card-expanded">`;
         if (isExcellence) {
-          if (biasConfig.whenExcellent) {
+          if (biasConfig && biasConfig.whenExcellent) {
             content += `<div class="hover-card-section">
                         <div class="hover-card-section-title">Why this is excellent:</div>
                         <div class="hover-card-section-content">${biasConfig.whenExcellent}</div>
                     </div>`;
           }
-          if (biasConfig.howToEnhance) {
+          if (biasConfig && biasConfig.howToEnhance) {
             content += `<div class="hover-card-section">
                         <div class="hover-card-section-title">How to enhance further:</div>
                         <div class="hover-card-section-content">${biasConfig.howToEnhance}</div>
                     </div>`;
           }
         } else {
-          if (biasConfig.whenConcerning) {
+          const whenConcerning = subConfig && subConfig.whenConcerning || biasConfig && biasConfig.whenConcerning;
+          if (whenConcerning) {
             content += `<div class="hover-card-section">
                         <div class="hover-card-section-title">When to be concerned:</div>
-                        <div class="hover-card-section-content">${biasConfig.whenConcerning}</div>
+                        <div class="hover-card-section-content">${whenConcerning}</div>
                     </div>`;
           }
-          if (biasConfig.whenAcceptable) {
+          const whenAcceptable = subConfig && subConfig.whenAcceptable || biasConfig && biasConfig.whenAcceptable;
+          if (whenAcceptable) {
             content += `<div class="hover-card-section">
                         <div class="hover-card-section-title">When it's acceptable:</div>
-                        <div class="hover-card-section-content">${biasConfig.whenAcceptable}</div>
+                        <div class="hover-card-section-content">${whenAcceptable}</div>
                     </div>`;
           }
         }
-        if (biasConfig.lookFor && biasConfig.lookFor.length > 0) {
+        if (biasConfig && biasConfig.lookFor && biasConfig.lookFor.length > 0) {
           content += `<div class="hover-card-section">
                     <div class="hover-card-section-title">Look for:</div>
                     <ul class="hover-card-checklist">`;
@@ -2534,7 +3639,7 @@
           });
           content += `</ul></div>`;
         }
-        if (biasConfig.examples) {
+        if (biasConfig && biasConfig.examples) {
           content += `<div class="hover-card-section">
                     <div class="hover-card-section-title">Examples:</div>`;
           if (isExcellence) {
@@ -2565,14 +3670,19 @@
         content += `</div>`;
       } else {
         const descriptions = isExcellence ? this.excellenceDescriptions : this.enhancedDescriptions;
-        let desc;
-        if (match.subCategory && type === "opinion") {
-          const subCategoryType = `opinion_${match.subCategory.id}`;
-          desc = descriptions[subCategoryType];
-        } else {
-          desc = descriptions[type];
-        }
-        if (desc) {
+        const { parentId } = BiasConfig.resolveType(type);
+        const desc = descriptions[parentId] || descriptions[type];
+        if (subConfig && subConfig.description) {
+          content += `<div class="hover-card-reason">${subConfig.description}</div>`;
+          content += `<div class="hover-card-expanded">`;
+          if (subConfig.suggestion) {
+            content += `<div class="hover-card-suggestion">${subConfig.suggestion}</div>`;
+          }
+          if (subConfig.examples) {
+            content += `<div class="hover-card-examples"><strong>Examples:</strong> ${subConfig.examples}</div>`;
+          }
+          content += `</div>`;
+        } else if (desc) {
           content += `<div class="hover-card-reason">${desc.description}</div>`;
           content += `<div class="hover-card-expanded">`;
           if (desc.suggestion) {
@@ -2598,45 +3708,22 @@
       return "";
     }
     getTypeName(type, isExcellence) {
-      const typeNames = {
-        // Problems
-        // opinion: 'Opinion Words',
-        // Opinion Sub-Categories
-        opinion_certainty: "Certainty/Conviction",
-        opinion_hedging: "Hedging/Uncertainty",
-        opinion_evaluative_positive: "Positive Evaluation",
-        opinion_evaluative_negative: "Negative Evaluation",
-        opinion_emotional_charge: "Emotional Charge",
-        opinion_comparative: "Comparative/Superlative",
-        opinion_political_framing: "Political Framing",
-        opinion_intensifiers: "Intensifiers",
-        opinion_credibility_undermining: "Credibility Undermining",
-        opinion_loaded_political: "Loaded Political Terms",
-        opinion_moral_judgments: "Moral/Ethical Judgments",
-        opinion_emotional_appeals: "Emotional Appeals",
-        // Other Problems
-        tobe: "To-Be Verbs",
-        absolute: "Absolute Statements",
-        passive: "Passive Voice",
-        weasel: "Weasel Words",
-        presupposition: "Presuppositions",
-        metaphor: "War Metaphors",
-        minimizer: "Minimizers",
-        maximizer: "Maximizers",
-        falsebalance: "False Balance",
-        euphemism: "Euphemisms",
-        emotional: "Emotional Manipulation",
-        gaslighting: "Gaslighting",
-        falsedilemma: "False Dilemmas",
-        probability: "Probability Perception",
-        // Excellence
-        attribution: "Clear Attribution",
-        nuance: "Nuanced Language",
-        transparency: "Transparent Communication",
-        discourse: "Constructive Discourse",
-        evidence: "Evidence-Based Claims"
-      };
-      return typeNames[type] || (isExcellence ? "Excellence" : "Bias Pattern");
+      const { parentId, subCategoryId } = BiasConfig.resolveType(type);
+      if (subCategoryId) {
+        const subCfg = BiasConfig.getSubCategory(parentId, subCategoryId);
+        if (subCfg)
+          return subCfg.name;
+      }
+      if (isExcellence) {
+        const excConfig = BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()];
+        if (excConfig)
+          return excConfig.name;
+        return "Excellence";
+      }
+      const biasTypeConfig = BiasConfig.getBiasTypeConfig(type);
+      if (biasTypeConfig)
+        return biasTypeConfig.name;
+      return "Bias Pattern";
     }
   };
 
@@ -3062,7 +4149,7 @@
         if (match.isExcellence) {
           span.className = match.className || `${this.excellenceClassPrefix}${match.type}`;
         } else {
-          const cssType = match.type.startsWith("opinion_") ? "opinion" : match.type;
+          const cssType = match.parentType || match.type;
           span.className = `${this.highlightClassPrefix}${cssType}`;
         }
         if (match.intensity) {
@@ -3081,38 +4168,18 @@
       return fragment;
     }
     getTooltipText(type) {
-      const tooltips = {
-        opinion: "Opinion - Subjective - General",
-        // Opinion Sub-Categories
-        opinion_certainty: "Possible Opinion - Certainty/Conviction",
-        opinion_hedging: "Possible Opinion - Hedging/Uncertainty",
-        opinion_evaluative_positive: "Possible Opinion - Positive Evaluation",
-        opinion_evaluative_negative: "Possible Opinion - Negative Evaluation",
-        opinion_emotional_charge: "Possible Opinion - Emotional Charge",
-        opinion_comparative: "Possible Opinion - Comparative/Superlative",
-        opinion_political_framing: "Possible Opinion - Political Framing",
-        opinion_intensifiers: "Possible Opinion - Intensifiers",
-        opinion_credibility_undermining: "Possible Opinion - Credibility Undermining",
-        opinion_loaded_political: "Possible Opinion - Loaded Political Terms",
-        opinion_moral_judgments: "Possible Opinion - Moral/Ethical Judgments",
-        opinion_emotional_appeals: "Possible Opinion - Emotional Appeals",
-        // Other types
-        tobe: "To-be verb (E-Prime violation)",
-        absolute: "Absolute statement",
-        passive: "Passive voice construction",
-        weasel: "Weasel word - vague attribution",
-        presupposition: "Presupposition marker",
-        metaphor: "War metaphor",
-        minimizer: "Minimizing language",
-        maximizer: "Exaggeration/hyperbole",
-        falsebalance: "False balance indicator",
-        euphemism: "Euphemism/dysphemism",
-        emotional: "Emotional manipulation",
-        gaslighting: "Gaslighting phrase",
-        falsedilemma: "False dilemma",
-        probability: "Probability language"
-      };
-      return tooltips[type] || "Bias indicator";
+      const { parentId, subCategoryId } = BiasConfig.resolveType(type);
+      if (subCategoryId) {
+        const parentConfig = BiasConfig.getBiasTypeConfig(parentId);
+        const subConfig = parentConfig && parentConfig.subCategories ? parentConfig.subCategories[subCategoryId] : null;
+        if (subConfig) {
+          return `Possible ${parentConfig.name} - ${subConfig.name}`;
+        }
+      }
+      const directConfig = BiasConfig.getBiasTypeConfig(type);
+      if (directConfig)
+        return directConfig.tooltip;
+      return "Bias indicator";
     }
     getExcellenceTooltipText(type) {
       const tooltips = {
@@ -3182,13 +4249,7 @@
       } else if (match.isExcellence) {
         tooltipText = match.tooltip || this.getExcellenceTooltipText(match.type);
       } else {
-        if (match.subCategory && match.type.startsWith("opinion_")) {
-          tooltipText = this.getTooltipText(match.type);
-        } else if (match.type === "opinion" && match.subCategory) {
-          tooltipText = this.getTooltipText(`opinion_${match.subCategory.id}`);
-        } else {
-          tooltipText = this.getTooltipText(match.type);
-        }
+        tooltipText = this.getTooltipText(match.type);
       }
       spanElement.setAttribute("data-tooltip-text", tooltipText);
     }
@@ -3947,6 +5008,7 @@
     // Generic pattern detection method
     detectPatterns(text, patterns, type) {
       const matches = [];
+      const hasSubCategories = BiasConfig.hasSubCategories(type);
       for (const pattern of patterns) {
         try {
           let match;
@@ -3959,11 +5021,12 @@
               type,
               pattern: pattern.source
             };
-            if (type === "opinion") {
-              const subCategory = this.patterns.getOpinionSubCategory(match[0]);
+            if (hasSubCategories) {
+              const subCategory = this.patterns.getSubCategory(type, match[0]);
               if (subCategory) {
-                matchData.type = `opinion_${subCategory.id}`;
+                matchData.type = BiasConfig.getCompositeType(type, subCategory.id);
                 matchData.subCategory = subCategory;
+                matchData.parentType = type;
               }
             }
             matches.push(matchData);
@@ -4049,7 +5112,7 @@
             const matches = detector.detect(text);
             const matchesWithIntensity = matches.map((match) => ({
               ...match,
-              type,
+              type: match.parentType ? match.type : type,
               intensity: this.excellenceDetector.calculateIntensity(match.text, type),
               portrayal: this.excellenceDetector.detectPortrayal(match.text)
             }));
@@ -4288,10 +5351,13 @@
           this.stats[config.statKey] = (this.stats[config.statKey] || 0) + 1;
         }
       } else {
-        const originalType = match.type.startsWith("opinion_") ? "opinion" : match.type;
-        const detector = this.compiledDetectors.get(originalType);
+        const { parentId } = BiasConfig.resolveType(match.type);
+        const detector = this.compiledDetectors.get(parentId);
         if (detector && detector.statKey) {
           this.stats[detector.statKey]++;
+        }
+        if (match.subCategory && match.subCategory.statKey) {
+          this.stats[match.subCategory.statKey] = (this.stats[match.subCategory.statKey] || 0) + 1;
         }
       }
       const excellenceCount = Object.values(BiasConfig.EXCELLENCE_TYPES).reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);

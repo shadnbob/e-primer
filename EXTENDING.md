@@ -89,34 +89,7 @@ export const PATTERN_DICTIONARIES = {
 };
 ```
 
-### 4. Update Popup HTML
-
-Add the toggle to the appropriate category section in `popup.html`:
-
-```html
-<!-- In the appropriate category section -->
-<div class="toggle-container" data-bias-type="newbias">
-    <div class="toggle-label">
-        <div class="color-indicator" style="background-color: #ff6b35;"></div>
-        <span>New Bias Type</span>
-    </div>
-    <label class="toggle">
-        <input type="checkbox" id="newbiasToggle" data-setting-key="highlightNewBias">
-        <span class="slider"></span>
-    </label>
-</div>
-```
-
-Add the statistic display in the stats grid:
-
-```html
-<div class="stat-item" data-stat-type="newbias">
-    <span class="stat-label">New Bias</span>
-    <span class="stat-value" id="newBiasCount">0</span>
-</div>
-```
-
-### 5. Build and Test
+### 4. Build and Test
 
 Run the build process:
 
@@ -127,7 +100,8 @@ npm run build
 The system will automatically:
 - Generate CSS for your new bias type
 - Include patterns in the detection engine
-- Wire up UI controls and statistics
+- Generate popup UI toggles and statistics via `PopupGenerator.js`
+- Wire up UI controls and event handlers
 
 ## Adding New Excellence Types
 
@@ -171,7 +145,7 @@ The system supports several pattern types:
 
 ### Pattern Testing
 
-Create test files in `test-files/` to validate your patterns:
+Create test files in `tests/manual/` to validate your patterns:
 
 ```html
 <!DOCTYPE html>
