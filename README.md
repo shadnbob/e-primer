@@ -124,20 +124,20 @@ Many phrases are ambiguous. "It seems" can be weaseling ("it seems like this is 
 
 ### Advanced Detection
 - **Passive Voice** — constructions that obscure agency
-- **Weasel Words** — vague attributions and unsupported claims
+- **Weasel Words** — vague attributions and unsupported claims (5 subcategories: unnamed sources, hedged evidence, vague quantifiers, appeal to authority, passive attribution)
 - **Presuppositions** — hidden assumptions embedded in statements
 - **Probability Perception** — vague probability language that distorts risk perception
 
 ### Framing & Rhetoric
 - **War Metaphors** — militaristic language for non-military topics
 - **Minimizers** — language that downplays significance
-- **Maximizers** — exaggeration and hyperbolic language
+- **Maximizers** — exaggeration and hyperbolic language (5 subcategories: scale inflation, catastrophizing, dramatic verbs, superlative hype, paradigm shift)
 
 ### Manipulation Tactics
 - **False Balance** — artificial equivalence between unequal positions
-- **Euphemisms** — language that obscures harsh realities
-- **Emotional Manipulation** — appeals designed to trigger emotional responses
-- **Gaslighting** — phrases that undermine perception and memory
+- **Euphemisms** — language that obscures harsh realities (7 subcategories: political, corporate, social, military, dysphemism, medical, environmental)
+- **Emotional Manipulation** — appeals designed to trigger emotional responses (6 subcategories: fear, guilt, flattery, outrage, sympathy, false urgency)
+- **Gaslighting** — phrases that undermine perception and memory (5 subcategories: reality denial, emotional invalidation, memory manipulation, credibility attack, deflection)
 - **False Dilemmas** — language that forces artificial binary choices
 
 ### Excellence Detection

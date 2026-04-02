@@ -6,6 +6,7 @@ This guide explains how to extend the E-Prime Bias Detector with new bias detect
 
 - [Adding New Bias Types](#adding-new-bias-types)
 - [Adding New Excellence Types](#adding-new-excellence-types)
+- [Adding Subcategories to a Bias Type](#adding-subcategories-to-a-bias-type)
 - [Customizing Detection Patterns](#customizing-detection-patterns)
 - [Adding New Categories](#adding-new-categories)
 - [Modifying the UI](#modifying-the-ui)
@@ -124,6 +125,79 @@ NEW_EXCELLENCE: {
 ```
 
 Create patterns in `src/dictionaries/new-excellence-patterns.js` and follow the same integration steps.
+
+## Adding Subcategories to a Bias Type
+
+Six bias types currently have subcategories (opinion, euphemism, emotional, weasel, maximizer, gaslighting). To add subcategories to another type or extend existing ones:
+
+### 1. Restructure the Dictionary File
+
+Convert the flat array export to a structured object. Each subcategory needs `icon`, `color`, `name`, `description`, `implication`, `suggestion`, `examples`, and `words`. Export both the structured object and a flat array for backward compatibility:
+
+```javascript
+// src/dictionaries/your-bias.js
+export const yourBiasWords = {
+    subcategory_one: {
+        icon: '🔍',
+        color: '#5c6bc0',
+        name: 'Subcategory One',
+        description: 'What this subcategory detects.',
+        implication: 'Why this matters to the reader.',
+        suggestion: 'What the reader should do.',
+        examples: 'Instead of "X" → "Y"',
+        words: ["word1", "word2", "phrase one"]
+    },
+    subcategory_two: {
+        // ... same structure
+    }
+};
+
+export const yourBiasFlat = Object.values(yourBiasWords).flatMap(c => c.words);
+export const yourBias = yourBiasFlat; // Legacy export
+```
+
+### 2. Add subCategories Block to BiasConfig
+
+In the bias type's entry in `BiasConfig.BIAS_TYPES`, add a `subCategories` object. Each subcategory needs `id`, `name`, `icon`, `color`, `description`, `implication`, `suggestion`, `examples`, `settingKey`, `statKey`, `basicTip`, `whenConcerning`, and `whenAcceptable`:
+
+```javascript
+subCategories: {
+    subcategory_one: {
+        id: 'subcategory_one',
+        name: 'Subcategory One',
+        icon: '🔍',
+        color: '#5c6bc0',
+        description: 'What this subcategory detects.',
+        implication: 'Why this matters.',
+        suggestion: 'What to do about it.',
+        examples: 'Instead of "X" → "Y"',
+        settingKey: 'highlightYourBiasSubOne',    // Must follow highlight* convention
+        statKey: 'yourBiasSubOneCount',
+        basicTip: 'Short description for tooltips.',
+        whenConcerning: 'When this pattern is problematic',
+        whenAcceptable: 'When this pattern is acceptable'
+    }
+}
+```
+
+### 3. Register in index.js
+
+Import the structured object and register it in `loadSubCategoryDictionaries()`:
+
+```javascript
+import { yourBias, yourBiasWords } from './your-bias.js';
+
+// In loadSubCategoryDictionaries():
+dictionaries.set('yourbias', yourBiasWords);
+```
+
+### 4. Sync popup-dynamic.js Defaults
+
+Add the new subcategory `settingKey` defaults to `popup-dynamic.js` to match BiasConfig.
+
+### 5. Build and Test
+
+Run `npm run build:all` and `npm test`. The generic architecture handles everything else automatically — subcategory detection, hover cards, popup toggles, stats display, and settings persistence all work without additional code changes.
 
 ## Customizing Detection Patterns
 

@@ -77,31 +77,28 @@ The extension detects bias patterns in 4 main categories (15 types total, all en
 3. **Framing & Rhetoric**: War metaphors, minimizers, maximizers
 4. **Manipulation Tactics**: False balance, euphemisms, emotional manipulation, gaslighting, false dilemmas
 
-### Opinion Word Subcategories
+### Subcategory System
 
-Opinion words are unique in this project — they use a subcategory system defined in `src/dictionaries/opinion-words.js`. Each subcategory has its own `icon`, `color`, `name`, `description`, `implication`, `suggestion`, `examples`, and `words` array. The 12 subcategories are:
+Six bias types have subcategories — structured taxonomies that provide more specific detection and tailored guidance. Each subcategory has its own `icon`, `color`, `name`, `description`, `implication`, `suggestion`, `examples`, and `words` array in its dictionary file, plus `settingKey`, `statKey`, `basicTip`, `whenConcerning`, and `whenAcceptable` metadata in BiasConfig.
 
-1. **certainty** - False certainty (e.g., "obviously", "undoubtedly")
-2. **hedging** - Unnecessary vagueness (e.g., "probably", "maybe")
-3. **evaluative_positive** - Subjective approval (e.g., "excellent", "outstanding")
-4. **evaluative_negative** - Subjective disapproval (e.g., "abysmal", "deplorable")
-5. **emotional_charge** - Emotion-triggering words (e.g., "heartwarming", "terrifying")
-6. **comparative** - Artificial rankings (e.g., "best", "worst", "superior")
-7. **political_framing** - Political polarization (e.g., "radical", "controversial")
-8. **intensifiers** - Amplifiers without substance (e.g., "very", "extremely")
-9. **credibility_undermining** - Source attacks (e.g., "so-called", "alleges")
-10. **loaded_political** - Ideological triggers (e.g., "socialist", "regime")
-11. **moral_judgments** - Imposed moral frameworks (e.g., "immoral", "unjust")
-12. **emotional_appeals** - Emotional bypasses (e.g., "promising", "fearful")
+**Bias types with subcategories (40 total subcategories):**
+1. **Opinion Words** (12): certainty, hedging, evaluative_positive, evaluative_negative, emotional_charge, comparative, political_framing, intensifiers, credibility_undermining, loaded_political, moral_judgments, emotional_appeals
+2. **Euphemisms** (7): political_euphemism, corporate_euphemism, social_euphemism, military_euphemism, dysphemism, medical_euphemism, environmental_euphemism
+3. **Emotional Manipulation** (6): fear_appeal, guilt_induction, flattery_manipulation, outrage_fuel, sympathy_exploitation, false_urgency
+4. **Weasel Words** (5): unnamed_sources, hedged_evidence, vague_quantifiers, appeal_to_authority, passive_attribution
+5. **Maximizers** (5): scale_inflation, catastrophizing, dramatic_verbs, superlative_hype, paradigm_shift
+6. **Gaslighting** (5): reality_denial, emotional_invalidation, memory_manipulation, credibility_attack, deflection
 
 **How subcategories flow through the code:**
-- `BiasPatterns.getOpinionSubCategory(word)` looks up which subcategory a matched word belongs to
-- `BiasDetector.detectPatterns()` enriches opinion matches with `matchData.subCategory` and changes `matchData.type` to `opinion_{subcategoryId}`
-- `DOMProcessor` uses the base `opinion` CSS class for styling but passes subcategory data via `data-sub-category` attribute
+- Dictionary files export a structured object (e.g., `euphemismWords`) with subcategory keys, plus a flat array (e.g., `euphemismsFlat`) for backward-compatible regex matching
+- `BiasPatterns.getSubCategory(biasTypeId, word)` looks up which subcategory a matched word belongs to (generic — works for any type with subcategories)
+- `BiasDetector.detectPatterns()` enriches matches with `matchData.subCategory` and changes `matchData.type` to `{parentId}_{subcategoryId}` (e.g., `euphemism_dysphemism`)
+- `DOMProcessor` uses the parent type CSS class for styling but passes subcategory data via `data-sub-category` attribute
 - `HoverContentGenerator` shows subcategory-specific names, implications, and suggestions in hover cards
-- A flat `opinionWordsFlat` array is exported for backward-compatible regex matching
-
-No other bias type currently has subcategories. The architecture is hardcoded to opinion — generalizing it would require changes to `BiasPatterns`, `BiasDetector.detectPatterns()`, `DOMProcessor`, and `HoverContentGenerator`.
+- `BiasConfig.hasSubCategories(id)`, `getSubCategories(id)`, `getSubCategory(id, subId)`, `resolveType(compositeType)`, and `getCompositeType(parentId, subId)` provide generic subcategory metadata lookups
+- `PopupGenerator` renders nested subcategory toggles under parent types
+- `StatsDisplay` shows per-subcategory counts
+- Legacy methods `getOpinionSubCategory(word)` and `getOpinionSubCategories()` are retained as deprecated wrappers
 
 ### Excellence Detection
 
