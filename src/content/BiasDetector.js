@@ -42,6 +42,7 @@ export class BiasDetector {
     // Generic pattern detection method
     detectPatterns(text, patterns, type) {
         const matches = [];
+        const hasSubCategories = BiasConfig.hasSubCategories(type);
         
         for (const pattern of patterns) {
             try {
@@ -58,12 +59,12 @@ export class BiasDetector {
                         pattern: pattern.source
                     };
                     
-                    // For opinion words, enrich with sub-category information
-                    if (type === 'opinion') {
-                        const subCategory = this.patterns.getOpinionSubCategory(match[0]);
+                    if (hasSubCategories) {
+                        const subCategory = this.patterns.getSubCategory(type, match[0]);
                         if (subCategory) {
-                            matchData.type = `opinion_${subCategory.id}`;
+                            matchData.type = BiasConfig.getCompositeType(type, subCategory.id);
                             matchData.subCategory = subCategory;
+                            matchData.parentType = type;
                         }
                     }
                     
@@ -185,7 +186,7 @@ export class BiasDetector {
                     // Add intensity for problem patterns
                     const matchesWithIntensity = matches.map(match => ({
                         ...match,
-                        type: type,
+                        type: match.parentType ? match.type : type,
                         intensity: this.excellenceDetector.calculateIntensity(match.text, type),
                         portrayal: this.excellenceDetector.detectPortrayal(match.text)
                     }));
@@ -501,11 +502,13 @@ export class BiasDetector {
                 this.stats[config.statKey] = (this.stats[config.statKey] || 0) + 1;
             }
         } else {
-            // For opinion sub-categories, map back to the original 'opinion' type for stats
-            const originalType = match.type.startsWith('opinion_') ? 'opinion' : match.type;
-            const detector = this.compiledDetectors.get(originalType);
+            const { parentId } = BiasConfig.resolveType(match.type);
+            const detector = this.compiledDetectors.get(parentId);
             if (detector && detector.statKey) {
                 this.stats[detector.statKey]++;
+            }
+            if (match.subCategory && match.subCategory.statKey) {
+                this.stats[match.subCategory.statKey] = (this.stats[match.subCategory.statKey] || 0) + 1;
             }
         }
         

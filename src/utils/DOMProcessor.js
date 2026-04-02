@@ -1,4 +1,5 @@
 // utils/DOMProcessor.js - DOM manipulation utilities
+import { BiasConfig } from '../config/BiasConfig.js';
 import { HoverContentGenerator } from './HoverContentGenerator.js';
 import { getPopupManager } from './PopupManager.js';
 
@@ -152,8 +153,7 @@ export class DOMProcessor {
             if (match.isExcellence) {
                 span.className = match.className || `${this.excellenceClassPrefix}${match.type}`;
             } else {
-                // For opinion sub-categories, use the base 'opinion' class for styling
-                const cssType = match.type.startsWith('opinion_') ? 'opinion' : match.type;
+                const cssType = match.parentType || match.type;
                 span.className = `${this.highlightClassPrefix}${cssType}`;
             }
             
@@ -183,40 +183,17 @@ export class DOMProcessor {
     }
 
     getTooltipText(type) {
-        const tooltips = {
-            opinion: 'Opinion - Subjective - General',
-            
-            // Opinion Sub-Categories
-            opinion_certainty: 'Possible Opinion - Certainty/Conviction',
-            opinion_hedging: 'Possible Opinion - Hedging/Uncertainty',
-            opinion_evaluative_positive: 'Possible Opinion - Positive Evaluation',
-            opinion_evaluative_negative: 'Possible Opinion - Negative Evaluation',
-            opinion_emotional_charge: 'Possible Opinion - Emotional Charge',
-            opinion_comparative: 'Possible Opinion - Comparative/Superlative',
-            opinion_political_framing: 'Possible Opinion - Political Framing',
-            opinion_intensifiers: 'Possible Opinion - Intensifiers',
-            opinion_credibility_undermining: 'Possible Opinion - Credibility Undermining',
-            opinion_loaded_political: 'Possible Opinion - Loaded Political Terms',
-            opinion_moral_judgments: 'Possible Opinion - Moral/Ethical Judgments',
-            opinion_emotional_appeals: 'Possible Opinion - Emotional Appeals',
-            
-            // Other types
-            tobe: 'To-be verb (E-Prime violation)',
-            absolute: 'Absolute statement',
-            passive: 'Passive voice construction',
-            weasel: 'Weasel word - vague attribution',
-            presupposition: 'Presupposition marker',
-            metaphor: 'War metaphor',
-            minimizer: 'Minimizing language',
-            maximizer: 'Exaggeration/hyperbole',
-            falsebalance: 'False balance indicator',
-            euphemism: 'Euphemism/dysphemism',
-            emotional: 'Emotional manipulation',
-            gaslighting: 'Gaslighting phrase',
-            falsedilemma: 'False dilemma',
-            probability: 'Probability language'
-        };
-        return tooltips[type] || 'Bias indicator';
+        const { parentId, subCategoryId } = BiasConfig.resolveType(type);
+        if (subCategoryId) {
+            const parentConfig = BiasConfig.getBiasTypeConfig(parentId);
+            const subConfig = parentConfig && parentConfig.subCategories ? parentConfig.subCategories[subCategoryId] : null;
+            if (subConfig) {
+                return `Possible ${parentConfig.name} - ${subConfig.name}`;
+            }
+        }
+        const directConfig = BiasConfig.getBiasTypeConfig(type);
+        if (directConfig) return directConfig.tooltip;
+        return 'Bias indicator';
     }
     
     getExcellenceTooltipText(type) {
@@ -309,13 +286,7 @@ export class DOMProcessor {
         } else if (match.isExcellence) {
             tooltipText = match.tooltip || this.getExcellenceTooltipText(match.type);
         } else {
-            if (match.subCategory && match.type.startsWith('opinion_')) {
-                tooltipText = this.getTooltipText(match.type);
-            } else if (match.type === 'opinion' && match.subCategory) {
-                tooltipText = this.getTooltipText(`opinion_${match.subCategory.id}`);
-            } else {
-                tooltipText = this.getTooltipText(match.type);
-            }
+            tooltipText = this.getTooltipText(match.type);
         }
         
         // Don't use 'title' attribute as it creates native browser tooltips

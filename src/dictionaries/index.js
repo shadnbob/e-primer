@@ -1,23 +1,26 @@
 // dictionaries/index.js - Central dictionary export
+import { BiasConfig } from '../config/BiasConfig.js';
 import { opinionWords, opinionWordsFlat } from './opinion-words.js';
 import { toBeVerbs } from './tobe-verbs.js';
 import { absoluteWords } from './absolute-words.js';
 import { passivePatterns } from './passive-patterns.js';
-import { weaselPhrases } from './weasel-phrases.js';
+import { weaselPhrases, weaselWords } from './weasel-phrases.js';
 import { presuppositionMarkers } from './presupposition-markers.js';
 import { warMetaphors } from './war-metaphors.js';
 import { minimizers } from './minimizers.js';
-import { maximizers } from './maximizers.js';
+import { maximizers, maximizerWords } from './maximizers.js';
 import { falseBalancePhrases } from './false-balance.js';
-import { euphemisms } from './euphemisms.js';
-import { emotionalTriggers } from './emotional-triggers.js';
-import { gaslightingPhrases } from './gaslighting.js';
+import { euphemisms, euphemismWords } from './euphemisms.js';
+import { emotionalTriggers, emotionalTriggerWords } from './emotional-triggers.js';
+import { gaslightingPhrases, gaslightingWords } from './gaslighting.js';
 import { falseDilemmaPhrases } from './false-dilemma.js';
 import { probabilityLanguage } from './probability-language.js';
 
 export class BiasPatterns {
     constructor() {
         this.rawPatterns = this.loadRawPatterns();
+        this.subCategoryDictionaries = this.loadSubCategoryDictionaries();
+        this.subCategoryMaps = this.buildSubCategoryMaps();
         this.compiledPatterns = new Map();
         this.compileAllPatterns();
     }
@@ -42,22 +45,58 @@ export class BiasPatterns {
         };
     }
 
-    // Get opinion word sub-categories for enhanced detection
+    loadSubCategoryDictionaries() {
+        const dictionaries = new Map();
+        dictionaries.set('opinion', opinionWords);
+        dictionaries.set('euphemism', euphemismWords);
+        dictionaries.set('weasel', weaselWords);
+        dictionaries.set('maximizer', maximizerWords);
+        dictionaries.set('emotional', emotionalTriggerWords);
+        dictionaries.set('gaslighting', gaslightingWords);
+        return dictionaries;
+    }
+
+    buildSubCategoryMaps() {
+        const maps = new Map();
+        for (const config of Object.values(BiasConfig.BIAS_TYPES)) {
+            if (!config.subCategories) continue;
+            const wordMap = new Map();
+            const dictionary = this.subCategoryDictionaries.get(config.id);
+            if (dictionary) {
+                for (const [subId, entry] of Object.entries(dictionary)) {
+                    const words = Array.isArray(entry) ? entry : entry.words;
+                    if (!words) continue;
+                    for (const word of words) {
+                        wordMap.set(word.toLowerCase(), {
+                            id: subId,
+                            ...config.subCategories[subId]
+                        });
+                    }
+                }
+            }
+            maps.set(config.id, wordMap);
+        }
+        return maps;
+    }
+
+    getSubCategory(biasTypeId, matchedWord) {
+        const wordMap = this.subCategoryMaps.get(biasTypeId);
+        if (!wordMap) return null;
+        return wordMap.get(matchedWord.toLowerCase()) || null;
+    }
+
+    getSubCategories(biasTypeId) {
+        return BiasConfig.getSubCategories(biasTypeId);
+    }
+
+    // @deprecated Use getSubCategories('opinion') instead
     getOpinionSubCategories() {
         return opinionWords;
     }
 
-    // Get sub-category for a specific opinion word
+    // @deprecated Use getSubCategory('opinion', word) instead
     getOpinionSubCategory(word) {
-        for (const [categoryId, category] of Object.entries(opinionWords)) {
-            if (category.words.includes(word.toLowerCase())) {
-                return {
-                    id: categoryId,
-                    ...category
-                };
-            }
-        }
-        return null;
+        return this.getSubCategory('opinion', word);
     }
 
     compileAllPatterns() {

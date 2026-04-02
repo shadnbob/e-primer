@@ -4,73 +4,10 @@ import { BiasConfig } from '../config/BiasConfig.js';
 export class HoverContentGenerator {
     constructor() {
         this.enhancedDescriptions = {
-            // Basic Detection
             opinion: {
                 description: "Subjective language that reveals the writer's personal stance or evaluation. These words signal opinion rather than fact.",
                 suggestion: "Consider using more objective language or acknowledging the subjective nature of the statement.",
                 examples: "Instead of 'This is obviously wrong' → 'This appears to contradict the evidence' or 'I believe this is incorrect'"
-            },
-            
-            // Opinion Sub-Categories
-            opinion_certainty: {
-                description: "Words that push readers toward unquestioning acceptance by conveying false certainty about debatable topics.",
-                suggestion: "Use more tentative language that acknowledges uncertainty and invites evaluation.",
-                examples: "Instead of 'obviously wrong' → 'appears to contradict' or 'I believe this is incorrect'"
-            },
-            opinion_hedging: {
-                description: "Words that create unnecessary doubt or vagueness, often to avoid taking responsibility for claims.",
-                suggestion: "Be more definitive when you have evidence, or explain the specific reasons for uncertainty.",
-                examples: "Instead of 'maybe true' → 'requires further investigation' or 'preliminary evidence suggests'"
-            },
-            opinion_evaluative_positive: {
-                description: "Subjective positive judgments that reveal the writer's approval without objective criteria.",
-                suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
-                examples: "Instead of 'excellent performance' → 'achieved 95% accuracy' or 'I consider this performance strong because...'"
-            },
-            opinion_evaluative_negative: {
-                description: "Subjective negative judgments that reveal the writer's disapproval without objective criteria.",
-                suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
-                examples: "Instead of 'poor quality' → 'failed to meet safety standards' or 'I find this concerning because...'"
-            },
-            opinion_emotional_charge: {
-                description: "Words designed to trigger strong emotional responses that bypass logical evaluation.",
-                suggestion: "Use neutral language that allows readers to form their own emotional responses based on facts.",
-                examples: "Instead of 'heartwarming story' → 'story about community support' or 'horrifying event' → 'traumatic incident'"
-            },
-            opinion_comparative: {
-                description: "Words that create artificial rankings or comparisons without context or criteria.",
-                suggestion: "Provide specific criteria for comparison or use measured language that acknowledges context.",
-                examples: "Instead of 'the best solution' → 'an effective solution' or 'the most efficient approach we tested'"
-            },
-            opinion_political_framing: {
-                description: "Words that frame issues in political terms, potentially polarizing neutral topics.",
-                suggestion: "Use neutral, descriptive language that focuses on specific policies or actions rather than political labels.",
-                examples: "Instead of 'radical proposal' → 'proposal that differs significantly from current policy' or describe specific elements"
-            },
-            opinion_intensifiers: {
-                description: "Words that amplify or exaggerate without adding meaningful information.",
-                suggestion: "Use specific, measurable descriptions or remove unnecessary intensification.",
-                examples: "Instead of 'extremely important' → 'critical for project success' or 'increased by 300%'"
-            },
-            opinion_credibility_undermining: {
-                description: "Words that question or attack credibility without providing evidence or reasoning.",
-                suggestion: "Address specific claims with evidence rather than attacking the source's credibility.",
-                examples: "Instead of 'so-called expert' → 'Dr. Smith, whose methodology differs from mainstream approaches' or address specific claims"
-            },
-            opinion_loaded_political: {
-                description: "Words that carry heavy political or ideological baggage, triggering partisan responses.",
-                suggestion: "Use specific, descriptive language that focuses on actions or policies rather than loaded terms.",
-                examples: "Instead of 'socialist policies' → 'government-funded programs' or 'authoritarian regime' → 'government that restricts civil liberties'"
-            },
-            opinion_moral_judgments: {
-                description: "Words that impose moral frameworks without acknowledging their subjective nature.",
-                suggestion: "Acknowledge the subjective nature of moral judgments or specify the ethical framework being used.",
-                examples: "Instead of 'immoral behavior' → 'behavior that violates principle X' or 'I consider this unethical because...'"
-            },
-            opinion_emotional_appeals: {
-                description: "Words that bypass logical evaluation by directly targeting emotional responses.",
-                suggestion: "Focus on factual information that allows readers to form their own emotional responses.",
-                examples: "Instead of 'promising developments' → 'developments that may lead to improved outcomes' or provide specific evidence"
             },
             tobe: {
                 description: "Forms of 'to be' that can create false equivalencies or unclear relationships. E-Prime writing avoids these to encourage precision.",
@@ -182,39 +119,28 @@ export class HoverContentGenerator {
         
         let content = `<div class="hover-card ${isExcellence ? 'hover-card-excellence' : 'hover-card-problem'}">`;
         
-        // Get configuration from BiasConfig
-        const biasConfig = isExcellence ? 
-            BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()] : 
-            BiasConfig.getBiasTypeConfig(type);
+        let biasConfig;
+        const subConfig = match.subCategory || null;
+        if (isExcellence) {
+            biasConfig = BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()];
+        } else if (match.parentType) {
+            biasConfig = BiasConfig.getBiasTypeConfig(match.parentType);
+        } else {
+            biasConfig = BiasConfig.getBiasTypeConfig(type);
+        }
             
-        // Check if this is a contextual match with specific reasoning
         const isContextual = match.isContextual && match.contextReasoning;
         
-        // Header section
         if (isExcellence) {
             content += `<div class="hover-card-header">${this.getTypeName(type, true)}</div>`;
         } else {
-            // For opinion words with sub-categories, show the sub-category name
-            let typeName;
-            if (match.subCategory && type === 'opinion') {
-                const subCategoryType = `opinion_${match.subCategory.id}`;
-                typeName = this.getTypeName(subCategoryType, false);
-                
-                content += `
-                    <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
-                        ${typeName}
-                        <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
-                    </div>
-                `;
-            } else {
-                typeName = this.getTypeName(type, false);
-                content += `
-                    <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
-                        ${typeName}
-                        <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
-                    </div>
-                `;
-            }
+            const typeName = subConfig ? subConfig.name : this.getTypeName(type, false);
+            content += `
+                <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
+                    ${typeName}
+                    <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
+                </div>
+            `;
         }
         
         // Quoted text
@@ -258,57 +184,55 @@ export class HoverContentGenerator {
             </div>`;
         }
         
-        // Sub-category implication (for opinion words)
-        if (match.subCategory) {
+        if (subConfig && subConfig.implication) {
             content += `<div class="hover-card-implication">
-                <strong>Implication:</strong> ${match.subCategory.implication}
+                <strong>Implication:</strong> ${subConfig.implication}
             </div>`;
         }
         
-        // Use BiasConfig data for enhanced tips
-        if (biasConfig) {
-            // Basic description
-            if (biasConfig.basicTip) {
-                content += `<div class="hover-card-reason">${biasConfig.basicTip}</div>`;
+        const effectiveConfig = subConfig || biasConfig;
+        if (effectiveConfig) {
+            const tipText = (subConfig && subConfig.basicTip) || (biasConfig && biasConfig.basicTip);
+            if (tipText) {
+                content += `<div class="hover-card-reason">${tipText}</div>`;
             }
             
-            // Enhanced contextual content
             content += `<div class="hover-card-expanded">`;
             
             if (isExcellence) {
-                // Excellence-specific sections
-                if (biasConfig.whenExcellent) {
+                if (biasConfig && biasConfig.whenExcellent) {
                     content += `<div class="hover-card-section">
                         <div class="hover-card-section-title">Why this is excellent:</div>
                         <div class="hover-card-section-content">${biasConfig.whenExcellent}</div>
                     </div>`;
                 }
                 
-                if (biasConfig.howToEnhance) {
+                if (biasConfig && biasConfig.howToEnhance) {
                     content += `<div class="hover-card-section">
                         <div class="hover-card-section-title">How to enhance further:</div>
                         <div class="hover-card-section-content">${biasConfig.howToEnhance}</div>
                     </div>`;
                 }
             } else {
-                // Problem-specific sections
-                if (biasConfig.whenConcerning) {
+                const whenConcerning = (subConfig && subConfig.whenConcerning) || (biasConfig && biasConfig.whenConcerning);
+                if (whenConcerning) {
                     content += `<div class="hover-card-section">
                         <div class="hover-card-section-title">When to be concerned:</div>
-                        <div class="hover-card-section-content">${biasConfig.whenConcerning}</div>
+                        <div class="hover-card-section-content">${whenConcerning}</div>
                     </div>`;
                 }
                 
-                if (biasConfig.whenAcceptable) {
+                const whenAcceptable = (subConfig && subConfig.whenAcceptable) || (biasConfig && biasConfig.whenAcceptable);
+                if (whenAcceptable) {
                     content += `<div class="hover-card-section">
                         <div class="hover-card-section-title">When it's acceptable:</div>
-                        <div class="hover-card-section-content">${biasConfig.whenAcceptable}</div>
+                        <div class="hover-card-section-content">${whenAcceptable}</div>
                     </div>`;
                 }
             }
             
             // Look for checklist
-            if (biasConfig.lookFor && biasConfig.lookFor.length > 0) {
+            if (biasConfig && biasConfig.lookFor && biasConfig.lookFor.length > 0) {
                 content += `<div class="hover-card-section">
                     <div class="hover-card-section-title">Look for:</div>
                     <ul class="hover-card-checklist">`;
@@ -319,7 +243,7 @@ export class HoverContentGenerator {
             }
             
             // Examples section
-            if (biasConfig.examples) {
+            if (biasConfig && biasConfig.examples) {
                 content += `<div class="hover-card-section">
                     <div class="hover-card-section-title">Examples:</div>`;
                 
@@ -356,18 +280,21 @@ export class HoverContentGenerator {
             
             content += `</div>`;
         } else {
-            // Fallback to legacy descriptions if BiasConfig data is not available
             const descriptions = isExcellence ? this.excellenceDescriptions : this.enhancedDescriptions;
+            const { parentId } = BiasConfig.resolveType(type);
+            const desc = descriptions[parentId] || descriptions[type];
             
-            let desc;
-            if (match.subCategory && type === 'opinion') {
-                const subCategoryType = `opinion_${match.subCategory.id}`;
-                desc = descriptions[subCategoryType];
-            } else {
-                desc = descriptions[type];
-            }
-            
-            if (desc) {
+            if (subConfig && subConfig.description) {
+                content += `<div class="hover-card-reason">${subConfig.description}</div>`;
+                content += `<div class="hover-card-expanded">`;
+                if (subConfig.suggestion) {
+                    content += `<div class="hover-card-suggestion">${subConfig.suggestion}</div>`;
+                }
+                if (subConfig.examples) {
+                    content += `<div class="hover-card-examples"><strong>Examples:</strong> ${subConfig.examples}</div>`;
+                }
+                content += `</div>`;
+            } else if (desc) {
                 content += `<div class="hover-card-reason">${desc.description}</div>`;
                 
                 content += `<div class="hover-card-expanded">`;
@@ -405,48 +332,18 @@ export class HoverContentGenerator {
     
     
     getTypeName(type, isExcellence) {
-        const typeNames = {
-            // Problems
-            // opinion: 'Opinion Words',
-            
-            // Opinion Sub-Categories
-            opinion_certainty: 'Certainty/Conviction',
-            opinion_hedging: 'Hedging/Uncertainty',
-            opinion_evaluative_positive: 'Positive Evaluation',
-            opinion_evaluative_negative: 'Negative Evaluation',
-            opinion_emotional_charge: 'Emotional Charge',
-            opinion_comparative: 'Comparative/Superlative',
-            opinion_political_framing: 'Political Framing',
-            opinion_intensifiers: 'Intensifiers',
-            opinion_credibility_undermining: 'Credibility Undermining',
-            opinion_loaded_political: 'Loaded Political Terms',
-            opinion_moral_judgments: 'Moral/Ethical Judgments',
-            opinion_emotional_appeals: 'Emotional Appeals',
-            
-            // Other Problems
-            tobe: 'To-Be Verbs',
-            absolute: 'Absolute Statements',
-            passive: 'Passive Voice',
-            weasel: 'Weasel Words',
-            presupposition: 'Presuppositions',
-            metaphor: 'War Metaphors',
-            minimizer: 'Minimizers',
-            maximizer: 'Maximizers',
-            falsebalance: 'False Balance',
-            euphemism: 'Euphemisms',
-            emotional: 'Emotional Manipulation',
-            gaslighting: 'Gaslighting',
-            falsedilemma: 'False Dilemmas',
-            probability: 'Probability Perception',
-            
-            // Excellence
-            attribution: 'Clear Attribution',
-            nuance: 'Nuanced Language',
-            transparency: 'Transparent Communication',
-            discourse: 'Constructive Discourse',
-            evidence: 'Evidence-Based Claims'
-        };
-        
-        return typeNames[type] || (isExcellence ? 'Excellence' : 'Bias Pattern');
+        const { parentId, subCategoryId } = BiasConfig.resolveType(type);
+        if (subCategoryId) {
+            const subCfg = BiasConfig.getSubCategory(parentId, subCategoryId);
+            if (subCfg) return subCfg.name;
+        }
+        if (isExcellence) {
+            const excConfig = BiasConfig.EXCELLENCE_TYPES[type.toUpperCase()];
+            if (excConfig) return excConfig.name;
+            return 'Excellence';
+        }
+        const biasTypeConfig = BiasConfig.getBiasTypeConfig(type);
+        if (biasTypeConfig) return biasTypeConfig.name;
+        return 'Bias Pattern';
     }
 }
