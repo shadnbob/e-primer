@@ -14,12 +14,14 @@ export class PopupGenerator {
     generateBiasTypeToggle(biasType) {
         const colorStyle = this.getColorIndicatorStyle(biasType.color);
         const isEnabled = biasType.enabled ? 'checked' : '';
+        const hasSubCats = biasType.subCategories && Object.keys(biasType.subCategories).length > 0;
         
-        return `
-            <div class="toggle-container" data-bias-type="${biasType.id}">
+        let html = `
+            <div class="toggle-container${hasSubCats ? ' has-subcategories' : ''}" data-bias-type="${biasType.id}">
                 <div class="toggle-label">
                     <div class="color-indicator" style="${colorStyle}"></div>
                     <span>${biasType.name}</span>
+                    ${hasSubCats ? '<span class="subcat-chevron"></span>' : ''}
                 </div>
                 <label class="toggle">
                     <input type="checkbox" 
@@ -30,6 +32,32 @@ export class PopupGenerator {
                     <span class="slider"></span>
                 </label>
             </div>`;
+        
+        if (hasSubCats) {
+            html += `<div class="subcategory-group collapsed" data-parent="${biasType.id}">`;
+            for (const [subId, subConfig] of Object.entries(biasType.subCategories)) {
+                const subColorStyle = subConfig.color ? this.getColorIndicatorStyle(subConfig.color) : colorStyle;
+                html += `
+                    <div class="toggle-container subcategory-toggle" data-sub-type="${subId}" data-parent-type="${biasType.id}">
+                        <div class="toggle-label">
+                            <div class="color-indicator" style="${subColorStyle}"></div>
+                            <span>${subConfig.icon || ''} ${subConfig.name}</span>
+                        </div>
+                        <label class="toggle toggle-small">
+                            <input type="checkbox" 
+                                   id="${biasType.id}_${subId}Toggle" 
+                                   data-setting-key="${subConfig.settingKey}"
+                                   data-parent-type="${biasType.id}"
+                                   data-sub-type="${subId}"
+                                   ${isEnabled}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>`;
+            }
+            html += `</div>`;
+        }
+        
+        return html;
     }
 
     /**
@@ -192,7 +220,15 @@ export class PopupGenerator {
      * Get all setting keys for event handler setup
      */
     getAllSettingKeys() {
-        const biasSettings = this.biasTypes.map(type => type.settingKey);
+        const biasSettings = [];
+        this.biasTypes.forEach(type => {
+            biasSettings.push(type.settingKey);
+            if (type.subCategories) {
+                for (const sub of Object.values(type.subCategories)) {
+                    biasSettings.push(sub.settingKey);
+                }
+            }
+        });
         const excellenceSettings = Object.values(this.excellenceTypes).map(type => type.settingKey);
         return [...biasSettings, ...excellenceSettings];
     }
@@ -208,7 +244,14 @@ export class PopupGenerator {
      * Get bias type configuration by setting key
      */
     getBiasTypeBySettingKey(settingKey) {
-        return this.biasTypes.find(type => type.settingKey === settingKey) ||
-               Object.values(this.excellenceTypes).find(type => type.settingKey === settingKey);
+        for (const type of this.biasTypes) {
+            if (type.settingKey === settingKey) return type;
+            if (type.subCategories) {
+                for (const sub of Object.values(type.subCategories)) {
+                    if (sub.settingKey === settingKey) return sub;
+                }
+            }
+        }
+        return Object.values(this.excellenceTypes).find(type => type.settingKey === settingKey);
     }
 }

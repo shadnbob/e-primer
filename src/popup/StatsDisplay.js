@@ -56,9 +56,21 @@ export class StatsDisplay {
             const statItem = this.createStatItem(config);
             statsContainer.appendChild(statItem);
             
-            // Store reference to the count element
             const countElement = statItem.querySelector('.stat-count');
             this.statElements.set(config.statKey, countElement);
+            
+            if (config.subCategories) {
+                const subContainer = document.createElement('div');
+                subContainer.className = 'stats-subcategory-group';
+                subContainer.dataset.parent = config.id;
+                for (const sub of Object.values(config.subCategories)) {
+                    const subItem = this.createSubStatItem(sub);
+                    subContainer.appendChild(subItem);
+                    const subCount = subItem.querySelector('.stat-count');
+                    this.statElements.set(sub.statKey, subCount);
+                }
+                statsContainer.appendChild(subContainer);
+            }
         }
 
         section.appendChild(statsContainer);
@@ -82,6 +94,24 @@ export class StatsDisplay {
         colorIndicator.style.backgroundColor = config.color;
         item.appendChild(colorIndicator);
 
+        return item;
+    }
+
+    createSubStatItem(config) {
+        const item = document.createElement('div');
+        item.className = 'stat-item stat-sub-item';
+        item.innerHTML = `
+            <div class="stat-info">
+                <div class="stat-name">${config.icon || ''} ${config.name}</div>
+            </div>
+            <div class="stat-count" data-type="${config.id}">-</div>
+        `;
+        if (config.color) {
+            const colorIndicator = document.createElement('div');
+            colorIndicator.className = 'stat-color-indicator';
+            colorIndicator.style.backgroundColor = config.color;
+            item.appendChild(colorIndicator);
+        }
         return item;
     }
 

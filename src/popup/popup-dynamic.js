@@ -5,7 +5,22 @@ document.addEventListener('DOMContentLoaded', function() {
         constructor() {
             // Hardcoded BiasConfig data for popup context
             this.biasTypes = [
-                { id: 'opinion', settingKey: 'highlightOpinion', statKey: 'opinionCount' },
+                { id: 'opinion', settingKey: 'highlightOpinion', statKey: 'opinionCount',
+                  subCategories: {
+                    certainty: { settingKey: 'highlightOpinionCertainty', statKey: 'opinionCertaintyCount' },
+                    hedging: { settingKey: 'highlightOpinionHedging', statKey: 'opinionHedgingCount' },
+                    evaluative_positive: { settingKey: 'highlightOpinionEvaluativePositive', statKey: 'opinionEvaluativePositiveCount' },
+                    evaluative_negative: { settingKey: 'highlightOpinionEvaluativeNegative', statKey: 'opinionEvaluativeNegativeCount' },
+                    emotional_charge: { settingKey: 'highlightOpinionEmotionalCharge', statKey: 'opinionEmotionalChargeCount' },
+                    comparative: { settingKey: 'highlightOpinionComparative', statKey: 'opinionComparativeCount' },
+                    political_framing: { settingKey: 'highlightOpinionPoliticalFraming', statKey: 'opinionPoliticalFramingCount' },
+                    intensifiers: { settingKey: 'highlightOpinionIntensifiers', statKey: 'opinionIntensifiersCount' },
+                    credibility_undermining: { settingKey: 'highlightOpinionCredibilityUndermining', statKey: 'opinionCredibilityUnderminingCount' },
+                    loaded_political: { settingKey: 'highlightOpinionLoadedPolitical', statKey: 'opinionLoadedPoliticalCount' },
+                    moral_judgments: { settingKey: 'highlightOpinionMoralJudgments', statKey: 'opinionMoralJudgmentsCount' },
+                    emotional_appeals: { settingKey: 'highlightOpinionEmotionalAppeals', statKey: 'opinionEmotionalAppealsCount' }
+                  }
+                },
                 { id: 'tobe', settingKey: 'highlightToBe', statKey: 'toBeCount' },
                 { id: 'absolute', settingKey: 'highlightAbsolutes', statKey: 'absoluteCount' },
                 { id: 'passive', settingKey: 'highlightPassive', statKey: 'passiveCount' },
@@ -15,7 +30,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 { id: 'minimizer', settingKey: 'highlightMinimizers', statKey: 'minimizerCount' },
                 { id: 'maximizer', settingKey: 'highlightMaximizers', statKey: 'maximizerCount' },
                 { id: 'falsebalance', settingKey: 'highlightFalseBalance', statKey: 'falseBalanceCount' },
-                { id: 'euphemism', settingKey: 'highlightEuphemism', statKey: 'euphemismCount' },
+                { id: 'euphemism', settingKey: 'highlightEuphemism', statKey: 'euphemismCount',
+                  subCategories: {
+                    political_euphemism: { settingKey: 'highlightEuphemismPolitical', statKey: 'euphemismPoliticalCount' },
+                    corporate_euphemism: { settingKey: 'highlightEuphemismCorporate', statKey: 'euphemismCorporateCount' },
+                    social_euphemism: { settingKey: 'highlightEuphemismSocial', statKey: 'euphemismSocialCount' },
+                    military_euphemism: { settingKey: 'highlightEuphemismMilitary', statKey: 'euphemismMilitaryCount' },
+                    dysphemism: { settingKey: 'highlightEuphemismDysphemism', statKey: 'euphemismDysphemismCount' },
+                    medical_euphemism: { settingKey: 'highlightEuphemismMedical', statKey: 'euphemismMedicalCount' },
+                    environmental_euphemism: { settingKey: 'highlightEuphemismEnvironmental', statKey: 'euphemismEnvironmentalCount' }
+                  }
+                },
                 { id: 'emotional', settingKey: 'highlightEmotional', statKey: 'emotionalCount' },
                 { id: 'gaslighting', settingKey: 'highlightGaslighting', statKey: 'gaslightingCount' },
                 { id: 'falsedilemma', settingKey: 'highlightFalseDilemma', statKey: 'falseDilemmaCount' },
@@ -36,24 +61,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 highlightOpinion: true,
                 highlightToBe: true,
                 highlightAbsolutes: true,
-                highlightPassive: false,
-                highlightWeasel: false,
-                highlightPresupposition: false,
-                highlightMetaphors: false,
-                highlightMinimizers: false,
-                highlightMaximizers: false,
-                highlightFalseBalance: false,
-                highlightEuphemism: false,
-                highlightEmotional: false,
-                highlightGaslighting: false,
-                highlightFalseDilemma: false,
-                highlightProbability: false,
+                highlightPassive: true,
+                highlightWeasel: true,
+                highlightPresupposition: true,
+                highlightMetaphors: true,
+                highlightMinimizers: true,
+                highlightMaximizers: true,
+                highlightFalseBalance: true,
+                highlightEuphemism: true,
+                highlightEmotional: true,
+                highlightGaslighting: true,
+                highlightFalseDilemma: true,
+                highlightProbability: true,
                 highlightAttributionExcellence: true,
                 highlightNuanceExcellence: true,
                 highlightTransparencyExcellence: true,
                 highlightDiscourseExcellence: true,
                 highlightEvidenceExcellence: true
             };
+            
+            this.biasTypes.forEach(bt => {
+                if (bt.subCategories) {
+                    for (const sub of Object.values(bt.subCategories)) {
+                        this.defaultSettings[sub.settingKey] = true;
+                    }
+                }
+            });
             
             // Generate dynamic mappings
             this.toggleMappings = this.generateToggleMappings();
@@ -65,13 +98,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 'enableToggle': 'enableAnalysis'
             };
 
-            // Add bias type toggles
             this.biasTypes.forEach(biasType => {
                 const toggleId = this.getToggleId(biasType.id);
                 mappings[toggleId] = biasType.settingKey;
+                
+                if (biasType.subCategories) {
+                    for (const [subId, sub] of Object.entries(biasType.subCategories)) {
+                        mappings[`${biasType.id}_${subId}Toggle`] = sub.settingKey;
+                    }
+                }
             });
 
-            // Add excellence type toggles
             this.excellenceTypes.forEach(excellenceType => {
                 const toggleId = this.getExcellenceToggleId(excellenceType.id);
                 mappings[toggleId] = excellenceType.settingKey;
@@ -83,12 +120,15 @@ document.addEventListener('DOMContentLoaded', function() {
         generateStatMappings() {
             const mappings = {};
 
-            // Add bias type stats
             this.biasTypes.forEach(biasType => {
                 mappings[biasType.statKey] = biasType.statKey;
+                if (biasType.subCategories) {
+                    for (const sub of Object.values(biasType.subCategories)) {
+                        mappings[sub.statKey] = sub.statKey;
+                    }
+                }
             });
 
-            // Add excellence type stats
             this.excellenceTypes.forEach(excellenceType => {
                 mappings[excellenceType.statKey] = excellenceType.statKey;
             });
@@ -184,7 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateUI() {
         isUpdating = true;
         
-        // Update toggles dynamically
         for (const [toggleId, settingKey] of Object.entries(toggleMappings)) {
             const toggle = document.getElementById(toggleId);
             if (toggle) {
@@ -192,7 +231,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Update status text based on mode
+        settingsManager.biasTypes.forEach(biasType => {
+            if (!biasType.subCategories) return;
+            const parentEnabled = currentSettings[biasType.settingKey];
+            const group = document.querySelector(`.subcategory-group[data-parent="${biasType.id}"]`);
+            if (group) {
+                group.classList.toggle('disabled', !parentEnabled);
+            }
+            for (const [subId] of Object.entries(biasType.subCategories)) {
+                const subToggle = document.getElementById(`${biasType.id}_${subId}Toggle`);
+                if (subToggle) {
+                    subToggle.disabled = !parentEnabled;
+                }
+            }
+        });
+        
         updateStatusText();
         
         isUpdating = false;
@@ -346,11 +399,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const headers = document.querySelectorAll('.category-header');
         headers.forEach(header => {
             header.addEventListener('click', function(e) {
-                // Don't collapse when clicking the section toggle switch
                 if (e.target.closest('.section-toggle')) return;
                 const section = this.parentElement;
                 section.classList.toggle('collapsed');
             });
+        });
+        
+        document.querySelectorAll('.toggle-container.has-subcategories').forEach(container => {
+            const label = container.querySelector('.toggle-label');
+            if (label) {
+                label.style.cursor = 'pointer';
+                label.addEventListener('click', function(e) {
+                    if (e.target.closest('.toggle')) return;
+                    const parentId = container.dataset.biasType;
+                    const group = document.querySelector(`.subcategory-group[data-parent="${parentId}"]`);
+                    if (group) {
+                        group.classList.toggle('collapsed');
+                        container.classList.toggle('expanded');
+                    }
+                });
+            }
         });
     }
     
@@ -393,6 +461,72 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+        
+        setupParentSubcategoryToggles();
+    }
+    
+    function setupParentSubcategoryToggles() {
+        settingsManager.biasTypes.forEach(biasType => {
+            if (!biasType.subCategories) return;
+            
+            const parentToggle = document.getElementById(settingsManager.getToggleId(biasType.id));
+            if (!parentToggle) return;
+            
+            const subToggleIds = Object.keys(biasType.subCategories).map(subId => `${biasType.id}_${subId}Toggle`);
+            
+            parentToggle.addEventListener('change', function() {
+                const checked = this.checked;
+                isUpdating = true;
+                
+                subToggleIds.forEach(subToggleId => {
+                    const subToggle = document.getElementById(subToggleId);
+                    if (subToggle) {
+                        subToggle.checked = checked;
+                        subToggle.disabled = !checked;
+                        const settingKey = toggleMappings[subToggleId];
+                        if (settingKey) {
+                            currentSettings[settingKey] = checked;
+                        }
+                    }
+                });
+                
+                const group = document.querySelector(`.subcategory-group[data-parent="${biasType.id}"]`);
+                if (group) {
+                    group.classList.toggle('disabled', !checked);
+                }
+                
+                isUpdating = false;
+            });
+            
+            subToggleIds.forEach(subToggleId => {
+                const subToggle = document.getElementById(subToggleId);
+                if (subToggle) {
+                    subToggle.addEventListener('change', function() {
+                        if (isUpdating) return;
+                        updateParentToggleState(biasType.id, subToggleIds);
+                    });
+                }
+            });
+        });
+    }
+    
+    function updateParentToggleState(parentId, subToggleIds) {
+        const parentToggle = document.getElementById(settingsManager.getToggleId(parentId));
+        if (!parentToggle) return;
+        
+        const allChecked = subToggleIds.every(id => {
+            const el = document.getElementById(id);
+            return el && el.checked;
+        });
+        const noneChecked = subToggleIds.every(id => {
+            const el = document.getElementById(id);
+            return el && !el.checked;
+        });
+        
+        isUpdating = true;
+        parentToggle.checked = !noneChecked;
+        parentToggle.indeterminate = !allChecked && !noneChecked;
+        isUpdating = false;
     }
 
     function updateSectionToggleState(sectionToggleId, childToggleIds) {
@@ -410,7 +544,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         isUpdating = true;
         sectionToggle.checked = allChecked;
-        // If some are on and some off, show as unchecked (will turn all on when toggled)
         sectionToggle.indeterminate = !allChecked && !noneChecked;
         isUpdating = false;
     }
