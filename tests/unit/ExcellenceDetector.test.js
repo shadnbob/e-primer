@@ -453,4 +453,226 @@ describe('ExcellenceDetector', () => {
       expect(uniquePatterns.size).toBe(allPatterns.length);
     });
   });
+
+  describe('Intensity Calculation', () => {
+
+    test('should return default intensity for unknown type', () => {
+      expect(detector.calculateIntensity('some text', 'unknownType')).toBe(2);
+    });
+
+    test('should return level 1 for mild absolute words', () => {
+      expect(detector.calculateIntensity('mostly true', 'absolute')).toBe(1);
+      expect(detector.calculateIntensity('often happens', 'absolute')).toBe(1);
+    });
+
+    test('should return level 2 for moderate absolute words', () => {
+      expect(detector.calculateIntensity('always correct', 'absolute')).toBe(2);
+      expect(detector.calculateIntensity('never wrong', 'absolute')).toBe(2);
+    });
+
+    test('should return level 3 for severe absolute words', () => {
+      expect(detector.calculateIntensity('absolutely certain', 'absolute')).toBe(3);
+      expect(detector.calculateIntensity('completely wrong', 'absolute')).toBe(3);
+    });
+
+    test('should return level 1 for mild opinion words', () => {
+      expect(detector.calculateIntensity('seems right', 'opinion')).toBe(1);
+      expect(detector.calculateIntensity('appears valid', 'opinion')).toBe(1);
+    });
+
+    test('should return level 2 for moderate opinion words', () => {
+      expect(detector.calculateIntensity('obviously wrong', 'opinion')).toBe(2);
+      expect(detector.calculateIntensity('clearly true', 'opinion')).toBe(2);
+    });
+
+    test('should return level 3 for severe opinion words', () => {
+      expect(detector.calculateIntensity('undeniably correct', 'opinion')).toBe(3);
+      expect(detector.calculateIntensity('unquestionably true', 'opinion')).toBe(3);
+    });
+
+    test('should handle emotional intensity levels', () => {
+      expect(detector.calculateIntensity('concerning trend', 'emotional')).toBe(1);
+      expect(detector.calculateIntensity('crisis situation', 'emotional')).toBe(2);
+      expect(detector.calculateIntensity('evil forces', 'emotional')).toBe(3);
+    });
+
+    test('should handle weasel intensity levels', () => {
+      expect(detector.calculateIntensity('some people think', 'weasel')).toBe(1);
+      expect(detector.calculateIntensity('studies show it works', 'weasel')).toBe(2);
+      expect(detector.calculateIntensity('everyone knows this', 'weasel')).toBe(3);
+    });
+
+    test('should handle gaslighting intensity levels', () => {
+      expect(detector.calculateIntensity("perhaps you're mistaken", 'gaslighting')).toBe(1);
+      expect(detector.calculateIntensity('concerns are overblown', 'gaslighting')).toBe(2);
+      expect(detector.calculateIntensity('that never happened', 'gaslighting')).toBe(3);
+    });
+
+    test('should default to level 2 when no word matches', () => {
+      expect(detector.calculateIntensity('random text', 'absolute')).toBe(2);
+      expect(detector.calculateIntensity('random text', 'opinion')).toBe(2);
+    });
+  });
+
+  describe('Portrayal Detection', () => {
+
+    test('should detect positive hero portrayal', () => {
+      const result = detector.detectPortrayal('He is a hero to many.');
+      expect(result).not.toBeNull();
+      expect(result.valence).toBe('positive');
+      expect(result.type).toBe('hero');
+    });
+
+    test('should detect positive virtue portrayal', () => {
+      const result = detector.detectPortrayal('A truly noble act.');
+      expect(result).not.toBeNull();
+      expect(result.valence).toBe('positive');
+      expect(result.type).toBe('virtue');
+    });
+
+    test('should detect positive success portrayal', () => {
+      const result = detector.detectPortrayal('A brilliant strategy.');
+      expect(result).not.toBeNull();
+      expect(result.valence).toBe('positive');
+      expect(result.type).toBe('success');
+    });
+
+    test('should detect negative villain portrayal', () => {
+      const result = detector.detectPortrayal('An evil regime.');
+      expect(result).not.toBeNull();
+      expect(result.valence).toBe('negative');
+      expect(result.type).toBe('villain');
+    });
+
+    test('should detect negative failure portrayal', () => {
+      const result = detector.detectPortrayal('A total disaster occurred.');
+      expect(result).not.toBeNull();
+      expect(result.valence).toBe('negative');
+      expect(result.type).toBe('failure');
+    });
+
+    test('should detect negative moral portrayal', () => {
+      const result = detector.detectPortrayal('Corrupt officials were exposed.');
+      expect(result).not.toBeNull();
+      expect(result.valence).toBe('negative');
+      expect(result.type).toBe('moral');
+    });
+
+    test('should return null for neutral text', () => {
+      const result = detector.detectPortrayal('The meeting was held on Tuesday.');
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('findExcellence', () => {
+
+    test('should return array of matches with proper structure', () => {
+      const text = 'According to Smith et al. (2023), this might indicate improvement.';
+      const matches = detector.findExcellence(text);
+
+      expect(Array.isArray(matches)).toBe(true);
+      expect(matches.length).toBeGreaterThan(0);
+
+      matches.forEach(match => {
+        expect(match).toHaveProperty('index');
+        expect(match).toHaveProperty('length');
+        expect(match).toHaveProperty('text');
+        expect(match).toHaveProperty('type');
+        expect(match).toHaveProperty('className');
+        expect(match).toHaveProperty('tooltip');
+        expect(match.isExcellence).toBe(true);
+      });
+    });
+
+    test('should return empty array for text with no excellence', () => {
+      const matches = detector.findExcellence('Bad terrible awful.');
+      expect(matches).toEqual([]);
+    });
+
+    test('should detect multiple types in a single text', () => {
+      const text = 'According to Smith et al. (2023), the data suggests improvement. However, limitations include sample size. In my opinion, more research is needed.';
+      const matches = detector.findExcellence(text);
+      const types = [...new Set(matches.map(m => m.type))];
+      expect(types.length).toBeGreaterThan(1);
+    });
+  });
+
+  describe('calculateHealthScore', () => {
+
+    test('should return 50 when both counts are zero', () => {
+      expect(detector.calculateHealthScore(0, 0)).toBe(50);
+    });
+
+    test('should return 100 when only excellence', () => {
+      expect(detector.calculateHealthScore(10, 0)).toBe(100);
+    });
+
+    test('should return 0 when only problems', () => {
+      expect(detector.calculateHealthScore(0, 10)).toBe(0);
+    });
+
+    test('should return 50 when equal counts', () => {
+      expect(detector.calculateHealthScore(5, 5)).toBe(50);
+    });
+
+    test('should return rounded integer', () => {
+      const score = detector.calculateHealthScore(1, 2);
+      expect(score).toBe(Math.round(score));
+    });
+  });
+
+  describe('getStatistics', () => {
+
+    test('should return full statistics object', () => {
+      const text = 'According to Smith et al. (2023), the data suggests improvement. However, limitations include sample size.';
+      const problems = [
+        { type: 'opinion', text: 'good', intensity: 1 },
+        { type: 'absolute', text: 'always', intensity: 2 },
+        { type: 'weasel', text: 'studies show', intensity: 3 }
+      ];
+
+      const stats = detector.getStatistics(text, problems);
+
+      expect(stats).toHaveProperty('excellence');
+      expect(stats).toHaveProperty('problems');
+      expect(stats).toHaveProperty('healthScore');
+
+      expect(stats.excellence).toHaveProperty('total');
+      expect(stats.excellence).toHaveProperty('byType');
+      expect(stats.excellence.total).toBeGreaterThanOrEqual(0);
+
+      expect(stats.problems.total).toBe(3);
+      expect(stats.problems.byIntensity[1]).toBe(1);
+      expect(stats.problems.byIntensity[2]).toBe(1);
+      expect(stats.problems.byIntensity[3]).toBe(1);
+    });
+
+    test('should handle empty problems array', () => {
+      const text = 'According to Smith et al. (2023), this is nuanced.';
+      const stats = detector.getStatistics(text, []);
+
+      expect(stats.problems.total).toBe(0);
+      expect(stats.problems.byIntensity[1]).toBe(0);
+      expect(stats.problems.byIntensity[2]).toBe(0);
+      expect(stats.problems.byIntensity[3]).toBe(0);
+      expect(stats.healthScore).toBe(100);
+    });
+
+    test('should handle problems without intensity', () => {
+      const text = 'Simple text.';
+      const problems = [{ type: 'opinion', text: 'good' }];
+
+      const stats = detector.getStatistics(text, problems);
+      expect(stats.problems.total).toBe(1);
+    });
+
+    test('should count excellence by type', () => {
+      const text = 'According to Smith et al. (2023), the evidence suggests improvement. However, in my opinion, limitations include sample size.';
+      const stats = detector.getStatistics(text);
+
+      expect(typeof stats.excellence.byType).toBe('object');
+      const totalByType = Object.values(stats.excellence.byType).reduce((a, b) => a + b, 0);
+      expect(totalByType).toBe(stats.excellence.total);
+    });
+  });
 });

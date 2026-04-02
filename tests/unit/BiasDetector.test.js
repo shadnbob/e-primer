@@ -638,4 +638,432 @@ describe('BiasDetector', () => {
       expect(() => detector.destroy()).not.toThrow();
     });
   });
+
+  describe('Mutation Filtering - Popup and Highlight Skipping', () => {
+
+    test('should skip mutations targeting popup elements', () => {
+      const popupMutation = {
+        addedNodes: [mockTextNode('Popup content')],
+        target: {
+          classList: {
+            contains: vi.fn((cls) => cls === 'bias-popup')
+          },
+          closest: vi.fn(() => null)
+        }
+      };
+
+      detector.domProcessor.isOwnHighlight = vi.fn(() => false);
+      detector.domProcessor.isSignificantContent = vi.fn(() => true);
+
+      expect(detector.shouldProcessMutations([popupMutation])).toBe(false);
+    });
+
+    test('should skip mutations targeting popup-content elements', () => {
+      const mutation = {
+        addedNodes: [mockTextNode('Content')],
+        target: {
+          classList: {
+            contains: vi.fn((cls) => cls === 'popup-content')
+          },
+          closest: vi.fn(() => null)
+        }
+      };
+
+      detector.domProcessor.isOwnHighlight = vi.fn(() => false);
+      expect(detector.shouldProcessMutations([mutation])).toBe(false);
+    });
+
+    test('should skip mutations targeting popup-close elements', () => {
+      const mutation = {
+        addedNodes: [mockTextNode('Content')],
+        target: {
+          classList: {
+            contains: vi.fn((cls) => cls === 'popup-close')
+          },
+          closest: vi.fn(() => null)
+        }
+      };
+
+      detector.domProcessor.isOwnHighlight = vi.fn(() => false);
+      expect(detector.shouldProcessMutations([mutation])).toBe(false);
+    });
+
+    test('should skip mutations when target is inside a bias-popup', () => {
+      const mutation = {
+        addedNodes: [mockTextNode('Content')],
+        target: {
+          classList: {
+            contains: vi.fn(() => false)
+          },
+          closest: vi.fn((selector) => selector === '.bias-popup' ? {} : null)
+        }
+      };
+
+      detector.domProcessor.isOwnHighlight = vi.fn(() => false);
+      expect(detector.shouldProcessMutations([mutation])).toBe(false);
+    });
+
+    test('should skip added nodes that are popup elements', () => {
+      const popupNode = {
+        nodeType: 1,
+        classList: {
+          contains: vi.fn((cls) => cls === 'bias-popup')
+        },
+        closest: vi.fn(() => null)
+      };
+
+      const mutation = {
+        addedNodes: [popupNode],
+        target: {
+          classList: {
+            contains: vi.fn(() => false)
+          },
+          closest: vi.fn(() => null)
+        }
+      };
+
+      detector.domProcessor.isOwnHighlight = vi.fn(() => false);
+      detector.domProcessor.isSignificantContent = vi.fn(() => true);
+
+      expect(detector.shouldProcessMutations([mutation])).toBe(false);
+    });
+
+    test('should skip added nodes inside a bias-popup', () => {
+      const nodeInsidePopup = {
+        nodeType: 1,
+        classList: {
+          contains: vi.fn(() => false)
+        },
+        closest: vi.fn((selector) => selector === '.bias-popup' ? {} : null)
+      };
+
+      const mutation = {
+        addedNodes: [nodeInsidePopup],
+        target: {
+          classList: {
+            contains: vi.fn(() => false)
+          },
+          closest: vi.fn(() => null)
+        }
+      };
+
+      detector.domProcessor.isOwnHighlight = vi.fn(() => false);
+      detector.domProcessor.isSignificantContent = vi.fn(() => true);
+
+      expect(detector.shouldProcessMutations([mutation])).toBe(false);
+    });
+
+    test('should process mutations with no addedNodes as false', () => {
+      const mutation = {
+        addedNodes: [],
+        target: {
+          classList: {
+            contains: vi.fn(() => false)
+          },
+          closest: vi.fn(() => null)
+        }
+      };
+
+      detector.domProcessor.isOwnHighlight = vi.fn(() => false);
+      expect(detector.shouldProcessMutations([mutation])).toBe(false);
+    });
+
+    test('should process mutations when target has no classList', () => {
+      const mutation = {
+        addedNodes: [mockTextNode('Content with enough text')],
+        target: {
+          classList: null,
+          closest: vi.fn(() => null)
+        }
+      };
+
+      detector.domProcessor.isOwnHighlight = vi.fn(() => false);
+      detector.domProcessor.isSignificantContent = vi.fn(() => true);
+
+      expect(detector.shouldProcessMutations([mutation])).toBe(true);
+    });
+  });
+
+  describe('Content Change Handling', () => {
+
+    test('should process changed nodes from mutations', async () => {
+      const textNode = mockTextNode('Changed content that is significant enough to process.');
+      const mutations = [{
+        target: mockElement(),
+        addedNodes: [textNode]
+      }];
+
+      detector.domProcessor.extractChangedTextNodes = vi.fn(() => [textNode]);
+      detector.processBatch = vi.fn();
+
+      await detector.handleContentChange(mutations);
+
+      expect(detector.domProcessor.extractChangedTextNodes).toHaveBeenCalledWith(mutations);
+      expect(detector.processBatch).toHaveBeenCalledWith([textNode]);
+    });
+
+    test('should not process when no changed nodes found', async () => {
+      const mutations = [{
+        target: mockElement(),
+        addedNodes: []
+      }];
+
+      detector.domProcessor.extractChangedTextNodes = vi.fn(() => []);
+      detector.processBatch = vi.fn();
+
+      await detector.handleContentChange(mutations);
+
+      expect(detector.processBatch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Deduplication with Contextual Matches', () => {
+
+    test('should prefer contextual matches over regular at same index', () => {
+      const matches = [
+        { index: 0, length: 5, text: 'hello', isContextual: false },
+        { index: 0, length: 5, text: 'hello', isContextual: true, confidence: 0.9 }
+      ];
+
+      detector.contextAwareDetector.resolveConflicts = vi.fn((m) => m);
+      const result = detector.deduplicateMatches(matches);
+
+      expect(result[0].isContextual).toBe(true);
+    });
+
+    test('should prefer higher confidence among contextual matches', () => {
+      const matches = [
+        { index: 0, length: 5, text: 'hello', isContextual: true, confidence: 0.7 },
+        { index: 0, length: 5, text: 'hello', isContextual: true, confidence: 0.95 }
+      ];
+
+      detector.contextAwareDetector.resolveConflicts = vi.fn((m) => m);
+      const result = detector.deduplicateMatches(matches);
+
+      expect(result[0].confidence).toBe(0.95);
+    });
+
+    test('should handle neutral overrides removing overlapping regular matches', () => {
+      const matches = [
+        { index: 0, length: 5, text: 'hello', isContextual: false, type: 'opinion' },
+        { index: 0, length: 5, text: 'hello', isContextual: true, isNeutralOverride: true, type: 'neutral' }
+      ];
+
+      detector.contextAwareDetector.resolveConflicts = vi.fn((m) => m);
+      const result = detector.deduplicateMatches(matches);
+
+      const regularMatches = result.filter(m => !m.isContextual && !m.isNeutralOverride);
+      expect(regularMatches.length).toBe(0);
+    });
+
+    test('should use resolveConflicts when contextual matches exist', () => {
+      const matches = [
+        { index: 0, length: 5, text: 'hello', isContextual: true, confidence: 0.8 },
+        { index: 10, length: 5, text: 'world', isContextual: false }
+      ];
+
+      detector.contextAwareDetector.resolveConflicts = vi.fn((m) => m);
+      detector.deduplicateMatches(matches);
+
+      expect(detector.contextAwareDetector.resolveConflicts).toHaveBeenCalled();
+    });
+
+    test('should handle neutral overrides with default confidence', () => {
+      const matches = [
+        { index: 0, length: 5, text: 'hello', isContextual: true },
+        { index: 0, length: 5, text: 'hello', isContextual: true }
+      ];
+
+      detector.contextAwareDetector.resolveConflicts = vi.fn((m) => m);
+      const result = detector.deduplicateMatches(matches);
+      expect(result.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Detector Changes and Reanalysis', () => {
+
+    test('should handle enabling a previously disabled detector', async () => {
+      const oldSettings = { ...detector.settings, highlightOpinion: false };
+      const newSettings = { ...detector.settings, highlightOpinion: true, enableAnalysis: true };
+
+      detector.settings = { ...newSettings };
+      detector.disconnectObserver = vi.fn();
+      detector.setupMutationObserver = vi.fn();
+      detector.analyzeDocumentPreservingDisabled = vi.fn();
+
+      await detector.handleDetectorChanges(oldSettings, newSettings);
+
+      expect(detector.analyzeDocumentPreservingDisabled).toHaveBeenCalled();
+    });
+
+    test('should handle disabling an enabled detector', async () => {
+      const oldSettings = { ...detector.settings, highlightOpinion: true };
+      const newSettings = { ...detector.settings, highlightOpinion: false, enableAnalysis: true };
+
+      detector.settings = { ...newSettings };
+      detector.disconnectObserver = vi.fn();
+      detector.setupMutationObserver = vi.fn();
+      detector.domProcessor.removeSpecificHighlights = vi.fn();
+
+      await detector.handleDetectorChanges(oldSettings, newSettings);
+
+      expect(detector.domProcessor.removeSpecificHighlights).toHaveBeenCalledWith('opinion');
+      expect(detector.stats.opinionCount).toBe(0);
+    });
+
+    test('should handle disabling an excellence detector', async () => {
+      const oldSettings = { ...detector.settings, highlightAttributionExcellence: true };
+      const newSettings = { ...detector.settings, highlightAttributionExcellence: false, enableAnalysis: true };
+
+      detector.settings = { ...newSettings };
+      detector.disconnectObserver = vi.fn();
+      detector.setupMutationObserver = vi.fn();
+      detector.domProcessor.removeExcellenceHighlights = vi.fn();
+
+      await detector.handleDetectorChanges(oldSettings, newSettings);
+
+      expect(detector.domProcessor.removeExcellenceHighlights).toHaveBeenCalledWith('attribution');
+      expect(detector.stats.attributionExcellenceCount).toBe(0);
+    });
+
+    test('should handle enabling an excellence detector', async () => {
+      const oldSettings = { ...detector.settings, highlightNuanceExcellence: false };
+      const newSettings = { ...detector.settings, highlightNuanceExcellence: true, enableAnalysis: true };
+
+      detector.settings = { ...newSettings };
+      detector.disconnectObserver = vi.fn();
+      detector.setupMutationObserver = vi.fn();
+      detector.analyzeDocumentPreservingDisabled = vi.fn();
+
+      await detector.handleDetectorChanges(oldSettings, newSettings);
+
+      expect(detector.analyzeDocumentPreservingDisabled).toHaveBeenCalled();
+    });
+  });
+
+  describe('Analyze Document Preserving Disabled', () => {
+
+    test('should preserve stats for disabled detectors after reanalysis', async () => {
+      detector.settings.highlightOpinion = false;
+      detector.stats.opinionCount = 5;
+
+      detector.domProcessor.removeAllHighlights = vi.fn();
+      detector.domProcessor.collectTextNodes = vi.fn(() => []);
+
+      await detector.analyzeDocumentPreservingDisabled();
+
+      expect(detector.stats.opinionCount).toBe(5);
+    });
+
+    test('should preserve stats for disabled excellence detectors', async () => {
+      detector.settings.highlightAttributionExcellence = false;
+      detector.stats.attributionExcellenceCount = 3;
+
+      detector.domProcessor.removeAllHighlights = vi.fn();
+      detector.domProcessor.collectTextNodes = vi.fn(() => []);
+
+      await detector.analyzeDocumentPreservingDisabled();
+
+      expect(detector.stats.attributionExcellenceCount).toBe(3);
+    });
+  });
+
+  describe('Analysis with disabled analysis', () => {
+
+    test('should return empty stats when enableAnalysis is false', async () => {
+      detector.settings.enableAnalysis = false;
+      const stats = await detector.analyzeDocument();
+
+      expect(stats).toBeDefined();
+      expect(stats.healthScore).toBe(50);
+    });
+  });
+
+  describe('Highlight Matches', () => {
+
+    test('should call createHighlightedFragment and replaceChild', () => {
+      const node = mockTextNode('Some test text');
+      const matches = [
+        { index: 5, length: 4, text: 'test', type: 'opinion', isExcellence: false }
+      ];
+
+      const mockFragment = { appendChild: vi.fn() };
+      detector.domProcessor.createHighlightedFragment = vi.fn(() => mockFragment);
+
+      detector.highlightMatches(node, matches);
+
+      expect(detector.domProcessor.createHighlightedFragment).toHaveBeenCalled();
+      expect(node.parentNode.replaceChild).toHaveBeenCalledWith(mockFragment, node);
+    });
+
+    test('should not replace when no matches after dedup', () => {
+      const node = mockTextNode('Some test text');
+      const matches = [];
+
+      const spy = vi.spyOn(detector, 'deduplicateMatches').mockReturnValue([]);
+      detector.highlightMatches(node, matches);
+
+      expect(node.parentNode.replaceChild).not.toHaveBeenCalled();
+      spy.mockRestore();
+    });
+
+    test('should not replace when parentNode is null', () => {
+      const node = mockTextNode('Some test text');
+      node.parentNode = null;
+      const matches = [
+        { index: 5, length: 4, text: 'test', type: 'opinion', isExcellence: false }
+      ];
+
+      const mockFragment = { appendChild: vi.fn() };
+      detector.domProcessor.createHighlightedFragment = vi.fn(() => mockFragment);
+
+      expect(() => detector.highlightMatches(node, matches)).not.toThrow();
+    });
+  });
+
+  describe('Reset Stats', () => {
+
+    test('should reset stats to empty stats', () => {
+      detector.stats.opinionCount = 10;
+      detector.stats.healthScore = 75;
+
+      detector.resetStats();
+
+      expect(detector.stats.opinionCount).toBe(0);
+      expect(detector.stats.healthScore).toBe(50);
+    });
+  });
+
+  describe('Disconnect Observer', () => {
+
+    test('should disconnect and null observer', () => {
+      const mockObs = { disconnect: vi.fn() };
+      detector.observer = mockObs;
+
+      detector.disconnectObserver();
+
+      expect(mockObs.disconnect).toHaveBeenCalled();
+      expect(detector.observer).toBeNull();
+    });
+
+    test('should do nothing when observer is null', () => {
+      detector.observer = null;
+      expect(() => detector.disconnectObserver()).not.toThrow();
+    });
+  });
+
+  describe('Clear Highlights', () => {
+
+    test('should disconnect observer before clearing', () => {
+      const mockObs = { disconnect: vi.fn() };
+      detector.observer = mockObs;
+      detector.domProcessor.removeAllHighlights = vi.fn();
+
+      detector.clearHighlights();
+
+      expect(mockObs.disconnect).toHaveBeenCalled();
+      expect(detector.observer).toBeNull();
+      expect(detector.domProcessor.removeAllHighlights).toHaveBeenCalled();
+    });
+  });
 });

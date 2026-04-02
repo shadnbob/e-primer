@@ -316,6 +316,7 @@ describe('DOMProcessor', () => {
           length: 9,
           text: 'obviously',
           type: 'opinion_certainty',
+          parentType: 'opinion',
           isExcellence: false
         }
       ];
@@ -330,7 +331,7 @@ describe('DOMProcessor', () => {
       
       const fragment = processor.createHighlightedFragment(text, matches);
       
-      // opinion_certainty should map to the base 'opinion' CSS class
+      // parentType 'opinion' is used for the CSS class
       expect(mockSpan.className).toBe('bias-highlight-opinion');
     });
 
@@ -378,15 +379,15 @@ describe('DOMProcessor', () => {
   describe('Tooltip Text', () => {
     
     test('should get correct tooltip text for bias types', () => {
-      expect(processor.getTooltipText('opinion')).toBe('Opinion - Subjective - General');
-      expect(processor.getTooltipText('tobe')).toBe('To-be verb (E-Prime violation)');
-      expect(processor.getTooltipText('absolute')).toBe('Absolute statement');
+      expect(processor.getTooltipText('opinion')).toBe('Subjective language that reveals the writer\'s stance');
+      expect(processor.getTooltipText('tobe')).toBe('E-Prime: Avoiding "to be" verbs for more precise language');
+      expect(processor.getTooltipText('absolute')).toBe('Absolute terms that rarely reflect reality accurately');
       expect(processor.getTooltipText('unknown')).toBe('Bias indicator');
     });
 
     test('should get correct tooltip text for opinion sub-categories', () => {
-      expect(processor.getTooltipText('opinion_certainty')).toBe('Possible Opinion - Certainty/Conviction');
-      expect(processor.getTooltipText('opinion_hedging')).toBe('Possible Opinion - Hedging/Uncertainty');
+      expect(processor.getTooltipText('opinion_certainty')).toBe('Possible Opinion Words - Certainty/Conviction');
+      expect(processor.getTooltipText('opinion_hedging')).toBe('Possible Opinion Words - Hedging/Uncertainty');
     });
 
     test('should get correct tooltip text for excellence types', () => {
@@ -669,6 +670,329 @@ describe('DOMProcessor', () => {
       processor.cleanupHoverElements = vi.fn();
       
       expect(() => processor.removeAllHighlights()).toThrow('DOM error');
+    });
+  });
+
+  describe('Remove Excellence Highlights', () => {
+
+    test('should remove specific excellence type highlights', () => {
+      const excellenceHighlight = createMockElement('span');
+      const parent = createMockElement('p');
+      parent.normalize = vi.fn();
+      excellenceHighlight.parentNode = parent;
+
+      mockDocument.querySelectorAll.mockReturnValue([excellenceHighlight]);
+      processor.cleanupHoverElements = vi.fn();
+
+      processor.removeExcellenceHighlights('attribution');
+
+      expect(mockDocument.querySelectorAll).toHaveBeenCalledWith('.excellence-attribution');
+      expect(parent.replaceChild).toHaveBeenCalled();
+      expect(processor.cleanupHoverElements).toHaveBeenCalledWith(excellenceHighlight);
+      expect(parent.normalize).toHaveBeenCalled();
+    });
+
+    test('should handle multiple excellence highlights', () => {
+      const h1 = createMockElement('span');
+      const h2 = createMockElement('span');
+      const parent1 = createMockElement('p');
+      const parent2 = createMockElement('div');
+      parent1.normalize = vi.fn();
+      parent2.normalize = vi.fn();
+      h1.parentNode = parent1;
+      h2.parentNode = parent2;
+
+      mockDocument.querySelectorAll.mockReturnValue([h1, h2]);
+      processor.cleanupHoverElements = vi.fn();
+
+      processor.removeExcellenceHighlights('nuance');
+
+      expect(mockDocument.querySelectorAll).toHaveBeenCalledWith('.excellence-nuance');
+      expect(parent1.replaceChild).toHaveBeenCalled();
+      expect(parent2.replaceChild).toHaveBeenCalled();
+    });
+
+    test('should handle no excellence highlights found', () => {
+      mockDocument.querySelectorAll.mockReturnValue([]);
+      processor.removeExcellenceHighlights('transparency');
+      expect(processor.processedParents.size).toBe(0);
+    });
+
+    test('should clear processedParents after removal', () => {
+      const h = createMockElement('span');
+      const parent = createMockElement('p');
+      parent.normalize = vi.fn();
+      h.parentNode = parent;
+
+      mockDocument.querySelectorAll.mockReturnValue([h]);
+      processor.cleanupHoverElements = vi.fn();
+
+      processor.removeExcellenceHighlights('evidence');
+      expect(processor.processedParents.size).toBe(0);
+    });
+  });
+
+  describe('shouldSkipElement - popup branches', () => {
+
+    test('should skip elements with bias-popup class', () => {
+      const element = createMockElement('div');
+      element.classList.contains = vi.fn((cls) => cls === 'bias-popup');
+      expect(processor.shouldSkipElement(element)).toBe(true);
+    });
+
+    test('should skip elements with popup-content class', () => {
+      const element = createMockElement('div');
+      element.classList.contains = vi.fn((cls) => cls === 'popup-content');
+      expect(processor.shouldSkipElement(element)).toBe(true);
+    });
+
+    test('should skip elements with popup-close class', () => {
+      const element = createMockElement('div');
+      element.classList.contains = vi.fn((cls) => cls === 'popup-close');
+      expect(processor.shouldSkipElement(element)).toBe(true);
+    });
+
+    test('should skip elements with data-e-prime-popup attribute', () => {
+      const element = createMockElement('div');
+      element.hasAttribute = vi.fn((attr) => attr === 'data-e-prime-popup');
+      expect(processor.shouldSkipElement(element)).toBe(true);
+    });
+
+    test('should skip elements with data-skip-analysis attribute', () => {
+      const element = createMockElement('div');
+      element.hasAttribute = vi.fn((attr) => attr === 'data-skip-analysis');
+      expect(processor.shouldSkipElement(element)).toBe(true);
+    });
+
+    test('should skip elements inside a bias-popup', () => {
+      const element = createMockElement('div');
+      element.closest = vi.fn((selector) => {
+        if (selector === '.bias-popup, [data-e-prime-popup]') return createMockElement('div');
+        return null;
+      });
+      expect(processor.shouldSkipElement(element)).toBe(true);
+    });
+
+    test('should not skip HEAD and META elements', () => {
+      const headElement = createMockElement('head');
+      expect(processor.shouldSkipElement(headElement)).toBe(true);
+
+      const metaElement = createMockElement('meta');
+      expect(processor.shouldSkipElement(metaElement)).toBe(true);
+
+      const linkElement = createMockElement('link');
+      expect(processor.shouldSkipElement(linkElement)).toBe(true);
+    });
+  });
+
+  describe('shouldSkipNode - data-skip-analysis', () => {
+
+    test('should skip nodes inside data-skip-analysis containers', () => {
+      const parentElement = createMockElement('div');
+      parentElement.closest = vi.fn((selector) => {
+        if (selector === '[data-skip-analysis]') return createMockElement('div');
+        return null;
+      });
+
+      const textNode = createMockTextNode('Valid content text');
+      textNode.parentNode = parentElement;
+
+      expect(processor.shouldSkipNode(textNode)).toBe(true);
+    });
+  });
+
+  describe('addDataAttributes - branch coverage', () => {
+
+    test('should add contextual data attributes', () => {
+      const span = createMockElement('span');
+      const match = {
+        type: 'weasel',
+        text: 'studies show',
+        isContextual: true,
+        contextReasoning: 'Vague attribution',
+        confidence: 0.85,
+        context: 'Some surrounding context'
+      };
+
+      processor.popupManager = {};
+      processor.addDataAttributes(span, match);
+
+      expect(span.setAttribute).toHaveBeenCalledWith('data-contextual', 'true');
+      expect(span.setAttribute).toHaveBeenCalledWith('data-context-reasoning', 'Vague attribution');
+      expect(span.setAttribute).toHaveBeenCalledWith('data-confidence', '0.85');
+      expect(span.setAttribute).toHaveBeenCalledWith('data-context', 'Some surrounding context');
+    });
+
+    test('should add subcategory data attribute', () => {
+      const span = createMockElement('span');
+      const match = {
+        type: 'opinion',
+        text: 'obviously',
+        subCategory: { id: 'certainty', implication: 'Pushes certainty' }
+      };
+
+      processor.popupManager = {};
+      processor.addDataAttributes(span, match);
+
+      expect(span.setAttribute).toHaveBeenCalledWith('data-sub-category', JSON.stringify(match.subCategory));
+    });
+
+    test('should add portrayal data attribute', () => {
+      const span = createMockElement('span');
+      const match = {
+        type: 'opinion',
+        text: 'hero',
+        portrayal: { valence: 'positive', type: 'hero' }
+      };
+
+      processor.popupManager = {};
+      processor.addDataAttributes(span, match);
+
+      expect(span.setAttribute).toHaveBeenCalledWith('data-portrayal', JSON.stringify(match.portrayal));
+    });
+
+    test('should generate contextual tooltip for excellence', () => {
+      const span = createMockElement('span');
+      const match = {
+        type: 'nuance',
+        text: 'however',
+        isExcellence: true,
+        isContextual: true,
+        contextReasoning: 'Good nuanced language',
+        confidence: 0.9
+      };
+
+      processor.popupManager = {};
+      processor.addDataAttributes(span, match);
+
+      expect(span.setAttribute).toHaveBeenCalledWith('data-tooltip-text', expect.stringContaining('Good nuanced language'));
+    });
+
+    test('should generate contextual tooltip for problem', () => {
+      const span = createMockElement('span');
+      const match = {
+        type: 'weasel',
+        text: 'studies show',
+        isContextual: true,
+        contextReasoning: 'Vague attribution',
+        confidence: 0.8
+      };
+
+      processor.popupManager = {};
+      processor.addDataAttributes(span, match);
+
+      expect(span.setAttribute).toHaveBeenCalledWith('data-tooltip-text', expect.stringContaining('Vague attribution'));
+    });
+
+    test('should generate excellence tooltip from getExcellenceTooltipText', () => {
+      const span = createMockElement('span');
+      const match = {
+        type: 'attribution',
+        text: 'Smith et al. (2023)',
+        isExcellence: true,
+        tooltip: null
+      };
+
+      processor.popupManager = {};
+      processor.addDataAttributes(span, match);
+
+      expect(span.setAttribute).toHaveBeenCalledWith('data-tooltip-text', processor.getExcellenceTooltipText('attribution'));
+    });
+
+    test('should handle opinion with subCategory using opinion_ prefix', () => {
+      const span = createMockElement('span');
+      const match = {
+        type: 'opinion_certainty',
+        text: 'obviously',
+        subCategory: { id: 'certainty' }
+      };
+
+      processor.popupManager = {};
+      processor.addDataAttributes(span, match);
+
+      expect(span.setAttribute).toHaveBeenCalledWith('data-tooltip-text', processor.getTooltipText('opinion_certainty'));
+    });
+
+    test('should handle opinion type with subCategory (no prefix)', () => {
+      const span = createMockElement('span');
+      const match = {
+        type: 'opinion_certainty',
+        parentType: 'opinion',
+        text: 'obviously',
+        subCategory: { id: 'certainty' }
+      };
+
+      processor.popupManager = {};
+      processor.addDataAttributes(span, match);
+
+      expect(span.setAttribute).toHaveBeenCalledWith('data-tooltip-text', processor.getTooltipText('opinion_certainty'));
+    });
+
+    test('should use custom tooltip for excellence match', () => {
+      const span = createMockElement('span');
+      const match = {
+        type: 'nuance',
+        text: 'however',
+        isExcellence: true,
+        tooltip: 'Custom tooltip text'
+      };
+
+      processor.popupManager = {};
+      processor.addDataAttributes(span, match);
+
+      expect(span.setAttribute).toHaveBeenCalledWith('data-tooltip-text', 'Custom tooltip text');
+    });
+  });
+
+  describe('cleanupHoverElements - null safety', () => {
+
+    test('should handle null element', () => {
+      expect(() => processor.cleanupHoverElements(null)).not.toThrow();
+    });
+
+    test('should handle element without removeAttribute', () => {
+      const element = {};
+      expect(() => processor.cleanupHoverElements(element)).not.toThrow();
+    });
+  });
+
+  describe('removeSpecificHighlights - normalize', () => {
+
+    test('should normalize parents after removal', () => {
+      const highlight = createMockElement('span');
+      const parent = createMockElement('p');
+      parent.normalize = vi.fn();
+      highlight.parentNode = parent;
+
+      mockDocument.querySelectorAll.mockReturnValue([highlight]);
+      processor.cleanupHoverElements = vi.fn();
+
+      processor.removeSpecificHighlights('opinion');
+
+      expect(parent.normalize).toHaveBeenCalled();
+    });
+
+    test('should handle parent without normalize', () => {
+      const highlight = createMockElement('span');
+      const parent = createMockElement('p');
+      delete parent.normalize;
+      highlight.parentNode = parent;
+
+      mockDocument.querySelectorAll.mockReturnValue([highlight]);
+      processor.cleanupHoverElements = vi.fn();
+
+      expect(() => processor.removeSpecificHighlights('opinion')).not.toThrow();
+    });
+  });
+
+  describe('Shadow DOM Processing', () => {
+
+    test('should not process non-element nodes', () => {
+      const textNode = createMockTextNode('test');
+      const textNodes = [];
+
+      processor.processShadowDom(textNode, textNodes);
+      expect(textNodes.length).toBe(0);
     });
   });
 });
