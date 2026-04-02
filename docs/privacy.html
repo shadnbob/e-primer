@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — E-Prime Bias Detector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --ink: #1a1a1a;
+            --paper: #f6f4f0;
+            --accent: #c44b2b;
+            --blue-gray: #5a6b7a;
+            --muted: #8a8078;
+            --rule: #d4cfc7;
+        }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            background: var(--paper);
+            line-height: 1.8;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 40px;
+            font-size: 14px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+        h1 {
+            font-family: 'Newsreader', serif;
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .updated {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 40px;
+        }
+        h2 {
+            font-family: 'Newsreader', serif;
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 36px;
+            margin-bottom: 12px;
+        }
+        p {
+            margin-bottom: 16px;
+            color: var(--ink);
+        }
+        .summary {
+            padding: 20px 24px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--rule);
+            margin-bottom: 36px;
+            font-size: 16px;
+            color: var(--blue-gray);
+            line-height: 1.7;
+        }
+        .summary strong {
+            color: var(--ink);
+        }
+        .footer {
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid var(--rule);
+            font-size: 14px;
+            color: var(--muted);
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        @media (max-width: 640px) {
+            .container { padding: 40px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="./" class="back-link">&larr; Back to E-Prime Bias Detector</a>
+
+        <h1>Privacy Policy</h1>
+        <div class="updated">Last updated: March 31, 2026</div>
+
+        <div class="summary">
+            <strong>The short version:</strong> E-Prime Bias Detector does not collect, transmit, or store any personal data. All text analysis happens locally in your browser. Nothing leaves your device.
+        </div>
+
+        <h2>What the extension does</h2>
+        <p>E-Prime Bias Detector analyzes the text content of web pages you visit to highlight language patterns such as opinion words, absolute statements, passive voice, and other rhetorical structures. It also identifies markers of quality writing like clear attribution and nuanced language.</p>
+
+        <h2>Data collection</h2>
+        <p>This extension does not collect any data. It does not track your browsing history, record the content of pages you visit, or gather any personal information. No analytics, telemetry, or usage data is collected.</p>
+
+        <h2>Data transmission</h2>
+        <p>This extension does not transmit any data to external servers, third parties, or the extension developer. All text analysis is performed entirely within your browser using local pattern matching. No network requests are made by the extension.</p>
+
+        <h2>Data storage</h2>
+        <p>The only data stored by the extension is your preference settings — which detection categories you have enabled or disabled, and your selected analysis mode (problems, excellence, or balanced). These settings are saved using Chrome's local storage API and remain on your device. They are not synced, shared, or accessible to anyone other than you.</p>
+
+        <h2>Permissions</h2>
+        <p>The extension requests the following browser permissions:</p>
+        <p><strong>activeTab</strong> — allows the extension to read the text content of the page you are currently viewing, only when the extension is active. This is required to perform the language analysis.</p>
+        <p><strong>scripting</strong> — allows the extension to inject its content script into web pages for real-time text analysis and highlighting.</p>
+        <p><strong>storage</strong> — allows the extension to save your preference settings locally on your device.</p>
+
+        <h2>Third-party services</h2>
+        <p>This extension does not use any third-party services, APIs, or external resources. It does not include any advertising, tracking pixels, or analytics scripts.</p>
+
+        <h2>Changes to this policy</h2>
+        <p>If this privacy policy is updated, the changes will be posted on this page with an updated date. The extension will continue to operate under the principle of collecting no user data.</p>
+
+        <h2>Contact</h2>
+        <p>If you have questions about this privacy policy, you can open an issue on the <a href="https://github.com/shadnbob/e-primer/issues">GitHub repository</a>.</p>
+
+        <div class="footer">
+            <a href="https://github.com/shadnbob/e-primer">E-Prime Bias Detector</a> — open source, no data collection, no tracking.
+        </div>
+    </div>
+</body>
+</html>
