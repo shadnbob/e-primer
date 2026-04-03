@@ -224,12 +224,15 @@ e-primer/
 │   │   ├── HoverContentGenerator.js  # Tooltip content generation
 │   │   ├── PopupManager.js           # Click/hover popup handling
 │   │   └── PerformanceMonitor.js     # Performance tracking
-│   ├── build/StyleGenerator.js       # CSS generation from config
+│   ├── build/
+│   │   ├── StyleGenerator.js        # CSS generation from config
+│   │   └── ReferencePageGenerator.js # Pattern reference page generation
 │   └── highlight-styles.css          # Highlight and popup styles
 ├── tests/
 │   ├── unit/                         # Unit tests
 │   ├── integration/                  # Integration tests
 │   └── manual/                       # Browser test HTML files
+├── docs/                             # GitHub Pages site (generated + static)
 ├── dist/                             # Chrome build output (generated)
 ├── dist-firefox/                     # Firefox build output (generated)
 ├── build.js                          # esbuild bundler script

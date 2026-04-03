@@ -289,6 +289,10 @@ Modify `src/build/StyleGenerator.js` to customize:
 - Animation styles
 - Responsive behavior
 
+### Reference Page
+
+`docs/reference.html` is auto-generated at build time by `src/build/ReferencePageGenerator.js`. It lists every category, bias type, subcategory, and detected pattern. No manual edits needed — it regenerates from BiasConfig and dictionaries on every `npm run build`.
+
 ### Adding UI Elements
 
 For new UI components:
