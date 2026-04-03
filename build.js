@@ -3,6 +3,7 @@ const esbuild = require('esbuild');
 const path = require('path');
 const fs = require('fs');
 const { StyleGenerator } = require('./src/build/StyleGenerator.js');
+const { ReferencePageGenerator } = require('./src/build/ReferencePageGenerator.js');
 
 // Parse command line arguments
 const isWatch = process.argv.includes('--watch');
@@ -136,6 +137,24 @@ function generateCSS(targetName) {
   }
 }
 
+// Generate reference page into docs/ (GitHub Pages)
+function generateReferencePage() {
+  try {
+    console.log('Generating reference page for docs/...');
+    const generator = new ReferencePageGenerator();
+    const html = generator.generate();
+    const docsDir = path.join(__dirname, 'docs');
+    if (!fs.existsSync(docsDir)) {
+      fs.mkdirSync(docsDir);
+    }
+    const htmlPath = path.join(docsDir, 'reference.html');
+    fs.writeFileSync(htmlPath, html);
+    console.log('Generated docs/reference.html');
+  } catch (error) {
+    console.error('Error generating reference page:', error);
+  }
+}
+
 // Update manifest for target
 function updateManifest(targetName) {
   const outputDir = targetName === 'firefox' ? 'dist-firefox' : 'dist';
@@ -198,6 +217,9 @@ async function build() {
     for (const t of targets) {
       await buildTarget(t);
     }
+    
+    // Generate reference page (once, into docs/)
+    generateReferencePage();
     
   } catch (error) {
     console.error('Build failed:', error);
