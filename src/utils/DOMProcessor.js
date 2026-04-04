@@ -7,6 +7,7 @@ export class DOMProcessor {
     constructor() {
         this.highlightClassPrefix = 'bias-highlight-';
         this.excellenceClassPrefix = 'excellence-';
+        this.customClassPrefix = 'bias-highlight-custom-';
         this.processedParents = new Set();
         this.hoverGenerator = new HoverContentGenerator();
         
@@ -106,7 +107,8 @@ export class DOMProcessor {
         
         for (const className of element.classList) {
             if (className.startsWith(this.highlightClassPrefix) || 
-                className.startsWith(this.excellenceClassPrefix)) {
+                className.startsWith(this.excellenceClassPrefix) ||
+                className.startsWith(this.customClassPrefix)) {
                 return true;
             }
         }
@@ -152,6 +154,8 @@ export class DOMProcessor {
             // Use appropriate class prefix based on match type
             if (match.isExcellence) {
                 span.className = match.className || `${this.excellenceClassPrefix}${match.type}`;
+            } else if (match.isCustom && match.customGroup) {
+                span.className = match.customGroup.className;
             } else {
                 const cssType = match.parentType || match.type;
                 span.className = `${this.highlightClassPrefix}${cssType}`;
@@ -283,6 +287,9 @@ export class DOMProcessor {
             const prefix = match.isExcellence ? '✓' : '⚠️';
             const confidenceText = match.confidence ? ` (${(match.confidence * 100).toFixed(0)}% confidence)` : '';
             tooltipText = `${prefix} ${match.contextReasoning}${confidenceText}`;
+        } else if (match.isCustom && match.customGroup) {
+            tooltipText = `Custom: ${match.customGroup.name}`;
+            spanElement.setAttribute('data-custom-group', match.customGroup.id);
         } else if (match.isExcellence) {
             tooltipText = match.tooltip || this.getExcellenceTooltipText(match.type);
         } else {

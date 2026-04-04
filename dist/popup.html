@@ -761,6 +761,52 @@
     </div>
 </div>
 
+<!-- Custom Dictionaries -->
+<div class="category-section" id="customDictionariesSection">
+    <div class="category-header">
+        <div class="category-header-left">
+            <span>Custom Dictionaries</span>
+        </div>
+        <div class="category-header-right">
+            <span class="chevron"></span>
+        </div>
+    </div>
+    <div class="category-body">
+        <div id="customGroupToggles"></div>
+        <div style="padding: 8px 15px;">
+            <button id="addCustomGroupBtn" class="button" style="width: 100%; background: #2196F3; color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px;">+ Add Custom Group</button>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Group Editor (hidden by default) -->
+<div id="customEditor" style="display: none; background: white; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 12px;">
+    <h4 style="margin: 0 0 10px; font-size: 13px; color: #333;" id="editorTitle">New Custom Group</h4>
+    <div style="margin-bottom: 8px;">
+        <input type="text" id="customGroupName" placeholder="Group name" style="width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 8px;">
+        <input type="text" id="customGroupDesc" placeholder="Description (shown in hover card)" style="width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 8px; display: flex; gap: 8px; align-items: center;">
+        <label style="font-size: 12px; color: #666;">Color:</label>
+        <input type="color" id="customGroupColor" value="#e67e22" style="width: 30px; height: 24px; border: none; cursor: pointer;">
+    </div>
+    <div style="margin-bottom: 8px;">
+        <textarea id="customGroupWords" placeholder="Words/phrases, one per line" rows="5" style="width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box; resize: vertical; font-family: inherit;"></textarea>
+    </div>
+    <div style="display: flex; gap: 6px;">
+        <button id="saveCustomGroup" class="button" style="flex: 1; background: #4CAF50; color: white; padding: 6px; font-size: 12px; border-radius: 4px;">Save</button>
+        <button id="cancelCustomGroup" class="button" style="flex: 1; background: #999; color: white; padding: 6px; font-size: 12px; border-radius: 4px;">Cancel</button>
+        <button id="deleteCustomGroup" class="button" style="flex: 0; background: #f44336; color: white; padding: 6px 10px; font-size: 12px; border-radius: 4px; display: none;">Delete</button>
+    </div>
+    <div style="margin-top: 8px; display: flex; gap: 6px;">
+        <button id="exportCustomGroups" class="button" style="flex: 1; background: #607D8B; color: white; padding: 6px; font-size: 11px; border-radius: 4px;">Export All</button>
+        <button id="importCustomGroups" class="button" style="flex: 1; background: #607D8B; color: white; padding: 6px; font-size: 11px; border-radius: 4px;">Import</button>
+        <input type="file" id="importFileInput" accept=".json" style="display: none;">
+    </div>
+</div>
+
 <div class="stats">
     <div class="stats-title">Excellence Indicators</div>
     <div class="stats-grid">

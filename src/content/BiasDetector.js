@@ -5,6 +5,7 @@ import { DOMProcessor } from '../utils/DOMProcessor.js';
 import { PerformanceMonitor } from '../utils/PerformanceMonitor.js';
 import { ExcellenceDetector } from '../utils/ExcellenceDetector.js';
 import { ContextAwareDetector } from '../utils/ContextAwareDetector.js';
+import { CustomDictionaryManager } from '../config/CustomDictionaryManager.js';
 
 export class BiasDetector {
     constructor() {
@@ -20,6 +21,33 @@ export class BiasDetector {
 
         // Pre-compile all patterns for better performance
         this.compiledDetectors = this.initializeDetectors();
+
+        this.customDictionary = new CustomDictionaryManager();
+        this._customReady = false;
+        this._initCustomDictionaries();
+    }
+
+    async _initCustomDictionaries() {
+        try {
+            await this.customDictionary.load();
+            this._customReady = true;
+            this._injectCustomCSS();
+        } catch (error) {
+            console.warn('Custom dictionaries failed to load:', error?.message ?? String(error));
+            this._customReady = true;
+        }
+    }
+
+    _injectCustomCSS() {
+        const css = this.customDictionary.generateCSS();
+        if (!css) return;
+        let styleEl = document.getElementById('custom-dictionary-styles');
+        if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = 'custom-dictionary-styles';
+            document.head.appendChild(styleEl);
+        }
+        styleEl.textContent = css;
     }
 
     // Initialize all bias detectors with compiled patterns
@@ -175,6 +203,11 @@ export class BiasDetector {
                 classification: m.classification,
                 reasoning: m.reasoning
             })));
+        }
+
+        if (this._customReady) {
+            const customMatches = this._detectCustomPatterns(text);
+            allMatches.push(...customMatches);
         }
 
         // Detect problems if mode is 'problems' or 'balanced'
@@ -495,7 +528,42 @@ export class BiasDetector {
         return false;
     }
 
+    _detectCustomPatterns(text) {
+        const matches = [];
+        for (const group of this.customDictionary.getEnabledGroups()) {
+            if (this.settings[group.settingKey] === false) continue;
+            const patterns = this.customDictionary.getCompiledPatterns(group.id);
+            for (const pattern of patterns) {
+                try {
+                    let match;
+                    pattern.regex.lastIndex = 0;
+                    while ((match = pattern.regex.exec(text)) !== null) {
+                        matches.push({
+                            index: match.index,
+                            length: match[0].length,
+                            text: match[0],
+                            type: group.id,
+                            isCustom: true,
+                            customGroup: group,
+                            intensity: 2
+                        });
+                        if (match.index === pattern.regex.lastIndex) {
+                            pattern.regex.lastIndex++;
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Custom pattern error:`, error?.message ?? String(error));
+                }
+            }
+        }
+        return matches;
+    }
+
     updateStats(match) {
+        if (match.isCustom && match.customGroup) {
+            this.stats[match.customGroup.statKey] = (this.stats[match.customGroup.statKey] || 0) + 1;
+            return;
+        }
         if (match.isExcellence) {
             const config = BiasConfig.EXCELLENCE_TYPES[match.type.toUpperCase()];
             if (config && config.statKey) {
@@ -526,7 +594,11 @@ export class BiasDetector {
     }
 
     createEmptyStats() {
-        return BiasConfig.createEmptyStats();
+        const stats = BiasConfig.createEmptyStats();
+        if (this._customReady) {
+            Object.assign(stats, this.customDictionary.getEmptyStats());
+        }
+        return stats;
     }
 
     // Mutation observer setup
@@ -640,6 +712,10 @@ export class BiasDetector {
 
     getPatternStats() {
         return this.patterns.getPatternStats();
+    }
+
+    getCustomDictionaryManager() {
+        return this.customDictionary;
     }
 
     // Cleanup

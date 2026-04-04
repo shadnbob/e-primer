@@ -196,6 +196,9 @@ document.addEventListener('DOMContentLoaded', function() {
         'manipulationSectionToggle': ['emotionalToggle', 'gaslightingToggle', 'falseDilemmaToggle']
     };
 
+    let customGroups = [];
+    let editingGroupId = null;
+
     // Initialize settings
     loadSettings();
 
@@ -206,6 +209,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setupSectionToggles();
     setupModeSelector();
     setupInfoLink();
+    loadCustomGroups();
+    setupCustomDictionaryUI();
 
     // Request initial stats
     requestStats();
@@ -673,4 +678,260 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Auto-refresh stats every 2 seconds
     setInterval(requestStats, 2000);
+
+    function loadCustomGroups() {
+        chrome.storage.local.get('customGroups', function(data) {
+            const stored = data.customGroups;
+            if (stored && stored.version === 1 && stored.groups) {
+                customGroups = Object.values(stored.groups);
+            } else {
+                customGroups = [];
+            }
+            renderCustomGroupToggles();
+        });
+    }
+
+    function renderCustomGroupToggles() {
+        const container = document.getElementById('customGroupToggles');
+        if (!container) return;
+
+        if (customGroups.length === 0) {
+            container.innerHTML = '<div style="padding: 8px 15px; font-size: 11px; color: #999; text-align: center;">No custom groups yet</div>';
+            return;
+        }
+
+        container.innerHTML = customGroups.map(group => `
+            <div class="toggle-container" data-custom-group="${group.id}">
+                <div class="toggle-label" style="cursor: pointer;" data-edit-group="${group.id}">
+                    <div class="color-indicator" style="background-color: ${group.color};"></div>
+                    <span>${group.name}</span>
+                    <span style="font-size: 10px; color: #999; margin-left: 4px;">(${group.words.length})</span>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" data-custom-toggle="${group.id}" data-setting-key="${group.settingKey}" ${group.enabled ? 'checked' : ''}>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        `).join('');
+
+        container.querySelectorAll('[data-edit-group]').forEach(el => {
+            el.addEventListener('click', function() {
+                openEditor(this.dataset.editGroup);
+            });
+        });
+
+        container.querySelectorAll('[data-custom-toggle]').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const groupId = this.dataset.customToggle;
+                const settingKey = this.dataset.settingKey;
+                const enabled = this.checked;
+
+                const group = customGroups.find(g => g.id === groupId);
+                if (group) group.enabled = enabled;
+
+                currentSettings[settingKey] = enabled;
+                saveCustomGroups();
+                chrome.storage.sync.set(currentSettings, function() {
+                    sendSettingsToContentScript();
+                });
+            });
+        });
+    }
+
+    function setupCustomDictionaryUI() {
+        const addBtn = document.getElementById('addCustomGroupBtn');
+        if (addBtn) addBtn.addEventListener('click', () => openEditor(null));
+
+        const saveBtn = document.getElementById('saveCustomGroup');
+        if (saveBtn) saveBtn.addEventListener('click', saveEditorGroup);
+
+        const cancelBtn = document.getElementById('cancelCustomGroup');
+        if (cancelBtn) cancelBtn.addEventListener('click', closeEditor);
+
+        const deleteBtn = document.getElementById('deleteCustomGroup');
+        if (deleteBtn) deleteBtn.addEventListener('click', deleteEditorGroup);
+
+        const exportBtn = document.getElementById('exportCustomGroups');
+        if (exportBtn) exportBtn.addEventListener('click', exportAllGroups);
+
+        const importBtn = document.getElementById('importCustomGroups');
+        if (importBtn) importBtn.addEventListener('click', () => document.getElementById('importFileInput').click());
+
+        const importInput = document.getElementById('importFileInput');
+        if (importInput) importInput.addEventListener('change', importGroups);
+    }
+
+    function openEditor(groupId) {
+        const editor = document.getElementById('customEditor');
+        const deleteBtn = document.getElementById('deleteCustomGroup');
+        const title = document.getElementById('editorTitle');
+        editingGroupId = groupId;
+
+        if (groupId) {
+            const group = customGroups.find(g => g.id === groupId);
+            if (!group) return;
+            title.textContent = 'Edit: ' + group.name;
+            document.getElementById('customGroupName').value = group.name;
+            document.getElementById('customGroupDesc').value = group.description || '';
+            document.getElementById('customGroupColor').value = group.color;
+            document.getElementById('customGroupWords').value = (group.words || []).join('\n');
+            deleteBtn.style.display = 'block';
+        } else {
+            title.textContent = 'New Custom Group';
+            document.getElementById('customGroupName').value = '';
+            document.getElementById('customGroupDesc').value = '';
+            document.getElementById('customGroupColor').value = '#e67e22';
+            document.getElementById('customGroupWords').value = '';
+            deleteBtn.style.display = 'none';
+        }
+
+        editor.style.display = 'block';
+    }
+
+    function closeEditor() {
+        document.getElementById('customEditor').style.display = 'none';
+        editingGroupId = null;
+    }
+
+    function saveEditorGroup() {
+        const name = document.getElementById('customGroupName').value.trim();
+        const description = document.getElementById('customGroupDesc').value.trim();
+        const color = document.getElementById('customGroupColor').value;
+        const wordsText = document.getElementById('customGroupWords').value;
+        const words = wordsText.split('\n').map(w => w.trim()).filter(w => w.length > 0);
+
+        if (!name) { alert('Group name is required'); return; }
+        if (words.length === 0) { alert('Add at least one word or phrase'); return; }
+
+        if (editingGroupId) {
+            const group = customGroups.find(g => g.id === editingGroupId);
+            if (group) {
+                group.name = name;
+                group.description = description;
+                group.color = color;
+                group.words = words.slice(0, 1000);
+                group.hoverContent = { basicTip: description || 'Custom detection: ' + name };
+                group.updatedAt = Date.now();
+            }
+        } else {
+            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').substring(0, 30);
+            const id = 'custom_' + slug + '_' + Date.now();
+            customGroups.push({
+                id,
+                name,
+                color,
+                description,
+                enabled: true,
+                words: words.slice(0, 1000),
+                hoverContent: { basicTip: description || 'Custom detection: ' + name },
+                settingKey: 'highlight_' + id,
+                statKey: id + 'Count',
+                className: 'bias-highlight-custom-' + id,
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            });
+        }
+
+        saveCustomGroups();
+        renderCustomGroupToggles();
+        closeEditor();
+
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {action: 'reloadCustomDictionaries'});
+        });
+    }
+
+    function deleteEditorGroup() {
+        if (!editingGroupId) return;
+        if (!confirm('Delete this custom group?')) return;
+
+        customGroups = customGroups.filter(g => g.id !== editingGroupId);
+        saveCustomGroups();
+        renderCustomGroupToggles();
+        closeEditor();
+
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {action: 'reloadCustomDictionaries'});
+        });
+    }
+
+    function saveCustomGroups() {
+        const groups = {};
+        let maxCounter = 0;
+        customGroups.forEach(g => {
+            groups[g.id] = g;
+            const match = g.id.match(/_(\d+)$/);
+            if (match) maxCounter = Math.max(maxCounter, parseInt(match[1]));
+        });
+        chrome.storage.local.set({
+            customGroups: { version: 1, idCounter: maxCounter, groups }
+        });
+    }
+
+    function exportAllGroups() {
+        if (customGroups.length === 0) { alert('No custom groups to export'); return; }
+        const data = {
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            groups: customGroups.map(g => ({
+                name: g.name, color: g.color, description: g.description,
+                words: g.words, hoverContent: g.hoverContent
+            }))
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'custom-dictionaries.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function importGroups(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (!data.groups || !Array.isArray(data.groups)) {
+                    alert('Invalid import file format');
+                    return;
+                }
+                let imported = 0;
+                for (const g of data.groups) {
+                    if (!g.name || customGroups.length >= 50) continue;
+                    const slug = g.name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').substring(0, 30);
+                    const id = 'custom_' + slug + '_' + Date.now() + '_' + imported;
+                    customGroups.push({
+                        id,
+                        name: g.name,
+                        color: g.color || '#e67e22',
+                        description: g.description || '',
+                        enabled: true,
+                        words: (g.words || []).slice(0, 1000),
+                        hoverContent: g.hoverContent || { basicTip: g.description || 'Custom: ' + g.name },
+                        settingKey: 'highlight_' + id,
+                        statKey: id + 'Count',
+                        className: 'bias-highlight-custom-' + id,
+                        createdAt: Date.now(),
+                        updatedAt: Date.now()
+                    });
+                    imported++;
+                }
+                saveCustomGroups();
+                renderCustomGroupToggles();
+                alert(`Imported ${imported} group(s)`);
+
+                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                    chrome.tabs.sendMessage(tabs[0].id, {action: 'reloadCustomDictionaries'});
+                });
+            } catch (err) {
+                alert('Failed to import: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
 });

@@ -112,6 +112,9 @@ export class HoverContentGenerator {
     }
     
     generateHoverContent(match, nearbyMatches = []) {
+        if (match.isCustom && match.customGroup) {
+            return this._generateCustomHoverContent(match, nearbyMatches);
+        }
         const isExcellence = match.isExcellence;
         const type = match.type;
         const intensity = match.intensity || 2;
@@ -331,6 +334,47 @@ export class HoverContentGenerator {
     }
     
     
+    _generateCustomHoverContent(match, nearbyMatches) {
+        const group = match.customGroup;
+        const hc = group.hoverContent || {};
+
+        let content = `<div class="hover-card hover-card-problem">`;
+        content += `<div class="hover-card-header" style="border-left: 3px solid ${group.color}">`;
+        content += `${group.name}`;
+        content += `<span class="intensity-badge intensity-2">Custom</span>`;
+        content += `</div>`;
+        content += `<div class="hover-card-text">"${match.text}"</div>`;
+
+        if (hc.basicTip) {
+            content += `<div class="hover-card-reason">${hc.basicTip}</div>`;
+        }
+
+        content += `<div class="hover-card-expanded">`;
+        if (hc.whenConcerning) {
+            content += `<div class="hover-card-section">`;
+            content += `<div class="hover-card-section-title">When to be concerned:</div>`;
+            content += `<div class="hover-card-section-content">${hc.whenConcerning}</div>`;
+            content += `</div>`;
+        }
+        if (hc.whenAcceptable) {
+            content += `<div class="hover-card-section">`;
+            content += `<div class="hover-card-section-title">When it's acceptable:</div>`;
+            content += `<div class="hover-card-section-content">${hc.whenAcceptable}</div>`;
+            content += `</div>`;
+        }
+        if (hc.suggestion) {
+            content += `<div class="hover-card-suggestion">${hc.suggestion}</div>`;
+        }
+        content += `</div>`;
+
+        if (nearbyMatches.length > 0) {
+            content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map(m => m.type).join(', ')}</div>`;
+        }
+
+        content += '</div>';
+        return content;
+    }
+
     getTypeName(type, isExcellence) {
         const { parentId, subCategoryId } = BiasConfig.resolveType(type);
         if (subCategoryId) {

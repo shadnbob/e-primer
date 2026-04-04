@@ -3531,6 +3531,9 @@
       };
     }
     generateHoverContent(match, nearbyMatches = []) {
+      if (match.isCustom && match.customGroup) {
+        return this._generateCustomHoverContent(match, nearbyMatches);
+      }
       const isExcellence = match.isExcellence;
       const type = match.type;
       const intensity = match.intensity || 2;
@@ -3706,6 +3709,41 @@
     // Get custom styling for sub-categories
     getSubCategoryStyle(match) {
       return "";
+    }
+    _generateCustomHoverContent(match, nearbyMatches) {
+      const group = match.customGroup;
+      const hc = group.hoverContent || {};
+      let content = `<div class="hover-card hover-card-problem">`;
+      content += `<div class="hover-card-header" style="border-left: 3px solid ${group.color}">`;
+      content += `${group.name}`;
+      content += `<span class="intensity-badge intensity-2">Custom</span>`;
+      content += `</div>`;
+      content += `<div class="hover-card-text">"${match.text}"</div>`;
+      if (hc.basicTip) {
+        content += `<div class="hover-card-reason">${hc.basicTip}</div>`;
+      }
+      content += `<div class="hover-card-expanded">`;
+      if (hc.whenConcerning) {
+        content += `<div class="hover-card-section">`;
+        content += `<div class="hover-card-section-title">When to be concerned:</div>`;
+        content += `<div class="hover-card-section-content">${hc.whenConcerning}</div>`;
+        content += `</div>`;
+      }
+      if (hc.whenAcceptable) {
+        content += `<div class="hover-card-section">`;
+        content += `<div class="hover-card-section-title">When it's acceptable:</div>`;
+        content += `<div class="hover-card-section-content">${hc.whenAcceptable}</div>`;
+        content += `</div>`;
+      }
+      if (hc.suggestion) {
+        content += `<div class="hover-card-suggestion">${hc.suggestion}</div>`;
+      }
+      content += `</div>`;
+      if (nearbyMatches.length > 0) {
+        content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map((m) => m.type).join(", ")}</div>`;
+      }
+      content += "</div>";
+      return content;
     }
     getTypeName(type, isExcellence) {
       const { parentId, subCategoryId } = BiasConfig.resolveType(type);
@@ -4048,6 +4086,7 @@
     constructor() {
       this.highlightClassPrefix = "bias-highlight-";
       this.excellenceClassPrefix = "excellence-";
+      this.customClassPrefix = "bias-highlight-custom-";
       this.processedParents = /* @__PURE__ */ new Set();
       this.hoverGenerator = new HoverContentGenerator();
       this.popupManager = null;
@@ -4113,7 +4152,7 @@
       if (!element.classList)
         return false;
       for (const className of element.classList) {
-        if (className.startsWith(this.highlightClassPrefix) || className.startsWith(this.excellenceClassPrefix)) {
+        if (className.startsWith(this.highlightClassPrefix) || className.startsWith(this.excellenceClassPrefix) || className.startsWith(this.customClassPrefix)) {
           return true;
         }
       }
@@ -4148,6 +4187,8 @@
         const span = document.createElement("span");
         if (match.isExcellence) {
           span.className = match.className || `${this.excellenceClassPrefix}${match.type}`;
+        } else if (match.isCustom && match.customGroup) {
+          span.className = match.customGroup.className;
         } else {
           const cssType = match.parentType || match.type;
           span.className = `${this.highlightClassPrefix}${cssType}`;
@@ -4246,6 +4287,9 @@
         const prefix = match.isExcellence ? "\u2713" : "\u26A0\uFE0F";
         const confidenceText = match.confidence ? ` (${(match.confidence * 100).toFixed(0)}% confidence)` : "";
         tooltipText = `${prefix} ${match.contextReasoning}${confidenceText}`;
+      } else if (match.isCustom && match.customGroup) {
+        tooltipText = `Custom: ${match.customGroup.name}`;
+        spanElement.setAttribute("data-custom-group", match.customGroup.id);
       } else if (match.isExcellence) {
         tooltipText = match.tooltip || this.getExcellenceTooltipText(match.type);
       } else {
@@ -4977,6 +5021,303 @@
     }
   };
 
+  // src/config/CustomDictionaryManager.js
+  var CustomDictionaryManager = class _CustomDictionaryManager {
+    static MAX_GROUPS = 50;
+    static MAX_WORDS_PER_GROUP = 1e3;
+    static STORAGE_KEY = "customGroups";
+    static SCHEMA_VERSION = 1;
+    static ID_PREFIX = "custom_";
+    static CSS_CLASS_PREFIX = "bias-highlight-custom-";
+    constructor() {
+      this.groups = /* @__PURE__ */ new Map();
+      this.compiledPatterns = /* @__PURE__ */ new Map();
+      this.listeners = /* @__PURE__ */ new Map();
+      this._idCounter = 0;
+      this._loaded = false;
+    }
+    async load() {
+      try {
+        const data = await this._storageGet(_CustomDictionaryManager.STORAGE_KEY);
+        const stored = data[_CustomDictionaryManager.STORAGE_KEY];
+        if (stored && stored.version === _CustomDictionaryManager.SCHEMA_VERSION) {
+          for (const [id, group] of Object.entries(stored.groups || {})) {
+            this.groups.set(id, group);
+          }
+          this._idCounter = stored.idCounter || 0;
+        }
+        this._compileAll();
+        this._loaded = true;
+      } catch (error) {
+        console.warn("CustomDictionaryManager: failed to load", error?.message ?? String(error));
+        this._loaded = true;
+      }
+    }
+    async save() {
+      const payload = {
+        version: _CustomDictionaryManager.SCHEMA_VERSION,
+        idCounter: this._idCounter,
+        groups: Object.fromEntries(this.groups)
+      };
+      await this._storageSet({ [_CustomDictionaryManager.STORAGE_KEY]: payload });
+    }
+    _generateId(name) {
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").substring(0, 30);
+      this._idCounter++;
+      return `${_CustomDictionaryManager.ID_PREFIX}${slug}_${this._idCounter}`;
+    }
+    async createGroup({ name, color = "#e67e22", description = "", words = [], hoverContent = {} }) {
+      if (this.groups.size >= _CustomDictionaryManager.MAX_GROUPS) {
+        throw new Error(`Maximum of ${_CustomDictionaryManager.MAX_GROUPS} custom groups reached`);
+      }
+      if (!name || !name.trim()) {
+        throw new Error("Group name is required");
+      }
+      const id = this._generateId(name);
+      const group = {
+        id,
+        name: name.trim(),
+        color,
+        description: description.trim(),
+        enabled: true,
+        words: words.slice(0, _CustomDictionaryManager.MAX_WORDS_PER_GROUP),
+        hoverContent: {
+          basicTip: hoverContent.basicTip || description.trim() || `Custom detection: ${name.trim()}`,
+          whenConcerning: hoverContent.whenConcerning || "",
+          whenAcceptable: hoverContent.whenAcceptable || "",
+          suggestion: hoverContent.suggestion || ""
+        },
+        settingKey: `highlight_${id}`,
+        statKey: `${id}Count`,
+        className: `${_CustomDictionaryManager.CSS_CLASS_PREFIX}${id}`,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      };
+      this.groups.set(id, group);
+      this._compileGroup(id);
+      await this.save();
+      this._emit("groupCreated", group);
+      return group;
+    }
+    async updateGroup(id, updates) {
+      const group = this.groups.get(id);
+      if (!group)
+        throw new Error(`Group not found: ${id}`);
+      if (updates.name !== void 0)
+        group.name = updates.name.trim();
+      if (updates.color !== void 0)
+        group.color = updates.color;
+      if (updates.description !== void 0)
+        group.description = updates.description.trim();
+      if (updates.enabled !== void 0)
+        group.enabled = updates.enabled;
+      if (updates.words !== void 0) {
+        group.words = updates.words.slice(0, _CustomDictionaryManager.MAX_WORDS_PER_GROUP);
+      }
+      if (updates.hoverContent !== void 0) {
+        group.hoverContent = { ...group.hoverContent, ...updates.hoverContent };
+      }
+      group.updatedAt = Date.now();
+      this._compileGroup(id);
+      await this.save();
+      this._emit("groupUpdated", group);
+      return group;
+    }
+    async deleteGroup(id) {
+      const group = this.groups.get(id);
+      if (!group)
+        throw new Error(`Group not found: ${id}`);
+      this.groups.delete(id);
+      this.compiledPatterns.delete(id);
+      await this.save();
+      this._emit("groupDeleted", { id });
+    }
+    getGroup(id) {
+      return this.groups.get(id) || null;
+    }
+    getAllGroups() {
+      return Array.from(this.groups.values());
+    }
+    getEnabledGroups() {
+      return this.getAllGroups().filter((g) => g.enabled);
+    }
+    getCompiledPatterns(groupId) {
+      return this.compiledPatterns.get(groupId) || [];
+    }
+    getAllCompiledPatterns() {
+      return this.compiledPatterns;
+    }
+    _compileAll() {
+      this.compiledPatterns.clear();
+      for (const id of this.groups.keys()) {
+        this._compileGroup(id);
+      }
+    }
+    _compileGroup(id) {
+      const group = this.groups.get(id);
+      if (!group)
+        return;
+      const compiled = [];
+      for (const word of group.words) {
+        const pattern = this._compileWord(word, id);
+        if (pattern)
+          compiled.push(pattern);
+      }
+      this.compiledPatterns.set(id, compiled);
+    }
+    _compileWord(word, groupId) {
+      const clean = word.trim();
+      if (!clean)
+        return null;
+      try {
+        const isComplex = clean.includes("\\") || clean.includes("(") || clean.includes("[");
+        let regexPattern;
+        if (isComplex) {
+          regexPattern = clean;
+        } else {
+          const escaped = clean.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          regexPattern = clean.includes(" ") ? escaped : `\\b${escaped}\\b`;
+        }
+        const regex = new RegExp(regexPattern, "gi");
+        regex.test("test string");
+        return {
+          source: clean,
+          regex,
+          type: groupId,
+          isComplex
+        };
+      } catch (error) {
+        console.warn(`CustomDictionaryManager: invalid pattern "${clean}"`, error?.message ?? String(error));
+        return null;
+      }
+    }
+    getSettingsDefaults() {
+      const defaults = {};
+      for (const group of this.groups.values()) {
+        defaults[group.settingKey] = group.enabled;
+      }
+      return defaults;
+    }
+    getEmptyStats() {
+      const stats = {};
+      for (const group of this.groups.values()) {
+        stats[group.statKey] = 0;
+      }
+      return stats;
+    }
+    getGroupBySettingKey(settingKey) {
+      for (const group of this.groups.values()) {
+        if (group.settingKey === settingKey)
+          return group;
+      }
+      return null;
+    }
+    generateCSS() {
+      let css = "";
+      for (const group of this.groups.values()) {
+        css += `
+.${group.className} {
+    background-color: ${group.color}33;
+    border-bottom: 2px solid ${group.color};
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.${group.className}:hover {
+    background-color: ${group.color}55;
+}
+`;
+      }
+      return css;
+    }
+    async exportGroups(groupIds = null) {
+      const groups = groupIds ? groupIds.map((id) => this.groups.get(id)).filter(Boolean) : this.getAllGroups();
+      return {
+        version: _CustomDictionaryManager.SCHEMA_VERSION,
+        exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+        groups: groups.map((g) => ({
+          name: g.name,
+          color: g.color,
+          description: g.description,
+          words: g.words,
+          hoverContent: g.hoverContent
+        }))
+      };
+    }
+    async importGroups(data) {
+      if (!data || !data.groups || !Array.isArray(data.groups)) {
+        throw new Error("Invalid import data format");
+      }
+      const imported = [];
+      for (const groupData of data.groups) {
+        if (!groupData.name)
+          continue;
+        if (this.groups.size >= _CustomDictionaryManager.MAX_GROUPS)
+          break;
+        const group = await this.createGroup({
+          name: groupData.name,
+          color: groupData.color || "#e67e22",
+          description: groupData.description || "",
+          words: groupData.words || [],
+          hoverContent: groupData.hoverContent || {}
+        });
+        imported.push(group);
+      }
+      return imported;
+    }
+    on(event, callback) {
+      if (!this.listeners.has(event)) {
+        this.listeners.set(event, []);
+      }
+      this.listeners.get(event).push(callback);
+    }
+    off(event, callback) {
+      const cbs = this.listeners.get(event);
+      if (cbs) {
+        this.listeners.set(event, cbs.filter((cb) => cb !== callback));
+      }
+    }
+    _emit(event, data) {
+      const cbs = this.listeners.get(event) || [];
+      for (const cb of cbs) {
+        try {
+          cb(data);
+        } catch (e) {
+          console.warn("Event listener error:", e);
+        }
+      }
+    }
+    _storageGet(key) {
+      return new Promise((resolve, reject) => {
+        if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+          chrome.storage.local.get(key, (result) => {
+            if (chrome.runtime.lastError) {
+              reject(new Error(chrome.runtime.lastError.message));
+            } else {
+              resolve(result);
+            }
+          });
+        } else {
+          resolve({});
+        }
+      });
+    }
+    _storageSet(data) {
+      return new Promise((resolve, reject) => {
+        if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+          chrome.storage.local.set(data, () => {
+            if (chrome.runtime.lastError) {
+              reject(new Error(chrome.runtime.lastError.message));
+            } else {
+              resolve();
+            }
+          });
+        } else {
+          resolve();
+        }
+      });
+    }
+  };
+
   // src/content/BiasDetector.js
   var BiasDetector = class {
     constructor() {
@@ -4990,6 +5331,31 @@
       this.performanceMonitor = new PerformanceMonitor();
       this.mode = this.settings.analysisMode || "balanced";
       this.compiledDetectors = this.initializeDetectors();
+      this.customDictionary = new CustomDictionaryManager();
+      this._customReady = false;
+      this._initCustomDictionaries();
+    }
+    async _initCustomDictionaries() {
+      try {
+        await this.customDictionary.load();
+        this._customReady = true;
+        this._injectCustomCSS();
+      } catch (error) {
+        console.warn("Custom dictionaries failed to load:", error?.message ?? String(error));
+        this._customReady = true;
+      }
+    }
+    _injectCustomCSS() {
+      const css = this.customDictionary.generateCSS();
+      if (!css)
+        return;
+      let styleEl = document.getElementById("custom-dictionary-styles");
+      if (!styleEl) {
+        styleEl = document.createElement("style");
+        styleEl.id = "custom-dictionary-styles";
+        document.head.appendChild(styleEl);
+      }
+      styleEl.textContent = css;
     }
     // Initialize all bias detectors with compiled patterns
     initializeDetectors() {
@@ -5105,6 +5471,10 @@
           classification: m.classification,
           reasoning: m.reasoning
         })));
+      }
+      if (this._customReady) {
+        const customMatches = this._detectCustomPatterns(text);
+        allMatches.push(...customMatches);
       }
       if (mode === "problems" || mode === "balanced") {
         for (const [type, detector] of this.compiledDetectors) {
@@ -5344,7 +5714,42 @@
       }
       return false;
     }
+    _detectCustomPatterns(text) {
+      const matches = [];
+      for (const group of this.customDictionary.getEnabledGroups()) {
+        if (this.settings[group.settingKey] === false)
+          continue;
+        const patterns = this.customDictionary.getCompiledPatterns(group.id);
+        for (const pattern of patterns) {
+          try {
+            let match;
+            pattern.regex.lastIndex = 0;
+            while ((match = pattern.regex.exec(text)) !== null) {
+              matches.push({
+                index: match.index,
+                length: match[0].length,
+                text: match[0],
+                type: group.id,
+                isCustom: true,
+                customGroup: group,
+                intensity: 2
+              });
+              if (match.index === pattern.regex.lastIndex) {
+                pattern.regex.lastIndex++;
+              }
+            }
+          } catch (error) {
+            console.warn(`Custom pattern error:`, error?.message ?? String(error));
+          }
+        }
+      }
+      return matches;
+    }
     updateStats(match) {
+      if (match.isCustom && match.customGroup) {
+        this.stats[match.customGroup.statKey] = (this.stats[match.customGroup.statKey] || 0) + 1;
+        return;
+      }
       if (match.isExcellence) {
         const config = BiasConfig.EXCELLENCE_TYPES[match.type.toUpperCase()];
         if (config && config.statKey) {
@@ -5368,7 +5773,11 @@
       this.stats = this.createEmptyStats();
     }
     createEmptyStats() {
-      return BiasConfig.createEmptyStats();
+      const stats = BiasConfig.createEmptyStats();
+      if (this._customReady) {
+        Object.assign(stats, this.customDictionary.getEmptyStats());
+      }
+      return stats;
     }
     // Mutation observer setup
     setupMutationObserver() {
@@ -5448,6 +5857,9 @@
     getPatternStats() {
       return this.patterns.getPatternStats();
     }
+    getCustomDictionaryManager() {
+      return this.customDictionary;
+    }
     // Cleanup
     destroy() {
       this.disconnectObserver();
@@ -5523,6 +5935,9 @@
           case "getPatternStats":
             handleGetPatternStats(sendResponse);
             break;
+          case "reloadCustomDictionaries":
+            await handleReloadCustomDictionaries(sendResponse);
+            break;
           default:
             sendResponse({ success: false, error: "Unknown action" });
         }
@@ -5592,6 +6007,19 @@
     function handleGetPerformanceMetrics(sendResponse) {
       const metrics = biasDetector.getPerformanceMetrics();
       sendResponse({ success: true, metrics });
+    }
+    async function handleReloadCustomDictionaries(sendResponse) {
+      try {
+        const manager = biasDetector.getCustomDictionaryManager();
+        await manager.load();
+        biasDetector._injectCustomCSS();
+        await biasDetector.forceAnalyze();
+        const stats = biasDetector.getStats();
+        sendResponse({ success: true, stats });
+      } catch (error) {
+        console.error("Failed to reload custom dictionaries:", error);
+        sendResponse({ success: false, error: error?.message ?? String(error) });
+      }
     }
     function handleGetPatternStats(sendResponse) {
       const stats = biasDetector.getPatternStats();

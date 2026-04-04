@@ -92,6 +92,10 @@ import { getPopupManager } from '../utils/PopupManager.js';
                     handleGetPatternStats(sendResponse);
                     break;
 
+                case 'reloadCustomDictionaries':
+                    await handleReloadCustomDictionaries(sendResponse);
+                    break;
+
                 default:
                     sendResponse({ success: false, error: 'Unknown action' });
             }
@@ -191,6 +195,20 @@ import { getPopupManager } from '../utils/PopupManager.js';
     function handleGetPerformanceMetrics(sendResponse) {
         const metrics = biasDetector.getPerformanceMetrics();
         sendResponse({ success: true, metrics: metrics });
+    }
+
+    async function handleReloadCustomDictionaries(sendResponse) {
+        try {
+            const manager = biasDetector.getCustomDictionaryManager();
+            await manager.load();
+            biasDetector._injectCustomCSS();
+            await biasDetector.forceAnalyze();
+            const stats = biasDetector.getStats();
+            sendResponse({ success: true, stats });
+        } catch (error) {
+            console.error('Failed to reload custom dictionaries:', error);
+            sendResponse({ success: false, error: error?.message ?? String(error) });
+        }
     }
 
     // Handle pattern stats request

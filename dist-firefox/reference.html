@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Prime Bias Detector — Pattern Reference</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f6f8;
+      color: #2c3e50;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+      color: white;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    header h1 { font-size: 28px; margin-bottom: 8px; }
+    header p { opacity: 0.85; font-size: 15px; }
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-number { font-size: 28px; font-weight: 700; }
+    .stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+    main { max-width: 960px; margin: 0 auto; padding: 32px 16px; }
+    .category { margin-bottom: 40px; }
+    .category > h2 {
+      font-size: 22px;
+      margin-bottom: 4px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #3498db;
+    }
+    .category.excellence > h2 { border-bottom-color: #28a745; }
+    .category-desc { color: #666; margin-bottom: 20px; font-size: 14px; }
+    .bias-type {
+      background: white;
+      border-radius: 8px;
+      border-left: 4px solid #ccc;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .bias-type-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .bias-type-header h3 { font-size: 18px; }
+    .meta { font-size: 13px; color: #888; }
+    .description { color: #555; margin-bottom: 12px; font-size: 14px; }
+    .subcategory {
+      background: #fafbfc;
+      border: 1px solid #e8ecf0;
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .subcategory-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .sub-icon { font-size: 16px; }
+    .word-count {
+      font-size: 11px;
+      background: #e8ecf0;
+      color: #666;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: auto;
+    }
+    .sub-description { color: #555; font-size: 13px; margin-bottom: 8px; }
+    .sub-guidance { font-size: 12px; color: #666; margin-bottom: 10px; line-height: 1.7; }
+    .guidance-label {
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .guidance-label.concerning { color: #c0392b; }
+    .guidance-label.acceptable { color: #27ae60; }
+    .word-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .word {
+      background: #eef1f5;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
+      color: #444;
+      white-space: nowrap;
+    }
+    .excellence-type { border-left-color: #28a745; }
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #999;
+      font-size: 12px;
+    }
+    @media (max-width: 600px) {
+      header { padding: 24px 16px; }
+      header h1 { font-size: 22px; }
+      .stats-bar { gap: 16px; }
+      .stat-number { font-size: 22px; }
+      .bias-type-header { flex-direction: column; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>E-Prime Bias Detector</h1>
+    <p>Complete reference of all detection patterns, categories, and subcategories</p>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-number">15</div><div class="stat-label">Bias Types</div></div>
+      <div class="stat"><div class="stat-number">40</div><div class="stat-label">Subcategories</div></div>
+      <div class="stat"><div class="stat-number">1208</div><div class="stat-label">Patterns</div></div>
+    </div>
+  </header>
+  <main>
+    
+    <section class="category">
+      <h2>Basic Detection</h2>
+      <p class="category-desc">Fundamental bias indicators</p>
+      
+    <div class="bias-type" style="border-left-color: #ff8c00">
+      <div class="bias-type-header">
+        <h3>Opinion Words</h3>
+        <span class="meta">12 subcategories &middot; 281 patterns</span>
+      </div>
+      <p class="description">Subjective language and evaluative terms</p>
+      
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🎯</span>
+          <strong style="color: #ff6b6b">Certainty/Conviction</strong>
+          <span class="word-count">17</span>
+        </div>
+        <p class="sub-description">Words that push readers toward unquestioning acceptance by conveying false certainty about debatable topics.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When presenting debatable positions as settled fact<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When stating truly established facts
+        </div>
+        <div class="word-list">
+          <span class="word">clearly</span> <span class="word">obviously</span> <span class="word">undoubtedly</span> <span class="word">certainly</span> <span class="word">definitely</span> <span class="word">absolutely</span> <span class="word">surely</span> <span class="word">undeniably</span> <span class="word">unquestionably</span> <span class="word">indisputably</span> <span class="word">indubitably</span> <span class="word">unmistakably</span> <span class="word">incontrovertibly</span> <span class="word">incontestably</span> <span class="word">irrefutably</span> <span class="word">manifestly</span> <span class="word">patently</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">❓</span>
+          <strong style="color: #ffa726">Hedging/Uncertainty</strong>
+          <span class="word-count">6</span>
+        </div>
+        <p class="sub-description">Words that create unnecessary doubt or vagueness, often to avoid taking responsibility for claims.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When avoiding accountability for claims that have evidence<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When genuinely uncertain and expressing honest doubt
+        </div>
+        <div class="word-list">
+          <span class="word">probably</span> <span class="word">maybe</span> <span class="word">perhaps</span> <span class="word">conceivably</span> <span class="word">speculated</span> <span class="word">rumored</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">👍</span>
+          <strong style="color: #66bb6a">Positive Evaluation</strong>
+          <span class="word-count">25</span>
+        </div>
+        <p class="sub-description">Subjective positive judgments that reveal the writer's approval without objective criteria.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When positive evaluation is presented without supporting evidence<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When clearly framed as personal opinion with reasoning
+        </div>
+        <div class="word-list">
+          <span class="word">good</span> <span class="word">great</span> <span class="word">excellent</span> <span class="word">exceptional</span> <span class="word">outstanding</span> <span class="word">perfect</span> <span class="word">flawless</span> <span class="word">admirable</span> <span class="word">commendable</span> <span class="word">praiseworthy</span> <span class="word">exemplary</span> <span class="word">stellar</span> <span class="word">superior</span> <span class="word">first-rate</span> <span class="word">top-notch</span> <span class="word">premium</span> <span class="word">favorable</span> <span class="word">positive</span> <span class="word">satisfactory</span> <span class="word">pleasing</span> <span class="word">gratifying</span> <span class="word">beneficial</span> <span class="word">advantageous</span> <span class="word">desirable</span> <span class="word">worthy</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">👎</span>
+          <strong style="color: #ef5350">Negative Evaluation</strong>
+          <span class="word-count">38</span>
+        </div>
+        <p class="sub-description">Subjective negative judgments that reveal the writer's disapproval without objective criteria.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When negative evaluation is presented without supporting evidence<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When clearly framed as personal opinion with reasoning
+        </div>
+        <div class="word-list">
+          <span class="word">abysmal</span> <span class="word">poor</span> <span class="word">inadequate</span> <span class="word">inferior</span> <span class="word">substandard</span> <span class="word">mediocre</span> <span class="word">disappointing</span> <span class="word">unsatisfactory</span> <span class="word">unacceptable</span> <span class="word">deficient</span> <span class="word">faulty</span> <span class="word">flawed</span> <span class="word">shoddy</span> <span class="word">deplorable</span> <span class="word">lamentable</span> <span class="word">pathetic</span> <span class="word">pitiful</span> <span class="word">regrettable</span> <span class="word">miserable</span> <span class="word">wretched</span> <span class="word">dismal</span> <span class="word">grim</span> <span class="word">bleak</span> <span class="word">dire</span> <span class="word">grave</span> <span class="word">severe</span> <span class="word">unfortunate</span> <span class="word">unfavorable</span> <span class="word">disagreeable</span> <span class="word">unpleasant</span> <span class="word">distressing</span> <span class="word">troublesome</span> <span class="word">problematic</span> <span class="word">objectionable</span> <span class="word">reprehensible</span> <span class="word">repugnant</span> <span class="word">detestable</span> <span class="word">bad</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">⚡</span>
+          <strong style="color: #ab47bc">Emotional Charge</strong>
+          <span class="word-count">24</span>
+        </div>
+        <p class="sub-description">Words designed to trigger strong emotional responses that bypass logical evaluation.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When emotional language substitutes for factual reporting<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When describing genuinely emotional situations with appropriate context
+        </div>
+        <div class="word-list">
+          <span class="word">heartwarming</span> <span class="word">touching</span> <span class="word">moving</span> <span class="word">soothing</span> <span class="word">comforting</span> <span class="word">reassuring</span> <span class="word">uplifting</span> <span class="word">exhilarating</span> <span class="word">thrilling</span> <span class="word">exciting</span> <span class="word">sensational</span> <span class="word">delightful</span> <span class="word">disgusting</span> <span class="word">revolting</span> <span class="word">sickening</span> <span class="word">nauseating</span> <span class="word">offensive</span> <span class="word">frightening</span> <span class="word">terrifying</span> <span class="word">horrifying</span> <span class="word">alarming</span> <span class="word">worrying</span> <span class="word">concerning</span> <span class="word">threatening</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">📊</span>
+          <strong style="color: #42a5f5">Comparative/Superlative</strong>
+          <span class="word-count">23</span>
+        </div>
+        <p class="sub-description">Words that create artificial rankings or comparisons without context or criteria.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When rankings lack criteria or context<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When based on specific, measurable criteria
+        </div>
+        <div class="word-list">
+          <span class="word">best</span> <span class="word">worst</span> <span class="word">better</span> <span class="word">worse</span> <span class="word">superior</span> <span class="word">inferior</span> <span class="word">greater</span> <span class="word">lesser</span> <span class="word">bigger</span> <span class="word">smaller</span> <span class="word">higher</span> <span class="word">lower</span> <span class="word">finer</span> <span class="word">poorer</span> <span class="word">strongest</span> <span class="word">weakest</span> <span class="word">finest</span> <span class="word">prettiest</span> <span class="word">ugliest</span> <span class="word">smartest</span> <span class="word">dumbest</span> <span class="word">brightest</span> <span class="word">darkest</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🏛️</span>
+          <strong style="color: #8d6e63">Political Framing</strong>
+          <span class="word-count">29</span>
+        </div>
+        <p class="sub-description">Words that frame issues in political terms, potentially polarizing neutral topics.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When political labels replace substantive analysis<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When discussing actual political positions or platforms
+        </div>
+        <div class="word-list">
+          <span class="word">controversial</span> <span class="word">disputed</span> <span class="word">radical</span> <span class="word">extreme</span> <span class="word">progressive</span> <span class="word">conservative</span> <span class="word">liberal</span> <span class="word">far-right</span> <span class="word">far-left</span> <span class="word">moderate</span> <span class="word">centrist</span> <span class="word">mainstream</span> <span class="word">fringe</span> <span class="word">revolutionary</span> <span class="word">traditional</span> <span class="word">conventional</span> <span class="word">unconventional</span> <span class="word">orthodox</span> <span class="word">unorthodox</span> <span class="word">establishment</span> <span class="word">anti-establishment</span> <span class="word">populist</span> <span class="word">elitist</span> <span class="word">partisan</span> <span class="word">bipartisan</span> <span class="word">divisive</span> <span class="word">polarizing</span> <span class="word">contentious</span> <span class="word">provocative</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🔥</span>
+          <strong style="color: #ff7043">Intensifiers</strong>
+          <span class="word-count">37</span>
+        </div>
+        <p class="sub-description">Words that amplify or exaggerate without adding meaningful information.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When intensifiers substitute for specific evidence<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When emphasis is proportionate and supported by evidence
+        </div>
+        <div class="word-list">
+          <span class="word">very</span> <span class="word">extremely</span> <span class="word">incredibly</span> <span class="word">exceptionally</span> <span class="word">extraordinarily</span> <span class="word">remarkably</span> <span class="word">notably</span> <span class="word">particularly</span> <span class="word">especially</span> <span class="word">surprisingly</span> <span class="word">unusually</span> <span class="word">strikingly</span> <span class="word">decidedly</span> <span class="word">markedly</span> <span class="word">profoundly</span> <span class="word">deeply</span> <span class="word">vastly</span> <span class="word">greatly</span> <span class="word">highly</span> <span class="word">immensely</span> <span class="word">tremendously</span> <span class="word">enormously</span> <span class="word">exceedingly</span> <span class="word">excessively</span> <span class="word">overly</span> <span class="word">utterly</span> <span class="word">completely</span> <span class="word">entirely</span> <span class="word">totally</span> <span class="word">wholly</span> <span class="word">thoroughly</span> <span class="word">fully</span> <span class="word">intensely</span> <span class="word">seriously</span> <span class="word">substantially</span> <span class="word">significantly</span> <span class="word">considerably</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🗣️</span>
+          <strong style="color: #78909c">Credibility Undermining</strong>
+          <span class="word-count">19</span>
+        </div>
+        <p class="sub-description">Words that question or attack credibility without providing evidence or reasoning.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When attacking credibility without addressing the actual claims<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When raising legitimate questions about methodology or credentials
+        </div>
+        <div class="word-list">
+          <span class="word">claims</span> <span class="word">purports</span> <span class="word">asserts</span> <span class="word">alleges</span> <span class="word">contends</span> <span class="word">maintains</span> <span class="word">insists</span> <span class="word">so-called</span> <span class="word">self-proclaimed</span> <span class="word">supposed</span> <span class="word">pretend</span> <span class="word">dubious</span> <span class="word">questionable</span> <span class="word">unproven</span> <span class="word">unverified</span> <span class="word">unsubstantiated</span> <span class="word">unfounded</span> <span class="word">baseless</span> <span class="word">groundless</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">⚖️</span>
+          <strong style="color: #5d4037">Loaded Political Terms</strong>
+          <span class="word-count">26</span>
+        </div>
+        <p class="sub-description">Words that carry heavy political or ideological baggage, triggering partisan responses.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When loaded terms replace substantive policy discussion<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When accurately describing self-identified political positions
+        </div>
+        <div class="word-list">
+          <span class="word">freedom</span> <span class="word">justice</span> <span class="word">equality</span> <span class="word">rights</span> <span class="word">liberty</span> <span class="word">democracy</span> <span class="word">patriotic</span> <span class="word">unpatriotic</span> <span class="word">un-American</span> <span class="word">socialist</span> <span class="word">communist</span> <span class="word">fascist</span> <span class="word">dictatorial</span> <span class="word">totalitarian</span> <span class="word">authoritarian</span> <span class="word">corrupt</span> <span class="word">crooked</span> <span class="word">dishonest</span> <span class="word">shady</span> <span class="word">illegal</span> <span class="word">unlawful</span> <span class="word">criminal</span> <span class="word">scandal</span> <span class="word">conspiracy</span> <span class="word">regime</span> <span class="word">propaganda</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">⚖️</span>
+          <strong style="color: #7e57c2">Moral/Ethical Judgments</strong>
+          <span class="word-count">24</span>
+        </div>
+        <p class="sub-description">Words that impose moral frameworks without acknowledging their subjective nature.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When moral judgments are presented as objective facts<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When the ethical framework is explicitly stated
+        </div>
+        <div class="word-list">
+          <span class="word">moral</span> <span class="word">immoral</span> <span class="word">ethical</span> <span class="word">unethical</span> <span class="word">virtuous</span> <span class="word">corrupt</span> <span class="word">just</span> <span class="word">unjust</span> <span class="word">fair</span> <span class="word">unfair</span> <span class="word">honorable</span> <span class="word">dishonorable</span> <span class="word">honest</span> <span class="word">dishonest</span> <span class="word">decent</span> <span class="word">indecent</span> <span class="word">appropriate</span> <span class="word">inappropriate</span> <span class="word">acceptable</span> <span class="word">unacceptable</span> <span class="word">legitimate</span> <span class="word">illegitimate</span> <span class="word">reasonable</span> <span class="word">unreasonable</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">💭</span>
+          <strong style="color: #26a69a">Emotional Appeals</strong>
+          <span class="word-count">13</span>
+        </div>
+        <p class="sub-description">Words that bypass logical evaluation by directly targeting emotional responses.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When emotional appeals substitute for evidence-based arguments<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When emotions are relevant and accompanied by factual context
+        </div>
+        <div class="word-list">
+          <span class="word">promising</span> <span class="word">depressing</span> <span class="word">gloomy</span> <span class="word">optimistic</span> <span class="word">pessimistic</span> <span class="word">anxious</span> <span class="word">fearful</span> <span class="word">afraid</span> <span class="word">confident</span> <span class="word">proud</span> <span class="word">ashamed</span> <span class="word">embarrassed</span> <span class="word">guilty</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #87ceeb">
+      <div class="bias-type-header">
+        <h3>To-Be Verbs (E-Prime)</h3>
+        <span class="meta">24 patterns</span>
+      </div>
+      <p class="description">Forms of &quot;to be&quot; that can create false equivalencies</p>
+      
+      <div class="word-list">
+        <span class="word">is</span> <span class="word">are</span> <span class="word">am</span> <span class="word">was</span> <span class="word">were</span> <span class="word">be</span> <span class="word">being</span> <span class="word">been</span> <span class="word">it's</span> <span class="word">that's</span> <span class="word">he's</span> <span class="word">she's</span> <span class="word">what's</span> <span class="word">who's</span> <span class="word">you're</span> <span class="word">they're</span> <span class="word">we're</span> <span class="word">i'm</span> <span class="word">there's</span> <span class="word">here's</span> <span class="word">wasn't</span> <span class="word">weren't</span> <span class="word">isn't</span> <span class="word">aren't</span>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #ff69b4">
+      <div class="bias-type-header">
+        <h3>Absolute Statements</h3>
+        <span class="meta">68 patterns</span>
+      </div>
+      <p class="description">Universal quantifiers and categorical claims</p>
+      
+      <div class="word-list">
+        <span class="word">all</span> <span class="word">every</span> <span class="word">each</span> <span class="word">any</span> <span class="word">no</span> <span class="word">none</span> <span class="word">everyone</span> <span class="word">everybody</span> <span class="word">no one</span> <span class="word">nobody</span> <span class="word">anyone</span> <span class="word">anybody</span> <span class="word">someone</span> <span class="word">somebody</span> <span class="word">always</span> <span class="word">never</span> <span class="word">forever</span> <span class="word">eternal</span> <span class="word">constantly</span> <span class="word">perpetually</span> <span class="word">continually</span> <span class="word">endlessly</span> <span class="word">ceaselessly</span> <span class="word">permanently</span> <span class="word">invariably</span> <span class="word">ultimately</span> <span class="word">fundamentally</span> <span class="word">purely</span> <span class="word">outright</span> <span class="word">comprehensively</span> <span class="word">universally</span> <span class="word">everything</span> <span class="word">nothing</span> <span class="word">anything</span> <span class="word">something</span> <span class="word">perfect</span> <span class="word">complete</span> <span class="word">total</span> <span class="word">absolute</span> <span class="word">entire</span> <span class="word">full</span> <span class="word">whole</span> <span class="word">ultimate</span> <span class="word">maximum</span> <span class="word">minimum</span> <span class="word">supreme</span> <span class="word">extreme</span> <span class="word">utmost</span> <span class="word">final</span> <span class="word">infallible</span> <span class="word">unerring</span> <span class="word">universal</span> <span class="word">impossible</span> <span class="word">inevitable</span> <span class="word">inescapable</span> <span class="word">undeniable</span> <span class="word">irrefutable</span> <span class="word">identical</span> <span class="word">pure</span> <span class="word">sheer</span> <span class="word">mere</span> <span class="word">undoubtedly</span> <span class="word">unquestionably</span> <span class="word">indisputably</span> <span class="word">irrefutably</span> <span class="word">incontrovertibly</span> <span class="word">incontestably</span> <span class="word">unequivocally</span>
+      </div>
+    </div>
+    </section>
+    <section class="category">
+      <h2>Advanced Detection</h2>
+      <p class="category-desc">Sophisticated linguistic patterns</p>
+      
+    <div class="bias-type" style="border-left-color: #800080">
+      <div class="bias-type-header">
+        <h3>Passive Voice</h3>
+        <span class="meta">33 patterns</span>
+      </div>
+      <p class="description">Constructions that obscure who performs actions</p>
+      
+      <div class="word-list">
+        <span class="word">was\s+\w+ed</span> <span class="word">were\s+\w+ed</span> <span class="word">has\s+been\s+\w+ed</span> <span class="word">have\s+been\s+\w+ed</span> <span class="word">had\s+been\s+\w+ed</span> <span class="word">is\s+being\s+\w+ed</span> <span class="word">are\s+being\s+\w+ed</span> <span class="word">will\s+be\s+\w+ed</span> <span class="word">would\s+be\s+\w+ed</span> <span class="word">can\s+be\s+\w+ed</span> <span class="word">could\s+be\s+\w+ed</span> <span class="word">may\s+be\s+\w+ed</span> <span class="word">might\s+be\s+\w+ed</span> <span class="word">should\s+be\s+\w+ed</span> <span class="word">must\s+be\s+\w+ed</span> <span class="word">was\s+(written|taken|given|made|done|seen|known|shown|chosen|broken|spoken|driven|forgotten|eaten|beaten)</span> <span class="word">were\s+(written|taken|given|made|done|seen|known|shown|chosen|broken|spoken|driven|forgotten|eaten|beaten)</span> <span class="word">has\s+been\s+(written|taken|given|made|done|seen|known|shown|chosen|broken|spoken|driven|forgotten|eaten|beaten)</span> <span class="word">have\s+been\s+(written|taken|given|made|done|seen|known|shown|chosen|broken|spoken|driven|forgotten|eaten|beaten)</span> <span class="word">it\s+is\s+believed</span> <span class="word">it\s+is\s+thought</span> <span class="word">it\s+is\s+said</span> <span class="word">it\s+has\s+been\s+reported</span> <span class="word">it\s+was\s+reported</span> <span class="word">it\s+is\s+considered</span> <span class="word">it\s+is\s+expected</span> <span class="word">mistakes\s+were\s+made</span> <span class="word">concerns\s+have\s+been\s+raised</span> <span class="word">questions\s+have\s+been\s+asked</span> <span class="word">decisions\s+were\s+made</span> <span class="word">action\s+was\s+taken</span> <span class="word">measures\s+were\s+implemented</span> <span class="word">steps\s+have\s+been\s+taken</span>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #b8860b">
+      <div class="bias-type-header">
+        <h3>Weasel Words</h3>
+        <span class="meta">5 subcategories &middot; 74 patterns</span>
+      </div>
+      <p class="description">Vague attributions and unsupported claims</p>
+      
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">👤</span>
+          <strong style="color: #5d4037">Unnamed Sources</strong>
+          <span class="word-count">18</span>
+        </div>
+        <p class="sub-description">References to anonymous or vague sources that cannot be verified or held accountable.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When anonymous attribution is used for claims that could be verified<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When protecting whistleblowers or sources at genuine risk
+        </div>
+        <div class="word-list">
+          <span class="word">many people say</span> <span class="word">some say</span> <span class="word">they say</span> <span class="word">people think</span> <span class="word">some argue</span> <span class="word">critics claim</span> <span class="word">supporters maintain</span> <span class="word">observers note</span> <span class="word">sources indicate</span> <span class="word">unnamed sources</span> <span class="word">according to reports</span> <span class="word">insiders claim</span> <span class="word">some experts say</span> <span class="word">authorities believe</span> <span class="word">well-placed sources</span> <span class="word">those familiar with the matter</span> <span class="word">people close to the situation</span> <span class="word">those in the know</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">📋</span>
+          <strong style="color: #00838f">Hedged Evidence</strong>
+          <span class="word-count">16</span>
+        </div>
+        <p class="sub-description">References to evidence, research, or data without providing specific citations or details.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When vague evidence claims substitute for actual citations<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When summarizing a well-known body of research in informal contexts
+        </div>
+        <div class="word-list">
+          <span class="word">research suggests</span> <span class="word">evidence suggests</span> <span class="word">data indicates</span> <span class="word">experts believe</span> <span class="word">it is believed</span> <span class="word">it is thought</span> <span class="word">it is said</span> <span class="word">may indicate</span> <span class="word">could suggest</span> <span class="word">might imply</span> <span class="word">studies have shown</span> <span class="word">science tells us</span> <span class="word">the data shows</span> <span class="word">findings indicate</span> <span class="word">analysis reveals</span> <span class="word">polls suggest</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">📊</span>
+          <strong style="color: #7b1fa2">Vague Quantifiers</strong>
+          <span class="word-count">13</span>
+        </div>
+        <p class="sub-description">Imprecise frequency or quantity words that avoid committing to specific numbers or rates.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When vague quantities substitute for available specific data<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When precise data is genuinely unavailable and the imprecision is acknowledged
+        </div>
+        <div class="word-list">
+          <span class="word">in some cases</span> <span class="word">in many cases</span> <span class="word">frequently</span> <span class="word">typically</span> <span class="word">tends to</span> <span class="word">in most cases</span> <span class="word">on occasion</span> <span class="word">from time to time</span> <span class="word">more often than not</span> <span class="word">time and again</span> <span class="word">as often as not</span> <span class="word">in certain situations</span> <span class="word">under some circumstances</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🎓</span>
+          <strong style="color: #1565c0">Appeal to Authority</strong>
+          <span class="word-count">12</span>
+        </div>
+        <p class="sub-description">Invocations of unnamed experts or consensus to lend credibility without verifiable backing.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When unnamed authority substitutes for evidence or named experts<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When referring to genuinely established scientific consensus
+        </div>
+        <div class="word-list">
+          <span class="word">widely known</span> <span class="word">widely believed</span> <span class="word">generally accepted</span> <span class="word">commonly believed</span> <span class="word">often said</span> <span class="word">the consensus is</span> <span class="word">it is well established</span> <span class="word">leading experts agree</span> <span class="word">top scientists confirm</span> <span class="word">the scientific community agrees</span> <span class="word">scholars maintain</span> <span class="word">mainstream opinion holds</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🌫️</span>
+          <strong style="color: #546e7a">Passive Attribution</strong>
+          <span class="word-count">15</span>
+        </div>
+        <p class="sub-description">Qualifying words that distance the writer from claims, adding plausible deniability.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When used to advance claims without accountability<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When genuinely reporting unverified information with appropriate caution
+        </div>
+        <div class="word-list">
+          <span class="word">reportedly</span> <span class="word">allegedly</span> <span class="word">supposedly</span> <span class="word">arguably</span> <span class="word">presumably</span> <span class="word">ostensibly</span> <span class="word">purportedly</span> <span class="word">apparently</span> <span class="word">seemingly</span> <span class="word">it would appear</span> <span class="word">one might say</span> <span class="word">it has been suggested</span> <span class="word">there are those who say</span> <span class="word">some would argue</span> <span class="word">it could be said</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #ff1493">
+      <div class="bias-type-header">
+        <h3>Presuppositions</h3>
+        <span class="meta">29 patterns</span>
+      </div>
+      <p class="description">Words that smuggle in hidden assumptions</p>
+      
+      <div class="word-list">
+        <span class="word">even</span> <span class="word">still</span> <span class="word">another</span> <span class="word">finally</span> <span class="word">already</span> <span class="word">yet</span> <span class="word">again</span> <span class="word">continues\s+to</span> <span class="word">refuses\s+to</span> <span class="word">fails\s+to</span> <span class="word">admits</span> <span class="word">denies</span> <span class="word">acknowledges</span> <span class="word">despite\s+claiming</span> <span class="word">while\s+claiming</span> <span class="word">so-called</span> <span class="word">alleged</span> <span class="word">supposed</span> <span class="word">pretend</span> <span class="word">the\s+fact\s+that</span> <span class="word">of\s+course</span> <span class="word">no\s+longer</span> <span class="word">not\s+anymore</span> <span class="word">\bused\s+to\b</span> <span class="word">manages\s+to</span> <span class="word">happens\s+to</span> <span class="word">tends\s+to</span> <span class="word">keeps\s+on</span> <span class="word">goes\s+on\s+to</span>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #4169e1">
+      <div class="bias-type-header">
+        <h3>Probability Perception</h3>
+        <span class="meta">137 patterns</span>
+      </div>
+      <p class="description">Vague probability language that distorts risk perception</p>
+      
+      <div class="word-list">
+        <span class="word">highly unlikely</span> <span class="word">very unlikely</span> <span class="word">quite unlikely</span> <span class="word">extremely unlikely</span> <span class="word">rather unlikely</span> <span class="word">somewhat unlikely</span> <span class="word">likely</span> <span class="word">quite likely</span> <span class="word">very likely</span> <span class="word">highly likely</span> <span class="word">extremely likely</span> <span class="word">rather likely</span> <span class="word">somewhat likely</span> <span class="word">probably</span> <span class="word">probably not</span> <span class="word">quite probably</span> <span class="word">very probably</span> <span class="word">most probably</span> <span class="word">almost certainly</span> <span class="word">minimal risk</span> <span class="word">low risk</span> <span class="word">small risk</span> <span class="word">tiny risk</span> <span class="word">negligible risk</span> <span class="word">slight risk</span> <span class="word">minor risk</span> <span class="word">insignificant risk</span> <span class="word">virtually no risk</span> <span class="word">practically no risk</span> <span class="word">significant risk</span> <span class="word">considerable risk</span> <span class="word">substantial risk</span> <span class="word">serious risk</span> <span class="word">major risk</span> <span class="word">high risk</span> <span class="word">extreme risk</span> <span class="word">severe risk</span> <span class="word">grave risk</span> <span class="word">rarely</span> <span class="word">seldom</span> <span class="word">infrequently</span> <span class="word">occasionally</span> <span class="word">sometimes</span> <span class="word">often</span> <span class="word">frequently</span> <span class="word">regularly</span> <span class="word">commonly</span> <span class="word">typically</span> <span class="word">usually</span> <span class="word">generally</span> <span class="word">mostly</span> <span class="word">largely</span> <span class="word">predominantly</span> <span class="word">mainly</span> <span class="word">possible</span> <span class="word">quite possible</span> <span class="word">very possible</span> <span class="word">entirely possible</span> <span class="word">highly possible</span> <span class="word">perfectly possible</span> <span class="word">impossible</span> <span class="word">highly impossible</span> <span class="word">virtually impossible</span> <span class="word">may occur</span> <span class="word">might occur</span> <span class="word">could occur</span> <span class="word">may happen</span> <span class="word">might happen</span> <span class="word">could happen</span> <span class="word">can happen</span> <span class="word">will likely happen</span> <span class="word">may result</span> <span class="word">almost certain</span> <span class="word">virtually certain</span> <span class="word">practically certain</span> <span class="word">nearly certain</span> <span class="word">all but certain</span> <span class="word">essentially certain</span> <span class="word">rare side effects</span> <span class="word">uncommon side effects</span> <span class="word">possible side effects</span> <span class="word">potential side effects</span> <span class="word">occasional complications</span> <span class="word">infrequent complications</span> <span class="word">unlikely complications</span> <span class="word">rare complications</span> <span class="word">safe procedure</span> <span class="word">very safe</span> <span class="word">quite safe</span> <span class="word">relatively safe</span> <span class="word">generally safe</span> <span class="word">considered safe</span> <span class="word">proven safe</span> <span class="word">deemed safe</span> <span class="word">typically safe</span> <span class="word">remote possibility</span> <span class="word">distant possibility</span> <span class="word">slight possibility</span> <span class="word">small possibility</span> <span class="word">good possibility</span> <span class="word">strong possibility</span> <span class="word">real possibility</span> <span class="word">distinct possibility</span> <span class="word">remote chance</span> <span class="word">slim chance</span> <span class="word">small chance</span> <span class="word">good chance</span> <span class="word">strong chance</span> <span class="word">excellent chance</span> <span class="word">fair chance</span> <span class="word">reasonable chance</span> <span class="word">decent chance</span> <span class="word">in most cases</span> <span class="word">in some cases</span> <span class="word">in many cases</span> <span class="word">in certain cases</span> <span class="word">under normal circumstances</span> <span class="word">under typical conditions</span> <span class="word">in general</span> <span class="word">as a rule</span> <span class="word">more likely</span> <span class="word">less likely</span> <span class="word">much more likely</span> <span class="word">much less likely</span> <span class="word">far more likely</span> <span class="word">far less likely</span> <span class="word">significantly more likely</span> <span class="word">significantly less likely</span> <span class="word">eventually</span> <span class="word">sooner or later</span> <span class="word">at some point</span> <span class="word">in time</span> <span class="word">over time</span> <span class="word">long term</span> <span class="word">short term</span> <span class="word">immediate term</span> <span class="word">near future</span>
+      </div>
+    </div>
+    </section>
+    <section class="category">
+      <h2>Framing &amp; Rhetoric</h2>
+      <p class="category-desc">How issues are presented</p>
+      
+    <div class="bias-type" style="border-left-color: #dc143c">
+      <div class="bias-type-header">
+        <h3>War Metaphors</h3>
+        <span class="meta">38 patterns</span>
+      </div>
+      <p class="description">Militaristic language for non-military topics</p>
+      
+      <div class="word-list">
+        <span class="word">battle</span> <span class="word">fight</span> <span class="word">combat</span> <span class="word">attack</span> <span class="word">defend</span> <span class="word">offensive</span> <span class="word">defensive</span> <span class="word">strategy</span> <span class="word">tactics</span> <span class="word">frontline</span> <span class="word">battlefield</span> <span class="word">war\s+on</span> <span class="word">fight\s+against</span> <span class="word">crusade</span> <span class="word">campaign\s+against</span> <span class="word">under\s+fire</span> <span class="word">under\s+attack</span> <span class="word">bombarded</span> <span class="word">arsenal</span> <span class="word">ammunition</span> <span class="word">weapon</span> <span class="word">target</span> <span class="word">enemy</span> <span class="word">defeat</span> <span class="word">victory</span> <span class="word">conquer</span> <span class="word">siege</span> <span class="word">assault</span> <span class="word">invade</span> <span class="word">retreat</span> <span class="word">bombshell</span> <span class="word">blitz</span> <span class="word">skirmish</span> <span class="word">trench</span> <span class="word">barrage</span> <span class="word">striking\s+back</span> <span class="word">counter\s+attack</span> <span class="word">line\s+of\s+defense</span>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #008080">
+      <div class="bias-type-header">
+        <h3>Minimizers</h3>
+        <span class="meta">25 patterns</span>
+      </div>
+      <p class="description">Language that downplays significance</p>
+      
+      <div class="word-list">
+        <span class="word">just</span> <span class="word">only</span> <span class="word">merely</span> <span class="word">simply</span> <span class="word">barely</span> <span class="word">hardly</span> <span class="word">scarcely</span> <span class="word">slightly</span> <span class="word">somewhat</span> <span class="word">a\s+bit\b</span> <span class="word">a\s+little</span> <span class="word">minor</span> <span class="word">small</span> <span class="word">tiny</span> <span class="word">trivial</span> <span class="word">insignificant</span> <span class="word">negligible</span> <span class="word">marginal</span> <span class="word">relatively</span> <span class="word">fairly</span> <span class="word">rather</span> <span class="word">quite</span> <span class="word">pretty</span> <span class="word">kind\s+of</span> <span class="word">sort\s+of</span>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #ff4500">
+      <div class="bias-type-header">
+        <h3>Maximizers</h3>
+        <span class="meta">5 subcategories &middot; 69 patterns</span>
+      </div>
+      <p class="description">Exaggeration and hyperbolic language</p>
+      
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">📏</span>
+          <strong style="color: #6a1b9a">Scale Inflation</strong>
+          <span class="word-count">12</span>
+        </div>
+        <p class="sub-description">Words that inflate physical or numerical magnitude without comparative context.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When size language lacks comparative context or specific measurements<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When describing genuinely large things with appropriate context
+        </div>
+        <div class="word-list">
+          <span class="word">massive</span> <span class="word">huge</span> <span class="word">enormous</span> <span class="word">gigantic</span> <span class="word">colossal</span> <span class="word">vast</span> <span class="word">immense</span> <span class="word">towering</span> <span class="word">overwhelming</span> <span class="word">mammoth</span> <span class="word">gargantuan</span> <span class="word">titanic</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🚨</span>
+          <strong style="color: #b71c1c">Catastrophizing</strong>
+          <span class="word-count">13</span>
+        </div>
+        <p class="sub-description">Crisis and disaster language applied to situations that may not warrant emergency framing.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When crisis framing is applied to non-emergency situations<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When describing genuine crises, disasters, or emergencies
+        </div>
+        <div class="word-list">
+          <span class="word">crisis</span> <span class="word">disaster</span> <span class="word">catastrophe</span> <span class="word">epidemic</span> <span class="word">plague</span> <span class="word">explosion</span> <span class="word">apocalyptic</span> <span class="word">calamity</span> <span class="word">cataclysm</span> <span class="word">meltdown</span> <span class="word">fiasco</span> <span class="word">debacle</span> <span class="word">train wreck</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">💥</span>
+          <strong style="color: #e65100">Dramatic Verbs</strong>
+          <span class="word-count">15</span>
+        </div>
+        <p class="sub-description">Verbs that exaggerate the degree of change or destruction beyond what the facts support.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When dramatic verbs substitute for specific measurements of change<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When the degree of change is genuinely extreme and supported by data
+        </div>
+        <div class="word-list">
+          <span class="word">skyrocket</span> <span class="word">plummet</span> <span class="word">devastate</span> <span class="word">destroy</span> <span class="word">annihilate</span> <span class="word">obliterate</span> <span class="word">decimate</span> <span class="word">implode</span> <span class="word">explode</span> <span class="word">torpedo</span> <span class="word">shatter</span> <span class="word">ravage</span> <span class="word">gut</span> <span class="word">eviscerate</span> <span class="word">cripple</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">✨</span>
+          <strong style="color: #1565c0">Superlative Hype</strong>
+          <span class="word-count">15</span>
+        </div>
+        <p class="sub-description">Adjectives of extreme impressiveness that create false uniqueness or exceptionality.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When superlatives lack comparative context or evidence<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When something is genuinely unprecedented with supporting evidence
+        </div>
+        <div class="word-list">
+          <span class="word">revolutionary</span> <span class="word">unprecedented</span> <span class="word">extraordinary</span> <span class="word">incredible</span> <span class="word">amazing</span> <span class="word">astonishing</span> <span class="word">staggering</span> <span class="word">spectacular</span> <span class="word">phenomenal</span> <span class="word">unparalleled</span> <span class="word">unrivaled</span> <span class="word">unmatched</span> <span class="word">mind-blowing</span> <span class="word">jaw-dropping</span> <span class="word">awe-inspiring</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🔄</span>
+          <strong style="color: #2e7d32">Paradigm Shift</strong>
+          <span class="word-count">14</span>
+        </div>
+        <p class="sub-description">Claims of transformative, game-changing impact that imply everything has fundamentally changed.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When transformation claims lack specific evidence of what changed<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When describing genuinely transformative events with specific evidence
+        </div>
+        <div class="word-list">
+          <span class="word">monumental</span> <span class="word">tremendous</span> <span class="word">breakthrough</span> <span class="word">game\s+changing</span> <span class="word">earth\s+shattering</span> <span class="word">paradigm\s+shifting</span> <span class="word">world\s+changing</span> <span class="word">transformative</span> <span class="word">disruptive</span> <span class="word">landmark</span> <span class="word">watershed</span> <span class="word">sea\s+change</span> <span class="word">tipping\s+point</span> <span class="word">turning\s+point</span>
+        </div>
+      </div>
+    </div>
+    </section>
+    <section class="category">
+      <h2>Manipulation Tactics</h2>
+      <p class="category-desc">Techniques designed to mislead</p>
+      
+    <div class="bias-type" style="border-left-color: #4b0082">
+      <div class="bias-type-header">
+        <h3>False Balance</h3>
+        <span class="meta">42 patterns</span>
+      </div>
+      <p class="description">Artificial balance between unequal positions</p>
+      
+      <div class="word-list">
+        <span class="word">both sides</span> <span class="word">on one hand</span> <span class="word">on the other hand</span> <span class="word">equally valid</span> <span class="word">two sides to every story</span> <span class="word">balanced perspective</span> <span class="word">middle ground</span> <span class="word">neutral position</span> <span class="word">unbiased view</span> <span class="word">fair and balanced</span> <span class="word">just as</span> <span class="word">equally problematic</span> <span class="word">similarly concerning</span> <span class="word">two schools of thought</span> <span class="word">competing theories</span> <span class="word">different perspectives</span> <span class="word">various viewpoints</span> <span class="word">diverse opinions</span> <span class="word">controversial issue</span> <span class="word">ongoing debate</span> <span class="word">disputed topic</span> <span class="word">contentious matter</span> <span class="word">divisive issue</span> <span class="word">polarizing topic</span> <span class="word">heated discussion</span> <span class="word">matter of opinion</span> <span class="word">subjective issue</span> <span class="word">to be fair</span> <span class="word">in fairness</span> <span class="word">playing devil's advocate</span> <span class="word">for the sake of argument</span> <span class="word">another way to look at it</span> <span class="word">from another angle</span> <span class="word">alternative viewpoint</span> <span class="word">counterargument</span> <span class="word">pros and cons</span> <span class="word">advantages and disadvantages</span> <span class="word">benefits and drawbacks</span> <span class="word">strengths and weaknesses</span> <span class="word">opportunities and challenges</span> <span class="word">supporters and critics</span> <span class="word">proponents and opponents</span>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #006400">
+      <div class="bias-type-header">
+        <h3>Euphemisms</h3>
+        <span class="meta">7 subcategories &middot; 118 patterns</span>
+      </div>
+      <p class="description">Language that obscures harsh realities</p>
+      
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🏛️</span>
+          <strong style="color: #5c6bc0">Political Euphemism</strong>
+          <span class="word-count">18</span>
+        </div>
+        <p class="sub-description">Government and policy language that obscures controversial actions behind neutral-sounding terminology.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When government or policy language hides the true nature of actions<br>
+          <span class="guidance-label acceptable">When acceptable:</span> Rarely — political euphemisms almost always serve to obscure
+        </div>
+        <div class="word-list">
+          <span class="word">enhanced interrogation</span> <span class="word">collateral damage</span> <span class="word">friendly fire</span> <span class="word">extraordinary rendition</span> <span class="word">neutralize</span> <span class="word">pacification</span> <span class="word">strategic withdrawal</span> <span class="word">tactical redeployment</span> <span class="word">kinetic action</span> <span class="word">regime change</span> <span class="word">nation building</span> <span class="word">peacekeeping operation</span> <span class="word">police action</span> <span class="word">security operation</span> <span class="word">freedom fighters</span> <span class="word">detainee</span> <span class="word">unlawful combatant</span> <span class="word">rendition program</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">💼</span>
+          <strong style="color: #78909c">Corporate Euphemism</strong>
+          <span class="word-count">19</span>
+        </div>
+        <p class="sub-description">Business language that softens negative outcomes like job losses, price increases, and failures.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When corporate jargon hides impact on workers or consumers<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When used in appropriate business context without obscuring harm
+        </div>
+        <div class="word-list">
+          <span class="word">rightsizing</span> <span class="word">downsizing</span> <span class="word">restructuring</span> <span class="word">optimization</span> <span class="word">streamlining</span> <span class="word">synergy realization</span> <span class="word">workforce adjustment</span> <span class="word">negative growth</span> <span class="word">deferred success</span> <span class="word">challenging market conditions</span> <span class="word">revenue enhancement</span> <span class="word">price adjustment</span> <span class="word">value engineering</span> <span class="word">headcount reduction</span> <span class="word">involuntary separation</span> <span class="word">career transition</span> <span class="word">operational efficiency</span> <span class="word">resource reallocation</span> <span class="word">sunset</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🤝</span>
+          <strong style="color: #66bb6a">Social Euphemism</strong>
+          <span class="word-count">19</span>
+        </div>
+        <p class="sub-description">Socially polite substitutions used out of sensitivity, courtesy, or respect for dignity.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When politeness prevents necessary direct discussion of systemic issues<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When showing genuine respect, sensitivity, or social courtesy
+        </div>
+        <div class="word-list">
+          <span class="word">passed away</span> <span class="word">departed</span> <span class="word">no longer with us</span> <span class="word">resting in peace</span> <span class="word">economically disadvantaged</span> <span class="word">underprivileged</span> <span class="word">underserved</span> <span class="word">differently abled</span> <span class="word">physically challenged</span> <span class="word">special needs</span> <span class="word">senior citizens</span> <span class="word">golden years</span> <span class="word">twilight years</span> <span class="word">between jobs</span> <span class="word">let go</span> <span class="word">expecting</span> <span class="word">correctional facility</span> <span class="word">substance abuse</span> <span class="word">unhoused</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🎖️</span>
+          <strong style="color: #b71c1c">Military Euphemism</strong>
+          <span class="word-count">16</span>
+        </div>
+        <p class="sub-description">Military jargon that sanitizes violence, casualties, and the human cost of warfare.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When military language hides civilian casualties or human suffering<br>
+          <span class="guidance-label acceptable">When acceptable:</span> In technical military communication between professionals
+        </div>
+        <div class="word-list">
+          <span class="word">surgical strike</span> <span class="word">precision bombing</span> <span class="word">smart weapons</span> <span class="word">soft targets</span> <span class="word">hard targets</span> <span class="word">assets</span> <span class="word">resources</span> <span class="word">theater of operations</span> <span class="word">rules of engagement</span> <span class="word">force projection</span> <span class="word">boots on the ground</span> <span class="word">area denial</span> <span class="word">neutralization</span> <span class="word">ordnance delivery</span> <span class="word">servicing the target</span> <span class="word">engage the enemy</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🔥</span>
+          <strong style="color: #e65100">Dysphemism</strong>
+          <span class="word-count">18</span>
+        </div>
+        <p class="sub-description">Loaded negative framing that inflames perception — the rhetorical opposite of a euphemism.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When inflammatory language replaces neutral terms to provoke reaction<br>
+          <span class="guidance-label acceptable">When acceptable:</span> Rarely — dysphemisms almost always serve to inflame rather than inform
+        </div>
+        <div class="word-list">
+          <span class="word">death tax</span> <span class="word">government takeover</span> <span class="word">job killers</span> <span class="word">tax and spend</span> <span class="word">bleeding heart</span> <span class="word">welfare queen</span> <span class="word">anchor babies</span> <span class="word">illegal aliens</span> <span class="word">chain migration</span> <span class="word">socialized medicine</span> <span class="word">nanny state</span> <span class="word">big government</span> <span class="word">bureaucrats</span> <span class="word">handouts</span> <span class="word">entitlements</span> <span class="word">radical agenda</span> <span class="word">open borders</span> <span class="word">activist judges</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🏥</span>
+          <strong style="color: #00897b">Medical Euphemism</strong>
+          <span class="word-count">13</span>
+        </div>
+        <p class="sub-description">Healthcare language that softens or obscures medical errors, patient outcomes, and end-of-life realities.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When medical language impairs informed consent or hides errors<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When showing sensitivity to patients and families in acute grief
+        </div>
+        <div class="word-list">
+          <span class="word">therapeutic misadventure</span> <span class="word">negative patient outcome</span> <span class="word">terminal illness</span> <span class="word">life-limiting condition</span> <span class="word">comfort care</span> <span class="word">pregnancy termination</span> <span class="word">medical assistance in dying</span> <span class="word">adverse event</span> <span class="word">treatment failure</span> <span class="word">non-responsive</span> <span class="word">palliative sedation</span> <span class="word">failure to thrive</span> <span class="word">code blue</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🌿</span>
+          <strong style="color: #2e7d32">Environmental Euphemism</strong>
+          <span class="word-count">15</span>
+        </div>
+        <p class="sub-description">Environmental language that minimizes ecological damage or greenwashes harmful practices.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When environmental language obscures actual ecological harm<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When describing genuine environmental improvements with specific data
+        </div>
+        <div class="word-list">
+          <span class="word">climate change</span> <span class="word">global warming</span> <span class="word">carbon footprint</span> <span class="word">sustainable development</span> <span class="word">clean coal</span> <span class="word">energy independence</span> <span class="word">managed retreat</span> <span class="word">controlled burn</span> <span class="word">wildlife management</span> <span class="word">natural gas</span> <span class="word">harvest</span> <span class="word">emissions trading</span> <span class="word">carbon neutral</span> <span class="word">green growth</span> <span class="word">responsible mining</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #ff7f50">
+      <div class="bias-type-header">
+        <h3>Emotional Manipulation</h3>
+        <span class="meta">6 subcategories &middot; 119 patterns</span>
+      </div>
+      <p class="description">Appeals designed to trigger emotional responses</p>
+      
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">😨</span>
+          <strong style="color: #c62828">Fear Appeal</strong>
+          <span class="word-count">21</span>
+        </div>
+        <p class="sub-description">Language designed to trigger fear and threat perception, bypassing rational risk assessment.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When fear language substitutes for evidence about actual dangers<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When describing genuinely dangerous situations with supporting evidence
+        </div>
+        <div class="word-list">
+          <span class="word">dangerous precedent</span> <span class="word">slippery slope</span> <span class="word">existential threat</span> <span class="word">grave danger</span> <span class="word">serious threat</span> <span class="word">dire consequences</span> <span class="word">catastrophic results</span> <span class="word">devastating impact</span> <span class="word">irreversible damage</span> <span class="word">point of no return</span> <span class="word">ticking time bomb</span> <span class="word">imminent danger</span> <span class="word">clear and present danger</span> <span class="word">looming crisis</span> <span class="word">impending doom</span> <span class="word">mortal threat</span> <span class="word">doomsday scenario</span> <span class="word">nightmare scenario</span> <span class="word">worst case scenario</span> <span class="word">on the brink</span> <span class="word">spiraling out of control</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">😔</span>
+          <strong style="color: #6a1b9a">Guilt Induction</strong>
+          <span class="word-count">21</span>
+        </div>
+        <p class="sub-description">Language designed to trigger guilt and moral responsibility, pressuring agreement through shame.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When guilt is used to shut down legitimate debate or analysis<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When genuine accountability is supported by evidence of responsibility
+        </div>
+        <div class="word-list">
+          <span class="word">shame on</span> <span class="word">how dare</span> <span class="word">blood on your hands</span> <span class="word">morally responsible</span> <span class="word">complicit in</span> <span class="word">turning a blind eye</span> <span class="word">failed to act</span> <span class="word">stood by while</span> <span class="word">allowed to happen</span> <span class="word">could have prevented</span> <span class="word">chose to ignore</span> <span class="word">willfully neglected</span> <span class="word">betrayed the trust</span> <span class="word">let down</span> <span class="word">abandoned their duty</span> <span class="word">on your conscience</span> <span class="word">history will judge</span> <span class="word">answerable for</span> <span class="word">dereliction of duty</span> <span class="word">looked the other way</span> <span class="word">washed their hands of</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🎭</span>
+          <strong style="color: #f57f17">Flattery Manipulation</strong>
+          <span class="word-count">18</span>
+        </div>
+        <p class="sub-description">Compliments and in-group identity appeals designed to bias the reader toward agreement.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When flattery substitutes for substantive argument<br>
+          <span class="guidance-label acceptable">When acceptable:</span> Rarely — flattery in persuasive writing almost always serves to manipulate
+        </div>
+        <div class="word-list">
+          <span class="word">smart people like you</span> <span class="word">educated readers understand</span> <span class="word">discerning individuals</span> <span class="word">those who truly care</span> <span class="word">people of conscience</span> <span class="word">thoughtful citizens</span> <span class="word">intelligent observers</span> <span class="word">wise enough to see</span> <span class="word">sophisticated thinkers</span> <span class="word">enlightened minds</span> <span class="word">those with common sense</span> <span class="word">reasonable people agree</span> <span class="word">anyone with half a brain</span> <span class="word">thinking people know</span> <span class="word">informed citizens realize</span> <span class="word">astute observers recognize</span> <span class="word">those who pay attention</span> <span class="word">right-thinking people</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🤬</span>
+          <strong style="color: #d84315">Outrage Fuel</strong>
+          <span class="word-count">21</span>
+        </div>
+        <p class="sub-description">Language designed to trigger moral outrage, bypassing careful analysis with indignation.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When outrage language replaces factual reporting or evidence<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When describing genuinely outrageous situations with full factual context
+        </div>
+        <div class="word-list">
+          <span class="word">shocking revelation</span> <span class="word">unbelievable scandal</span> <span class="word">absolute outrage</span> <span class="word">disgusting display</span> <span class="word">appalling behavior</span> <span class="word">unconscionable act</span> <span class="word">beyond the pale</span> <span class="word">crosses the line</span> <span class="word">new low</span> <span class="word">height of hypocrisy</span> <span class="word">blatant corruption</span> <span class="word">flagrant violation</span> <span class="word">egregious abuse</span> <span class="word">stunning betrayal</span> <span class="word">jaw-dropping</span> <span class="word">slap in the face</span> <span class="word">travesty of justice</span> <span class="word">moral bankruptcy</span> <span class="word">utter contempt</span> <span class="word">brazen disregard</span> <span class="word">shameless exploitation</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">💔</span>
+          <strong style="color: #1565c0">Sympathy Exploitation</strong>
+          <span class="word-count">20</span>
+        </div>
+        <p class="sub-description">Uses vulnerable populations to weaponize compassion and bypass rational evaluation of arguments.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When sympathy appeals are disconnected from the actual argument<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When vulnerable populations are genuinely and directly affected
+        </div>
+        <div class="word-list">
+          <span class="word">think of the children</span> <span class="word">vulnerable victims</span> <span class="word">innocent lives</span> <span class="word">helpless elderly</span> <span class="word">suffering families</span> <span class="word">heartbroken parents</span> <span class="word">orphaned children</span> <span class="word">widows and orphans</span> <span class="word">defenseless animals</span> <span class="word">voiceless victims</span> <span class="word">forgotten souls</span> <span class="word">human tragedy</span> <span class="word">real people suffering</span> <span class="word">faces behind the statistics</span> <span class="word">their blood cries out</span> <span class="word">who will speak for them</span> <span class="word">left to fend for themselves</span> <span class="word">prey upon the weak</span> <span class="word">the most vulnerable among us</span> <span class="word">those who cannot help themselves</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">⏰</span>
+          <strong style="color: #ef6c00">False Urgency</strong>
+          <span class="word-count">18</span>
+        </div>
+        <p class="sub-description">Creates artificial time pressure to prevent careful deliberation and force hasty decisions.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When urgency is manufactured to prevent careful thought<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When genuine deadlines exist and are supported by evidence
+        </div>
+        <div class="word-list">
+          <span class="word">act now</span> <span class="word">before it's too late</span> <span class="word">time is running out</span> <span class="word">last chance</span> <span class="word">final opportunity</span> <span class="word">narrow window</span> <span class="word">critical moment</span> <span class="word">now or never</span> <span class="word">decisive moment</span> <span class="word">crucial juncture</span> <span class="word">make or break</span> <span class="word">do or die</span> <span class="word">the clock is ticking</span> <span class="word">every second counts</span> <span class="word">running out of time</span> <span class="word">at the eleventh hour</span> <span class="word">no time to waste</span> <span class="word">urgent action needed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #800000">
+      <div class="bias-type-header">
+        <h3>Gaslighting</h3>
+        <span class="meta">5 subcategories &middot; 87 patterns</span>
+      </div>
+      <p class="description">Phrases that undermine perception and memory</p>
+      
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🚫</span>
+          <strong style="color: #b71c1c">Reality Denial</strong>
+          <span class="word-count">18</span>
+        </div>
+        <p class="sub-description">Direct denial that events occurred or facts exist, attacking objective reality itself.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When denying documented or widely witnessed events<br>
+          <span class="guidance-label acceptable">When acceptable:</span> Rarely — reality denial is almost always manipulative
+        </div>
+        <div class="word-list">
+          <span class="word">that never happened</span> <span class="word">you're imagining things</span> <span class="word">that's not true</span> <span class="word">you're making it up</span> <span class="word">completely fabricated</span> <span class="word">pure fiction</span> <span class="word">didn't happen that way</span> <span class="word">false memory</span> <span class="word">revisionist history</span> <span class="word">twisting the facts</span> <span class="word">distorting reality</span> <span class="word">alternative facts</span> <span class="word">total fabrication</span> <span class="word">that's a lie</span> <span class="word">never said that</span> <span class="word">you're inventing things</span> <span class="word">fantasy</span> <span class="word">fiction not fact</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">💢</span>
+          <strong style="color: #6a1b9a">Emotional Invalidation</strong>
+          <span class="word-count">17</span>
+        </div>
+        <p class="sub-description">Dismissing emotional responses as irrational or disproportionate to undermine confidence in one's own feelings.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When used to silence legitimate concerns or feelings<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When genuinely helping someone recognize a cognitive distortion, with care and evidence
+        </div>
+        <div class="word-list">
+          <span class="word">you're overreacting</span> <span class="word">making a big deal</span> <span class="word">blowing it out of proportion</span> <span class="word">being dramatic</span> <span class="word">overly sensitive</span> <span class="word">too emotional</span> <span class="word">getting worked up over nothing</span> <span class="word">making mountains out of molehills</span> <span class="word">need to calm down</span> <span class="word">being hysterical</span> <span class="word">irrational response</span> <span class="word">taking it too seriously</span> <span class="word">reading too much into it</span> <span class="word">stop being so sensitive</span> <span class="word">you're too thin-skinned</span> <span class="word">learn to take a joke</span> <span class="word">lighten up</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🧠</span>
+          <strong style="color: #00838f">Memory Manipulation</strong>
+          <span class="word-count">16</span>
+        </div>
+        <p class="sub-description">Undermining confidence in one's own memory to replace recollections with a preferred narrative.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When used to replace someone's recollection with a preferred narrative<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When providing documented evidence of a genuine misunderstanding
+        </div>
+        <div class="word-list">
+          <span class="word">you're misremembering</span> <span class="word">that's not what was said</span> <span class="word">you're confused</span> <span class="word">mixing things up</span> <span class="word">got it backwards</span> <span class="word">faulty recollection</span> <span class="word">selective memory</span> <span class="word">conveniently forgetting</span> <span class="word">memory is playing tricks</span> <span class="word">not how I remember it</span> <span class="word">you must be mistaken</span> <span class="word">false impression</span> <span class="word">your memory is unreliable</span> <span class="word">you always get this wrong</span> <span class="word">that's not what happened at all</span> <span class="word">you're rewriting history</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">🎯</span>
+          <strong style="color: #e65100">Credibility Attack</strong>
+          <span class="word-count">19</span>
+        </div>
+        <p class="sub-description">Attacking the person's mental fitness, judgment, or competence rather than addressing their actual argument.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When personal attacks substitute for addressing the actual argument<br>
+          <span class="guidance-label acceptable">When acceptable:</span> Rarely — credibility attacks almost always avoid the substantive issue
+        </div>
+        <div class="word-list">
+          <span class="word">you're being paranoid</span> <span class="word">too sensitive</span> <span class="word">crazy to think</span> <span class="word">lost touch with reality</span> <span class="word">delusional thinking</span> <span class="word">conspiracy theorist</span> <span class="word">seeing things that aren't there</span> <span class="word">jumping to conclusions</span> <span class="word">wild accusations</span> <span class="word">baseless claims</span> <span class="word">unfounded fears</span> <span class="word">irrational beliefs</span> <span class="word">unstable behavior</span> <span class="word">not thinking clearly</span> <span class="word">you need help</span> <span class="word">you're losing it</span> <span class="word">unhinged</span> <span class="word">out of your mind</span> <span class="word">not in your right mind</span>
+        </div>
+      </div>
+      <div class="subcategory">
+        <div class="subcategory-header">
+          <span class="sub-icon">↩️</span>
+          <strong style="color: #546e7a">Deflection</strong>
+          <span class="word-count">17</span>
+        </div>
+        <p class="sub-description">Redirecting attention away from the actual issue to avoid accountability or addressing the concern.</p>
+        <div class="sub-guidance">
+          <span class="guidance-label concerning">When concerning:</span> When topic changes prevent addressing the original issue<br>
+          <span class="guidance-label acceptable">When acceptable:</span> When genuinely raising a relevant related issue while still addressing the original
+        </div>
+        <div class="word-list">
+          <span class="word">the real issue is</span> <span class="word">what about</span> <span class="word">more importantly</span> <span class="word">you're missing the point</span> <span class="word">that's not the problem</span> <span class="word">focusing on the wrong thing</span> <span class="word">beside the point</span> <span class="word">irrelevant detail</span> <span class="word">distracting from</span> <span class="word">changing the subject</span> <span class="word">let's talk about</span> <span class="word">but what about when</span> <span class="word">conveniently ignoring</span> <span class="word">you're deflecting</span> <span class="word">nice try changing the topic</span> <span class="word">stop trying to distract</span> <span class="word">that's whataboutism</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bias-type" style="border-left-color: #9400d3">
+      <div class="bias-type-header">
+        <h3>False Dilemmas</h3>
+        <span class="meta">64 patterns</span>
+      </div>
+      <p class="description">Language that forces artificial binary choices</p>
+      
+      <div class="word-list">
+        <span class="word">either you're with us or against us</span> <span class="word">either...or</span> <span class="word">can't have it both ways</span> <span class="word">pick a side</span> <span class="word">choose one</span> <span class="word">black or white</span> <span class="word">all or nothing</span> <span class="word">win or lose</span> <span class="word">success or failure</span> <span class="word">friend or foe</span> <span class="word">love it or leave it</span> <span class="word">my way or the highway</span> <span class="word">sink or swim</span> <span class="word">must choose between</span> <span class="word">forced to decide</span> <span class="word">have to pick</span> <span class="word">can't have both</span> <span class="word">one or the other</span> <span class="word">mutually exclusive</span> <span class="word">incompatible options</span> <span class="word">can't be both</span> <span class="word">impossible to reconcile</span> <span class="word">fundamental choice</span> <span class="word">defining decision</span> <span class="word">ultimate choice</span> <span class="word">only two options</span> <span class="word">just two choices</span> <span class="word">two paths</span> <span class="word">binary choice</span> <span class="word">simple choice</span> <span class="word">clear choice</span> <span class="word">obvious choice</span> <span class="word">no middle ground</span> <span class="word">no compromise</span> <span class="word">no third option</span> <span class="word">no alternative</span> <span class="word">no other way</span> <span class="word">zero sum game</span> <span class="word">winner takes all</span> <span class="word">us versus them</span> <span class="word">last chance</span> <span class="word">final offer</span> <span class="word">take it or leave it</span> <span class="word">now or never</span> <span class="word">speak now or forever</span> <span class="word">one time only</span> <span class="word">limited time</span> <span class="word">closing window</span> <span class="word">ship is sailing</span> <span class="word">train is leaving</span> <span class="word">door is closing</span> <span class="word">bridge is burning</span> <span class="word">if you're not</span> <span class="word">unless you</span> <span class="word">those who don't</span> <span class="word">anyone who doesn't</span> <span class="word">people who refuse</span> <span class="word">failure to choose</span> <span class="word">refusing to take a stand</span> <span class="word">sitting on the fence</span> <span class="word">can't remain neutral</span> <span class="word">neutrality is complicity</span> <span class="word">silence is consent</span> <span class="word">inaction is action</span>
+      </div>
+    </div>
+    </section>
+    
+    <section class="category excellence">
+      <h2>Excellence Detection</h2>
+      <p class="category-desc">Positive writing patterns that demonstrate clear, honest, evidence-based communication.</p>
+      
+    <div class="bias-type excellence-type" style="border-left-color: #28a745">
+      <h3>Clear Attribution</h3>
+      <p class="description">Specific, verifiable sources</p>
+    </div>
+
+    <div class="bias-type excellence-type" style="border-left-color: #28a745">
+      <h3>Nuanced Language</h3>
+      <p class="description">Acknowledges complexity</p>
+    </div>
+
+    <div class="bias-type excellence-type" style="border-left-color: #28a745">
+      <h3>Transparent Communication</h3>
+      <p class="description">Clear about limitations</p>
+    </div>
+
+    <div class="bias-type excellence-type" style="border-left-color: #28a745">
+      <h3>Constructive Discourse</h3>
+      <p class="description">Encourages dialogue</p>
+    </div>
+
+    <div class="bias-type excellence-type" style="border-left-color: #28a745">
+      <h3>Evidence-Based</h3>
+      <p class="description">Supported by data</p>
+    </div>
+    </section>
+  </main>
+  <footer>
+    Generated at build time from BiasConfig.js and pattern dictionaries.
+  </footer>
+</body>
+</html>
