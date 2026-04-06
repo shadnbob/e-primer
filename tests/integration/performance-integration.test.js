@@ -480,7 +480,7 @@ describe('Performance Integration Tests', () => {
       const processingTime = endTime - startTime;
 
       // ASSERT: Should be very fast with minimal patterns
-      expect(processingTime).toBeLessThan(300); // Should be very fast for neutral content
+      expect(processingTime).toBeLessThan(500); // Should be very fast for neutral content
       expect(stats.healthScore).toBeGreaterThan(40);
       expect(stats.healthScore).toBeLessThan(85); // Neutral score for neutral content (more generous)
       

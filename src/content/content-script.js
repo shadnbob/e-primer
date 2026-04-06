@@ -31,15 +31,13 @@ import { getPopupManager } from '../utils/PopupManager.js';
         }
     }
 
-    // Load settings and start analysis if enabled
     function loadSettingsAndStart() {
         const defaultSettings = BiasConfig.getDefaultSettings();
-        
-        chrome.storage.sync.get(defaultSettings, (items) => {
+
+        function applySettingsAndStart(items) {
             const validatedSettings = BiasConfig.validateSettings(items);
             biasDetector.updateSettings(validatedSettings).then(() => {
                 if (validatedSettings.enableAnalysis) {
-                    // Small delay to let the page load
                     setTimeout(() => {
                         biasDetector.analyzeDocument();
                         biasDetector.setupMutationObserver();
@@ -47,8 +45,40 @@ import { getPopupManager } from '../utils/PopupManager.js';
                 }
             }).catch(error => {
                 console.error('Error updating settings:', error);
+                startWithDefaults();
             });
-        });
+        }
+
+        function startWithDefaults() {
+            console.log('Starting with default settings');
+            setTimeout(() => {
+                biasDetector.analyzeDocument();
+                biasDetector.setupMutationObserver();
+            }, 500);
+        }
+
+        try {
+            if (typeof browser !== 'undefined' && browser.storage && browser.storage.sync) {
+                browser.storage.sync.get(defaultSettings)
+                    .then(applySettingsAndStart)
+                    .catch(error => {
+                        console.warn('Storage get failed (promise):', error);
+                        startWithDefaults();
+                    });
+            } else {
+                chrome.storage.sync.get(defaultSettings, (items) => {
+                    if (chrome.runtime.lastError) {
+                        console.warn('Storage get failed:', chrome.runtime.lastError);
+                        startWithDefaults();
+                        return;
+                    }
+                    applySettingsAndStart(items);
+                });
+            }
+        } catch (error) {
+            console.warn('Storage API error:', error);
+            startWithDefaults();
+        }
     }
 
     // Set up message listeners for communication with popup
