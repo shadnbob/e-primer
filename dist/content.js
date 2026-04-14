@@ -485,7 +485,7 @@
         settingKey: "highlightPresupposition",
         statKey: "presuppositionCount",
         enabled: true,
-        tooltip: "Language that makes readers accept premises without realizing it",
+        tooltip: "Possible language that makes readers accept premises without realizing it",
         basicTip: "Language that makes readers accept premises without realizing it",
         whenConcerning: "When forcing acceptance of debatable premises",
         whenAcceptable: "Used for emphasis without hidden assumptions",
