@@ -489,8 +489,8 @@ export class BiasConfig {
             settingKey: 'highlightPresupposition',
             statKey: 'presuppositionCount',
             enabled: true,
-            tooltip: 'Possible language that makes readers accept premises without realizing it',
-            basicTip: 'Language that makes readers accept premises without realizing it',
+            tooltip: 'Presupposition - Possibly swaying readers to accept premises without realizing it',
+            basicTip: 'Language that possibly attempts to make readers accept premises without realizing it',
             whenConcerning: 'When forcing acceptance of debatable premises',
             whenAcceptable: 'Used for emphasis without hidden assumptions',
             lookFor: [
@@ -578,8 +578,8 @@ export class BiasConfig {
             settingKey: 'highlightMinimizers',
             statKey: 'minimizerCount',
             enabled: true,
-            tooltip: 'Words that dismiss or trivialize legitimate concerns',
-            basicTip: 'Words that dismiss or trivialize legitimate concerns',
+            tooltip: 'Words that may dismiss or trivialize legitimate concerns',
+            basicTip: 'Words that may dismiss or trivialize legitimate concerns',
             whenConcerning: 'When dismissing legitimate problems or complex issues',
             whenAcceptable: 'In instructions, simplification for clarity, or appropriate emphasis',
             lookFor: [
@@ -622,8 +622,8 @@ export class BiasConfig {
             settingKey: 'highlightMaximizers',
             statKey: 'maximizerCount',
             enabled: true,
-            tooltip: 'Hyperbolic language that creates false urgency',
-            basicTip: 'Hyperbolic language that creates false urgency',
+            tooltip: 'Hyperbolic language that may create false urgency',
+            basicTip: 'Hyperbolic language that may create false urgency',
             whenConcerning: 'When creating false urgency or exaggerating normal situations',
             whenAcceptable: 'When describing genuinely extreme situations or for appropriate emphasis',
             lookFor: [

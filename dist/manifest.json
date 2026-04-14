@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "E-Prime Bias Detector",
+  "name": "E-Prime Bias Detector - BETA",
   "version": "2.0",
-  "description": "Detects and highlights biased language patterns using E-Prime principles and advanced linguistic analysis",
+  "description": "Detects & highlights biased language patterns using E-Prime principles and linguistic analysis - THIS EXTENSION IS FOR BETA TESTING",
   "permissions": [
     "activeTab",
     "scripting",
