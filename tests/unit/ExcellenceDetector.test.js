@@ -3,8 +3,8 @@
 /**
  * TESTING: ExcellenceDetector Class (Positive Pattern Detection)
  * 
- * Tests the excellence detection system that identifies good writing practices
- * and quality communication patterns in text.
+ * Tests the excellence detection system that identifies good writing practices,
+ * quality communication patterns, and subject portrayal in text.
  */
 
 import { ExcellenceDetector } from '../../src/utils/ExcellenceDetector.js';
@@ -22,7 +22,6 @@ describe('ExcellenceDetector', () => {
       expect(detector.excellencePatterns).toBeDefined();
       expect(typeof detector.excellencePatterns).toBe('object');
       
-      // Should have expected excellence categories
       expect(detector.excellencePatterns).toHaveProperty('attribution');
       expect(detector.excellencePatterns).toHaveProperty('nuance');
       expect(detector.excellencePatterns).toHaveProperty('transparency');
@@ -41,7 +40,6 @@ describe('ExcellenceDetector', () => {
         expect(Array.isArray(category.patterns)).toBe(true);
         expect(category.patterns.length).toBeGreaterThan(0);
         
-        // Each pattern should be a RegExp
         category.patterns.forEach(pattern => {
           expect(pattern).toBeInstanceOf(RegExp);
         });
@@ -55,6 +53,12 @@ describe('ExcellenceDetector', () => {
         expect(typeof category.tooltip).toBe('string');
         expect(category.tooltip.length).toBeGreaterThan(0);
       });
+    });
+
+    test('should initialize with portrayal patterns', () => {
+      expect(detector.portrayalPatterns).toBeDefined();
+      expect(detector.portrayalPatterns).toHaveProperty('positive');
+      expect(detector.portrayalPatterns).toHaveProperty('negative');
     });
   });
 
@@ -74,10 +78,8 @@ describe('ExcellenceDetector', () => {
       testTexts.forEach(text => {
         let foundMatch = false;
         attributionPatterns.forEach(pattern => {
-          if (pattern.test(text)) {
-            foundMatch = true;
-          }
-          pattern.lastIndex = 0; // Reset regex state
+          if (pattern.test(text)) foundMatch = true;
+          pattern.lastIndex = 0;
         });
         expect(foundMatch).toBe(true);
       });
@@ -96,12 +98,9 @@ describe('ExcellenceDetector', () => {
       vagueTexts.forEach(text => {
         let foundMatch = false;
         attributionPatterns.forEach(pattern => {
-          if (pattern.test(text)) {
-            foundMatch = true;
-          }
+          if (pattern.test(text)) foundMatch = true;
           pattern.lastIndex = 0;
         });
-        // These should NOT be detected as good attribution
         expect(foundMatch).toBe(false);
       });
     });
@@ -122,9 +121,7 @@ describe('ExcellenceDetector', () => {
       nuancedTexts.forEach(text => {
         let foundMatch = false;
         nuancePatterns.forEach(pattern => {
-          if (pattern.test(text)) {
-            foundMatch = true;
-          }
+          if (pattern.test(text)) foundMatch = true;
           pattern.lastIndex = 0;
         });
         expect(foundMatch).toBe(true);
@@ -145,9 +142,7 @@ describe('ExcellenceDetector', () => {
       complexTexts.forEach(text => {
         let foundMatch = false;
         nuancePatterns.forEach(pattern => {
-          if (pattern.test(text)) {
-            foundMatch = true;
-          }
+          if (pattern.test(text)) foundMatch = true;
           pattern.lastIndex = 0;
         });
         expect(foundMatch).toBe(true);
@@ -167,9 +162,7 @@ describe('ExcellenceDetector', () => {
       contextualTexts.forEach(text => {
         let foundMatch = false;
         nuancePatterns.forEach(pattern => {
-          if (pattern.test(text)) {
-            foundMatch = true;
-          }
+          if (pattern.test(text)) foundMatch = true;
           pattern.lastIndex = 0;
         });
         expect(foundMatch).toBe(true);
@@ -193,9 +186,7 @@ describe('ExcellenceDetector', () => {
       transparentTexts.forEach(text => {
         let foundMatch = false;
         transparencyPatterns.forEach(pattern => {
-          if (pattern.test(text)) {
-            foundMatch = true;
-          }
+          if (pattern.test(text)) foundMatch = true;
           pattern.lastIndex = 0;
         });
         expect(foundMatch).toBe(true);
@@ -216,9 +207,7 @@ describe('ExcellenceDetector', () => {
       limitationTexts.forEach(text => {
         let foundMatch = false;
         transparencyPatterns.forEach(pattern => {
-          if (pattern.test(text)) {
-            foundMatch = true;
-          }
+          if (pattern.test(text)) foundMatch = true;
           pattern.lastIndex = 0;
         });
         expect(foundMatch).toBe(true);
@@ -240,9 +229,7 @@ describe('ExcellenceDetector', () => {
       let totalMatches = 0;
       Object.values(detector.excellencePatterns).forEach(category => {
         category.patterns.forEach(pattern => {
-          if (pattern.test(complexText)) {
-            totalMatches++;
-          }
+          if (pattern.test(complexText)) totalMatches++;
           pattern.lastIndex = 0;
         });
       });
@@ -262,14 +249,10 @@ describe('ExcellenceDetector', () => {
         let totalMatches = 0;
         Object.values(detector.excellencePatterns).forEach(category => {
           category.patterns.forEach(pattern => {
-            if (pattern.test(text)) {
-              totalMatches++;
-            }
+            if (pattern.test(text)) totalMatches++;
             pattern.lastIndex = 0;
           });
         });
-        
-        // Biased text should have minimal or no excellence patterns
         expect(totalMatches).toBeLessThan(2);
       });
     });
@@ -289,9 +272,7 @@ describe('ExcellenceDetector', () => {
       testCases.forEach(text => {
         let foundMatch = false;
         attributionPatterns.forEach(pattern => {
-          if (pattern.test(text)) {
-            foundMatch = true;
-          }
+          if (pattern.test(text)) foundMatch = true;
           pattern.lastIndex = 0;
         });
         expect(foundMatch).toBe(true);
@@ -314,17 +295,14 @@ describe('ExcellenceDetector', () => {
       Object.values(detector.excellencePatterns).forEach(category => {
         category.patterns.forEach(pattern => {
           const matches = largeText.match(pattern);
-          if (matches) {
-            totalMatches += matches.length;
-          }
+          if (matches) totalMatches += matches.length;
         });
       });
       
-      const endTime = performance.now();
-      const processingTime = endTime - startTime;
+      const processingTime = performance.now() - startTime;
       
       expect(totalMatches).toBeGreaterThan(0);
-      expect(processingTime).toBeLessThan(500); // Should process quickly
+      expect(processingTime).toBeLessThan(500);
     });
 
     test('should handle empty and invalid inputs', () => {
@@ -360,9 +338,7 @@ describe('ExcellenceDetector', () => {
       let excellenceScore = 0;
       Object.values(detector.excellencePatterns).forEach(category => {
         category.patterns.forEach(pattern => {
-          if (pattern.test(academicText)) {
-            excellenceScore++;
-          }
+          if (pattern.test(academicText)) excellenceScore++;
           pattern.lastIndex = 0;
         });
       });
@@ -383,9 +359,7 @@ describe('ExcellenceDetector', () => {
       let excellenceScore = 0;
       Object.values(detector.excellencePatterns).forEach(category => {
         category.patterns.forEach(pattern => {
-          if (pattern.test(journalismText)) {
-            excellenceScore++;
-          }
+          if (pattern.test(journalismText)) excellenceScore++;
           pattern.lastIndex = 0;
         });
       });
@@ -403,14 +377,11 @@ describe('ExcellenceDetector', () => {
       let excellenceScore = 0;
       Object.values(detector.excellencePatterns).forEach(category => {
         category.patterns.forEach(pattern => {
-          if (pattern.test(overHedgedText)) {
-            excellenceScore++;
-          }
+          if (pattern.test(overHedgedText)) excellenceScore++;
           pattern.lastIndex = 0;
         });
       });
       
-      // Should detect some nuance but not excessive excellence
       expect(excellenceScore).toBeLessThan(10);
     });
   });
@@ -424,7 +395,7 @@ describe('ExcellenceDetector', () => {
       categories.forEach(category => {
         const patterns = detector.excellencePatterns[category].patterns;
         expect(patterns.length).toBeGreaterThan(2);
-        expect(patterns.length).toBeLessThan(50); // Not too many
+        expect(patterns.length).toBeLessThan(50);
       });
     });
 
@@ -433,8 +404,6 @@ describe('ExcellenceDetector', () => {
         category.patterns.forEach(pattern => {
           expect(pattern).toBeInstanceOf(RegExp);
           expect(pattern.source).toBeTruthy();
-          
-          // Should have global and case-insensitive flags
           expect(pattern.flags).toContain('g');
           expect(pattern.flags).toContain('i');
         });
@@ -451,66 +420,6 @@ describe('ExcellenceDetector', () => {
       
       const uniquePatterns = new Set(allPatterns);
       expect(uniquePatterns.size).toBe(allPatterns.length);
-    });
-  });
-
-  describe('Intensity Calculation', () => {
-
-    test('should return default intensity for unknown type', () => {
-      expect(detector.calculateIntensity('some text', 'unknownType')).toBe(2);
-    });
-
-    test('should return level 1 for mild absolute words', () => {
-      expect(detector.calculateIntensity('mostly true', 'absolute')).toBe(1);
-      expect(detector.calculateIntensity('often happens', 'absolute')).toBe(1);
-    });
-
-    test('should return level 2 for moderate absolute words', () => {
-      expect(detector.calculateIntensity('always correct', 'absolute')).toBe(2);
-      expect(detector.calculateIntensity('never wrong', 'absolute')).toBe(2);
-    });
-
-    test('should return level 3 for severe absolute words', () => {
-      expect(detector.calculateIntensity('absolutely certain', 'absolute')).toBe(3);
-      expect(detector.calculateIntensity('completely wrong', 'absolute')).toBe(3);
-    });
-
-    test('should return level 1 for mild opinion words', () => {
-      expect(detector.calculateIntensity('seems right', 'opinion')).toBe(1);
-      expect(detector.calculateIntensity('appears valid', 'opinion')).toBe(1);
-    });
-
-    test('should return level 2 for moderate opinion words', () => {
-      expect(detector.calculateIntensity('obviously wrong', 'opinion')).toBe(2);
-      expect(detector.calculateIntensity('clearly true', 'opinion')).toBe(2);
-    });
-
-    test('should return level 3 for severe opinion words', () => {
-      expect(detector.calculateIntensity('undeniably correct', 'opinion')).toBe(3);
-      expect(detector.calculateIntensity('unquestionably true', 'opinion')).toBe(3);
-    });
-
-    test('should handle emotional intensity levels', () => {
-      expect(detector.calculateIntensity('concerning trend', 'emotional')).toBe(1);
-      expect(detector.calculateIntensity('crisis situation', 'emotional')).toBe(2);
-      expect(detector.calculateIntensity('evil forces', 'emotional')).toBe(3);
-    });
-
-    test('should handle weasel intensity levels', () => {
-      expect(detector.calculateIntensity('some people think', 'weasel')).toBe(1);
-      expect(detector.calculateIntensity('studies show it works', 'weasel')).toBe(2);
-      expect(detector.calculateIntensity('everyone knows this', 'weasel')).toBe(3);
-    });
-
-    test('should handle gaslighting intensity levels', () => {
-      expect(detector.calculateIntensity("perhaps you're mistaken", 'gaslighting')).toBe(1);
-      expect(detector.calculateIntensity('concerns are overblown', 'gaslighting')).toBe(2);
-      expect(detector.calculateIntensity('that never happened', 'gaslighting')).toBe(3);
-    });
-
-    test('should default to level 2 when no word matches', () => {
-      expect(detector.calculateIntensity('random text', 'absolute')).toBe(2);
-      expect(detector.calculateIntensity('random text', 'opinion')).toBe(2);
     });
   });
 
@@ -597,33 +506,9 @@ describe('ExcellenceDetector', () => {
     });
   });
 
-  describe('calculateHealthScore', () => {
-
-    test('should return 50 when both counts are zero', () => {
-      expect(detector.calculateHealthScore(0, 0)).toBe(50);
-    });
-
-    test('should return 100 when only excellence', () => {
-      expect(detector.calculateHealthScore(10, 0)).toBe(100);
-    });
-
-    test('should return 0 when only problems', () => {
-      expect(detector.calculateHealthScore(0, 10)).toBe(0);
-    });
-
-    test('should return 50 when equal counts', () => {
-      expect(detector.calculateHealthScore(5, 5)).toBe(50);
-    });
-
-    test('should return rounded integer', () => {
-      const score = detector.calculateHealthScore(1, 2);
-      expect(score).toBe(Math.round(score));
-    });
-  });
-
   describe('getStatistics', () => {
 
-    test('should return full statistics object', () => {
+    test('should return statistics object', () => {
       const text = 'According to Smith et al. (2023), the data suggests improvement. However, limitations include sample size.';
       const problems = [
         { type: 'opinion', text: 'good', intensity: 1 },
@@ -635,7 +520,6 @@ describe('ExcellenceDetector', () => {
 
       expect(stats).toHaveProperty('excellence');
       expect(stats).toHaveProperty('problems');
-      expect(stats).toHaveProperty('healthScore');
 
       expect(stats.excellence).toHaveProperty('total');
       expect(stats.excellence).toHaveProperty('byType');
@@ -655,7 +539,6 @@ describe('ExcellenceDetector', () => {
       expect(stats.problems.byIntensity[1]).toBe(0);
       expect(stats.problems.byIntensity[2]).toBe(0);
       expect(stats.problems.byIntensity[3]).toBe(0);
-      expect(stats.healthScore).toBe(100);
     });
 
     test('should handle problems without intensity', () => {

@@ -4,6 +4,7 @@ import { BiasPatterns } from '../dictionaries/index.js';
 import { DOMProcessor } from '../utils/DOMProcessor.js';
 import { PerformanceMonitor } from '../utils/PerformanceMonitor.js';
 import { ExcellenceDetector } from '../utils/ExcellenceDetector.js';
+import { IntensityCalculator } from '../utils/IntensityCalculator.js';
 import { ContextAwareDetector } from '../utils/ContextAwareDetector.js';
 import { CustomDictionaryManager } from '../config/CustomDictionaryManager.js';
 
@@ -13,6 +14,7 @@ export class BiasDetector {
         this.patterns = new BiasPatterns();
         this.domProcessor = new DOMProcessor();
         this.excellenceDetector = new ExcellenceDetector();
+        this.intensityCalculator = new IntensityCalculator();
         this.contextAwareDetector = new ContextAwareDetector();
         this.stats = this.createEmptyStats();
         this.observer = null;
@@ -220,7 +222,7 @@ export class BiasDetector {
                     const matchesWithIntensity = matches.map(match => ({
                         ...match,
                         type: match.parentType ? match.type : type,
-                        intensity: this.excellenceDetector.calculateIntensity(match.text, type),
+                        intensity: this.intensityCalculator.calculateIntensity(match.text, type),
                         portrayal: this.excellenceDetector.detectPortrayal(match.text)
                     }));
                     allMatches.push(...matchesWithIntensity);
@@ -586,7 +588,7 @@ export class BiasDetector {
         const problemCount = Object.values(BiasConfig.BIAS_TYPES)
             .reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);
         
-        this.stats.healthScore = this.excellenceDetector.calculateHealthScore(excellenceCount, problemCount);
+        this.stats.healthScore = this.intensityCalculator.calculateHealthScore(excellenceCount, problemCount);
     }
 
     resetStats() {

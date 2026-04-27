@@ -1,4 +1,4 @@
-// utils/ExcellenceDetector.js - Positive pattern detection
+// utils/ExcellenceDetector.js - Positive pattern detection and subject portrayal
 export class ExcellenceDetector {
     constructor() {
         // Excellence patterns - detecting good writing practices
@@ -18,7 +18,7 @@ export class ExcellenceDetector {
                     /\bas (?:reported|documented|noted) (?:by|in) [\w\s]+/gi
                 ],
                 className: 'excellence-attribution',
-                tooltip: '✓ Specific, verifiable source provided',
+                tooltip: 'Specific, verifiable source provided',
                 color: '#28a745'
             },
             
@@ -39,7 +39,7 @@ export class ExcellenceDetector {
                     /\b(?:context-dependent|situation-specific|case-by-case)\b/gi
                 ],
                 className: 'excellence-nuance',
-                tooltip: '✓ Acknowledges complexity and avoids absolutes',
+                tooltip: 'Acknowledges complexity and avoids absolutes',
                 color: '#218838'
             },
             
@@ -60,7 +60,7 @@ export class ExcellenceDetector {
                     /\b(?:open to (?:correction|revision|debate|interpretation))\b/gi
                 ],
                 className: 'excellence-transparency',
-                tooltip: '✓ Transparent about limitations and perspective',
+                tooltip: 'Transparent about limitations and perspective',
                 color: '#28a745'
             },
             
@@ -82,7 +82,7 @@ export class ExcellenceDetector {
                     /\b(?:pros and cons|advantages and disadvantages|benefits and drawbacks)\b/gi
                 ],
                 className: 'excellence-discourse',
-                tooltip: '✓ Encourages dialogue and acknowledges others',
+                tooltip: 'Encourages dialogue and acknowledges others',
                 color: '#20c997'
             },
             
@@ -103,37 +103,8 @@ export class ExcellenceDetector {
                     /\b(?:peer-reviewed|replicated|validated|verified)\b/gi
                 ],
                 className: 'excellence-evidence',
-                tooltip: '✓ Claims supported by specific evidence',
+                tooltip: 'Claims supported by specific evidence',
                 color: '#17a2b8'
-            }
-        };
-        
-        // Intensity levels for problematic patterns
-        this.intensityLevels = {
-            absolute: {
-                1: ['mostly', 'generally', 'typically', 'usually', 'often', 'frequently'],
-                2: ['always', 'never', 'every', 'none', 'all', 'no one', 'everyone'],
-                3: ['absolutely', 'definitely', 'certainly', 'totally', 'completely', 'utterly', 'entirely']
-            },
-            opinion: {
-                1: ['seems', 'appears', 'arguably', 'perhaps', 'possibly'],
-                2: ['obviously', 'clearly', 'surely', 'undoubtedly', 'evidently'],
-                3: ['undeniably', 'unquestionably', 'indisputably', 'irrefutably', 'incontrovertibly']
-            },
-            emotional: {
-                1: ['concerning', 'problematic', 'challenging', 'difficult', 'worrying'],
-                2: ['crisis', 'disaster', 'failure', 'catastrophe', 'emergency'],
-                3: ['evil', 'destroy', 'murder', 'doom', 'apocalypse', 'blood on your hands']
-            },
-            weasel: {
-                1: ['some', 'many', 'few', 'several'],
-                2: ['people say', 'studies show', 'experts believe', 'sources indicate'],
-                3: ['everyone knows', 'it\'s a fact that', 'proven', 'undisputed']
-            },
-            gaslighting: {
-                1: ['perhaps you\'re mistaken', 'that\'s unusual', 'are you sure about that'],
-                2: ['concerns are overblown', 'being dramatic', 'reading too much into it'],
-                3: ['that never happened', 'the public is imagining things', 'a fabricated controversy']
             }
         };
         
@@ -150,20 +121,6 @@ export class ExcellenceDetector {
                 moral: /\b(?:corrupt|immoral|unethical|shameful|disgraceful)\b/gi
             }
         };
-    }
-    
-    // Calculate intensity level for a match
-    calculateIntensity(text, type) {
-        const levels = this.intensityLevels[type];
-        if (!levels) return 2; // Default to medium
-        
-        const lowerText = text.toLowerCase();
-        for (let level = 3; level >= 1; level--) {
-            if (levels[level] && levels[level].some(word => lowerText.includes(word))) {
-                return level;
-            }
-        }
-        return 2;
     }
     
     // Detect subject portrayal (positive/negative framing)
@@ -204,12 +161,6 @@ export class ExcellenceDetector {
         return matches;
     }
     
-    // Calculate document health score
-    calculateHealthScore(excellenceCount, problemCount) {
-        if (excellenceCount + problemCount === 0) return 50;
-        return Math.round((excellenceCount / (excellenceCount + problemCount)) * 100);
-    }
-    
     // Get statistics for the document
     getStatistics(text, problems = []) {
         const excellence = this.findExcellence(text);
@@ -222,8 +173,7 @@ export class ExcellenceDetector {
                 total: problems.length,
                 byIntensity: { 1: 0, 2: 0, 3: 0 },
                 byType: {}
-            },
-            healthScore: this.calculateHealthScore(excellence.length, problems.length)
+            }
         };
         
         // Count excellence by type

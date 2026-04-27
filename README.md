@@ -221,6 +221,7 @@ e-primer/
 │   │   ├── ContextAwareDetector.js   # Ambiguous phrase classification
 │   │   ├── DOMProcessor.js           # DOM manipulation and highlighting
 │   │   ├── ExcellenceDetector.js     # Positive pattern detection
+│   │   ├── IntensityCalculator.js    # Severity grading for bias detections
 │   │   ├── HoverContentGenerator.js  # Tooltip content generation
 │   │   ├── PopupManager.js           # Click/hover popup handling
 │   │   └── PerformanceMonitor.js     # Performance tracking

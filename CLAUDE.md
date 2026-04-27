@@ -52,7 +52,8 @@ The project uses a modern ES6 module architecture with esbuild for multi-target 
 - **BiasConfig** (`src/config/BiasConfig.js`): Centralized configuration management for all bias types, categories, and settings
 - **BiasPatterns** (`src/dictionaries/index.js`): Pattern compilation and management system
 - **DOMProcessor** (`src/utils/DOMProcessor.js`): Handles DOM manipulation and text highlighting
-- **ExcellenceDetector** (`src/utils/ExcellenceDetector.js`): Detects positive writing patterns and calculates intensity/portrayal
+- **ExcellenceDetector** (`src/utils/ExcellenceDetector.js`): Detects positive writing patterns and subject portrayal
+- **IntensityCalculator** (`src/utils/IntensityCalculator.js`): Grades severity of bias detections and calculates health scores
 - **ContextAwareDetector** (`src/utils/ContextAwareDetector.js`): Context-sensitive classification for ambiguous phrases
 - **PopupManager** (`src/utils/PopupManager.js`): Singleton delegated event handler for highlight popups
 - **HoverContentGenerator** (`src/utils/HoverContentGenerator.js`): Generates rich hover card HTML content
