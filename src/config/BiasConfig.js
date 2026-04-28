@@ -1502,7 +1502,7 @@ export class BiasConfig {
     }
 
     static createEmptyStats() {
-        const stats = { healthScore: 50 };
+        const stats = {};
         for (const config of Object.values(this.BIAS_TYPES)) {
             stats[config.statKey] = 0;
             if (config.subCategories) {

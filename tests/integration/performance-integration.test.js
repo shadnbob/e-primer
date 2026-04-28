@@ -229,7 +229,6 @@ describe('Performance Integration Tests', () => {
       // ASSERT: Should be very fast and efficient
       expect(processingTime).toBeLessThan(250); // Under 150ms for small documents
       expect(stats).toBeDefined();
-      expect(stats.healthScore).toBeGreaterThanOrEqual(0);
       
       console.log(`Small document: ${processingTime.toFixed(2)}ms, ${content.length} nodes, ${memoryIncrease} bytes`);
     });
@@ -268,7 +267,6 @@ describe('Performance Integration Tests', () => {
       // ASSERT: Should complete in reasonable time
       expect(processingTime).toBeLessThan(750); // Under 500ms
       expect(stats).toBeDefined();
-      expect(stats.healthScore).toBeGreaterThanOrEqual(0);
 
       // Should find meaningful patterns
       const totalPatterns = stats.opinionCount + stats.absoluteCount + 
@@ -312,7 +310,6 @@ describe('Performance Integration Tests', () => {
       // ASSERT: Should complete within reasonable time limits
       expect(processingTime).toBeLessThan(2000); // Under 2 seconds
       expect(stats).toBeDefined();
-      expect(stats.healthScore).toBeGreaterThanOrEqual(0);
 
       // Performance should be consistent per node
       const timePerNode = processingTime / content.length;
@@ -403,7 +400,6 @@ describe('Performance Integration Tests', () => {
 
       // ASSERT: Should find many bias patterns efficiently
       expect(stats.opinionCount + stats.absoluteCount).toBeGreaterThan(50);
-      expect(stats.healthScore).toBeLessThan(40); // Should be low for bias-heavy content
       expect(processingTime).toBeLessThan(2000); // Should still be efficient within 2 seconds
       
       console.log(`Bias-heavy content: ${processingTime.toFixed(2)}ms, ${stats.opinionCount + stats.absoluteCount} bias patterns`);
@@ -442,7 +438,6 @@ describe('Performance Integration Tests', () => {
 
       // ASSERT: Should find many excellence patterns efficiently
       expect(stats.attributionExcellenceCount + stats.nuanceExcellenceCount + stats.transparencyExcellenceCount).toBeGreaterThan(30);
-      expect(stats.healthScore).toBeGreaterThan(60); // Should be high for excellence content
       expect(processingTime).toBeLessThan(2000); // Should still be efficient within 2 seconds
       
       console.log(`Excellence-heavy: ${processingTime.toFixed(2)}ms, ${stats.attributionExcellenceCount + stats.nuanceExcellenceCount + stats.transparencyExcellenceCount} excellence patterns`);
@@ -481,10 +476,8 @@ describe('Performance Integration Tests', () => {
 
       // ASSERT: Should be very fast with minimal patterns
       expect(processingTime).toBeLessThan(500); // Should be very fast for neutral content
-      expect(stats.healthScore).toBeGreaterThan(40);
-      expect(stats.healthScore).toBeLessThan(85); // Neutral score for neutral content (more generous)
-      
-      console.log(`Neutral content: ${processingTime.toFixed(2)}ms, health score: ${stats.healthScore}`);
+
+      console.log(`Neutral content: ${processingTime.toFixed(2)}ms`);
     });
   });
 
@@ -821,7 +814,6 @@ describe('Performance Integration Tests', () => {
       // All results should be valid
       results.forEach(stats => {
         expect(stats).toBeDefined();
-        expect(typeof stats.healthScore).toBe('number');
       });
       
       console.log(`Multiple force analyze: ${totalTime.toFixed(2)}ms for ${results.length} analyses`);

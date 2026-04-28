@@ -4,7 +4,6 @@ import { BiasPatterns } from '../dictionaries/index.js';
 import { DOMProcessor } from '../utils/DOMProcessor.js';
 import { PerformanceMonitor } from '../utils/PerformanceMonitor.js';
 import { ExcellenceDetector } from '../utils/ExcellenceDetector.js';
-import { IntensityCalculator } from '../utils/IntensityCalculator.js';
 import { ContextAwareDetector } from '../utils/ContextAwareDetector.js';
 import { CustomDictionaryManager } from '../config/CustomDictionaryManager.js';
 
@@ -14,7 +13,6 @@ export class BiasDetector {
         this.patterns = new BiasPatterns();
         this.domProcessor = new DOMProcessor();
         this.excellenceDetector = new ExcellenceDetector();
-        this.intensityCalculator = new IntensityCalculator();
         this.contextAwareDetector = new ContextAwareDetector();
         this.stats = this.createEmptyStats();
         this.observer = null;
@@ -222,7 +220,7 @@ export class BiasDetector {
                     const matchesWithIntensity = matches.map(match => ({
                         ...match,
                         type: match.parentType ? match.type : type,
-                        intensity: this.intensityCalculator.calculateIntensity(match.text, type),
+                        intensity: this.patterns.getIntensity(type, match.text),
                         portrayal: this.excellenceDetector.detectPortrayal(match.text)
                     }));
                     allMatches.push(...matchesWithIntensity);
@@ -581,14 +579,6 @@ export class BiasDetector {
                 this.stats[match.subCategory.statKey] = (this.stats[match.subCategory.statKey] || 0) + 1;
             }
         }
-        
-        // Recalculate health score
-        const excellenceCount = Object.values(BiasConfig.EXCELLENCE_TYPES)
-            .reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);
-        const problemCount = Object.values(BiasConfig.BIAS_TYPES)
-            .reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);
-        
-        this.stats.healthScore = this.intensityCalculator.calculateHealthScore(excellenceCount, problemCount);
     }
 
     resetStats() {

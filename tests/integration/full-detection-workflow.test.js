@@ -165,7 +165,6 @@ describe('Full Detection Workflow Integration', () => {
       
       // ASSERT: Validate comprehensive results
       expect(stats).toBeDefined();
-      expect(typeof stats.healthScore).toBe('number');
       
       // Should detect bias patterns  
       expect(stats.opinionCount).toBeDefined();
@@ -178,8 +177,6 @@ describe('Full Detection Workflow Integration', () => {
       expect(stats.transparencyExcellenceCount).toBeGreaterThan(0); // "In my opinion", "limitations"
       
       // Health score should reflect mixed quality (some problems, some excellence)
-      expect(stats.healthScore).toBeGreaterThan(0);
-      expect(stats.healthScore).toBeLessThan(100);
       
       // Verify DOM manipulation occurred
       expect(mockDocument.createElement).toHaveBeenCalled();
@@ -215,7 +212,6 @@ describe('Full Detection Workflow Integration', () => {
       // ASSERT: Should detect problems but minimal excellence
       expect(stats.opinionCount).toBeGreaterThan(0);
       expect(stats.absoluteCount).toBeGreaterThan(0);
-      expect(stats.healthScore).toBeLessThan(30); // Low health score for problems-only content
     });
 
     test('should handle excellence-only mode correctly', async () => {
@@ -249,7 +245,6 @@ describe('Full Detection Workflow Integration', () => {
       expect(stats.attributionExcellenceCount).toBeGreaterThan(0); // "Johnson et al. (2024)"
       expect(stats.nuanceExcellenceCount).toBeGreaterThan(0); // "appears", "cautious"
       expect(stats.transparencyExcellenceCount).toBeGreaterThan(0); // "In my view", "limitations"
-      expect(stats.healthScore).toBeGreaterThan(70); // High health score for excellence content
     });
   });
 
@@ -318,7 +313,6 @@ describe('Full Detection Workflow Integration', () => {
       // ASSERT: Disabled analysis should return empty stats
       expect(disabledStats.opinionCount).toBe(0);
       expect(disabledStats.absoluteCount).toBe(0);
-      expect(disabledStats.healthScore).toBe(50); // Default neutral score
 
       // ACT 3: Re-enable analysis
       await detector.updateSettings({
@@ -372,7 +366,6 @@ describe('Full Detection Workflow Integration', () => {
       expect(processingTime).toBeLessThan(5000); // Should complete in under 5 seconds
       expect(stats.opinionCount).toBeGreaterThan(50); // Should find many patterns
       expect(stats.attributionExcellenceCount).toBeGreaterThan(50);
-      expect(stats.healthScore).toBeGreaterThan(0);
       
       console.log(`Large document analysis: ${processingTime.toFixed(2)}ms for ${largeTextArray.length} nodes`);
     });
@@ -444,18 +437,14 @@ describe('Full Detection Workflow Integration', () => {
       // Academic content should have high excellence, low problems
       expect(academicResult.stats.attributionExcellenceCount).toBeGreaterThan(0);
       expect(academicResult.stats.transparencyExcellenceCount).toBeGreaterThan(0);
-      expect(academicResult.stats.healthScore).toBeGreaterThan(60);
 
       // Opinion content should have high problems, low excellence  
       expect(opinionResult.stats.opinionCount).toBeGreaterThan(0);
       expect(opinionResult.stats.absoluteCount).toBeGreaterThan(0);
-      expect(opinionResult.stats.healthScore).toBeLessThan(40);
 
       // Balanced journalism should have mixed results
       expect(balancedResult.stats.attributionExcellenceCount).toBeGreaterThan(0);
       expect(balancedResult.stats.nuanceExcellenceCount).toBeGreaterThan(0);
-      expect(balancedResult.stats.healthScore).toBeGreaterThan(40);
-      expect(balancedResult.stats.healthScore).toBeLessThan(80);
 
       // All should process efficiently
       results.forEach(result => {
@@ -502,7 +491,6 @@ describe('Full Detection Workflow Integration', () => {
 
       // ASSERT: Should return stats despite DOM errors
       expect(stats).toBeDefined();
-      expect(typeof stats.healthScore).toBe('number');
     });
 
     test('should maintain settings consistency through error scenarios', async () => {

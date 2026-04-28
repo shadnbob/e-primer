@@ -1,4 +1,5 @@
 // dictionaries/emotional-triggers.js
+// Each sub-category groups words by intensity: 1 = mild, 2 = moderate, 3 = strong
 export const emotionalTriggerWords = {
     fear_appeal: {
         icon: '😨',
@@ -8,15 +9,23 @@ export const emotionalTriggerWords = {
         implication: 'Activates the brain\'s threat response, making readers more susceptible to persuasion and less able to evaluate claims critically.',
         suggestion: 'Ask what specific evidence supports the claimed danger and evaluate actual risk levels.',
         examples: 'Instead of "existential threat" → "a significant challenge" or provide specific risk data',
-        words: [
-            "dangerous precedent", "slippery slope", "existential threat",
-            "grave danger", "serious threat", "dire consequences",
-            "catastrophic results", "devastating impact", "irreversible damage",
-            "point of no return", "ticking time bomb", "imminent danger",
-            "clear and present danger", "looming crisis", "impending doom",
-            "mortal threat", "doomsday scenario", "nightmare scenario",
-            "worst case scenario", "on the brink", "spiraling out of control"
-        ]
+        words: {
+            1: [
+                "dangerous precedent", "serious threat", "on the brink"
+            ],
+            2: [
+                "slippery slope", "existential threat",
+                "grave danger", "dire consequences",
+                "devastating impact", "irreversible damage",
+                "imminent danger", "looming crisis",
+                "worst case scenario", "spiraling out of control"
+            ],
+            3: [
+                "catastrophic results", "point of no return", "ticking time bomb",
+                "clear and present danger", "impending doom",
+                "mortal threat", "doomsday scenario", "nightmare scenario"
+            ]
+        }
     },
 
     guilt_induction: {
@@ -27,15 +36,20 @@ export const emotionalTriggerWords = {
         implication: 'Bypasses rational evaluation by making disagreement feel morally wrong, regardless of the actual merits.',
         suggestion: 'Evaluate whether the responsibility claim is supported by evidence, separate from the emotional pressure.',
         examples: 'Instead of "blood on your hands" → "shares responsibility for the outcome" with specific evidence',
-        words: [
-            "shame on", "how dare", "blood on your hands",
-            "morally responsible", "complicit in", "turning a blind eye",
-            "failed to act", "stood by while", "allowed to happen",
-            "could have prevented", "chose to ignore", "willfully neglected",
-            "betrayed the trust", "let down", "abandoned their duty",
-            "on your conscience", "history will judge", "answerable for",
-            "dereliction of duty", "looked the other way", "washed their hands of"
-        ]
+        words: {
+            2: [
+                "morally responsible", "complicit in", "turning a blind eye",
+                "failed to act", "stood by while", "allowed to happen",
+                "could have prevented", "chose to ignore", "willfully neglected",
+                "let down", "abandoned their duty",
+                "dereliction of duty", "looked the other way", "washed their hands of"
+            ],
+            3: [
+                "shame on", "how dare", "blood on your hands",
+                "betrayed the trust", "on your conscience",
+                "history will judge", "answerable for"
+            ]
+        }
     },
 
     flattery_manipulation: {
@@ -46,17 +60,24 @@ export const emotionalTriggerWords = {
         implication: 'Creates social pressure to agree by implying that disagreement means you lack intelligence, virtue, or sophistication.',
         suggestion: 'Recognize the appeal to identity and evaluate the argument on its own merits.',
         examples: 'Instead of "smart people like you understand" → present the argument and let readers evaluate it independently',
-        words: [
-            "smart people like you", "educated readers understand",
-            "discerning individuals", "those who truly care",
-            "people of conscience", "thoughtful citizens",
-            "intelligent observers", "wise enough to see",
-            "sophisticated thinkers", "enlightened minds",
-            "those with common sense", "reasonable people agree",
-            "anyone with half a brain", "thinking people know",
-            "informed citizens realize", "astute observers recognize",
-            "those who pay attention", "right-thinking people"
-        ]
+        words: {
+            1: [
+                "discerning individuals", "those who truly care",
+                "people of conscience", "thoughtful citizens",
+                "those who pay attention"
+            ],
+            2: [
+                "smart people like you", "educated readers understand",
+                "intelligent observers", "wise enough to see",
+                "sophisticated thinkers", "enlightened minds",
+                "those with common sense", "reasonable people agree",
+                "informed citizens realize", "astute observers recognize",
+                "right-thinking people"
+            ],
+            3: [
+                "anyone with half a brain", "thinking people know"
+            ]
+        }
     },
 
     outrage_fuel: {
@@ -67,15 +88,22 @@ export const emotionalTriggerWords = {
         implication: 'Replaces factual evaluation with emotional reaction, making readers more likely to share and amplify without verification.',
         suggestion: 'Look past the outrage language to identify the actual facts and evaluate them independently.',
         examples: 'Instead of "shocking revelation" → "new information shows..." with specific details',
-        words: [
-            "shocking revelation", "unbelievable scandal", "absolute outrage",
-            "disgusting display", "appalling behavior", "unconscionable act",
-            "beyond the pale", "crosses the line", "new low",
-            "height of hypocrisy", "blatant corruption", "flagrant violation",
-            "egregious abuse", "stunning betrayal", "jaw-dropping",
-            "slap in the face", "travesty of justice", "moral bankruptcy",
-            "utter contempt", "brazen disregard", "shameless exploitation"
-        ]
+        words: {
+            2: [
+                "shocking revelation", "appalling behavior",
+                "crosses the line", "new low",
+                "height of hypocrisy", "jaw-dropping",
+                "slap in the face"
+            ],
+            3: [
+                "unbelievable scandal", "absolute outrage",
+                "disgusting display", "unconscionable act",
+                "beyond the pale", "blatant corruption", "flagrant violation",
+                "egregious abuse", "stunning betrayal",
+                "travesty of justice", "moral bankruptcy",
+                "utter contempt", "brazen disregard", "shameless exploitation"
+            ]
+        }
     },
 
     sympathy_exploitation: {
@@ -86,16 +114,24 @@ export const emotionalTriggerWords = {
         implication: 'Makes disagreement feel heartless, even when the emotional appeal has no logical connection to the argument being made.',
         suggestion: 'Ask how the emotional appeal specifically connects to the policy or argument being advanced.',
         examples: 'Instead of "think of the children" → describe specific impacts on children with evidence',
-        words: [
-            "think of the children", "vulnerable victims", "innocent lives",
-            "helpless elderly", "suffering families", "heartbroken parents",
-            "orphaned children", "widows and orphans", "defenseless animals",
-            "voiceless victims", "forgotten souls", "human tragedy",
-            "real people suffering", "faces behind the statistics",
-            "their blood cries out", "who will speak for them",
-            "left to fend for themselves", "prey upon the weak",
-            "the most vulnerable among us", "those who cannot help themselves"
-        ]
+        words: {
+            1: [
+                "real people suffering", "faces behind the statistics",
+                "the most vulnerable among us", "those who cannot help themselves"
+            ],
+            2: [
+                "think of the children", "vulnerable victims", "innocent lives",
+                "helpless elderly", "suffering families", "heartbroken parents",
+                "orphaned children", "defenseless animals",
+                "voiceless victims", "human tragedy",
+                "left to fend for themselves"
+            ],
+            3: [
+                "widows and orphans", "forgotten souls",
+                "their blood cries out", "who will speak for them",
+                "prey upon the weak"
+            ]
+        }
     },
 
     false_urgency: {
@@ -106,19 +142,35 @@ export const emotionalTriggerWords = {
         implication: 'Prevents thoughtful evaluation by implying that delay equals failure, even when no real deadline exists.',
         suggestion: 'Ask what evidence exists for the claimed deadline and whether careful consideration would actually cause harm.',
         examples: 'Instead of "act now before it\'s too late" → "this decision would benefit from timely attention because..."',
-        words: [
-            "act now", "before it's too late", "time is running out",
-            "last chance", "final opportunity", "narrow window",
-            "critical moment", "now or never", "decisive moment",
-            "crucial juncture", "make or break", "do or die",
-            "the clock is ticking", "every second counts", "running out of time",
-            "at the eleventh hour", "no time to waste", "urgent action needed"
-        ]
+        words: {
+            1: [
+                "critical moment", "crucial juncture",
+                "urgent action needed", "no time to waste"
+            ],
+            2: [
+                "act now", "before it's too late", "time is running out",
+                "last chance", "final opportunity", "narrow window",
+                "the clock is ticking", "every second counts", "running out of time",
+                "at the eleventh hour"
+            ],
+            3: [
+                "now or never", "make or break", "do or die",
+                "decisive moment"
+            ]
+        }
     }
 };
 
-// Export a flat array for backward compatibility
-export const emotionalTriggersFlat = Object.values(emotionalTriggerWords).flatMap(category => category.words);
+// Flatten intensity-grouped words
+function flattenWords(categoryWords) {
+    if (Array.isArray(categoryWords)) return categoryWords;
+    return Object.values(categoryWords).flat();
+}
 
-// Legacy export name for backward compatibility
+// Export a flat array for backward compatibility
+export const emotionalTriggersFlat = Object.values(emotionalTriggerWords).flatMap(
+    category => flattenWords(category.words)
+);
+
+// Legacy export name
 export const emotionalTriggers = emotionalTriggersFlat;

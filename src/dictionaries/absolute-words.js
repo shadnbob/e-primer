@@ -1,84 +1,41 @@
 // dictionaries/absolute-words.js
-export const absoluteWords = [
-    // Universal Quantifiers
-    "all",
-    "every",
-    "each",
-    "any",
-    "no",
-    "none",
+// Words grouped by intensity: 1 = mild, 2 = moderate, 3 = strong
+export const absoluteWords = {
+    1: [
+        // Soft universals — often used casually without absolute intent
+        "any", "each",
+        "anyone", "anybody",
+        "someone", "somebody",
+        "something", "anything",
+        "full", "whole",
+        "final", "mere"
+    ],
+    2: [
+        // Standard absolutes — categorical claims that are rarely literally true
+        "all", "every", "no", "none",
+        "everyone", "everybody", "no one", "nobody",
+        "everything", "nothing",
+        "always", "never", "forever",
+        "constantly", "continually", "invariably", "permanently",
+        "perfect", "complete", "total", "absolute", "entire",
+        "maximum", "minimum", "supreme", "extreme", "utmost",
+        "ultimate", "universal",
+        "impossible", "inevitable", "inescapable",
+        "identical", "pure", "sheer",
+        "ultimately", "fundamentally", "purely", "outright",
+        "comprehensively", "universally"
+    ],
+    3: [
+        // Emphatic absolutes — intensified language that brooks no exception
+        "absolutely", "definitely", "certainly", "totally",
+        "completely", "utterly", "entirely",
+        "eternal", "perpetually", "endlessly", "ceaselessly",
+        "infallible", "unerring",
+        "undeniable", "irrefutable",
+        "undoubtedly", "unquestionably", "indisputably",
+        "irrefutably", "incontrovertibly", "incontestably", "unequivocally"
+    ]
+};
 
-    // People Universals
-    "everyone",
-    "everybody",
-    "no one",
-    "nobody",
-    "anyone",
-    "anybody",
-    "someone",
-    "somebody",
-
-    // Time Universals
-    "always",
-    "never",
-    "forever",
-    "eternal",
-    "constantly",
-    "perpetually",
-    "continually",
-    "endlessly",
-    "ceaselessly",
-    "permanently",
-    "invariably",
-
-    // Categorical Statements
-    "ultimately",
-    "fundamentally",
-    "purely",
-    "outright",
-    "comprehensively",
-    "universally",
-
-    // Thing Universals
-    "everything",
-    "nothing",
-    "anything",
-    "something",
-
-    // Absolute Adjectives
-    "perfect",
-    "complete",
-    "total",
-    "absolute",
-    "entire",
-    "full",
-    "whole",
-    "ultimate",
-    "maximum",
-    "minimum",
-    "supreme",
-    "extreme",
-    "utmost",
-    "final",
-    "infallible",
-    "unerring",
-    "universal",
-    "impossible",
-    "inevitable",
-    "inescapable",
-    "undeniable",
-    "irrefutable",
-    "identical",
-    "pure",
-    "sheer",
-    "mere",
-
-    // Absolute Certainty
-    "undoubtedly",
-    "unquestionably",
-    "indisputably",
-    "irrefutably",
-    "incontrovertibly",
-    "incontestably",
-    "unequivocally"
-];
+// Flat array for pattern compilation
+export const absoluteWordsFlat = Object.values(absoluteWords).flat();

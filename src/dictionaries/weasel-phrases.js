@@ -1,4 +1,5 @@
 // dictionaries/weasel-phrases.js
+// Each sub-category groups words by intensity: 1 = mild, 2 = moderate, 3 = strong
 export const weaselWords = {
     unnamed_sources: {
         icon: '👤',
@@ -8,15 +9,22 @@ export const weaselWords = {
         implication: 'Allows claims to appear sourced without any verifiable attribution, making fact-checking impossible.',
         suggestion: 'Ask: WHO specifically said this? Name the person, organization, or publication.',
         examples: 'Instead of "sources indicate" → "a senior official at the EPA told Reuters" or name the specific source',
-        words: [
-            "many people say", "some say", "they say", "people think",
-            "some argue", "critics claim", "supporters maintain",
-            "observers note", "sources indicate",
-            "unnamed sources", "according to reports",
-            "insiders claim", "some experts say", "authorities believe",
-            "well-placed sources", "those familiar with the matter",
-            "people close to the situation", "those in the know"
-        ]
+        words: {
+            1: [
+                "some say", "they say", "people think",
+                "some argue", "observers note"
+            ],
+            2: [
+                "many people say", "critics claim", "supporters maintain",
+                "sources indicate", "according to reports",
+                "some experts say", "authorities believe"
+            ],
+            3: [
+                "unnamed sources", "insiders claim",
+                "well-placed sources", "those familiar with the matter",
+                "people close to the situation", "those in the know"
+            ]
+        }
     },
 
     hedged_evidence: {
@@ -27,13 +35,20 @@ export const weaselWords = {
         implication: 'Creates an appearance of evidence-based reasoning while avoiding any verifiable claim.',
         suggestion: 'Ask: WHICH study? Published WHERE? By WHOM? Provide the actual citation.',
         examples: 'Instead of "research suggests" → "a 2024 study by Smith et al. in Nature found..."',
-        words: [
-            "research suggests", "evidence suggests", "data indicates",
-            "experts believe", "it is believed", "it is thought",
-            "it is said", "may indicate", "could suggest", "might imply",
-            "studies have shown", "science tells us", "the data shows",
-            "findings indicate", "analysis reveals", "polls suggest"
-        ]
+        words: {
+            1: [
+                "may indicate", "could suggest", "might imply",
+                "polls suggest"
+            ],
+            2: [
+                "research suggests", "evidence suggests", "data indicates",
+                "experts believe", "it is believed", "it is thought",
+                "it is said", "findings indicate", "analysis reveals"
+            ],
+            3: [
+                "studies have shown", "science tells us", "the data shows"
+            ]
+        }
     },
 
     vague_quantifiers: {
@@ -44,13 +59,17 @@ export const weaselWords = {
         implication: 'Obscures actual rates and magnitudes, allowing the reader to imagine whatever quantity supports the argument.',
         suggestion: 'Ask: HOW MANY exactly? Replace with specific numbers, percentages, or ranges.',
         examples: 'Instead of "in many cases" → "in 73% of cases" or "in 8 out of 12 trials"',
-        words: [
-            "in some cases", "in many cases", "frequently", "typically",
-            "tends to",
-            "in most cases", "on occasion", "from time to time",
-            "more often than not", "time and again", "as often as not",
-            "in certain situations", "under some circumstances"
-        ]
+        words: {
+            1: [
+                "in some cases", "frequently", "typically", "tends to",
+                "on occasion", "from time to time",
+                "in certain situations", "under some circumstances"
+            ],
+            2: [
+                "in many cases", "in most cases",
+                "more often than not", "time and again", "as often as not"
+            ]
+        }
     },
 
     appeal_to_authority: {
@@ -61,14 +80,20 @@ export const weaselWords = {
         implication: 'Borrows authority from unnamed or unqualified sources rather than presenting evidence directly.',
         suggestion: 'Ask: Which SPECIFIC experts? In what FIELD? Is this their area of expertise?',
         examples: 'Instead of "experts believe" → "Dr. Chen, a climate scientist at MIT, found..."',
-        words: [
-            "widely known", "widely believed",
-            "generally accepted", "commonly believed", "often said",
-            "the consensus is", "it is well established",
-            "leading experts agree", "top scientists confirm",
-            "the scientific community agrees", "scholars maintain",
-            "mainstream opinion holds"
-        ]
+        words: {
+            1: [
+                "widely known", "widely believed",
+                "generally accepted", "commonly believed", "often said"
+            ],
+            2: [
+                "the consensus is", "it is well established",
+                "leading experts agree", "top scientists confirm",
+                "scholars maintain", "mainstream opinion holds"
+            ],
+            3: [
+                "the scientific community agrees"
+            ]
+        }
     },
 
     passive_attribution: {
@@ -79,19 +104,31 @@ export const weaselWords = {
         implication: 'Lets the writer advance claims while retaining the ability to disown them if challenged.',
         suggestion: 'Notice the writer is not committing to the claim — ask what they actually believe and why.',
         examples: 'Instead of "reportedly" → state the claim directly and cite the source, or acknowledge uncertainty explicitly',
-        words: [
-            "reportedly", "allegedly", "supposedly",
-            "arguably", "presumably",
-            "ostensibly", "purportedly", "apparently",
-            "seemingly", "it would appear", "one might say",
-            "it has been suggested", "there are those who say",
-            "some would argue", "it could be said"
-        ]
+        words: {
+            1: [
+                "reportedly", "allegedly", "supposedly",
+                "arguably", "presumably",
+                "ostensibly", "purportedly", "apparently",
+                "seemingly", "it would appear", "one might say"
+            ],
+            2: [
+                "it has been suggested", "there are those who say",
+                "some would argue", "it could be said"
+            ]
+        }
     }
 };
 
-// Export a flat array for backward compatibility
-export const weaselPhrasesFlat = Object.values(weaselWords).flatMap(category => category.words);
+// Flatten intensity-grouped words
+function flattenWords(categoryWords) {
+    if (Array.isArray(categoryWords)) return categoryWords;
+    return Object.values(categoryWords).flat();
+}
 
-// Legacy export name for backward compatibility
+// Export a flat array for backward compatibility
+export const weaselPhrasesFlat = Object.values(weaselWords).flatMap(
+    category => flattenWords(category.words)
+);
+
+// Legacy export name
 export const weaselPhrases = weaselPhrasesFlat;

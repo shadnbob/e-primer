@@ -1471,7 +1471,7 @@
       return subCategoryId ? `${parentId}_${subCategoryId}` : parentId;
     }
     static createEmptyStats() {
-      const stats = { healthScore: 50 };
+      const stats = {};
       for (const config of Object.values(this.BIAS_TYPES)) {
         stats[config.statKey] = 0;
         if (config.subCategories) {
@@ -1526,25 +1526,29 @@
       implication: "Creates false authority and discourages critical thinking by presenting opinions as indisputable facts.",
       suggestion: "Use more tentative language that acknowledges uncertainty and invites evaluation.",
       examples: 'Instead of "obviously wrong" \u2192 "appears to contradict" or "I believe this is incorrect"',
-      words: [
-        "clearly",
-        "obviously",
-        "undoubtedly",
-        "certainly",
-        "definitely",
-        "absolutely",
-        "surely",
-        "undeniably",
-        "unquestionably",
-        "indisputably",
-        "indubitably",
-        "unmistakably",
-        "incontrovertibly",
-        "incontestably",
-        "irrefutably",
-        "manifestly",
-        "patently"
-      ]
+      words: {
+        2: [
+          "clearly",
+          "obviously",
+          "certainly",
+          "definitely",
+          "absolutely",
+          "surely",
+          "manifestly",
+          "patently"
+        ],
+        3: [
+          "undoubtedly",
+          "undeniably",
+          "unquestionably",
+          "indisputably",
+          "indubitably",
+          "unmistakably",
+          "incontrovertibly",
+          "incontestably",
+          "irrefutably"
+        ]
+      }
     },
     hedging: {
       icon: "\u2753",
@@ -1554,14 +1558,16 @@
       implication: "Undermines confidence and can signal the writer is unsure of their position or trying to avoid accountability.",
       suggestion: "Be more definitive when you have evidence, or explain the specific reasons for uncertainty.",
       examples: 'Instead of "maybe true" \u2192 "requires further investigation" or "preliminary evidence suggests"',
-      words: [
-        "probably",
-        "maybe",
-        "perhaps",
-        "conceivably",
-        "speculated",
-        "rumored"
-      ]
+      words: {
+        1: [
+          "probably",
+          "maybe",
+          "perhaps",
+          "conceivably",
+          "speculated",
+          "rumored"
+        ]
+      }
     },
     evaluative_positive: {
       icon: "\u{1F44D}",
@@ -1571,33 +1577,39 @@
       implication: "Biases readers toward positive evaluation without providing evidence or reasoning for the judgment.",
       suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
       examples: 'Instead of "excellent performance" \u2192 "achieved 95% accuracy" or "I consider this performance strong because..."',
-      words: [
-        "good",
-        "great",
-        "excellent",
-        "exceptional",
-        "outstanding",
-        "perfect",
-        "flawless",
-        "admirable",
-        "commendable",
-        "praiseworthy",
-        "exemplary",
-        "stellar",
-        "superior",
-        "first-rate",
-        "top-notch",
-        "premium",
-        "favorable",
-        "positive",
-        "satisfactory",
-        "pleasing",
-        "gratifying",
-        "beneficial",
-        "advantageous",
-        "desirable",
-        "worthy"
-      ]
+      words: {
+        1: [
+          "good",
+          "favorable",
+          "positive",
+          "satisfactory",
+          "pleasing",
+          "beneficial",
+          "advantageous",
+          "desirable",
+          "worthy",
+          "gratifying"
+        ],
+        2: [
+          "great",
+          "excellent",
+          "exceptional",
+          "outstanding",
+          "admirable",
+          "commendable",
+          "praiseworthy",
+          "superior",
+          "first-rate",
+          "top-notch",
+          "premium"
+        ],
+        3: [
+          "perfect",
+          "flawless",
+          "exemplary",
+          "stellar"
+        ]
+      }
     },
     evaluative_negative: {
       icon: "\u{1F44E}",
@@ -1607,46 +1619,52 @@
       implication: "Biases readers toward negative evaluation without providing evidence or reasoning for the judgment.",
       suggestion: "Replace with specific, measurable criteria or acknowledge the subjective nature of the evaluation.",
       examples: 'Instead of "poor quality" \u2192 "failed to meet safety standards" or "I find this concerning because..."',
-      words: [
-        "abysmal",
-        "poor",
-        "inadequate",
-        "inferior",
-        "substandard",
-        "mediocre",
-        "disappointing",
-        "unsatisfactory",
-        "unacceptable",
-        "deficient",
-        "faulty",
-        "flawed",
-        "shoddy",
-        "deplorable",
-        "lamentable",
-        "pathetic",
-        "pitiful",
-        "regrettable",
-        "miserable",
-        "wretched",
-        "dismal",
-        "grim",
-        "bleak",
-        "dire",
-        "grave",
-        "severe",
-        "unfortunate",
-        "unfavorable",
-        "disagreeable",
-        "unpleasant",
-        "distressing",
-        "troublesome",
-        "problematic",
-        "objectionable",
-        "reprehensible",
-        "repugnant",
-        "detestable",
-        "bad"
-      ]
+      words: {
+        1: [
+          "poor",
+          "inadequate",
+          "mediocre",
+          "disappointing",
+          "unsatisfactory",
+          "deficient",
+          "unfortunate",
+          "unfavorable",
+          "disagreeable",
+          "unpleasant",
+          "troublesome",
+          "problematic",
+          "bad"
+        ],
+        2: [
+          "inferior",
+          "substandard",
+          "faulty",
+          "flawed",
+          "shoddy",
+          "regrettable",
+          "miserable",
+          "dismal",
+          "grim",
+          "bleak",
+          "dire",
+          "grave",
+          "severe",
+          "distressing",
+          "objectionable"
+        ],
+        3: [
+          "abysmal",
+          "deplorable",
+          "lamentable",
+          "pathetic",
+          "pitiful",
+          "wretched",
+          "reprehensible",
+          "repugnant",
+          "detestable",
+          "unacceptable"
+        ]
+      }
     },
     emotional_charge: {
       icon: "\u26A1",
@@ -1656,32 +1674,38 @@
       implication: "Manipulates readers through emotion rather than reason, potentially clouding judgment.",
       suggestion: "Use neutral language that allows readers to form their own emotional responses based on facts.",
       examples: 'Instead of "heartwarming story" \u2192 "story about community support" or "horrifying event" \u2192 "traumatic incident"',
-      words: [
-        "heartwarming",
-        "touching",
-        "moving",
-        "soothing",
-        "comforting",
-        "reassuring",
-        "uplifting",
-        "exhilarating",
-        "thrilling",
-        "exciting",
-        "sensational",
-        "delightful",
-        "disgusting",
-        "revolting",
-        "sickening",
-        "nauseating",
-        "offensive",
-        "frightening",
-        "terrifying",
-        "horrifying",
-        "alarming",
-        "worrying",
-        "concerning",
-        "threatening"
-      ]
+      words: {
+        1: [
+          "touching",
+          "moving",
+          "soothing",
+          "comforting",
+          "reassuring",
+          "uplifting",
+          "delightful",
+          "worrying",
+          "concerning"
+        ],
+        2: [
+          "heartwarming",
+          "exhilarating",
+          "thrilling",
+          "exciting",
+          "sensational",
+          "disgusting",
+          "revolting",
+          "sickening",
+          "nauseating",
+          "offensive",
+          "alarming",
+          "threatening"
+        ],
+        3: [
+          "frightening",
+          "terrifying",
+          "horrifying"
+        ]
+      }
     },
     comparative: {
       icon: "\u{1F4CA}",
@@ -1691,31 +1715,37 @@
       implication: "Establishes hierarchies without justification, potentially misleading readers about relative importance or quality.",
       suggestion: "Provide specific criteria for comparison or use measured language that acknowledges context.",
       examples: 'Instead of "the best solution" \u2192 "an effective solution" or "the most efficient approach we tested"',
-      words: [
-        "best",
-        "worst",
-        "better",
-        "worse",
-        "superior",
-        "inferior",
-        "greater",
-        "lesser",
-        "bigger",
-        "smaller",
-        "higher",
-        "lower",
-        "finer",
-        "poorer",
-        "strongest",
-        "weakest",
-        "finest",
-        "prettiest",
-        "ugliest",
-        "smartest",
-        "dumbest",
-        "brightest",
-        "darkest"
-      ]
+      words: {
+        1: [
+          "better",
+          "worse",
+          "greater",
+          "lesser",
+          "bigger",
+          "smaller",
+          "higher",
+          "lower",
+          "finer",
+          "poorer"
+        ],
+        2: [
+          "best",
+          "worst",
+          "superior",
+          "inferior",
+          "strongest",
+          "weakest",
+          "finest",
+          "smartest",
+          "brightest",
+          "darkest"
+        ],
+        3: [
+          "prettiest",
+          "ugliest",
+          "dumbest"
+        ]
+      }
     },
     political_framing: {
       icon: "\u{1F3DB}\uFE0F",
@@ -1725,37 +1755,43 @@
       implication: "Activates political identity and tribal thinking, making objective evaluation more difficult.",
       suggestion: "Use neutral, descriptive language that focuses on specific policies or actions rather than political labels.",
       examples: 'Instead of "radical proposal" \u2192 "proposal that differs significantly from current policy" or describe specific elements',
-      words: [
-        "controversial",
-        "disputed",
-        "radical",
-        "extreme",
-        "progressive",
-        "conservative",
-        "liberal",
-        "far-right",
-        "far-left",
-        "moderate",
-        "centrist",
-        "mainstream",
-        "fringe",
-        "revolutionary",
-        "traditional",
-        "conventional",
-        "unconventional",
-        "orthodox",
-        "unorthodox",
-        "establishment",
-        "anti-establishment",
-        "populist",
-        "elitist",
-        "partisan",
-        "bipartisan",
-        "divisive",
-        "polarizing",
-        "contentious",
-        "provocative"
-      ]
+      words: {
+        1: [
+          "controversial",
+          "disputed",
+          "moderate",
+          "centrist",
+          "mainstream",
+          "traditional",
+          "conventional",
+          "unconventional",
+          "orthodox",
+          "unorthodox",
+          "bipartisan"
+        ],
+        2: [
+          "progressive",
+          "conservative",
+          "liberal",
+          "fringe",
+          "establishment",
+          "anti-establishment",
+          "populist",
+          "elitist",
+          "partisan",
+          "divisive",
+          "polarizing",
+          "contentious",
+          "provocative"
+        ],
+        3: [
+          "radical",
+          "extreme",
+          "far-right",
+          "far-left",
+          "revolutionary"
+        ]
+      }
     },
     intensifiers: {
       icon: "\u{1F525}",
@@ -1765,45 +1801,51 @@
       implication: "Creates artificial emphasis that can distort the actual significance of events or characteristics.",
       suggestion: "Use specific, measurable descriptions or remove unnecessary intensification.",
       examples: 'Instead of "extremely important" \u2192 "critical for project success" or "increased by 300%"',
-      words: [
-        "very",
-        "extremely",
-        "incredibly",
-        "exceptionally",
-        "extraordinarily",
-        "remarkably",
-        "notably",
-        "particularly",
-        "especially",
-        "surprisingly",
-        "unusually",
-        "strikingly",
-        "decidedly",
-        "markedly",
-        "profoundly",
-        "deeply",
-        "vastly",
-        "greatly",
-        "highly",
-        "immensely",
-        "tremendously",
-        "enormously",
-        "exceedingly",
-        "excessively",
-        "overly",
-        "utterly",
-        "completely",
-        "entirely",
-        "totally",
-        "wholly",
-        "thoroughly",
-        "fully",
-        "intensely",
-        "seriously",
-        "substantially",
-        "significantly",
-        "considerably"
-      ]
+      words: {
+        1: [
+          "very",
+          "particularly",
+          "especially",
+          "notably",
+          "surprisingly",
+          "unusually",
+          "seriously",
+          "substantially",
+          "significantly",
+          "considerably"
+        ],
+        2: [
+          "extremely",
+          "incredibly",
+          "exceptionally",
+          "extraordinarily",
+          "remarkably",
+          "strikingly",
+          "decidedly",
+          "markedly",
+          "profoundly",
+          "deeply",
+          "vastly",
+          "greatly",
+          "highly",
+          "immensely",
+          "tremendously",
+          "enormously"
+        ],
+        3: [
+          "exceedingly",
+          "excessively",
+          "overly",
+          "utterly",
+          "completely",
+          "entirely",
+          "totally",
+          "wholly",
+          "thoroughly",
+          "fully",
+          "intensely"
+        ]
+      }
     },
     credibility_undermining: {
       icon: "\u{1F5E3}\uFE0F",
@@ -1813,27 +1855,33 @@
       implication: "Weakens trust in sources through insinuation rather than substantive critique.",
       suggestion: "Address specific claims with evidence rather than attacking the source's credibility.",
       examples: 'Instead of "so-called expert" \u2192 "Dr. Smith, whose methodology differs from mainstream approaches" or address specific claims',
-      words: [
-        "claims",
-        "purports",
-        "asserts",
-        "alleges",
-        "contends",
-        "maintains",
-        "insists",
-        "so-called",
-        "self-proclaimed",
-        "supposed",
-        "pretend",
-        "dubious",
-        "questionable",
-        "unproven",
-        "unverified",
-        "unsubstantiated",
-        "unfounded",
-        "baseless",
-        "groundless"
-      ]
+      words: {
+        1: [
+          "claims",
+          "purports",
+          "asserts",
+          "alleges",
+          "contends",
+          "maintains",
+          "insists"
+        ],
+        2: [
+          "so-called",
+          "self-proclaimed",
+          "supposed",
+          "pretend",
+          "dubious",
+          "questionable",
+          "unproven",
+          "unverified"
+        ],
+        3: [
+          "unsubstantiated",
+          "unfounded",
+          "baseless",
+          "groundless"
+        ]
+      }
     },
     loaded_political: {
       icon: "\u2696\uFE0F",
@@ -1843,34 +1891,42 @@
       implication: "Activates political identity and bias, making neutral evaluation difficult.",
       suggestion: "Use specific, descriptive language that focuses on actions or policies rather than loaded terms.",
       examples: 'Instead of "socialist policies" \u2192 "government-funded programs" or "authoritarian regime" \u2192 "government that restricts civil liberties"',
-      words: [
-        "freedom",
-        "justice",
-        "equality",
-        "rights",
-        "liberty",
-        "democracy",
-        "patriotic",
-        "unpatriotic",
-        "un-American",
-        "socialist",
-        "communist",
-        "fascist",
-        "dictatorial",
-        "totalitarian",
-        "authoritarian",
-        "corrupt",
-        "crooked",
-        "dishonest",
-        "shady",
-        "illegal",
-        "unlawful",
-        "criminal",
-        "scandal",
-        "conspiracy",
-        "regime",
-        "propaganda"
-      ]
+      words: {
+        1: [
+          "freedom",
+          "justice",
+          "equality",
+          "rights",
+          "liberty",
+          "democracy",
+          "patriotic",
+          "fair",
+          "unfair"
+        ],
+        2: [
+          "unpatriotic",
+          "un-American",
+          "socialist",
+          "communist",
+          "corrupt",
+          "crooked",
+          "dishonest",
+          "shady",
+          "illegal",
+          "unlawful",
+          "criminal",
+          "scandal",
+          "regime",
+          "propaganda"
+        ],
+        3: [
+          "fascist",
+          "dictatorial",
+          "totalitarian",
+          "authoritarian",
+          "conspiracy"
+        ]
+      }
     },
     moral_judgments: {
       icon: "\u2696\uFE0F",
@@ -1880,32 +1936,36 @@
       implication: "Presents moral judgments as universal truths rather than perspective-dependent evaluations.",
       suggestion: "Acknowledge the subjective nature of moral judgments or specify the ethical framework being used.",
       examples: 'Instead of "immoral behavior" \u2192 "behavior that violates principle X" or "I consider this unethical because..."',
-      words: [
-        "moral",
-        "immoral",
-        "ethical",
-        "unethical",
-        "virtuous",
-        "corrupt",
-        "just",
-        "unjust",
-        "fair",
-        "unfair",
-        "honorable",
-        "dishonorable",
-        "honest",
-        "dishonest",
-        "decent",
-        "indecent",
-        "appropriate",
-        "inappropriate",
-        "acceptable",
-        "unacceptable",
-        "legitimate",
-        "illegitimate",
-        "reasonable",
-        "unreasonable"
-      ]
+      words: {
+        1: [
+          "moral",
+          "ethical",
+          "just",
+          "unjust",
+          "fair",
+          "unfair",
+          "honest",
+          "dishonest",
+          "decent",
+          "appropriate",
+          "inappropriate",
+          "acceptable",
+          "unacceptable",
+          "legitimate",
+          "illegitimate",
+          "reasonable",
+          "unreasonable"
+        ],
+        2: [
+          "immoral",
+          "unethical",
+          "virtuous",
+          "corrupt",
+          "honorable",
+          "dishonorable",
+          "indecent"
+        ]
+      }
     },
     emotional_appeals: {
       icon: "\u{1F4AD}",
@@ -1915,24 +1975,35 @@
       implication: "Manipulates emotional state to influence opinion without providing rational justification.",
       suggestion: "Focus on factual information that allows readers to form their own emotional responses.",
       examples: 'Instead of "promising developments" \u2192 "developments that may lead to improved outcomes" or provide specific evidence',
-      words: [
-        "promising",
-        "depressing",
-        "gloomy",
-        "optimistic",
-        "pessimistic",
-        "anxious",
-        "fearful",
-        "afraid",
-        "confident",
-        "proud",
-        "ashamed",
-        "embarrassed",
-        "guilty"
-      ]
+      words: {
+        1: [
+          "promising",
+          "optimistic",
+          "pessimistic",
+          "confident",
+          "proud",
+          "embarrassed"
+        ],
+        2: [
+          "depressing",
+          "gloomy",
+          "anxious",
+          "fearful",
+          "afraid",
+          "ashamed",
+          "guilty"
+        ]
+      }
     }
   };
-  var opinionWordsFlat = Object.values(opinionWords).flatMap((category) => category.words);
+  function flattenWords(categoryWords) {
+    if (Array.isArray(categoryWords))
+      return categoryWords;
+    return Object.values(categoryWords).flat();
+  }
+  var opinionWordsFlat = Object.values(opinionWords).flatMap(
+    (category) => flattenWords(category.words)
+  );
 
   // src/dictionaries/tobe-verbs.js
   var toBeVerbs = [
@@ -1967,83 +2038,93 @@
   ];
 
   // src/dictionaries/absolute-words.js
-  var absoluteWords = [
-    // Universal Quantifiers
-    "all",
-    "every",
-    "each",
-    "any",
-    "no",
-    "none",
-    // People Universals
-    "everyone",
-    "everybody",
-    "no one",
-    "nobody",
-    "anyone",
-    "anybody",
-    "someone",
-    "somebody",
-    // Time Universals
-    "always",
-    "never",
-    "forever",
-    "eternal",
-    "constantly",
-    "perpetually",
-    "continually",
-    "endlessly",
-    "ceaselessly",
-    "permanently",
-    "invariably",
-    // Categorical Statements
-    "ultimately",
-    "fundamentally",
-    "purely",
-    "outright",
-    "comprehensively",
-    "universally",
-    // Thing Universals
-    "everything",
-    "nothing",
-    "anything",
-    "something",
-    // Absolute Adjectives
-    "perfect",
-    "complete",
-    "total",
-    "absolute",
-    "entire",
-    "full",
-    "whole",
-    "ultimate",
-    "maximum",
-    "minimum",
-    "supreme",
-    "extreme",
-    "utmost",
-    "final",
-    "infallible",
-    "unerring",
-    "universal",
-    "impossible",
-    "inevitable",
-    "inescapable",
-    "undeniable",
-    "irrefutable",
-    "identical",
-    "pure",
-    "sheer",
-    "mere",
-    // Absolute Certainty
-    "undoubtedly",
-    "unquestionably",
-    "indisputably",
-    "irrefutably",
-    "incontrovertibly",
-    "incontestably",
-    "unequivocally"
-  ];
+  var absoluteWords = {
+    1: [
+      // Soft universals — often used casually without absolute intent
+      "any",
+      "each",
+      "anyone",
+      "anybody",
+      "someone",
+      "somebody",
+      "something",
+      "anything",
+      "full",
+      "whole",
+      "final",
+      "mere"
+    ],
+    2: [
+      // Standard absolutes — categorical claims that are rarely literally true
+      "all",
+      "every",
+      "no",
+      "none",
+      "everyone",
+      "everybody",
+      "no one",
+      "nobody",
+      "everything",
+      "nothing",
+      "always",
+      "never",
+      "forever",
+      "constantly",
+      "continually",
+      "invariably",
+      "permanently",
+      "perfect",
+      "complete",
+      "total",
+      "absolute",
+      "entire",
+      "maximum",
+      "minimum",
+      "supreme",
+      "extreme",
+      "utmost",
+      "ultimate",
+      "universal",
+      "impossible",
+      "inevitable",
+      "inescapable",
+      "identical",
+      "pure",
+      "sheer",
+      "ultimately",
+      "fundamentally",
+      "purely",
+      "outright",
+      "comprehensively",
+      "universally"
+    ],
+    3: [
+      // Emphatic absolutes — intensified language that brooks no exception
+      "absolutely",
+      "definitely",
+      "certainly",
+      "totally",
+      "completely",
+      "utterly",
+      "entirely",
+      "eternal",
+      "perpetually",
+      "endlessly",
+      "ceaselessly",
+      "infallible",
+      "unerring",
+      "undeniable",
+      "irrefutable",
+      "undoubtedly",
+      "unquestionably",
+      "indisputably",
+      "irrefutably",
+      "incontrovertibly",
+      "incontestably",
+      "unequivocally"
+    ]
+  };
+  var absoluteWordsFlat = Object.values(absoluteWords).flat();
 
   // src/dictionaries/passive-patterns.js
   var passivePatterns = [
@@ -2095,26 +2176,32 @@
       implication: "Allows claims to appear sourced without any verifiable attribution, making fact-checking impossible.",
       suggestion: "Ask: WHO specifically said this? Name the person, organization, or publication.",
       examples: 'Instead of "sources indicate" \u2192 "a senior official at the EPA told Reuters" or name the specific source',
-      words: [
-        "many people say",
-        "some say",
-        "they say",
-        "people think",
-        "some argue",
-        "critics claim",
-        "supporters maintain",
-        "observers note",
-        "sources indicate",
-        "unnamed sources",
-        "according to reports",
-        "insiders claim",
-        "some experts say",
-        "authorities believe",
-        "well-placed sources",
-        "those familiar with the matter",
-        "people close to the situation",
-        "those in the know"
-      ]
+      words: {
+        1: [
+          "some say",
+          "they say",
+          "people think",
+          "some argue",
+          "observers note"
+        ],
+        2: [
+          "many people say",
+          "critics claim",
+          "supporters maintain",
+          "sources indicate",
+          "according to reports",
+          "some experts say",
+          "authorities believe"
+        ],
+        3: [
+          "unnamed sources",
+          "insiders claim",
+          "well-placed sources",
+          "those familiar with the matter",
+          "people close to the situation",
+          "those in the know"
+        ]
+      }
     },
     hedged_evidence: {
       icon: "\u{1F4CB}",
@@ -2124,24 +2211,30 @@
       implication: "Creates an appearance of evidence-based reasoning while avoiding any verifiable claim.",
       suggestion: "Ask: WHICH study? Published WHERE? By WHOM? Provide the actual citation.",
       examples: 'Instead of "research suggests" \u2192 "a 2024 study by Smith et al. in Nature found..."',
-      words: [
-        "research suggests",
-        "evidence suggests",
-        "data indicates",
-        "experts believe",
-        "it is believed",
-        "it is thought",
-        "it is said",
-        "may indicate",
-        "could suggest",
-        "might imply",
-        "studies have shown",
-        "science tells us",
-        "the data shows",
-        "findings indicate",
-        "analysis reveals",
-        "polls suggest"
-      ]
+      words: {
+        1: [
+          "may indicate",
+          "could suggest",
+          "might imply",
+          "polls suggest"
+        ],
+        2: [
+          "research suggests",
+          "evidence suggests",
+          "data indicates",
+          "experts believe",
+          "it is believed",
+          "it is thought",
+          "it is said",
+          "findings indicate",
+          "analysis reveals"
+        ],
+        3: [
+          "studies have shown",
+          "science tells us",
+          "the data shows"
+        ]
+      }
     },
     vague_quantifiers: {
       icon: "\u{1F4CA}",
@@ -2151,21 +2244,25 @@
       implication: "Obscures actual rates and magnitudes, allowing the reader to imagine whatever quantity supports the argument.",
       suggestion: "Ask: HOW MANY exactly? Replace with specific numbers, percentages, or ranges.",
       examples: 'Instead of "in many cases" \u2192 "in 73% of cases" or "in 8 out of 12 trials"',
-      words: [
-        "in some cases",
-        "in many cases",
-        "frequently",
-        "typically",
-        "tends to",
-        "in most cases",
-        "on occasion",
-        "from time to time",
-        "more often than not",
-        "time and again",
-        "as often as not",
-        "in certain situations",
-        "under some circumstances"
-      ]
+      words: {
+        1: [
+          "in some cases",
+          "frequently",
+          "typically",
+          "tends to",
+          "on occasion",
+          "from time to time",
+          "in certain situations",
+          "under some circumstances"
+        ],
+        2: [
+          "in many cases",
+          "in most cases",
+          "more often than not",
+          "time and again",
+          "as often as not"
+        ]
+      }
     },
     appeal_to_authority: {
       icon: "\u{1F393}",
@@ -2175,20 +2272,26 @@
       implication: "Borrows authority from unnamed or unqualified sources rather than presenting evidence directly.",
       suggestion: "Ask: Which SPECIFIC experts? In what FIELD? Is this their area of expertise?",
       examples: 'Instead of "experts believe" \u2192 "Dr. Chen, a climate scientist at MIT, found..."',
-      words: [
-        "widely known",
-        "widely believed",
-        "generally accepted",
-        "commonly believed",
-        "often said",
-        "the consensus is",
-        "it is well established",
-        "leading experts agree",
-        "top scientists confirm",
-        "the scientific community agrees",
-        "scholars maintain",
-        "mainstream opinion holds"
-      ]
+      words: {
+        1: [
+          "widely known",
+          "widely believed",
+          "generally accepted",
+          "commonly believed",
+          "often said"
+        ],
+        2: [
+          "the consensus is",
+          "it is well established",
+          "leading experts agree",
+          "top scientists confirm",
+          "scholars maintain",
+          "mainstream opinion holds"
+        ],
+        3: [
+          "the scientific community agrees"
+        ]
+      }
     },
     passive_attribution: {
       icon: "\u{1F32B}\uFE0F",
@@ -2198,26 +2301,37 @@
       implication: "Lets the writer advance claims while retaining the ability to disown them if challenged.",
       suggestion: "Notice the writer is not committing to the claim \u2014 ask what they actually believe and why.",
       examples: 'Instead of "reportedly" \u2192 state the claim directly and cite the source, or acknowledge uncertainty explicitly',
-      words: [
-        "reportedly",
-        "allegedly",
-        "supposedly",
-        "arguably",
-        "presumably",
-        "ostensibly",
-        "purportedly",
-        "apparently",
-        "seemingly",
-        "it would appear",
-        "one might say",
-        "it has been suggested",
-        "there are those who say",
-        "some would argue",
-        "it could be said"
-      ]
+      words: {
+        1: [
+          "reportedly",
+          "allegedly",
+          "supposedly",
+          "arguably",
+          "presumably",
+          "ostensibly",
+          "purportedly",
+          "apparently",
+          "seemingly",
+          "it would appear",
+          "one might say"
+        ],
+        2: [
+          "it has been suggested",
+          "there are those who say",
+          "some would argue",
+          "it could be said"
+        ]
+      }
     }
   };
-  var weaselPhrasesFlat = Object.values(weaselWords).flatMap((category) => category.words);
+  function flattenWords2(categoryWords) {
+    if (Array.isArray(categoryWords))
+      return categoryWords;
+    return Object.values(categoryWords).flat();
+  }
+  var weaselPhrasesFlat = Object.values(weaselWords).flatMap(
+    (category) => flattenWords2(category.words)
+  );
   var weaselPhrases = weaselPhrasesFlat;
 
   // src/dictionaries/presupposition-markers.js
@@ -2721,29 +2835,35 @@
       implication: "Activates the brain's threat response, making readers more susceptible to persuasion and less able to evaluate claims critically.",
       suggestion: "Ask what specific evidence supports the claimed danger and evaluate actual risk levels.",
       examples: 'Instead of "existential threat" \u2192 "a significant challenge" or provide specific risk data',
-      words: [
-        "dangerous precedent",
-        "slippery slope",
-        "existential threat",
-        "grave danger",
-        "serious threat",
-        "dire consequences",
-        "catastrophic results",
-        "devastating impact",
-        "irreversible damage",
-        "point of no return",
-        "ticking time bomb",
-        "imminent danger",
-        "clear and present danger",
-        "looming crisis",
-        "impending doom",
-        "mortal threat",
-        "doomsday scenario",
-        "nightmare scenario",
-        "worst case scenario",
-        "on the brink",
-        "spiraling out of control"
-      ]
+      words: {
+        1: [
+          "dangerous precedent",
+          "serious threat",
+          "on the brink"
+        ],
+        2: [
+          "slippery slope",
+          "existential threat",
+          "grave danger",
+          "dire consequences",
+          "devastating impact",
+          "irreversible damage",
+          "imminent danger",
+          "looming crisis",
+          "worst case scenario",
+          "spiraling out of control"
+        ],
+        3: [
+          "catastrophic results",
+          "point of no return",
+          "ticking time bomb",
+          "clear and present danger",
+          "impending doom",
+          "mortal threat",
+          "doomsday scenario",
+          "nightmare scenario"
+        ]
+      }
     },
     guilt_induction: {
       icon: "\u{1F614}",
@@ -2753,29 +2873,33 @@
       implication: "Bypasses rational evaluation by making disagreement feel morally wrong, regardless of the actual merits.",
       suggestion: "Evaluate whether the responsibility claim is supported by evidence, separate from the emotional pressure.",
       examples: 'Instead of "blood on your hands" \u2192 "shares responsibility for the outcome" with specific evidence',
-      words: [
-        "shame on",
-        "how dare",
-        "blood on your hands",
-        "morally responsible",
-        "complicit in",
-        "turning a blind eye",
-        "failed to act",
-        "stood by while",
-        "allowed to happen",
-        "could have prevented",
-        "chose to ignore",
-        "willfully neglected",
-        "betrayed the trust",
-        "let down",
-        "abandoned their duty",
-        "on your conscience",
-        "history will judge",
-        "answerable for",
-        "dereliction of duty",
-        "looked the other way",
-        "washed their hands of"
-      ]
+      words: {
+        2: [
+          "morally responsible",
+          "complicit in",
+          "turning a blind eye",
+          "failed to act",
+          "stood by while",
+          "allowed to happen",
+          "could have prevented",
+          "chose to ignore",
+          "willfully neglected",
+          "let down",
+          "abandoned their duty",
+          "dereliction of duty",
+          "looked the other way",
+          "washed their hands of"
+        ],
+        3: [
+          "shame on",
+          "how dare",
+          "blood on your hands",
+          "betrayed the trust",
+          "on your conscience",
+          "history will judge",
+          "answerable for"
+        ]
+      }
     },
     flattery_manipulation: {
       icon: "\u{1F3AD}",
@@ -2785,26 +2909,32 @@
       implication: "Creates social pressure to agree by implying that disagreement means you lack intelligence, virtue, or sophistication.",
       suggestion: "Recognize the appeal to identity and evaluate the argument on its own merits.",
       examples: 'Instead of "smart people like you understand" \u2192 present the argument and let readers evaluate it independently',
-      words: [
-        "smart people like you",
-        "educated readers understand",
-        "discerning individuals",
-        "those who truly care",
-        "people of conscience",
-        "thoughtful citizens",
-        "intelligent observers",
-        "wise enough to see",
-        "sophisticated thinkers",
-        "enlightened minds",
-        "those with common sense",
-        "reasonable people agree",
-        "anyone with half a brain",
-        "thinking people know",
-        "informed citizens realize",
-        "astute observers recognize",
-        "those who pay attention",
-        "right-thinking people"
-      ]
+      words: {
+        1: [
+          "discerning individuals",
+          "those who truly care",
+          "people of conscience",
+          "thoughtful citizens",
+          "those who pay attention"
+        ],
+        2: [
+          "smart people like you",
+          "educated readers understand",
+          "intelligent observers",
+          "wise enough to see",
+          "sophisticated thinkers",
+          "enlightened minds",
+          "those with common sense",
+          "reasonable people agree",
+          "informed citizens realize",
+          "astute observers recognize",
+          "right-thinking people"
+        ],
+        3: [
+          "anyone with half a brain",
+          "thinking people know"
+        ]
+      }
     },
     outrage_fuel: {
       icon: "\u{1F92C}",
@@ -2814,29 +2944,33 @@
       implication: "Replaces factual evaluation with emotional reaction, making readers more likely to share and amplify without verification.",
       suggestion: "Look past the outrage language to identify the actual facts and evaluate them independently.",
       examples: 'Instead of "shocking revelation" \u2192 "new information shows..." with specific details',
-      words: [
-        "shocking revelation",
-        "unbelievable scandal",
-        "absolute outrage",
-        "disgusting display",
-        "appalling behavior",
-        "unconscionable act",
-        "beyond the pale",
-        "crosses the line",
-        "new low",
-        "height of hypocrisy",
-        "blatant corruption",
-        "flagrant violation",
-        "egregious abuse",
-        "stunning betrayal",
-        "jaw-dropping",
-        "slap in the face",
-        "travesty of justice",
-        "moral bankruptcy",
-        "utter contempt",
-        "brazen disregard",
-        "shameless exploitation"
-      ]
+      words: {
+        2: [
+          "shocking revelation",
+          "appalling behavior",
+          "crosses the line",
+          "new low",
+          "height of hypocrisy",
+          "jaw-dropping",
+          "slap in the face"
+        ],
+        3: [
+          "unbelievable scandal",
+          "absolute outrage",
+          "disgusting display",
+          "unconscionable act",
+          "beyond the pale",
+          "blatant corruption",
+          "flagrant violation",
+          "egregious abuse",
+          "stunning betrayal",
+          "travesty of justice",
+          "moral bankruptcy",
+          "utter contempt",
+          "brazen disregard",
+          "shameless exploitation"
+        ]
+      }
     },
     sympathy_exploitation: {
       icon: "\u{1F494}",
@@ -2846,28 +2980,34 @@
       implication: "Makes disagreement feel heartless, even when the emotional appeal has no logical connection to the argument being made.",
       suggestion: "Ask how the emotional appeal specifically connects to the policy or argument being advanced.",
       examples: 'Instead of "think of the children" \u2192 describe specific impacts on children with evidence',
-      words: [
-        "think of the children",
-        "vulnerable victims",
-        "innocent lives",
-        "helpless elderly",
-        "suffering families",
-        "heartbroken parents",
-        "orphaned children",
-        "widows and orphans",
-        "defenseless animals",
-        "voiceless victims",
-        "forgotten souls",
-        "human tragedy",
-        "real people suffering",
-        "faces behind the statistics",
-        "their blood cries out",
-        "who will speak for them",
-        "left to fend for themselves",
-        "prey upon the weak",
-        "the most vulnerable among us",
-        "those who cannot help themselves"
-      ]
+      words: {
+        1: [
+          "real people suffering",
+          "faces behind the statistics",
+          "the most vulnerable among us",
+          "those who cannot help themselves"
+        ],
+        2: [
+          "think of the children",
+          "vulnerable victims",
+          "innocent lives",
+          "helpless elderly",
+          "suffering families",
+          "heartbroken parents",
+          "orphaned children",
+          "defenseless animals",
+          "voiceless victims",
+          "human tragedy",
+          "left to fend for themselves"
+        ],
+        3: [
+          "widows and orphans",
+          "forgotten souls",
+          "their blood cries out",
+          "who will speak for them",
+          "prey upon the weak"
+        ]
+      }
     },
     false_urgency: {
       icon: "\u23F0",
@@ -2877,29 +3017,42 @@
       implication: "Prevents thoughtful evaluation by implying that delay equals failure, even when no real deadline exists.",
       suggestion: "Ask what evidence exists for the claimed deadline and whether careful consideration would actually cause harm.",
       examples: `Instead of "act now before it's too late" \u2192 "this decision would benefit from timely attention because..."`,
-      words: [
-        "act now",
-        "before it's too late",
-        "time is running out",
-        "last chance",
-        "final opportunity",
-        "narrow window",
-        "critical moment",
-        "now or never",
-        "decisive moment",
-        "crucial juncture",
-        "make or break",
-        "do or die",
-        "the clock is ticking",
-        "every second counts",
-        "running out of time",
-        "at the eleventh hour",
-        "no time to waste",
-        "urgent action needed"
-      ]
+      words: {
+        1: [
+          "critical moment",
+          "crucial juncture",
+          "urgent action needed",
+          "no time to waste"
+        ],
+        2: [
+          "act now",
+          "before it's too late",
+          "time is running out",
+          "last chance",
+          "final opportunity",
+          "narrow window",
+          "the clock is ticking",
+          "every second counts",
+          "running out of time",
+          "at the eleventh hour"
+        ],
+        3: [
+          "now or never",
+          "make or break",
+          "do or die",
+          "decisive moment"
+        ]
+      }
     }
   };
-  var emotionalTriggersFlat = Object.values(emotionalTriggerWords).flatMap((category) => category.words);
+  function flattenWords3(categoryWords) {
+    if (Array.isArray(categoryWords))
+      return categoryWords;
+    return Object.values(categoryWords).flat();
+  }
+  var emotionalTriggersFlat = Object.values(emotionalTriggerWords).flatMap(
+    (category) => flattenWords3(category.words)
+  );
   var emotionalTriggers = emotionalTriggersFlat;
 
   // src/dictionaries/gaslighting.js
@@ -2912,26 +3065,30 @@
       implication: "The strongest form of gaslighting \u2014 attempts to make the target doubt their own perception of verified events.",
       suggestion: "Check independent records, documents, or witnesses. Trust verifiable evidence over assertions.",
       examples: `Instead of "that never happened" \u2192 "I have a different recollection \u2014 let's check the record"`,
-      words: [
-        "that never happened",
-        "you're imagining things",
-        "that's not true",
-        "you're making it up",
-        "completely fabricated",
-        "pure fiction",
-        "didn't happen that way",
-        "false memory",
-        "revisionist history",
-        "twisting the facts",
-        "distorting reality",
-        "alternative facts",
-        "total fabrication",
-        "that's a lie",
-        "never said that",
-        "you're inventing things",
-        "fantasy",
-        "fiction not fact"
-      ]
+      words: {
+        2: [
+          "that's not true",
+          "didn't happen that way",
+          "twisting the facts",
+          "distorting reality",
+          "never said that",
+          "fantasy"
+        ],
+        3: [
+          "that never happened",
+          "you're imagining things",
+          "you're making it up",
+          "completely fabricated",
+          "pure fiction",
+          "false memory",
+          "revisionist history",
+          "alternative facts",
+          "total fabrication",
+          "that's a lie",
+          "you're inventing things",
+          "fiction not fact"
+        ]
+      }
     },
     emotional_invalidation: {
       icon: "\u{1F4A2}",
@@ -2941,25 +3098,31 @@
       implication: "Teaches the target to distrust their own emotional responses, making them more dependent on the gaslighter's framing.",
       suggestion: "Your emotional responses are valid data. Evaluate the situation independently of how others characterize your reaction.",
       examples: `Instead of "you're overreacting" \u2192 "I see this differently \u2014 can we discuss our perspectives?"`,
-      words: [
-        "you're overreacting",
-        "making a big deal",
-        "blowing it out of proportion",
-        "being dramatic",
-        "overly sensitive",
-        "too emotional",
-        "getting worked up over nothing",
-        "making mountains out of molehills",
-        "need to calm down",
-        "being hysterical",
-        "irrational response",
-        "taking it too seriously",
-        "reading too much into it",
-        "stop being so sensitive",
-        "you're too thin-skinned",
-        "learn to take a joke",
-        "lighten up"
-      ]
+      words: {
+        1: [
+          "lighten up",
+          "learn to take a joke",
+          "taking it too seriously",
+          "reading too much into it"
+        ],
+        2: [
+          "you're overreacting",
+          "making a big deal",
+          "blowing it out of proportion",
+          "being dramatic",
+          "overly sensitive",
+          "too emotional",
+          "making mountains out of molehills",
+          "need to calm down",
+          "stop being so sensitive",
+          "you're too thin-skinned"
+        ],
+        3: [
+          "getting worked up over nothing",
+          "being hysterical",
+          "irrational response"
+        ]
+      }
     },
     memory_manipulation: {
       icon: "\u{1F9E0}",
@@ -2969,24 +3132,30 @@
       implication: "Erodes trust in episodic memory, making the target increasingly reliant on the manipulator's version of events.",
       suggestion: "Keep written records. Check notes, emails, or texts. Verify with other witnesses when possible.",
       examples: `Instead of "you're misremembering" \u2192 "my recollection differs \u2014 let's look at the meeting notes"`,
-      words: [
-        "you're misremembering",
-        "that's not what was said",
-        "you're confused",
-        "mixing things up",
-        "got it backwards",
-        "faulty recollection",
-        "selective memory",
-        "conveniently forgetting",
-        "memory is playing tricks",
-        "not how I remember it",
-        "you must be mistaken",
-        "false impression",
-        "your memory is unreliable",
-        "you always get this wrong",
-        "that's not what happened at all",
-        "you're rewriting history"
-      ]
+      words: {
+        1: [
+          "not how I remember it",
+          "you must be mistaken",
+          "false impression"
+        ],
+        2: [
+          "you're misremembering",
+          "that's not what was said",
+          "you're confused",
+          "mixing things up",
+          "got it backwards",
+          "faulty recollection",
+          "selective memory",
+          "memory is playing tricks"
+        ],
+        3: [
+          "conveniently forgetting",
+          "your memory is unreliable",
+          "you always get this wrong",
+          "that's not what happened at all",
+          "you're rewriting history"
+        ]
+      }
     },
     credibility_attack: {
       icon: "\u{1F3AF}",
@@ -2996,27 +3165,33 @@
       implication: "Ad hominem disguised as concern \u2014 undermines self-confidence to make the target doubt their own perceptions and judgment.",
       suggestion: "Evaluate the ARGUMENT being made, not the personal attack. Competence attacks do not address the substance of a claim.",
       examples: `Instead of "you're being paranoid" \u2192 "I don't see the same pattern \u2014 here's why..."`,
-      words: [
-        "you're being paranoid",
-        "too sensitive",
-        "crazy to think",
-        "lost touch with reality",
-        "delusional thinking",
-        "conspiracy theorist",
-        "seeing things that aren't there",
-        "jumping to conclusions",
-        "wild accusations",
-        "baseless claims",
-        "unfounded fears",
-        "irrational beliefs",
-        "unstable behavior",
-        "not thinking clearly",
-        "you need help",
-        "you're losing it",
-        "unhinged",
-        "out of your mind",
-        "not in your right mind"
-      ]
+      words: {
+        1: [
+          "jumping to conclusions",
+          "unfounded fears"
+        ],
+        2: [
+          "you're being paranoid",
+          "too sensitive",
+          "crazy to think",
+          "conspiracy theorist",
+          "seeing things that aren't there",
+          "wild accusations",
+          "baseless claims",
+          "irrational beliefs",
+          "not thinking clearly"
+        ],
+        3: [
+          "lost touch with reality",
+          "delusional thinking",
+          "unstable behavior",
+          "you need help",
+          "you're losing it",
+          "unhinged",
+          "out of your mind",
+          "not in your right mind"
+        ]
+      }
     },
     deflection: {
       icon: "\u21A9\uFE0F",
@@ -3026,28 +3201,41 @@
       implication: "Prevents resolution by continually shifting focus, leaving the original concern unaddressed while exhausting the target.",
       suggestion: "Ask: has the original concern been addressed? Return focus to the specific issue at hand.",
       examples: 'Instead of "what about when you..." \u2192 "I hear your point about X, and I also want to address Y"',
-      words: [
-        "the real issue is",
-        "what about",
-        "more importantly",
-        "you're missing the point",
-        "that's not the problem",
-        "focusing on the wrong thing",
-        "beside the point",
-        "irrelevant detail",
-        "distracting from",
-        "changing the subject",
-        "let's talk about",
-        "but what about when",
-        "conveniently ignoring",
-        "you're deflecting",
-        "nice try changing the topic",
-        "stop trying to distract",
-        "that's whataboutism"
-      ]
+      words: {
+        1: [
+          "the real issue is",
+          "more importantly",
+          "let's talk about",
+          "beside the point"
+        ],
+        2: [
+          "what about",
+          "you're missing the point",
+          "that's not the problem",
+          "focusing on the wrong thing",
+          "irrelevant detail",
+          "distracting from",
+          "changing the subject",
+          "but what about when",
+          "conveniently ignoring",
+          "that's whataboutism"
+        ],
+        3: [
+          "you're deflecting",
+          "nice try changing the topic",
+          "stop trying to distract"
+        ]
+      }
     }
   };
-  var gaslightingPhrasesFlat = Object.values(gaslightingWords).flatMap((category) => category.words);
+  function flattenWords4(categoryWords) {
+    if (Array.isArray(categoryWords))
+      return categoryWords;
+    return Object.values(categoryWords).flat();
+  }
+  var gaslightingPhrasesFlat = Object.values(gaslightingWords).flatMap(
+    (category) => flattenWords4(category.words)
+  );
   var gaslightingPhrases = gaslightingPhrasesFlat;
 
   // src/dictionaries/false-dilemma.js
@@ -3276,10 +3464,21 @@
   ];
 
   // src/dictionaries/index.js
+  function isIntensityGrouped(words) {
+    if (Array.isArray(words))
+      return false;
+    return typeof words === "object" && (words[1] || words[2] || words[3]);
+  }
+  function flattenWords5(words) {
+    if (Array.isArray(words))
+      return words;
+    return Object.values(words).flat();
+  }
   var BiasPatterns = class {
     constructor() {
       this.rawPatterns = this.loadRawPatterns();
       this.subCategoryDictionaries = this.loadSubCategoryDictionaries();
+      this.intensityMaps = this.buildIntensityMaps();
       this.subCategoryMaps = this.buildSubCategoryMaps();
       this.compiledPatterns = /* @__PURE__ */ new Map();
       this.compileAllPatterns();
@@ -3287,9 +3486,8 @@
     loadRawPatterns() {
       return {
         opinion: opinionWordsFlat,
-        // Use flat array for backward compatibility
         tobe: toBeVerbs,
-        absolute: absoluteWords,
+        absolute: absoluteWordsFlat,
         passive: passivePatterns,
         weasel: weaselPhrases,
         presupposition: presuppositionMarkers,
@@ -3314,6 +3512,50 @@
       dictionaries.set("gaslighting", gaslightingWords);
       return dictionaries;
     }
+    // Build word→intensity lookup maps from all dictionaries
+    buildIntensityMaps() {
+      const maps = /* @__PURE__ */ new Map();
+      const flatIntensityDicts = {
+        absolute: absoluteWords
+      };
+      for (const [type, dict] of Object.entries(flatIntensityDicts)) {
+        if (!isIntensityGrouped(dict))
+          continue;
+        const wordMap = /* @__PURE__ */ new Map();
+        for (const [level, words] of Object.entries(dict)) {
+          const intensity = parseInt(level, 10);
+          for (const word of words) {
+            wordMap.set(word.toLowerCase(), intensity);
+          }
+        }
+        maps.set(type, wordMap);
+      }
+      for (const [type, dict] of this.subCategoryDictionaries) {
+        if (!maps.has(type)) {
+          maps.set(type, /* @__PURE__ */ new Map());
+        }
+        const wordMap = maps.get(type);
+        for (const [subId, entry] of Object.entries(dict)) {
+          const words = entry.words || entry;
+          if (isIntensityGrouped(words)) {
+            for (const [level, wordList] of Object.entries(words)) {
+              const intensity = parseInt(level, 10);
+              for (const word of wordList) {
+                wordMap.set(word.toLowerCase(), intensity);
+              }
+            }
+          }
+        }
+      }
+      return maps;
+    }
+    // Get intensity for a matched word. Returns 1, 2, or 3.
+    getIntensity(biasTypeId, matchedWord) {
+      const wordMap = this.intensityMaps.get(biasTypeId);
+      if (!wordMap)
+        return 2;
+      return wordMap.get(matchedWord.toLowerCase()) || 2;
+    }
     buildSubCategoryMaps() {
       const maps = /* @__PURE__ */ new Map();
       for (const config of Object.values(BiasConfig.BIAS_TYPES)) {
@@ -3326,7 +3568,8 @@
             const words = Array.isArray(entry) ? entry : entry.words;
             if (!words)
               continue;
-            for (const word of words) {
+            const flatWords = flattenWords5(words);
+            for (const word of flatWords) {
               wordMap.set(word.toLowerCase(), {
                 id: subId,
                 ...config.subCategories[subId]
@@ -4715,59 +4958,6 @@
     }
   };
 
-  // src/utils/IntensityCalculator.js
-  var IntensityCalculator = class {
-    constructor() {
-      this.intensityLevels = {
-        absolute: {
-          1: ["mostly", "generally", "typically", "usually", "often", "frequently"],
-          2: ["always", "never", "every", "none", "all", "no one", "everyone"],
-          3: ["absolutely", "definitely", "certainly", "totally", "completely", "utterly", "entirely"]
-        },
-        opinion: {
-          1: ["seems", "appears", "arguably", "perhaps", "possibly"],
-          2: ["obviously", "clearly", "surely", "undoubtedly", "evidently"],
-          3: ["undeniably", "unquestionably", "indisputably", "irrefutably", "incontrovertibly"]
-        },
-        emotional: {
-          1: ["concerning", "problematic", "challenging", "difficult", "worrying"],
-          2: ["crisis", "disaster", "failure", "catastrophe", "emergency"],
-          3: ["evil", "destroy", "murder", "doom", "apocalypse", "blood on your hands"]
-        },
-        weasel: {
-          1: ["some", "many", "few", "several"],
-          2: ["people say", "studies show", "experts believe", "sources indicate"],
-          3: ["everyone knows", "it's a fact that", "proven", "undisputed"]
-        },
-        gaslighting: {
-          1: ["perhaps you're mistaken", "that's unusual", "are you sure about that"],
-          2: ["concerns are overblown", "being dramatic", "reading too much into it"],
-          3: ["that never happened", "the public is imagining things", "a fabricated controversy"]
-        }
-      };
-    }
-    // Calculate intensity level for a match
-    // Returns 1 (mild), 2 (moderate), or 3 (strong)
-    calculateIntensity(text, type) {
-      const levels = this.intensityLevels[type];
-      if (!levels)
-        return 2;
-      const lowerText = text.toLowerCase();
-      for (let level = 3; level >= 1; level--) {
-        if (levels[level] && levels[level].some((word) => lowerText.includes(word))) {
-          return level;
-        }
-      }
-      return 2;
-    }
-    // Calculate document health score (ratio of excellence to problems)
-    calculateHealthScore(excellenceCount, problemCount) {
-      if (excellenceCount + problemCount === 0)
-        return 50;
-      return Math.round(excellenceCount / (excellenceCount + problemCount) * 100);
-    }
-  };
-
   // src/utils/ContextAwareDetector.js
   var ContextAwareDetector = class {
     constructor() {
@@ -5331,7 +5521,6 @@
       this.patterns = new BiasPatterns();
       this.domProcessor = new DOMProcessor();
       this.excellenceDetector = new ExcellenceDetector();
-      this.intensityCalculator = new IntensityCalculator();
       this.contextAwareDetector = new ContextAwareDetector();
       this.stats = this.createEmptyStats();
       this.observer = null;
@@ -5490,7 +5679,7 @@
             const matchesWithIntensity = matches.map((match) => ({
               ...match,
               type: match.parentType ? match.type : type,
-              intensity: this.intensityCalculator.calculateIntensity(match.text, type),
+              intensity: this.patterns.getIntensity(type, match.text),
               portrayal: this.excellenceDetector.detectPortrayal(match.text)
             }));
             allMatches.push(...matchesWithIntensity);
@@ -5772,9 +5961,6 @@
           this.stats[match.subCategory.statKey] = (this.stats[match.subCategory.statKey] || 0) + 1;
         }
       }
-      const excellenceCount = Object.values(BiasConfig.EXCELLENCE_TYPES).reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);
-      const problemCount = Object.values(BiasConfig.BIAS_TYPES).reduce((sum, config) => sum + (this.stats[config.statKey] || 0), 0);
-      this.stats.healthScore = this.intensityCalculator.calculateHealthScore(excellenceCount, problemCount);
     }
     resetStats() {
       this.stats = this.createEmptyStats();

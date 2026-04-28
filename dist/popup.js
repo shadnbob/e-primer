@@ -633,40 +633,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 element.textContent = stats[statKey] || 0;
             }
         }
-        
-        // Update health score
-        updateHealthScore(stats.healthScore);
-    }
-    
-    function updateHealthScore(score) {
-        const healthScore = document.getElementById('healthScore');
-        const healthFill = document.getElementById('healthFill');
-        
-        if (healthScore && healthFill) {
-            if (score === undefined || score === null) {
-                healthScore.textContent = '--';
-                healthScore.className = 'health-score';
-                healthFill.style.width = '0%';
-                healthFill.className = 'health-fill';
-            } else {
-                healthScore.textContent = score + '/100';
-                
-                // Update color based on score
-                if (score >= 70) {
-                    healthScore.className = 'health-score health-good';
-                    healthFill.className = 'health-fill health-good';
-                } else if (score >= 40) {
-                    healthScore.className = 'health-score health-medium';
-                    healthFill.className = 'health-fill health-medium';
-                } else {
-                    healthScore.className = 'health-score health-poor';
-                    healthFill.className = 'health-fill health-poor';
-                }
-                
-                // Update bar width
-                healthFill.style.width = score + '%';
-            }
-        }
     }
 
     // Listen for stats updates from content script

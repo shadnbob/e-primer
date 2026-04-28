@@ -2,7 +2,7 @@
 import { BiasConfig } from '../config/BiasConfig.js';
 import { opinionWords, opinionWordsFlat } from './opinion-words.js';
 import { toBeVerbs } from './tobe-verbs.js';
-import { absoluteWords } from './absolute-words.js';
+import { absoluteWords, absoluteWordsFlat } from './absolute-words.js';
 import { passivePatterns } from './passive-patterns.js';
 import { weaselPhrases, weaselWords } from './weasel-phrases.js';
 import { presuppositionMarkers } from './presupposition-markers.js';
@@ -16,10 +16,24 @@ import { gaslightingPhrases, gaslightingWords } from './gaslighting.js';
 import { falseDilemmaPhrases } from './false-dilemma.js';
 import { probabilityLanguage } from './probability-language.js';
 
+// Helper: check if a words entry is intensity-grouped ({ 1: [...], 2: [...] })
+// vs a flat array ([...])
+function isIntensityGrouped(words) {
+    if (Array.isArray(words)) return false;
+    return typeof words === 'object' && (words[1] || words[2] || words[3]);
+}
+
+// Helper: flatten intensity-grouped words into a flat array
+function flattenWords(words) {
+    if (Array.isArray(words)) return words;
+    return Object.values(words).flat();
+}
+
 export class BiasPatterns {
     constructor() {
         this.rawPatterns = this.loadRawPatterns();
         this.subCategoryDictionaries = this.loadSubCategoryDictionaries();
+        this.intensityMaps = this.buildIntensityMaps();
         this.subCategoryMaps = this.buildSubCategoryMaps();
         this.compiledPatterns = new Map();
         this.compileAllPatterns();
@@ -27,9 +41,9 @@ export class BiasPatterns {
 
     loadRawPatterns() {
         return {
-            opinion: opinionWordsFlat, // Use flat array for backward compatibility
+            opinion: opinionWordsFlat,
             tobe: toBeVerbs,
-            absolute: absoluteWords,
+            absolute: absoluteWordsFlat,
             passive: passivePatterns,
             weasel: weaselPhrases,
             presupposition: presuppositionMarkers,
@@ -56,6 +70,58 @@ export class BiasPatterns {
         return dictionaries;
     }
 
+    // Build word→intensity lookup maps from all dictionaries
+    buildIntensityMaps() {
+        const maps = new Map();
+
+        // 1. Flat intensity-grouped dictionaries (e.g. absoluteWords: { 1: [...], 2: [...], 3: [...] })
+        const flatIntensityDicts = {
+            absolute: absoluteWords
+        };
+
+        for (const [type, dict] of Object.entries(flatIntensityDicts)) {
+            if (!isIntensityGrouped(dict)) continue;
+            const wordMap = new Map();
+            for (const [level, words] of Object.entries(dict)) {
+                const intensity = parseInt(level, 10);
+                for (const word of words) {
+                    wordMap.set(word.toLowerCase(), intensity);
+                }
+            }
+            maps.set(type, wordMap);
+        }
+
+        // 2. Sub-categorized dictionaries with intensity-grouped words
+        for (const [type, dict] of this.subCategoryDictionaries) {
+            if (!maps.has(type)) {
+                maps.set(type, new Map());
+            }
+            const wordMap = maps.get(type);
+
+            for (const [subId, entry] of Object.entries(dict)) {
+                const words = entry.words || entry;
+                if (isIntensityGrouped(words)) {
+                    for (const [level, wordList] of Object.entries(words)) {
+                        const intensity = parseInt(level, 10);
+                        for (const word of wordList) {
+                            wordMap.set(word.toLowerCase(), intensity);
+                        }
+                    }
+                }
+                // If words is a flat array, no per-word intensity — getIntensity will return default
+            }
+        }
+
+        return maps;
+    }
+
+    // Get intensity for a matched word. Returns 1, 2, or 3.
+    getIntensity(biasTypeId, matchedWord) {
+        const wordMap = this.intensityMaps.get(biasTypeId);
+        if (!wordMap) return 2; // Default for types without intensity data
+        return wordMap.get(matchedWord.toLowerCase()) || 2;
+    }
+
     buildSubCategoryMaps() {
         const maps = new Map();
         for (const config of Object.values(BiasConfig.BIAS_TYPES)) {
@@ -66,7 +132,9 @@ export class BiasPatterns {
                 for (const [subId, entry] of Object.entries(dictionary)) {
                     const words = Array.isArray(entry) ? entry : entry.words;
                     if (!words) continue;
-                    for (const word of words) {
+                    // Handle both flat arrays and intensity-grouped words
+                    const flatWords = flattenWords(words);
+                    for (const word of flatWords) {
                         wordMap.set(word.toLowerCase(), {
                             id: subId,
                             ...config.subCategories[subId]

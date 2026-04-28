@@ -91,7 +91,6 @@ describe('BiasDetector', () => {
     test('should initialize empty stats', () => {
       expect(detector.stats).toBeDefined();
       expect(typeof detector.stats).toBe('object');
-      expect(detector.stats.healthScore).toBeDefined();
     });
 
     test('should set default analysis mode', () => {
@@ -435,7 +434,6 @@ describe('BiasDetector', () => {
     });
 
     test('should recalculate health score', () => {
-      const originalScore = detector.stats.healthScore;
       
       detector.updateStats({
         type: 'opinion',
@@ -443,8 +441,6 @@ describe('BiasDetector', () => {
         isExcellence: false
       });
       
-      expect(detector.stats.healthScore).toBeDefined();
-      expect(typeof detector.stats.healthScore).toBe('number');
     });
   });
 
@@ -599,7 +595,6 @@ describe('BiasDetector', () => {
       const stats = await detector.analyzeDocument();
       
       expect(stats).toBeDefined();
-      expect(stats.healthScore).toBeDefined();
     });
 
     test('should handle text node processing errors', async () => {
@@ -975,7 +970,6 @@ describe('BiasDetector', () => {
       const stats = await detector.analyzeDocument();
 
       expect(stats).toBeDefined();
-      expect(stats.healthScore).toBe(50);
     });
   });
 

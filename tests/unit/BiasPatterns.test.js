@@ -111,7 +111,7 @@ describe('BiasPatterns', () => {
       Object.values(subCategories).forEach(category => {
         expect(category).toHaveProperty('name');
         expect(category).toHaveProperty('words');
-        expect(Array.isArray(category.words)).toBe(true);
+        expect(typeof category.words).toBe('object');
       });
     });
 
@@ -356,17 +356,70 @@ describe('BiasPatterns', () => {
   describe('Integration with BiasConfig', () => {
     
     test('should support all bias types defined in BiasConfig', () => {
-      // This test ensures BiasPatterns supports all bias types that BiasConfig defines
       const patternTypes = Object.keys(biasPatterns.rawPatterns);
-      
-      // Core bias types that should always be supported
+
       const coreTypes = ['opinion', 'tobe', 'absolute'];
       coreTypes.forEach(type => {
         expect(patternTypes).toContain(type);
       });
-      
-      // Should have a reasonable number of pattern types
+
       expect(patternTypes.length).toBeGreaterThan(10);
+    });
+  });
+
+  describe('Intensity Lookup', () => {
+
+    test('should return correct intensity for absolute words', () => {
+      expect(biasPatterns.getIntensity('absolute', 'any')).toBe(1);
+      expect(biasPatterns.getIntensity('absolute', 'always')).toBe(2);
+      expect(biasPatterns.getIntensity('absolute', 'never')).toBe(2);
+      expect(biasPatterns.getIntensity('absolute', 'absolutely')).toBe(3);
+      expect(biasPatterns.getIntensity('absolute', 'utterly')).toBe(3);
+    });
+
+    test('should return correct intensity for opinion sub-category words', () => {
+      // Certainty words
+      expect(biasPatterns.getIntensity('opinion', 'obviously')).toBe(2);
+      expect(biasPatterns.getIntensity('opinion', 'irrefutably')).toBe(3);
+      // Hedging words
+      expect(biasPatterns.getIntensity('opinion', 'probably')).toBe(1);
+      expect(biasPatterns.getIntensity('opinion', 'maybe')).toBe(1);
+      // Evaluative
+      expect(biasPatterns.getIntensity('opinion', 'good')).toBe(1);
+      expect(biasPatterns.getIntensity('opinion', 'excellent')).toBe(2);
+      expect(biasPatterns.getIntensity('opinion', 'flawless')).toBe(3);
+    });
+
+    test('should return correct intensity for emotional trigger words', () => {
+      expect(biasPatterns.getIntensity('emotional', 'dangerous precedent')).toBe(1);
+      expect(biasPatterns.getIntensity('emotional', 'grave danger')).toBe(2);
+      expect(biasPatterns.getIntensity('emotional', 'doomsday scenario')).toBe(3);
+    });
+
+    test('should return correct intensity for gaslighting words', () => {
+      expect(biasPatterns.getIntensity('gaslighting', 'lighten up')).toBe(1);
+      expect(biasPatterns.getIntensity('gaslighting', "you're overreacting")).toBe(2);
+      expect(biasPatterns.getIntensity('gaslighting', 'that never happened')).toBe(3);
+    });
+
+    test('should return correct intensity for weasel words', () => {
+      expect(biasPatterns.getIntensity('weasel', 'some say')).toBe(1);
+      expect(biasPatterns.getIntensity('weasel', 'sources indicate')).toBe(2);
+      expect(biasPatterns.getIntensity('weasel', 'unnamed sources')).toBe(3);
+    });
+
+    test('should be case insensitive', () => {
+      expect(biasPatterns.getIntensity('absolute', 'ALWAYS')).toBe(2);
+      expect(biasPatterns.getIntensity('opinion', 'Obviously')).toBe(2);
+    });
+
+    test('should return default 2 for types without intensity data', () => {
+      expect(biasPatterns.getIntensity('tobe', 'is')).toBe(2);
+      expect(biasPatterns.getIntensity('passive', 'was done')).toBe(2);
+    });
+
+    test('should return default 2 for unknown words', () => {
+      expect(biasPatterns.getIntensity('absolute', 'xyznonexistent')).toBe(2);
     });
   });
 });

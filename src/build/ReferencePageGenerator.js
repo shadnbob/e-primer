@@ -12,7 +12,7 @@ const dictionaries = {
 
 const flatDictionaries = {
     tobe: require('../dictionaries/tobe-verbs.js').toBeVerbs,
-    absolute: require('../dictionaries/absolute-words.js').absoluteWords,
+    absolute: require('../dictionaries/absolute-words.js').absoluteWordsFlat,
     passive: require('../dictionaries/passive-patterns.js').passivePatterns,
     presupposition: require('../dictionaries/presupposition-markers.js').presuppositionMarkers,
     metaphor: require('../dictionaries/war-metaphors.js').warMetaphors,
@@ -23,6 +23,13 @@ const flatDictionaries = {
 };
 
 class ReferencePageGenerator {
+    // Flatten intensity-grouped words { 1: [...], 2: [...], 3: [...] } into a flat array
+    flattenWords(words) {
+        if (Array.isArray(words)) return words;
+        if (typeof words === 'object') return Object.values(words).flat();
+        return [];
+    }
+
     generate() {
         const categories = BiasConfig.CATEGORIES;
         const biasTypes = BiasConfig.BIAS_TYPES;
@@ -56,7 +63,7 @@ class ReferencePageGenerator {
                 if (dict) {
                     totalSubcategories += Object.keys(config.subCategories).length;
                     for (const sub of Object.values(dict)) {
-                        totalWords += sub.words ? sub.words.length : 0;
+                        totalWords += sub.words ? this.flattenWords(sub.words).length : 0;
                     }
                 }
             } else {
@@ -107,7 +114,7 @@ class ReferencePageGenerator {
         }
 
         const wordCount = hasSubCats && dict
-            ? Object.values(dict).reduce((n, s) => n + (s.words ? s.words.length : 0), 0)
+            ? Object.values(dict).reduce((n, s) => n + (s.words ? this.flattenWords(s.words).length : 0), 0)
             : (flat ? this.expandFlatPatterns(flat).length : 0);
         const subCount = hasSubCats ? Object.keys(config.subCategories).length : 0;
 
@@ -130,7 +137,7 @@ class ReferencePageGenerator {
         let html = '';
         for (const [subId, subMeta] of Object.entries(config.subCategories)) {
             const dictEntry = dict[subId];
-            const words = dictEntry && dictEntry.words ? dictEntry.words : [];
+            const words = dictEntry && dictEntry.words ? this.flattenWords(dictEntry.words) : [];
             html += `
             <details class="subcategory" open>
                 <summary class="subcategory-header">
