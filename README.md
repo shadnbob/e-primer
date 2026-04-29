@@ -109,8 +109,6 @@ Bias detection alone can create cynicism — everything starts looking manipulat
 - **Constructive discourse** — building on others' ideas, acknowledging valid counterpoints
 - **Evidence-based claims** — specific data, methodology references, statistical context
 
-The health score reflects the ratio of excellence markers to problem indicators, giving a quick sense of a document's rhetorical quality.
-
 ### Context-Aware Detection
 
 Many phrases are ambiguous. "It seems" can be weaseling ("it seems like this is true") or genuine scientific hedging ("it seems, based on the data from three independent studies, that..."). The extension includes a context-aware detection system that examines surrounding text to classify ambiguous phrases more accurately, reducing false positives.
@@ -221,7 +219,6 @@ e-primer/
 │   │   ├── ContextAwareDetector.js   # Ambiguous phrase classification
 │   │   ├── DOMProcessor.js           # DOM manipulation and highlighting
 │   │   ├── ExcellenceDetector.js     # Positive pattern detection
-│   │   ├── IntensityCalculator.js    # Severity grading for bias detections
 │   │   ├── HoverContentGenerator.js  # Tooltip content generation
 │   │   ├── PopupManager.js           # Click/hover popup handling
 │   │   └── PerformanceMonitor.js     # Performance tracking
@@ -265,7 +262,7 @@ The extension runs as a content script on every web page. On load:
 6. **Excellence detection** — positive patterns are identified in parallel
 7. **Deduplication** — overlapping matches are resolved, preferring contextual matches and longer spans
 8. **DOM highlighting** — matched text is wrapped in styled `<span>` elements with tooltip data
-9. **Statistics** — match counts and a health score are computed and sent to the popup
+9. **Statistics** — match counts are computed and sent to the popup
 10. **Mutation observation** — a MutationObserver watches for DOM changes and re-analyzes affected nodes
 
 ## Background Reading

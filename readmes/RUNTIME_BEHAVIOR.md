@@ -121,7 +121,7 @@ Changing the mode triggers a full re-analysis via `sendSettingsToContentScript()
 
 ## Stats Flow
 
-Stats are a flat object with keys like `opinionCount`, `toBeCount`, `attributionExcellenceCount`, etc. plus a `healthScore`.
+Stats are a flat object with keys like `opinionCount`, `toBeCount`, `attributionExcellenceCount`, etc.
 
 - Updated incrementally as matches are found during `highlightMatches()`
 - Reset to zero on full re-analysis (via `resetStats()`)

@@ -433,7 +433,7 @@ describe('BiasDetector', () => {
       expect(statsChanged).toBe(true);
     });
 
-    test('should recalculate health score', () => {
+    test('should recalculate stats after update', () => {
       
       detector.updateStats({
         type: 'opinion',
@@ -1019,12 +1019,10 @@ describe('BiasDetector', () => {
 
     test('should reset stats to empty stats', () => {
       detector.stats.opinionCount = 10;
-      detector.stats.healthScore = 75;
 
       detector.resetStats();
 
       expect(detector.stats.opinionCount).toBe(0);
-      expect(detector.stats.healthScore).toBe(50);
     });
   });
 
