@@ -174,6 +174,41 @@ describe('Regressions', () => {
     });
   });
 
+  describe('single-pass text collection', () => {
+    test('collects shadow DOM text without a second element sweep', () => {
+      const host = document.createElement('div');
+      host.attachShadow({ mode: 'open' });
+      host.shadowRoot.innerHTML = '<p>Shadow paragraph with obviously enough text.</p>';
+      document.body.appendChild(host);
+
+      const p = document.createElement('p');
+      p.textContent = 'Light DOM paragraph text.';
+      document.body.appendChild(p);
+
+      const processor = new DOMProcessor();
+      const texts = processor.collectTextNodes(document.body).map(n => n.textContent);
+
+      expect(texts).toContain('Shadow paragraph with obviously enough text.');
+      expect(texts).toContain('Light DOM paragraph text.');
+    });
+
+    test('prunes skipped subtrees wholesale', () => {
+      document.body.innerHTML =
+        '<div data-skip-analysis="true"><p>Text inside a skipped ancestor subtree.</p></div>' +
+        '<script>var ignored = "script text should never surface";</script>' +
+        '<span class="bias-highlight-opinion">our own highlight text</span>' +
+        '<p>Regular collectable text.</p>';
+
+      const processor = new DOMProcessor();
+      const texts = processor.collectTextNodes(document.body).map(n => n.textContent);
+
+      expect(texts).toContain('Regular collectable text.');
+      expect(texts).not.toContain('Text inside a skipped ancestor subtree.');
+      expect(texts.some(t => t.includes('script text'))).toBe(false);
+      expect(texts).not.toContain('our own highlight text');
+    });
+  });
+
   describe('conflict resolution with missing confidence', () => {
     test('contextual match outranks a regular match regardless of order', () => {
       const cad = new ContextAwareDetector();

@@ -15,19 +15,34 @@ export class DOMProcessor {
         this.popupManager = null;
     }
 
-    // Collect all text nodes from a root element
+    // Collect all text nodes from a root element in a single pass. The walker
+    // visits elements too, so skipped subtrees (scripts, popups, our own
+    // highlights) are pruned wholesale, and shadow roots are entered as they
+    // are encountered — no separate querySelectorAll('*') sweep afterwards.
     collectTextNodes(rootNode) {
         const textNodes = [];
+        this._collectTextNodesInto(rootNode, textNodes);
+        return textNodes;
+    }
 
+    _collectTextNodesInto(rootNode, textNodes) {
         const walker = document.createTreeWalker(
             rootNode,
-            NodeFilter.SHOW_TEXT,
+            NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
             {
                 acceptNode: node => {
-                    if (this.shouldSkipNode(node)) {
-                        return NodeFilter.FILTER_REJECT;
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        if (this.shouldSkipElement(node) || this.isOwnHighlight(node)) {
+                            return NodeFilter.FILTER_REJECT; // prune the whole subtree
+                        }
+                        if (node.shadowRoot) {
+                            this._collectTextNodesInto(node.shadowRoot, textNodes);
+                        }
+                        return NodeFilter.FILTER_SKIP; // traverse children, don't emit
                     }
-                    return NodeFilter.FILTER_ACCEPT;
+                    return this.shouldSkipNode(node)
+                        ? NodeFilter.FILTER_REJECT
+                        : NodeFilter.FILTER_ACCEPT;
                 }
             }
         );
@@ -37,10 +52,10 @@ export class DOMProcessor {
             textNodes.push(node);
         }
 
-        // Process Shadow DOM
-        this.processShadowDom(rootNode, textNodes);
-
-        return textNodes;
+        // TreeWalker filters never see the root node itself
+        if (rootNode.nodeType === Node.ELEMENT_NODE && rootNode.shadowRoot) {
+            this._collectTextNodesInto(rootNode.shadowRoot, textNodes);
+        }
     }
 
     shouldSkipNode(node) {
@@ -113,26 +128,6 @@ export class DOMProcessor {
             }
         }
         return false;
-    }
-
-    // Process Shadow DOM elements
-    processShadowDom(rootNode, textNodes) {
-        if (rootNode.nodeType !== Node.ELEMENT_NODE) return;
-
-        // Check for shadow root
-        if (rootNode.shadowRoot) {
-            const shadowTextNodes = this.collectTextNodes(rootNode.shadowRoot);
-            textNodes.push(...shadowTextNodes);
-        }
-
-        // Process children that might have shadow roots
-        const elements = rootNode.querySelectorAll('*');
-        elements.forEach(element => {
-            if (element.shadowRoot) {
-                const shadowTextNodes = this.collectTextNodes(element.shadowRoot);
-                textNodes.push(...shadowTextNodes);
-            }
-        });
     }
 
     // Create a document fragment with highlighted content

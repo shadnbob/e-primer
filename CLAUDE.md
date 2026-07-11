@@ -66,7 +66,7 @@ The project uses a modern ES6 module architecture with esbuild for multi-target 
 - `src/config/`: Configuration management
 - `src/content/`: Content script logic and main detector
 - `src/dictionaries/`: Pattern definitions for each bias type (14 dictionary files + index)
-- `src/popup/`: Popup interface components (popup-dynamic.js entry; SettingsManager.js and PopupGenerator.js derive settings metadata and subcategory toggle markup from BiasConfig; StatsDisplay.js exists but is not wired up yet)
+- `src/popup/`: Popup interface components (popup-dynamic.js entry; SettingsManager.js and PopupGenerator.js derive settings metadata and subcategory toggle markup from BiasConfig; StatsDisplay.js is **unused** — set aside, see its header note)
 - `src/utils/`: Shared utilities and processors
 - `src/build/`: Build-time utilities (StyleGenerator.js, ReferencePageGenerator.js)
 - `docs/`: GitHub Pages site (index.html, reference.html, privacy.html)

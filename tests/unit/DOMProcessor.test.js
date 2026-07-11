@@ -145,7 +145,7 @@ describe('DOMProcessor', () => {
       
       expect(mockDocument.createTreeWalker).toHaveBeenCalledWith(
         rootElement,
-        NodeFilter.SHOW_TEXT,
+        NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
         expect.any(Object)
       );
       expect(textNodes).toEqual([textNode1, textNode2]);
@@ -989,12 +989,13 @@ describe('DOMProcessor', () => {
 
   describe('Shadow DOM Processing', () => {
 
-    test('should not process non-element nodes', () => {
+    test('should not look for shadow roots on non-element roots', () => {
+      // A text-node root has no children and no shadowRoot to descend into
       const textNode = createMockTextNode('test');
-      const textNodes = [];
+      const mockWalker = createMockTreeWalker([]);
+      mockDocument.createTreeWalker.mockReturnValue(mockWalker);
 
-      processor.processShadowDom(textNode, textNodes);
-      expect(textNodes.length).toBe(0);
+      expect(processor.collectTextNodes(textNode)).toEqual([]);
     });
   });
 });

@@ -4363,18 +4363,31 @@
       this.hoverGenerator = new HoverContentGenerator();
       this.popupManager = null;
     }
-    // Collect all text nodes from a root element
+    // Collect all text nodes from a root element in a single pass. The walker
+    // visits elements too, so skipped subtrees (scripts, popups, our own
+    // highlights) are pruned wholesale, and shadow roots are entered as they
+    // are encountered — no separate querySelectorAll('*') sweep afterwards.
     collectTextNodes(rootNode) {
       const textNodes = [];
+      this._collectTextNodesInto(rootNode, textNodes);
+      return textNodes;
+    }
+    _collectTextNodesInto(rootNode, textNodes) {
       const walker = document.createTreeWalker(
         rootNode,
-        NodeFilter.SHOW_TEXT,
+        NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
         {
           acceptNode: (node2) => {
-            if (this.shouldSkipNode(node2)) {
-              return NodeFilter.FILTER_REJECT;
+            if (node2.nodeType === Node.ELEMENT_NODE) {
+              if (this.shouldSkipElement(node2) || this.isOwnHighlight(node2)) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              if (node2.shadowRoot) {
+                this._collectTextNodesInto(node2.shadowRoot, textNodes);
+              }
+              return NodeFilter.FILTER_SKIP;
             }
-            return NodeFilter.FILTER_ACCEPT;
+            return this.shouldSkipNode(node2) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
           }
         }
       );
@@ -4382,8 +4395,9 @@
       while (node = walker.nextNode()) {
         textNodes.push(node);
       }
-      this.processShadowDom(rootNode, textNodes);
-      return textNodes;
+      if (rootNode.nodeType === Node.ELEMENT_NODE && rootNode.shadowRoot) {
+        this._collectTextNodesInto(rootNode.shadowRoot, textNodes);
+      }
     }
     shouldSkipNode(node) {
       if (node.textContent.trim().length <= 0) {
@@ -4429,22 +4443,6 @@
         }
       }
       return false;
-    }
-    // Process Shadow DOM elements
-    processShadowDom(rootNode, textNodes) {
-      if (rootNode.nodeType !== Node.ELEMENT_NODE)
-        return;
-      if (rootNode.shadowRoot) {
-        const shadowTextNodes = this.collectTextNodes(rootNode.shadowRoot);
-        textNodes.push(...shadowTextNodes);
-      }
-      const elements = rootNode.querySelectorAll("*");
-      elements.forEach((element) => {
-        if (element.shadowRoot) {
-          const shadowTextNodes = this.collectTextNodes(element.shadowRoot);
-          textNodes.push(...shadowTextNodes);
-        }
-      });
     }
     // Create a document fragment with highlighted content
     createHighlightedFragment(text, matches) {

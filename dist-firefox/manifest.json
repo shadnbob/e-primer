@@ -5,9 +5,7 @@
   "description": "Detects and highlights biased language patterns using E-Prime principles and advanced linguistic analysis",
   "permissions": [
     "activeTab",
-    "storage",
-    "tabs",
-    "<all_urls>"
+    "storage"
   ],
   "browser_action": {
     "default_popup": "popup.html",
