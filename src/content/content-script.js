@@ -20,12 +20,11 @@ import { getPopupManager } from '../utils/PopupManager.js';
             
             // Initialize popup manager for efficient popup handling
             const popupManager = getPopupManager();
-            console.log('PopupManager initialized');
-            
+
             setupMessageListeners();
             loadSettingsAndStart();
             isInitialized = true;
-            console.log('E-Prime Bias Detector initialized successfully');
+            BiasConfig.debugLog('E-Prime Bias Detector initialized successfully');
         } catch (error) {
             console.error('Failed to initialize Bias Detector:', error);
         }
@@ -50,7 +49,7 @@ import { getPopupManager } from '../utils/PopupManager.js';
         }
 
         function startWithDefaults() {
-            console.log('Starting with default settings');
+            BiasConfig.debugLog('Starting with default settings');
             setTimeout(() => {
                 biasDetector.analyzeDocument();
                 biasDetector.setupMutationObserver();
@@ -137,7 +136,7 @@ import { getPopupManager } from '../utils/PopupManager.js';
 
     // Handle settings update
     async function handleUpdateSettings(request, sendResponse) {
-        console.log('Content script received new settings:', request.settings);
+        if (BiasConfig.DEBUG) console.log('Content script received new settings:', request.settings);
 
         const validatedSettings = BiasConfig.validateSettings(request.settings);
         await biasDetector.updateSettings(validatedSettings);
@@ -154,13 +153,13 @@ import { getPopupManager } from '../utils/PopupManager.js';
     // Handle stats request
     function handleGetStats(sendResponse) {
         const stats = biasDetector.getStats();
-        console.log('Sending stats:', stats);
+        if (BiasConfig.DEBUG) console.log('Sending stats:', stats);
         sendResponse(stats);
     }
 
     // Handle force analyze request - also re-enables analysis
     async function handleForceAnalyze(sendResponse) {
-        console.log('Force analyze requested - enabling analysis');
+        BiasConfig.debugLog('Force analyze requested - enabling analysis');
         
         try {
             // Disconnect observer FIRST to prevent race conditions
@@ -199,7 +198,7 @@ import { getPopupManager } from '../utils/PopupManager.js';
 
     // Handle clear highlights request - also disables analysis
     function handleClearHighlights(sendResponse) {
-        console.log('Clear highlights requested - disabling analysis');
+        BiasConfig.debugLog('Clear highlights requested - disabling analysis');
         
         // Disconnect observer FIRST to prevent mutation-triggered re-analysis
         biasDetector.disconnectObserver();
@@ -256,10 +255,22 @@ import { getPopupManager } from '../utils/PopupManager.js';
         }
     }
 
-    // Error handling for the content script
+    // Error handling for the content script.
+    // Re-initializing tears down every highlight and re-scans the whole
+    // document, so it must only ever run for OUR failures — and only a few
+    // times, in case the failure is persistent.
+    const MAX_REINIT_ATTEMPTS = 3;
+    let reinitAttempts = 0;
+
     function handleError(error) {
         console.error('E-Prime Bias Detector error:', error);
-        
+
+        if (reinitAttempts >= MAX_REINIT_ATTEMPTS) {
+            console.error('E-Prime Bias Detector: giving up after repeated failures');
+            return;
+        }
+        reinitAttempts++;
+
         // Try to recover by reinitializing
         if (biasDetector) {
             try {
@@ -268,20 +279,45 @@ import { getPopupManager } from '../utils/PopupManager.js';
                 console.error('Error during cleanup:', e);
             }
         }
-        
+
         biasDetector = null;
         isInitialized = false;
-        
+
         // Attempt to reinitialize after a delay
         setTimeout(() => {
-            console.log('Attempting to reinitialize Bias Detector...');
+            BiasConfig.debugLog('Attempting to reinitialize Bias Detector...');
             initialize();
         }, 1000);
     }
 
-    // Set up error handling
-    window.addEventListener('error', handleError);
+    // window error/unhandledrejection events fire for the PAGE's own script
+    // errors too (ads, analytics, the site itself). Reacting to those put the
+    // extension in a permanent teardown/re-scan loop on error-heavy sites, so
+    // only handle events attributable to this extension's code.
+    const extensionOrigin = (() => {
+        try {
+            return chrome.runtime.getURL('');
+        } catch (e) {
+            return null;
+        }
+    })();
+
+    function isOwnError(sourceOrStack) {
+        return Boolean(
+            extensionOrigin &&
+            typeof sourceOrStack === 'string' &&
+            sourceOrStack.includes(extensionOrigin)
+        );
+    }
+
+    window.addEventListener('error', (event) => {
+        const stack = event.error && event.error.stack;
+        if (!isOwnError(event.filename) && !isOwnError(stack)) return;
+        handleError(event.error || event.message);
+    });
     window.addEventListener('unhandledrejection', (event) => {
+        const stack = event.reason && event.reason.stack;
+        if (!isOwnError(stack)) return;
         handleError(event.reason);
     });
 

@@ -111,6 +111,23 @@ export class HoverContentGenerator {
         };
     }
     
+    // The generated HTML is assigned via innerHTML, so anything that comes
+    // from the page (matched text, surrounding context) or from the user
+    // (custom group fields, imported JSON) must be escaped
+    escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // Colors land inside style attributes / generated CSS; only accept hex
+    sanitizeColor(color) {
+        return /^#[0-9a-fA-F]{3,8}$/.test(String(color)) ? color : '#e67e22';
+    }
+
     generateHoverContent(match, nearbyMatches = []) {
         if (match.isCustom && match.customGroup) {
             return this._generateCustomHoverContent(match, nearbyMatches);
@@ -147,23 +164,24 @@ export class HoverContentGenerator {
         }
         
         // Quoted text
-        content += `<div class="hover-card-text">"${match.text}"</div>`;
-        
+        content += `<div class="hover-card-text">"${this.escapeHtml(match.text)}"</div>`;
+
         // Contextual reasoning section (prioritized)
         if (isContextual) {
             const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : 'Unknown';
-            
+
             // Show the analyzed context if available
             let contextDisplay = '';
             if (match.context && match.context.trim()) {
-                // Highlight the matched phrase within the context
-                const contextText = match.context.trim();
-                const matchedPhrase = match.text;
+                // Escape first, then highlight the (equally escaped) matched
+                // phrase within the context so the <mark> tags survive
+                const contextText = this.escapeHtml(match.context.trim());
+                const matchedPhrase = this.escapeHtml(match.text);
                 const highlightedContext = contextText.replace(
                     new RegExp(`(${matchedPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'),
                     '<mark class="context-highlight">$1</mark>'
                 );
-                
+
                 contextDisplay = `
                     <div class="analyzed-context">
                         <div class="context-label">Analyzed text:</div>
@@ -171,13 +189,13 @@ export class HoverContentGenerator {
                     </div>
                 `;
             }
-            
+
             content += `<div class="hover-card-contextual-reasoning">
                 <div class="hover-card-section">
                     <div class="hover-card-section-title">Context Analysis:</div>
                     <div class="hover-card-section-content context-reasoning">
                         ${contextDisplay}
-                        <div class="reasoning-explanation">${match.contextReasoning}</div>
+                        <div class="reasoning-explanation">${this.escapeHtml(match.contextReasoning)}</div>
                         <div class="confidence-indicator">
                             <span class="confidence-label">Confidence:</span>
                             <span class="confidence-value">${confidencePercentage}%</span>
@@ -316,14 +334,14 @@ export class HoverContentGenerator {
         
         // Portrayal information for problems
         if (!isExcellence && match.portrayal) {
-            content += `<div class="hover-card-portrayal">Portrayal: ${match.portrayal.valence} (${match.portrayal.type})</div>`;
+            content += `<div class="hover-card-portrayal">Portrayal: ${this.escapeHtml(match.portrayal.valence)} (${this.escapeHtml(match.portrayal.type)})</div>`;
         }
-        
+
         // Nearby context
         if (nearbyMatches.length > 0) {
-            content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map(m => m.type).join(', ')}</div>`;
+            content += `<div class="hover-card-context">Nearby: ${this.escapeHtml(nearbyMatches.map(m => m.type).join(', '))}</div>`;
         }
-        
+
         content += '</div>';
         return content;
     }
@@ -339,36 +357,36 @@ export class HoverContentGenerator {
         const hc = group.hoverContent || {};
 
         let content = `<div class="hover-card hover-card-problem">`;
-        content += `<div class="hover-card-header" style="border-left: 3px solid ${group.color}">`;
-        content += `${group.name}`;
+        content += `<div class="hover-card-header" style="border-left: 3px solid ${this.sanitizeColor(group.color)}">`;
+        content += `${this.escapeHtml(group.name)}`;
         content += `<span class="intensity-badge intensity-2">Custom</span>`;
         content += `</div>`;
-        content += `<div class="hover-card-text">"${match.text}"</div>`;
+        content += `<div class="hover-card-text">"${this.escapeHtml(match.text)}"</div>`;
 
         if (hc.basicTip) {
-            content += `<div class="hover-card-reason">${hc.basicTip}</div>`;
+            content += `<div class="hover-card-reason">${this.escapeHtml(hc.basicTip)}</div>`;
         }
 
         content += `<div class="hover-card-expanded">`;
         if (hc.whenConcerning) {
             content += `<div class="hover-card-section">`;
             content += `<div class="hover-card-section-title">When to be concerned:</div>`;
-            content += `<div class="hover-card-section-content">${hc.whenConcerning}</div>`;
+            content += `<div class="hover-card-section-content">${this.escapeHtml(hc.whenConcerning)}</div>`;
             content += `</div>`;
         }
         if (hc.whenAcceptable) {
             content += `<div class="hover-card-section">`;
             content += `<div class="hover-card-section-title">When it's acceptable:</div>`;
-            content += `<div class="hover-card-section-content">${hc.whenAcceptable}</div>`;
+            content += `<div class="hover-card-section-content">${this.escapeHtml(hc.whenAcceptable)}</div>`;
             content += `</div>`;
         }
         if (hc.suggestion) {
-            content += `<div class="hover-card-suggestion">${hc.suggestion}</div>`;
+            content += `<div class="hover-card-suggestion">${this.escapeHtml(hc.suggestion)}</div>`;
         }
         content += `</div>`;
 
         if (nearbyMatches.length > 0) {
-            content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map(m => m.type).join(', ')}</div>`;
+            content += `<div class="hover-card-context">Nearby: ${this.escapeHtml(nearbyMatches.map(m => m.type).join(', '))}</div>`;
         }
 
         content += '</div>';

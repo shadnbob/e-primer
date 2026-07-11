@@ -657,6 +657,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Group names/colors are user input (and can come from imported JSON
+    // files), so they must not land in innerHTML unescaped
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function sanitizeColor(color) {
+        return /^#[0-9a-fA-F]{6}$/.test(String(color)) ? color : '#e67e22';
+    }
+
     function renderCustomGroupToggles() {
         const container = document.getElementById('customGroupToggles');
         if (!container) return;
@@ -667,14 +682,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         container.innerHTML = customGroups.map(group => `
-            <div class="toggle-container" data-custom-group="${group.id}">
-                <div class="toggle-label" style="cursor: pointer;" data-edit-group="${group.id}">
-                    <div class="color-indicator" style="background-color: ${group.color};"></div>
-                    <span>${group.name}</span>
+            <div class="toggle-container" data-custom-group="${escapeHtml(group.id)}">
+                <div class="toggle-label" style="cursor: pointer;" data-edit-group="${escapeHtml(group.id)}">
+                    <div class="color-indicator" style="background-color: ${sanitizeColor(group.color)};"></div>
+                    <span>${escapeHtml(group.name)}</span>
                     <span style="font-size: 10px; color: #999; margin-left: 4px;">(${group.words.length})</span>
                 </div>
                 <label class="toggle">
-                    <input type="checkbox" data-custom-toggle="${group.id}" data-setting-key="${group.settingKey}" ${group.enabled ? 'checked' : ''}>
+                    <input type="checkbox" data-custom-toggle="${escapeHtml(group.id)}" data-setting-key="${escapeHtml(group.settingKey)}" ${group.enabled ? 'checked' : ''}>
                     <span class="slider"></span>
                 </label>
             </div>
@@ -872,8 +887,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const id = 'custom_' + slug + '_' + Date.now() + '_' + imported;
                     customGroups.push({
                         id,
-                        name: g.name,
-                        color: g.color || '#e67e22',
+                        name: String(g.name),
+                        color: sanitizeColor(g.color),
                         description: g.description || '',
                         enabled: true,
                         words: (g.words || []).slice(0, 1000),

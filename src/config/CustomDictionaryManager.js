@@ -7,6 +7,15 @@ export class CustomDictionaryManager {
     static SCHEMA_VERSION = 1;
     static ID_PREFIX = 'custom_';
     static CSS_CLASS_PREFIX = 'bias-highlight-custom-';
+    static DEFAULT_COLOR = '#e67e22';
+
+    // Colors are interpolated into generated CSS (with an alpha suffix) and
+    // style attributes; imported JSON is untrusted, so only accept #rrggbb
+    static sanitizeColor(color) {
+        return /^#[0-9a-fA-F]{6}$/.test(String(color))
+            ? color
+            : CustomDictionaryManager.DEFAULT_COLOR;
+    }
 
     constructor() {
         this.groups = new Map();
@@ -61,7 +70,7 @@ export class CustomDictionaryManager {
         const group = {
             id,
             name: name.trim(),
-            color,
+            color: CustomDictionaryManager.sanitizeColor(color),
             description: description.trim(),
             enabled: true,
             words: words.slice(0, CustomDictionaryManager.MAX_WORDS_PER_GROUP),
@@ -90,7 +99,7 @@ export class CustomDictionaryManager {
         if (!group) throw new Error(`Group not found: ${id}`);
 
         if (updates.name !== undefined) group.name = updates.name.trim();
-        if (updates.color !== undefined) group.color = updates.color;
+        if (updates.color !== undefined) group.color = CustomDictionaryManager.sanitizeColor(updates.color);
         if (updates.description !== undefined) group.description = updates.description.trim();
         if (updates.enabled !== undefined) group.enabled = updates.enabled;
         if (updates.words !== undefined) {
@@ -212,15 +221,17 @@ export class CustomDictionaryManager {
     generateCSS() {
         let css = '';
         for (const group of this.groups.values()) {
+            // Re-sanitize on output: stored groups may predate validation
+            const color = CustomDictionaryManager.sanitizeColor(group.color);
             css += `
 .${group.className} {
-    background-color: ${group.color}33;
-    border-bottom: 2px solid ${group.color};
+    background-color: ${color}33;
+    border-bottom: 2px solid ${color};
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 .${group.className}:hover {
-    background-color: ${group.color}55;
+    background-color: ${color}55;
 }
 `;
         }

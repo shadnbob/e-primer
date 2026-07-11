@@ -1519,11 +1519,14 @@ export class BiasConfig {
 
     static validateSettings(settings) {
         const validated = { ...this.getDefaultSettings() };
-        
+
         // Validate each setting
         for (const [key, value] of Object.entries(settings)) {
             if (key === 'enableAnalysis' || key === 'analysisMode') {
                 validated[key] = key === 'analysisMode' ? value : Boolean(value);
+            } else if (key.startsWith('highlight_custom_')) {
+                // Custom dictionary group toggles (settingKey = `highlight_${ID_PREFIX}...`)
+                validated[key] = Boolean(value);
             } else if (Object.values(this.BIAS_TYPES).some(config => {
                         if (config.settingKey === key) return true;
                         if (config.subCategories) {
@@ -1535,7 +1538,7 @@ export class BiasConfig {
                 validated[key] = Boolean(value);
             }
         }
-        
+
         return validated;
     }
 
@@ -1547,6 +1550,16 @@ export class BiasConfig {
         MIN_SIGNIFICANT_TEXT: 5,
         UI_UPDATE_INTERVAL: 200
     };
+
+    // Development logging. Keep false in production builds: the content script
+    // runs on every page, and these logs (and their argument evaluation) are
+    // pure overhead for users. Expensive log arguments must be wrapped in
+    // `if (BiasConfig.DEBUG)` at the call site, not passed through debugLog.
+    static DEBUG = false;
+
+    static debugLog(...args) {
+        if (this.DEBUG) console.log(...args);
+    }
 }
 
 // Export specific configurations for easy access

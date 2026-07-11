@@ -24,7 +24,10 @@ export class BiasDetector {
 
         this.customDictionary = new CustomDictionaryManager();
         this._customReady = false;
-        this._initCustomDictionaries();
+        this._customReadyPromise = this._initCustomDictionaries();
+
+        // Serializes analyzeDocument runs; see analyzeDocument()
+        this._analysisQueue = null;
     }
 
     async _initCustomDictionaries() {
@@ -114,18 +117,30 @@ export class BiasDetector {
         return matches;
     }
 
-    // Main analysis method - now more efficient
+    // Main analysis method. Runs are serialized: concurrent callers queue up
+    // instead of interleaving DOM walks (which also broke the performance
+    // timer's start/end pairing).
     async analyzeDocument() {
+        const run = () => this._runAnalysis();
+        this._analysisQueue = this._analysisQueue ? this._analysisQueue.then(run, run) : run();
+        return this._analysisQueue;
+    }
+
+    async _runAnalysis() {
         if (!this.settings.enableAnalysis) {
             return this.createEmptyStats();
         }
 
+        // First run may race the async custom-dictionary load; wait so custom
+        // groups are included from the very first analysis
+        await this._customReadyPromise;
+
         this.performanceMonitor.start('document-analysis');
-        
+
         // Disconnect observer during analysis to prevent mutation feedback loops
         const hadObserver = !!this.observer;
         this.disconnectObserver();
-        
+
         try {
             // Clear existing highlights first
             this.domProcessor.removeAllHighlights();
@@ -133,7 +148,7 @@ export class BiasDetector {
 
             // Get text nodes efficiently
             const textNodes = this.domProcessor.collectTextNodes(document.body);
-            console.log(`Processing ${textNodes.length} text nodes`);
+            BiasConfig.debugLog(`Processing ${textNodes.length} text nodes`);
 
             // Process in batches for better performance
             const batchSize = BiasConfig.PERFORMANCE.BATCH_SIZE;
@@ -148,7 +163,7 @@ export class BiasDetector {
             }
 
             const duration = this.performanceMonitor.end('document-analysis');
-            console.log(`Analysis completed in ${duration.toFixed(2)}ms`);
+            BiasConfig.debugLog(`Analysis completed in ${duration.toFixed(2)}ms`);
             
             // Restore observer if it was previously connected
             if (hadObserver) {
@@ -197,7 +212,7 @@ export class BiasDetector {
 
         // Run context-aware detection once for all modes
         const contextualMatches = this.contextAwareDetector.detectAll(text);
-        if (contextualMatches.length > 0) {
+        if (BiasConfig.DEBUG && contextualMatches.length > 0) {
             console.log('[BiasDetector] Contextual matches found:', contextualMatches.map(m => ({
                 text: m.text,
                 classification: m.classification,
@@ -256,7 +271,7 @@ export class BiasDetector {
                         isNeutralOverride: true
                     };
                     allMatches.push(standardMatch);
-                    console.log('[BiasDetector] Added neutral override for:', match.text);
+                    BiasConfig.debugLog('[BiasDetector] Added neutral override for:', match.text);
                 }
             }
         }
@@ -292,24 +307,24 @@ export class BiasDetector {
         }
 
         if (allMatches.length > 0) {
-            console.log('[BiasDetector] All matches before filtering:', allMatches.map(m => `"${m.text}" -> ${m.type} (contextual: ${m.isContextual})`));
-            
-            // Filter out neutral matches since they don't need highlighting
-            const matchesToHighlight = allMatches.filter(match => match.type !== 'neutral');
-            
-            console.log('[BiasDetector] Matches to highlight:', matchesToHighlight.length);
-            
-            if (matchesToHighlight.length > 0) {
-                this.highlightMatches(node, matchesToHighlight);
+            if (BiasConfig.DEBUG) {
+                console.log('[BiasDetector] All matches:', allMatches.map(m => `"${m.text}" -> ${m.type} (contextual: ${m.isContextual})`));
             }
+
+            // Neutral matches must flow into deduplication so they can knock out
+            // overlapping regular matches (false-positive suppression); they are
+            // dropped from the highlight list afterwards.
+            this.highlightMatches(node, allMatches);
         }
     }
 
     // Highlight matches in a text node
     highlightMatches(node, matches) {
-        // Sort matches by index and remove overlaps
-        const sortedMatches = this.deduplicateMatches(matches);
-        
+        // Sort matches by index and remove overlaps; neutral winners suppress
+        // whatever they overlapped but never render as highlights themselves
+        const sortedMatches = this.deduplicateMatches(matches)
+            .filter(match => match.type !== 'neutral');
+
         if (sortedMatches.length === 0) return;
 
         // Create document fragment with highlighted content
@@ -350,30 +365,24 @@ export class BiasDetector {
 
         // Handle neutral overrides first - remove any regular matches that overlap with neutral contextual matches
         const neutralOverrides = matches.filter(m => m.isNeutralOverride);
-        console.log('[BiasDetector] Neutral overrides found:', neutralOverrides.length);
         let filteredMatches = matches;
-        
+
         for (const neutralMatch of neutralOverrides) {
-            console.log('[BiasDetector] Processing neutral override for:', neutralMatch.text);
-            const beforeCount = filteredMatches.length;
-            
             // Remove any regular (non-contextual) matches that overlap with this neutral match
             filteredMatches = filteredMatches.filter(match => {
                 if (match.isContextual || match === neutralMatch) return true;
-                
+
                 // Check for overlap
                 const matchEnd = match.index + match.length;
                 const neutralEnd = neutralMatch.index + neutralMatch.length;
                 const hasOverlap = !(matchEnd <= neutralMatch.index || neutralEnd <= match.index);
-                
+
                 if (hasOverlap) {
-                    console.log('[BiasDetector] Removing overlapping match:', match.text, match.type);
+                    BiasConfig.debugLog('[BiasDetector] Neutral override suppressed:', match.text, match.type);
                 }
-                
+
                 return !hasOverlap; // Keep if no overlap
             });
-            
-            console.log('[BiasDetector] Filtered matches:', beforeCount, '->', filteredMatches.length);
         }
         
         // Now resolve conflicts using context-aware detector for remaining matches
@@ -450,7 +459,7 @@ export class BiasDetector {
         // Check excellence type detector changes
         for (const [key, config] of Object.entries(BiasConfig.EXCELLENCE_TYPES)) {
             const settingKey = config.settingKey;
-            
+
             if (oldSettings[settingKey] !== newSettings[settingKey]) {
                 if (!newSettings[settingKey]) {
                     // Excellence detector disabled - remove its highlights
@@ -460,6 +469,24 @@ export class BiasDetector {
                     this.setupMutationObserver();
                 } else {
                     // Excellence detector enabled - need reanalysis
+                    needsReanalysis = true;
+                }
+            }
+        }
+
+        // Check custom dictionary group changes
+        for (const group of this.customDictionary.getAllGroups()) {
+            const settingKey = group.settingKey;
+
+            if (oldSettings[settingKey] !== newSettings[settingKey]) {
+                if (newSettings[settingKey] === false) {
+                    // Custom group disabled - remove its highlights
+                    this.disconnectObserver();
+                    this.domProcessor.removeCustomHighlights(group.className);
+                    this.stats[group.statKey] = 0;
+                    this.setupMutationObserver();
+                } else {
+                    // Custom group enabled - need reanalysis
                     needsReanalysis = true;
                 }
             }
@@ -623,7 +650,20 @@ export class BiasDetector {
             if (this.domProcessor.isOwnHighlight(mutation.target)) {
                 return false;
             }
-            
+
+            // In-place text edits (observer subscribes to characterData);
+            // the target is a text node, so element checks below don't apply
+            if (mutation.type === 'characterData') {
+                const parent = mutation.target.parentNode;
+                if (!parent || this.domProcessor.isOwnHighlight(parent)) {
+                    return false;
+                }
+                if (parent.closest && parent.closest('.bias-popup, [data-e-prime-popup]')) {
+                    return false;
+                }
+                return this.domProcessor.isSignificantContent(mutation.target);
+            }
+
             // Skip popup-related mutations
             if (mutation.target.classList) {
                 if (mutation.target.classList.contains('bias-popup') ||
@@ -663,8 +703,8 @@ export class BiasDetector {
     }
 
     async handleContentChange(mutations) {
-        console.log('Content changed, processing updates...');
-        
+        BiasConfig.debugLog('Content changed, processing updates...');
+
         // Extract only the changed nodes for processing
         const changedNodes = this.domProcessor.extractChangedTextNodes(mutations);
         

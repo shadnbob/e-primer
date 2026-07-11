@@ -224,7 +224,18 @@ export class PopupManager {
             subCategory: element.dataset.subCategory ? JSON.parse(element.dataset.subCategory) : null,
             portrayal: element.dataset.portrayal ? JSON.parse(element.dataset.portrayal) : null
         };
-        
+
+        // Custom-group highlights carry their group payload in the DOM;
+        // without it the generator would fall back to a generic bias card
+        if (element.dataset.customGroupData) {
+            try {
+                matchData.customGroup = JSON.parse(element.dataset.customGroupData);
+                matchData.isCustom = true;
+            } catch (e) {
+                console.warn('Invalid custom group data on highlight:', e?.message ?? String(e));
+            }
+        }
+
         return matchData;
     }
     

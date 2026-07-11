@@ -1490,6 +1490,8 @@
       for (const [key, value] of Object.entries(settings)) {
         if (key === "enableAnalysis" || key === "analysisMode") {
           validated[key] = key === "analysisMode" ? value : Boolean(value);
+        } else if (key.startsWith("highlight_custom_")) {
+          validated[key] = Boolean(value);
         } else if (Object.values(this.BIAS_TYPES).some((config) => {
           if (config.settingKey === key)
             return true;
@@ -1511,6 +1513,15 @@
       MIN_SIGNIFICANT_TEXT: 5,
       UI_UPDATE_INTERVAL: 200
     };
+    // Development logging. Keep false in production builds: the content script
+    // runs on every page, and these logs (and their argument evaluation) are
+    // pure overhead for users. Expensive log arguments must be wrapped in
+    // `if (BiasConfig.DEBUG)` at the call site, not passed through debugLog.
+    static DEBUG = false;
+    static debugLog(...args) {
+      if (this.DEBUG)
+        console.log(...args);
+    }
   };
   var BIAS_TYPES = BiasConfig.BIAS_TYPES;
   var CATEGORIES = BiasConfig.CATEGORIES;
@@ -3773,6 +3784,16 @@
         }
       };
     }
+    // The generated HTML is assigned via innerHTML, so anything that comes
+    // from the page (matched text, surrounding context) or from the user
+    // (custom group fields, imported JSON) must be escaped
+    escapeHtml(value) {
+      return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+    // Colors land inside style attributes / generated CSS; only accept hex
+    sanitizeColor(color) {
+      return /^#[0-9a-fA-F]{3,8}$/.test(String(color)) ? color : "#e67e22";
+    }
     generateHoverContent(match, nearbyMatches = []) {
       if (match.isCustom && match.customGroup) {
         return this._generateCustomHoverContent(match, nearbyMatches);
@@ -3803,13 +3824,13 @@
                 </div>
             `;
       }
-      content += `<div class="hover-card-text">"${match.text}"</div>`;
+      content += `<div class="hover-card-text">"${this.escapeHtml(match.text)}"</div>`;
       if (isContextual) {
         const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : "Unknown";
         let contextDisplay = "";
         if (match.context && match.context.trim()) {
-          const contextText = match.context.trim();
-          const matchedPhrase = match.text;
+          const contextText = this.escapeHtml(match.context.trim());
+          const matchedPhrase = this.escapeHtml(match.text);
           const highlightedContext = contextText.replace(
             new RegExp(`(${matchedPhrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi"),
             '<mark class="context-highlight">$1</mark>'
@@ -3826,7 +3847,7 @@
                     <div class="hover-card-section-title">Context Analysis:</div>
                     <div class="hover-card-section-content context-reasoning">
                         ${contextDisplay}
-                        <div class="reasoning-explanation">${match.contextReasoning}</div>
+                        <div class="reasoning-explanation">${this.escapeHtml(match.contextReasoning)}</div>
                         <div class="confidence-indicator">
                             <span class="confidence-label">Confidence:</span>
                             <span class="confidence-value">${confidencePercentage}%</span>
@@ -3941,10 +3962,10 @@
         }
       }
       if (!isExcellence && match.portrayal) {
-        content += `<div class="hover-card-portrayal">Portrayal: ${match.portrayal.valence} (${match.portrayal.type})</div>`;
+        content += `<div class="hover-card-portrayal">Portrayal: ${this.escapeHtml(match.portrayal.valence)} (${this.escapeHtml(match.portrayal.type)})</div>`;
       }
       if (nearbyMatches.length > 0) {
-        content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map((m) => m.type).join(", ")}</div>`;
+        content += `<div class="hover-card-context">Nearby: ${this.escapeHtml(nearbyMatches.map((m) => m.type).join(", "))}</div>`;
       }
       content += "</div>";
       return content;
@@ -3957,33 +3978,33 @@
       const group = match.customGroup;
       const hc = group.hoverContent || {};
       let content = `<div class="hover-card hover-card-problem">`;
-      content += `<div class="hover-card-header" style="border-left: 3px solid ${group.color}">`;
-      content += `${group.name}`;
+      content += `<div class="hover-card-header" style="border-left: 3px solid ${this.sanitizeColor(group.color)}">`;
+      content += `${this.escapeHtml(group.name)}`;
       content += `<span class="intensity-badge intensity-2">Custom</span>`;
       content += `</div>`;
-      content += `<div class="hover-card-text">"${match.text}"</div>`;
+      content += `<div class="hover-card-text">"${this.escapeHtml(match.text)}"</div>`;
       if (hc.basicTip) {
-        content += `<div class="hover-card-reason">${hc.basicTip}</div>`;
+        content += `<div class="hover-card-reason">${this.escapeHtml(hc.basicTip)}</div>`;
       }
       content += `<div class="hover-card-expanded">`;
       if (hc.whenConcerning) {
         content += `<div class="hover-card-section">`;
         content += `<div class="hover-card-section-title">When to be concerned:</div>`;
-        content += `<div class="hover-card-section-content">${hc.whenConcerning}</div>`;
+        content += `<div class="hover-card-section-content">${this.escapeHtml(hc.whenConcerning)}</div>`;
         content += `</div>`;
       }
       if (hc.whenAcceptable) {
         content += `<div class="hover-card-section">`;
         content += `<div class="hover-card-section-title">When it's acceptable:</div>`;
-        content += `<div class="hover-card-section-content">${hc.whenAcceptable}</div>`;
+        content += `<div class="hover-card-section-content">${this.escapeHtml(hc.whenAcceptable)}</div>`;
         content += `</div>`;
       }
       if (hc.suggestion) {
-        content += `<div class="hover-card-suggestion">${hc.suggestion}</div>`;
+        content += `<div class="hover-card-suggestion">${this.escapeHtml(hc.suggestion)}</div>`;
       }
       content += `</div>`;
       if (nearbyMatches.length > 0) {
-        content += `<div class="hover-card-context">Nearby: ${nearbyMatches.map((m) => m.type).join(", ")}</div>`;
+        content += `<div class="hover-card-context">Nearby: ${this.escapeHtml(nearbyMatches.map((m) => m.type).join(", "))}</div>`;
       }
       content += "</div>";
       return content;
@@ -4178,6 +4199,14 @@
         subCategory: element.dataset.subCategory ? JSON.parse(element.dataset.subCategory) : null,
         portrayal: element.dataset.portrayal ? JSON.parse(element.dataset.portrayal) : null
       };
+      if (element.dataset.customGroupData) {
+        try {
+          matchData.customGroup = JSON.parse(element.dataset.customGroupData);
+          matchData.isCustom = true;
+        } catch (e) {
+          console.warn("Invalid custom group data on highlight:", e?.message ?? String(e));
+        }
+      }
       return matchData;
     }
     updatePopupStyling(matchData) {
@@ -4533,6 +4562,12 @@
       } else if (match.isCustom && match.customGroup) {
         tooltipText = `Custom: ${match.customGroup.name}`;
         spanElement.setAttribute("data-custom-group", match.customGroup.id);
+        spanElement.setAttribute("data-custom-group-data", JSON.stringify({
+          id: match.customGroup.id,
+          name: match.customGroup.name,
+          color: match.customGroup.color,
+          hoverContent: match.customGroup.hoverContent
+        }));
       } else if (match.isExcellence) {
         tooltipText = match.tooltip || this.getExcellenceTooltipText(match.type);
       } else {
@@ -4545,14 +4580,20 @@
     showContextMenu(event, match) {
       console.warn("showContextMenu is deprecated - popup handling now managed by PopupManager");
     }
-    // Remove all bias highlights
+    // Remove all bias highlights (built-in, excellence, and custom groups)
     removeAllHighlights() {
       const selector = Object.values(this.getHighlightSelectors()).join(", ");
+      this.removeHighlightsBySelector(selector);
+    }
+    // Shared unwrap logic: replace matching highlight spans with plain text
+    removeHighlightsBySelector(selector) {
       const highlights = document.querySelectorAll(selector);
       this.processedParents.clear();
       highlights.forEach((highlight) => {
         this.cleanupHoverElements(highlight);
         const parent = highlight.parentNode;
+        if (!parent)
+          return;
         const textNode = document.createTextNode(highlight.textContent);
         parent.replaceChild(textNode, highlight);
         this.processedParents.add(parent);
@@ -4576,70 +4617,36 @@
         element.removeAttribute("data-context");
         element.removeAttribute("data-sub-category");
         element.removeAttribute("data-portrayal");
+        element.removeAttribute("data-custom-group");
+        element.removeAttribute("data-custom-group-data");
       }
     }
     // Remove specific excellence type highlights
     removeExcellenceHighlights(type) {
-      const selector = `.${this.excellenceClassPrefix}${type}`;
-      const highlights = document.querySelectorAll(selector);
-      this.processedParents.clear();
-      highlights.forEach((highlight) => {
-        this.cleanupHoverElements(highlight);
-        const parent = highlight.parentNode;
-        const textNode = document.createTextNode(highlight.textContent);
-        parent.replaceChild(textNode, highlight);
-        this.processedParents.add(parent);
-      });
-      this.processedParents.forEach((parent) => {
-        if (parent && parent.normalize) {
-          parent.normalize();
-        }
-      });
-      this.processedParents.clear();
+      this.removeHighlightsBySelector(`.${this.excellenceClassPrefix}${type}`);
     }
     // Remove specific type of highlights
     removeSpecificHighlights(type) {
-      const selector = `.${this.highlightClassPrefix}${type}`;
-      const highlights = document.querySelectorAll(selector);
-      this.processedParents.clear();
-      highlights.forEach((highlight) => {
-        this.cleanupHoverElements(highlight);
-        const parent = highlight.parentNode;
-        const textNode = document.createTextNode(highlight.textContent);
-        parent.replaceChild(textNode, highlight);
-        this.processedParents.add(parent);
-      });
-      this.processedParents.forEach((parent) => {
-        if (parent && parent.normalize) {
-          parent.normalize();
-        }
-      });
-      this.processedParents.clear();
+      this.removeHighlightsBySelector(`.${this.highlightClassPrefix}${type}`);
     }
+    // Remove highlights of one custom group (className comes from the group config)
+    removeCustomHighlights(className) {
+      this.removeHighlightsBySelector(`.${className}`);
+    }
+    // Built from BiasConfig so new bias/excellence types are covered automatically.
+    // Custom-group spans always have their class attribute starting with the
+    // custom prefix (className is assigned before any intensity class is added),
+    // so a single attribute selector covers every group.
     getHighlightSelectors() {
-      return {
-        // Bias selectors
-        opinion: `.${this.highlightClassPrefix}opinion`,
-        tobe: `.${this.highlightClassPrefix}tobe`,
-        absolute: `.${this.highlightClassPrefix}absolute`,
-        passive: `.${this.highlightClassPrefix}passive`,
-        weasel: `.${this.highlightClassPrefix}weasel`,
-        presupposition: `.${this.highlightClassPrefix}presupposition`,
-        metaphor: `.${this.highlightClassPrefix}metaphor`,
-        minimizer: `.${this.highlightClassPrefix}minimizer`,
-        maximizer: `.${this.highlightClassPrefix}maximizer`,
-        falsebalance: `.${this.highlightClassPrefix}falsebalance`,
-        euphemism: `.${this.highlightClassPrefix}euphemism`,
-        emotional: `.${this.highlightClassPrefix}emotional`,
-        gaslighting: `.${this.highlightClassPrefix}gaslighting`,
-        falsedilemma: `.${this.highlightClassPrefix}falsedilemma`,
-        // Excellence selectors
-        attribution: `.${this.excellenceClassPrefix}attribution`,
-        nuance: `.${this.excellenceClassPrefix}nuance`,
-        transparency: `.${this.excellenceClassPrefix}transparency`,
-        discourse: `.${this.excellenceClassPrefix}discourse`,
-        evidence: `.${this.excellenceClassPrefix}evidence`
-      };
+      const selectors = {};
+      for (const config of Object.values(BiasConfig.BIAS_TYPES)) {
+        selectors[config.id] = `.${this.highlightClassPrefix}${config.id}`;
+      }
+      for (const config of Object.values(BiasConfig.EXCELLENCE_TYPES)) {
+        selectors[config.id] = `.${this.excellenceClassPrefix}${config.id}`;
+      }
+      selectors.custom = `span[class^="${this.customClassPrefix}"]`;
+      return selectors;
     }
     // Check if content change is significant enough to reprocess
     isSignificantContent(node) {
@@ -4659,6 +4666,14 @@
         if (this.isOwnHighlight(mutation.target)) {
           return;
         }
+        if (mutation.type === "characterData") {
+          const node = mutation.target;
+          const parent = node.parentNode;
+          if (node.nodeType === Node.TEXT_NODE && parent && !this.isOwnHighlight(parent) && !this.shouldSkipElement(parent) && node.textContent.trim().length > 5) {
+            changedNodes.push(node);
+          }
+          return;
+        }
         Array.from(mutation.addedNodes).forEach((node) => {
           if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 5) {
             changedNodes.push(node);
@@ -4668,7 +4683,7 @@
           }
         });
       });
-      return changedNodes;
+      return Array.from(new Set(changedNodes));
     }
     // Count current highlights for stats
     countHighlights() {
@@ -4721,7 +4736,7 @@
       metric.averageTime = metric.totalTime / metric.count;
       metric.minTime = Math.min(metric.minTime, duration);
       metric.maxTime = Math.max(metric.maxTime, duration);
-      console.log(`Performance: ${label} completed in ${duration.toFixed(2)}ms`);
+      BiasConfig.debugLog(`Performance: ${label} completed in ${duration.toFixed(2)}ms`);
       return duration;
     }
     getMetrics() {
@@ -5108,7 +5123,10 @@
           matches.push({
             index,
             length: phrase.length,
-            text: phrase,
+            // Slice from the document, not the dictionary key: this text
+            // replaces the page's text when highlighted, so it must keep
+            // the original casing
+            text: text.substr(index, phrase.length),
             classification: classification.type,
             confidence: classification.confidence,
             reasoning: classification.reasoning,
@@ -5196,10 +5214,12 @@
       }
       return overlapping;
     }
-    // Choose the best match from conflicting matches
+    // Choose the best match from conflicting matches. Regular (non-contextual)
+    // matches carry no confidence; treat them as 0.5 so any contextual match
+    // above the neutral baseline outranks them regardless of array order.
     chooseBestMatch(matches) {
       return matches.reduce((best, current) => {
-        if (current.confidence > best.confidence) {
+        if ((current.confidence ?? 0.5) > (best.confidence ?? 0.5)) {
           return current;
         }
         return best;
@@ -5225,6 +5245,12 @@
     static SCHEMA_VERSION = 1;
     static ID_PREFIX = "custom_";
     static CSS_CLASS_PREFIX = "bias-highlight-custom-";
+    static DEFAULT_COLOR = "#e67e22";
+    // Colors are interpolated into generated CSS (with an alpha suffix) and
+    // style attributes; imported JSON is untrusted, so only accept #rrggbb
+    static sanitizeColor(color) {
+      return /^#[0-9a-fA-F]{6}$/.test(String(color)) ? color : _CustomDictionaryManager.DEFAULT_COLOR;
+    }
     constructor() {
       this.groups = /* @__PURE__ */ new Map();
       this.compiledPatterns = /* @__PURE__ */ new Map();
@@ -5273,7 +5299,7 @@
       const group = {
         id,
         name: name.trim(),
-        color,
+        color: _CustomDictionaryManager.sanitizeColor(color),
         description: description.trim(),
         enabled: true,
         words: words.slice(0, _CustomDictionaryManager.MAX_WORDS_PER_GROUP),
@@ -5302,7 +5328,7 @@
       if (updates.name !== void 0)
         group.name = updates.name.trim();
       if (updates.color !== void 0)
-        group.color = updates.color;
+        group.color = _CustomDictionaryManager.sanitizeColor(updates.color);
       if (updates.description !== void 0)
         group.description = updates.description.trim();
       if (updates.enabled !== void 0)
@@ -5411,15 +5437,16 @@
     generateCSS() {
       let css = "";
       for (const group of this.groups.values()) {
+        const color = _CustomDictionaryManager.sanitizeColor(group.color);
         css += `
 .${group.className} {
-    background-color: ${group.color}33;
-    border-bottom: 2px solid ${group.color};
+    background-color: ${color}33;
+    border-bottom: 2px solid ${color};
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 .${group.className}:hover {
-    background-color: ${group.color}55;
+    background-color: ${color}55;
 }
 `;
       }
@@ -5529,7 +5556,8 @@
       this.compiledDetectors = this.initializeDetectors();
       this.customDictionary = new CustomDictionaryManager();
       this._customReady = false;
-      this._initCustomDictionaries();
+      this._customReadyPromise = this._initCustomDictionaries();
+      this._analysisQueue = null;
     }
     async _initCustomDictionaries() {
       try {
@@ -5604,11 +5632,19 @@
       }
       return matches;
     }
-    // Main analysis method - now more efficient
+    // Main analysis method. Runs are serialized: concurrent callers queue up
+    // instead of interleaving DOM walks (which also broke the performance
+    // timer's start/end pairing).
     async analyzeDocument() {
+      const run = () => this._runAnalysis();
+      this._analysisQueue = this._analysisQueue ? this._analysisQueue.then(run, run) : run();
+      return this._analysisQueue;
+    }
+    async _runAnalysis() {
       if (!this.settings.enableAnalysis) {
         return this.createEmptyStats();
       }
+      await this._customReadyPromise;
       this.performanceMonitor.start("document-analysis");
       const hadObserver = !!this.observer;
       this.disconnectObserver();
@@ -5616,7 +5652,7 @@
         this.domProcessor.removeAllHighlights();
         this.resetStats();
         const textNodes = this.domProcessor.collectTextNodes(document.body);
-        console.log(`Processing ${textNodes.length} text nodes`);
+        BiasConfig.debugLog(`Processing ${textNodes.length} text nodes`);
         const batchSize = BiasConfig.PERFORMANCE.BATCH_SIZE;
         for (let i = 0; i < textNodes.length; i += batchSize) {
           const batch = textNodes.slice(i, i + batchSize);
@@ -5626,7 +5662,7 @@
           }
         }
         const duration = this.performanceMonitor.end("document-analysis");
-        console.log(`Analysis completed in ${duration.toFixed(2)}ms`);
+        BiasConfig.debugLog(`Analysis completed in ${duration.toFixed(2)}ms`);
         if (hadObserver) {
           this.setupMutationObserver();
         }
@@ -5661,7 +5697,7 @@
       const allMatches = [];
       const mode = this.settings.analysisMode || "balanced";
       const contextualMatches = this.contextAwareDetector.detectAll(text);
-      if (contextualMatches.length > 0) {
+      if (BiasConfig.DEBUG && contextualMatches.length > 0) {
         console.log("[BiasDetector] Contextual matches found:", contextualMatches.map((m) => ({
           text: m.text,
           classification: m.classification,
@@ -5712,7 +5748,7 @@
               isNeutralOverride: true
             };
             allMatches.push(standardMatch);
-            console.log("[BiasDetector] Added neutral override for:", match.text);
+            BiasConfig.debugLog("[BiasDetector] Added neutral override for:", match.text);
           }
         }
       }
@@ -5743,17 +5779,15 @@
         }
       }
       if (allMatches.length > 0) {
-        console.log("[BiasDetector] All matches before filtering:", allMatches.map((m) => `"${m.text}" -> ${m.type} (contextual: ${m.isContextual})`));
-        const matchesToHighlight = allMatches.filter((match) => match.type !== "neutral");
-        console.log("[BiasDetector] Matches to highlight:", matchesToHighlight.length);
-        if (matchesToHighlight.length > 0) {
-          this.highlightMatches(node, matchesToHighlight);
+        if (BiasConfig.DEBUG) {
+          console.log("[BiasDetector] All matches:", allMatches.map((m) => `"${m.text}" -> ${m.type} (contextual: ${m.isContextual})`));
         }
+        this.highlightMatches(node, allMatches);
       }
     }
     // Highlight matches in a text node
     highlightMatches(node, matches) {
-      const sortedMatches = this.deduplicateMatches(matches);
+      const sortedMatches = this.deduplicateMatches(matches).filter((match) => match.type !== "neutral");
       if (sortedMatches.length === 0)
         return;
       const fragment = this.domProcessor.createHighlightedFragment(
@@ -5785,11 +5819,8 @@
         return b.length - a.length;
       });
       const neutralOverrides = matches.filter((m) => m.isNeutralOverride);
-      console.log("[BiasDetector] Neutral overrides found:", neutralOverrides.length);
       let filteredMatches = matches;
       for (const neutralMatch of neutralOverrides) {
-        console.log("[BiasDetector] Processing neutral override for:", neutralMatch.text);
-        const beforeCount = filteredMatches.length;
         filteredMatches = filteredMatches.filter((match) => {
           if (match.isContextual || match === neutralMatch)
             return true;
@@ -5797,11 +5828,10 @@
           const neutralEnd = neutralMatch.index + neutralMatch.length;
           const hasOverlap = !(matchEnd <= neutralMatch.index || neutralEnd <= match.index);
           if (hasOverlap) {
-            console.log("[BiasDetector] Removing overlapping match:", match.text, match.type);
+            BiasConfig.debugLog("[BiasDetector] Neutral override suppressed:", match.text, match.type);
           }
           return !hasOverlap;
         });
-        console.log("[BiasDetector] Filtered matches:", beforeCount, "->", filteredMatches.length);
       }
       const contextualMatches = filteredMatches.filter((m) => m.isContextual);
       const regularMatches = filteredMatches.filter((m) => !m.isContextual);
@@ -5862,6 +5892,19 @@
             this.disconnectObserver();
             this.domProcessor.removeExcellenceHighlights(config.id);
             this.stats[config.statKey] = 0;
+            this.setupMutationObserver();
+          } else {
+            needsReanalysis = true;
+          }
+        }
+      }
+      for (const group of this.customDictionary.getAllGroups()) {
+        const settingKey = group.settingKey;
+        if (oldSettings[settingKey] !== newSettings[settingKey]) {
+          if (newSettings[settingKey] === false) {
+            this.disconnectObserver();
+            this.domProcessor.removeCustomHighlights(group.className);
+            this.stats[group.statKey] = 0;
             this.setupMutationObserver();
           } else {
             needsReanalysis = true;
@@ -5997,6 +6040,16 @@
         if (this.domProcessor.isOwnHighlight(mutation.target)) {
           return false;
         }
+        if (mutation.type === "characterData") {
+          const parent = mutation.target.parentNode;
+          if (!parent || this.domProcessor.isOwnHighlight(parent)) {
+            return false;
+          }
+          if (parent.closest && parent.closest(".bias-popup, [data-e-prime-popup]")) {
+            return false;
+          }
+          return this.domProcessor.isSignificantContent(mutation.target);
+        }
         if (mutation.target.classList) {
           if (mutation.target.classList.contains("bias-popup") || mutation.target.classList.contains("popup-content") || mutation.target.classList.contains("popup-close")) {
             return false;
@@ -6019,7 +6072,7 @@
       });
     }
     async handleContentChange(mutations) {
-      console.log("Content changed, processing updates...");
+      BiasConfig.debugLog("Content changed, processing updates...");
       const changedNodes = this.domProcessor.extractChangedTextNodes(mutations);
       if (changedNodes.length > 0) {
         await this.processBatch(changedNodes);
@@ -6072,11 +6125,10 @@
       try {
         biasDetector = new BiasDetector();
         const popupManager = getPopupManager();
-        console.log("PopupManager initialized");
         setupMessageListeners();
         loadSettingsAndStart();
         isInitialized = true;
-        console.log("E-Prime Bias Detector initialized successfully");
+        BiasConfig.debugLog("E-Prime Bias Detector initialized successfully");
       } catch (error) {
         console.error("Failed to initialize Bias Detector:", error);
       }
@@ -6098,7 +6150,7 @@
         });
       }
       function startWithDefaults() {
-        console.log("Starting with default settings");
+        BiasConfig.debugLog("Starting with default settings");
         setTimeout(() => {
           biasDetector.analyzeDocument();
           biasDetector.setupMutationObserver();
@@ -6168,7 +6220,8 @@
       }
     }
     async function handleUpdateSettings(request, sendResponse) {
-      console.log("Content script received new settings:", request.settings);
+      if (BiasConfig.DEBUG)
+        console.log("Content script received new settings:", request.settings);
       const validatedSettings = BiasConfig.validateSettings(request.settings);
       await biasDetector.updateSettings(validatedSettings);
       const stats = biasDetector.getStats();
@@ -6180,11 +6233,12 @@
     }
     function handleGetStats(sendResponse) {
       const stats = biasDetector.getStats();
-      console.log("Sending stats:", stats);
+      if (BiasConfig.DEBUG)
+        console.log("Sending stats:", stats);
       sendResponse(stats);
     }
     async function handleForceAnalyze(sendResponse) {
-      console.log("Force analyze requested - enabling analysis");
+      BiasConfig.debugLog("Force analyze requested - enabling analysis");
       try {
         biasDetector.disconnectObserver();
         biasDetector.clearHighlights();
@@ -6212,7 +6266,7 @@
       }
     }
     function handleClearHighlights(sendResponse) {
-      console.log("Clear highlights requested - disabling analysis");
+      BiasConfig.debugLog("Clear highlights requested - disabling analysis");
       biasDetector.disconnectObserver();
       biasDetector.clearHighlights();
       biasDetector.settings.enableAnalysis = false;
@@ -6253,8 +6307,15 @@
         isInitialized = false;
       }
     }
+    const MAX_REINIT_ATTEMPTS = 3;
+    let reinitAttempts = 0;
     function handleError(error) {
       console.error("E-Prime Bias Detector error:", error);
+      if (reinitAttempts >= MAX_REINIT_ATTEMPTS) {
+        console.error("E-Prime Bias Detector: giving up after repeated failures");
+        return;
+      }
+      reinitAttempts++;
       if (biasDetector) {
         try {
           biasDetector.destroy();
@@ -6265,12 +6326,32 @@
       biasDetector = null;
       isInitialized = false;
       setTimeout(() => {
-        console.log("Attempting to reinitialize Bias Detector...");
+        BiasConfig.debugLog("Attempting to reinitialize Bias Detector...");
         initialize();
       }, 1e3);
     }
-    window.addEventListener("error", handleError);
+    const extensionOrigin = (() => {
+      try {
+        return chrome.runtime.getURL("");
+      } catch (e) {
+        return null;
+      }
+    })();
+    function isOwnError(sourceOrStack) {
+      return Boolean(
+        extensionOrigin && typeof sourceOrStack === "string" && sourceOrStack.includes(extensionOrigin)
+      );
+    }
+    window.addEventListener("error", (event) => {
+      const stack = event.error && event.error.stack;
+      if (!isOwnError(event.filename) && !isOwnError(stack))
+        return;
+      handleError(event.error || event.message);
+    });
     window.addEventListener("unhandledrejection", (event) => {
+      const stack = event.reason && event.reason.stack;
+      if (!isOwnError(stack))
+        return;
       handleError(event.reason);
     });
     window.addEventListener("beforeunload", handleUnload);

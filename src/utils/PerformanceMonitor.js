@@ -1,4 +1,6 @@
 // utils/PerformanceMonitor.js - Performance tracking utilities
+import { BiasConfig } from '../config/BiasConfig.js';
+
 export class PerformanceMonitor {
     constructor() {
         this.timers = new Map();
@@ -45,7 +47,7 @@ export class PerformanceMonitor {
         metric.minTime = Math.min(metric.minTime, duration);
         metric.maxTime = Math.max(metric.maxTime, duration);
 
-        console.log(`Performance: ${label} completed in ${duration.toFixed(2)}ms`);
+        BiasConfig.debugLog(`Performance: ${label} completed in ${duration.toFixed(2)}ms`);
         return duration;
     }
 

@@ -50,6 +50,7 @@ The project uses a modern ES6 module architecture with esbuild for multi-target 
 
 - **BiasDetector** (`src/content/BiasDetector.js`): Main detection engine that coordinates all bias detection
 - **BiasConfig** (`src/config/BiasConfig.js`): Centralized configuration management for all bias types, categories, and settings
+- **CustomDictionaryManager** (`src/config/CustomDictionaryManager.js`): User-defined detection groups (stored in `chrome.storage.local`, compiled like built-in dictionaries)
 - **BiasPatterns** (`src/dictionaries/index.js`): Pattern compilation and management system
 - **DOMProcessor** (`src/utils/DOMProcessor.js`): Handles DOM manipulation and text highlighting
 - **ExcellenceDetector** (`src/utils/ExcellenceDetector.js`): Detects positive writing patterns and subject portrayal
@@ -153,7 +154,7 @@ The project has a comprehensive automated test suite using Vitest. See `tests/RE
 - **Integration tests**: End-to-end workflow testing, settings management, performance benchmarks
 - **Test commands**: `npm test` (all tests), `npm run test:coverage` (with coverage)
 - **Test framework**: Vitest (modern, fast, better than Jest for ES6 modules)
-- **328 total tests** across 11 test files with high coverage
+- **370+ tests** across 13 test files with high coverage (counts drift as tests are added; `npm test` reports the real number)
 
 **Critical Implementation Notes:**
 - **Settings property names**: Always use `highlight*` format (e.g., `highlightOpinion`, not `detectOpinionWords`)
@@ -162,6 +163,8 @@ The project has a comprehensive automated test suite using Vitest. See `tests/RE
 - **Settings state**: Disabled detectors must preserve zero stats during reanalysis
 - **Performance tests**: Large document processing benchmarks
 - **Data quality**: Dictionary validation and consistency checks
+- **Debug logging**: Content-script logging is gated behind `BiasConfig.DEBUG` (default `false`); never add bare `console.log` to hot paths — wrap expensive log arguments in `if (BiasConfig.DEBUG)`
+- **Global error events**: `content-script.js` deliberately ignores `error`/`unhandledrejection` events not attributable to the extension (page errors used to trigger full re-analysis loops); keep it that way
 
 **Manual Testing:**
 - HTML test files in `tests/manual/` directory

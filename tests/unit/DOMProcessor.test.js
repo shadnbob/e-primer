@@ -649,11 +649,13 @@ describe('DOMProcessor', () => {
     test('should handle missing parentNode gracefully', () => {
       const highlight = createMockElement('span');
       highlight.parentNode = null;
-      
+
       mockDocument.querySelectorAll.mockReturnValue([highlight]);
       processor.cleanupHoverElements = vi.fn();
-      
-      expect(() => processor.removeAllHighlights()).toThrow();
+
+      // A detached highlight (e.g. removed by the page between query and
+      // unwrap) is skipped rather than crashing the whole removal pass
+      expect(() => processor.removeAllHighlights()).not.toThrow();
     });
 
     test('should handle DOM manipulation errors', () => {

@@ -290,6 +290,14 @@ export class DOMProcessor {
         } else if (match.isCustom && match.customGroup) {
             tooltipText = `Custom: ${match.customGroup.name}`;
             spanElement.setAttribute('data-custom-group', match.customGroup.id);
+            // Persist the group payload so PopupManager can rebuild the custom
+            // hover card from the DOM alone (it has no CustomDictionaryManager)
+            spanElement.setAttribute('data-custom-group-data', JSON.stringify({
+                id: match.customGroup.id,
+                name: match.customGroup.name,
+                color: match.customGroup.color,
+                hoverContent: match.customGroup.hoverContent
+            }));
         } else if (match.isExcellence) {
             tooltipText = match.tooltip || this.getExcellenceTooltipText(match.type);
         } else {
@@ -307,18 +315,24 @@ export class DOMProcessor {
         console.warn('showContextMenu is deprecated - popup handling now managed by PopupManager');
     }
 
-    // Remove all bias highlights
+    // Remove all bias highlights (built-in, excellence, and custom groups)
     removeAllHighlights() {
         const selector = Object.values(this.getHighlightSelectors()).join(', ');
+        this.removeHighlightsBySelector(selector);
+    }
+
+    // Shared unwrap logic: replace matching highlight spans with plain text
+    removeHighlightsBySelector(selector) {
         const highlights = document.querySelectorAll(selector);
-        
+
         this.processedParents.clear();
 
         highlights.forEach(highlight => {
             // Clean up hover cards and event listeners
             this.cleanupHoverElements(highlight);
-            
+
             const parent = highlight.parentNode;
+            if (!parent) return;
             const textNode = document.createTextNode(highlight.textContent);
             parent.replaceChild(textNode, highlight);
             this.processedParents.add(parent);
@@ -347,6 +361,8 @@ export class DOMProcessor {
             element.removeAttribute('data-context');
             element.removeAttribute('data-sub-category');
             element.removeAttribute('data-portrayal');
+            element.removeAttribute('data-custom-group');
+            element.removeAttribute('data-custom-group-data');
         }
         
         // Event listeners are now handled by PopupManager's delegation system
@@ -355,81 +371,37 @@ export class DOMProcessor {
 
     // Remove specific excellence type highlights
     removeExcellenceHighlights(type) {
-        const selector = `.${this.excellenceClassPrefix}${type}`;
-        const highlights = document.querySelectorAll(selector);
-        
-        this.processedParents.clear();
-
-        highlights.forEach(highlight => {
-            this.cleanupHoverElements(highlight);
-            
-            const parent = highlight.parentNode;
-            const textNode = document.createTextNode(highlight.textContent);
-            parent.replaceChild(textNode, highlight);
-            this.processedParents.add(parent);
-        });
-
-        // Normalize affected parent nodes
-        this.processedParents.forEach(parent => {
-            if (parent && parent.normalize) {
-                parent.normalize();
-            }
-        });
-
-        this.processedParents.clear();
+        this.removeHighlightsBySelector(`.${this.excellenceClassPrefix}${type}`);
     }
 
     // Remove specific type of highlights
     removeSpecificHighlights(type) {
-        const selector = `.${this.highlightClassPrefix}${type}`;
-        const highlights = document.querySelectorAll(selector);
-        
-        this.processedParents.clear();
-
-        highlights.forEach(highlight => {
-            // Clean up hover cards and event listeners
-            this.cleanupHoverElements(highlight);
-            
-            const parent = highlight.parentNode;
-            const textNode = document.createTextNode(highlight.textContent);
-            parent.replaceChild(textNode, highlight);
-            this.processedParents.add(parent);
-        });
-
-        // Normalize affected parent nodes
-        this.processedParents.forEach(parent => {
-            if (parent && parent.normalize) {
-                parent.normalize();
-            }
-        });
-
-        this.processedParents.clear();
+        this.removeHighlightsBySelector(`.${this.highlightClassPrefix}${type}`);
     }
 
+    // Remove highlights of one custom group (className comes from the group config)
+    removeCustomHighlights(className) {
+        this.removeHighlightsBySelector(`.${className}`);
+    }
+
+    // Built from BiasConfig so new bias/excellence types are covered automatically.
+    // Custom-group spans always have their class attribute starting with the
+    // custom prefix (className is assigned before any intensity class is added),
+    // so a single attribute selector covers every group.
     getHighlightSelectors() {
-        return {
-            // Bias selectors
-            opinion: `.${this.highlightClassPrefix}opinion`,
-            tobe: `.${this.highlightClassPrefix}tobe`,
-            absolute: `.${this.highlightClassPrefix}absolute`,
-            passive: `.${this.highlightClassPrefix}passive`,
-            weasel: `.${this.highlightClassPrefix}weasel`,
-            presupposition: `.${this.highlightClassPrefix}presupposition`,
-            metaphor: `.${this.highlightClassPrefix}metaphor`,
-            minimizer: `.${this.highlightClassPrefix}minimizer`,
-            maximizer: `.${this.highlightClassPrefix}maximizer`,
-            falsebalance: `.${this.highlightClassPrefix}falsebalance`,
-            euphemism: `.${this.highlightClassPrefix}euphemism`,
-            emotional: `.${this.highlightClassPrefix}emotional`,
-            gaslighting: `.${this.highlightClassPrefix}gaslighting`,
-            falsedilemma: `.${this.highlightClassPrefix}falsedilemma`,
-            // Excellence selectors
-            attribution: `.${this.excellenceClassPrefix}attribution`,
-            nuance: `.${this.excellenceClassPrefix}nuance`,
-            transparency: `.${this.excellenceClassPrefix}transparency`,
-            discourse: `.${this.excellenceClassPrefix}discourse`,
-            evidence: `.${this.excellenceClassPrefix}evidence`
-        };
+        const selectors = {};
+
+        for (const config of Object.values(BiasConfig.BIAS_TYPES)) {
+            selectors[config.id] = `.${this.highlightClassPrefix}${config.id}`;
+        }
+
+        for (const config of Object.values(BiasConfig.EXCELLENCE_TYPES)) {
+            selectors[config.id] = `.${this.excellenceClassPrefix}${config.id}`;
+        }
+
+        selectors.custom = `span[class^="${this.customClassPrefix}"]`;
+
+        return selectors;
     }
 
     // Check if content change is significant enough to reprocess
@@ -447,14 +419,28 @@ export class DOMProcessor {
     // Extract changed text nodes from mutations
     extractChangedTextNodes(mutations) {
         const changedNodes = [];
-        
+
         mutations.forEach(mutation => {
             if (this.isOwnHighlight(mutation.target)) {
                 return; // Skip our own changes
             }
 
+            // In-place text edits (SPAs updating textContent/data bindings)
+            if (mutation.type === 'characterData') {
+                const node = mutation.target;
+                const parent = node.parentNode;
+                if (node.nodeType === Node.TEXT_NODE &&
+                    parent &&
+                    !this.isOwnHighlight(parent) &&
+                    !this.shouldSkipElement(parent) &&
+                    node.textContent.trim().length > 5) {
+                    changedNodes.push(node);
+                }
+                return;
+            }
+
             Array.from(mutation.addedNodes).forEach(node => {
-                if (node.nodeType === Node.TEXT_NODE && 
+                if (node.nodeType === Node.TEXT_NODE &&
                     node.textContent.trim().length > 5) {
                     changedNodes.push(node);
                 } else if (node.nodeType === Node.ELEMENT_NODE) {
@@ -464,7 +450,8 @@ export class DOMProcessor {
             });
         });
 
-        return changedNodes;
+        // A node can appear in several mutation records within one batch
+        return Array.from(new Set(changedNodes));
     }
 
     // Count current highlights for stats

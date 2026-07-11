@@ -147,12 +147,15 @@ export class ContextAwareDetector {
         while ((index = text.toLowerCase().indexOf(phrase.toLowerCase(), index)) !== -1) {
             const context = this.analyzePhrase(text, index, phrase);
             const classification = this.classifyByContext(context, patterns);
-            
+
             if (classification) {
                 matches.push({
                     index,
                     length: phrase.length,
-                    text: phrase,
+                    // Slice from the document, not the dictionary key: this text
+                    // replaces the page's text when highlighted, so it must keep
+                    // the original casing
+                    text: text.substr(index, phrase.length),
                     classification: classification.type,
                     confidence: classification.confidence,
                     reasoning: classification.reasoning,
@@ -267,10 +270,12 @@ export class ContextAwareDetector {
         return overlapping;
     }
     
-    // Choose the best match from conflicting matches
+    // Choose the best match from conflicting matches. Regular (non-contextual)
+    // matches carry no confidence; treat them as 0.5 so any contextual match
+    // above the neutral baseline outranks them regardless of array order.
     chooseBestMatch(matches) {
         return matches.reduce((best, current) => {
-            if (current.confidence > best.confidence) {
+            if ((current.confidence ?? 0.5) > (best.confidence ?? 0.5)) {
                 return current;
             }
             return best;
