@@ -493,14 +493,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateStats(stats) {
         if (!stats) return;
-        
-        // Update stat values dynamically
+
+        // Counts render inline on each toggle row (badge ids = stat keys)
         for (const [elementId, statKey] of Object.entries(statMappings)) {
-            const element = document.getElementById(elementId);
-            if (element && stats[statKey] !== undefined) {
-                element.textContent = stats[statKey] || 0;
+            if (stats[statKey] !== undefined) {
+                setInlineCount(elementId, stats[statKey]);
             }
         }
+
+        // Custom groups are not part of statMappings
+        customGroups.forEach(function(group) {
+            if (stats[group.statKey] !== undefined) {
+                setInlineCount(group.statKey, stats[group.statKey]);
+            }
+        });
+    }
+
+    function setInlineCount(elementId, value) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        const count = value || 0;
+        element.textContent = count;
+        element.classList.toggle('active', count > 0);
     }
 
     // Listen for stats updates from content script
@@ -559,6 +573,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="color-indicator" style="background-color: ${sanitizeColor(group.color)};"></div>
                     <span>${escapeHtml(group.name)}</span>
                     <span style="font-size: 10px; color: #999; margin-left: 4px;">(${group.words.length})</span>
+                    <span class="inline-count" id="${escapeHtml(group.statKey)}">0</span>
                 </div>
                 <label class="toggle">
                     <input type="checkbox" data-custom-toggle="${escapeHtml(group.id)}" data-setting-key="${escapeHtml(group.settingKey)}" ${currentSettings[group.settingKey] !== false ? 'checked' : ''}>

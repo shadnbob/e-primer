@@ -1711,6 +1711,7 @@
                     <div class="toggle-label">
                         <div class="color-indicator" style="${subColorStyle}"></div>
                         <span>${subConfig.icon || ""} ${subConfig.name}</span>
+                        <span class="inline-count" id="${subConfig.statKey}">0</span>
                     </div>
                     <label class="toggle toggle-small">
                         <input type="checkbox"
@@ -2307,11 +2308,23 @@
       if (!stats)
         return;
       for (const [elementId, statKey] of Object.entries(statMappings)) {
-        const element = document.getElementById(elementId);
-        if (element && stats[statKey] !== void 0) {
-          element.textContent = stats[statKey] || 0;
+        if (stats[statKey] !== void 0) {
+          setInlineCount(elementId, stats[statKey]);
         }
       }
+      customGroups.forEach(function(group) {
+        if (stats[group.statKey] !== void 0) {
+          setInlineCount(group.statKey, stats[group.statKey]);
+        }
+      });
+    }
+    function setInlineCount(elementId, value) {
+      const element = document.getElementById(elementId);
+      if (!element)
+        return;
+      const count = value || 0;
+      element.textContent = count;
+      element.classList.toggle("active", count > 0);
     }
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       if (request.action === "updateStats") {
@@ -2354,6 +2367,7 @@
                     <div class="color-indicator" style="background-color: ${sanitizeColor(group.color)};"></div>
                     <span>${escapeHtml(group.name)}</span>
                     <span style="font-size: 10px; color: #999; margin-left: 4px;">(${group.words.length})</span>
+                    <span class="inline-count" id="${escapeHtml(group.statKey)}">0</span>
                 </div>
                 <label class="toggle">
                     <input type="checkbox" data-custom-toggle="${escapeHtml(group.id)}" data-setting-key="${escapeHtml(group.settingKey)}" ${currentSettings[group.settingKey] !== false ? "checked" : ""}>

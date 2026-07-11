@@ -236,46 +236,25 @@
         input:checked + .slider:before {
             transform: translateX(16px);
         }
-        .stats {
-            margin-top: 15px;
-            padding: 12px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .stats-title {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #666;
+        /* Inline per-row detection counts (replaces the old stats section) */
+        .inline-count {
+            font-size: 10px;
             font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            color: #b0b0b0;
+            background: #f0f1f3;
+            border-radius: 9px;
+            padding: 1px 6px;
+            min-width: 12px;
             text-align: center;
+            flex-shrink: 0;
         }
-        .stat-item {
-            padding: 4px;
+        .inline-count.active {
+            color: #1976d2;
+            background: #e3f2fd;
         }
-        .stat-label {
-            font-size: 11px;
-            color: #666;
-            display: block;
-        }
-        .stat-value {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-            display: block;
-        }
-        .stat-item.excellence {
-            background: rgba(40, 167, 69, 0.1);
-            border-radius: 4px;
-        }
-        .stat-item.excellence .stat-value {
+        .inline-count.excellence.active {
             color: #28a745;
+            background: rgba(40, 167, 69, 0.12);
         }
         .button-container {
             display: flex;
@@ -494,6 +473,7 @@
             <div class="toggle-label">
                 <div class="color-indicator green"></div>
                 <span>Clear Attribution</span>
+                <span class="inline-count excellence" id="attributionExcellenceCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="attributionExcellenceToggle" checked>
@@ -504,6 +484,7 @@
             <div class="toggle-label">
                 <div class="color-indicator lightgreen"></div>
                 <span>Nuanced Language</span>
+                <span class="inline-count excellence" id="nuanceExcellenceCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="nuanceExcellenceToggle" checked>
@@ -514,6 +495,7 @@
             <div class="toggle-label">
                 <div class="color-indicator green"></div>
                 <span>Transparency</span>
+                <span class="inline-count excellence" id="transparencyExcellenceCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="transparencyExcellenceToggle" checked>
@@ -524,6 +506,7 @@
             <div class="toggle-label">
                 <div class="color-indicator turquoise"></div>
                 <span>Constructive Discourse</span>
+                <span class="inline-count excellence" id="discourseExcellenceCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="discourseExcellenceToggle" checked>
@@ -534,6 +517,7 @@
             <div class="toggle-label">
                 <div class="color-indicator info"></div>
                 <span>Evidence-Based</span>
+                <span class="inline-count excellence" id="evidenceExcellenceCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="evidenceExcellenceToggle" checked>
@@ -561,6 +545,7 @@
             <div class="toggle-label">
                 <div class="color-indicator orange"></div>
                 <span>Opinion Words</span>
+                <span class="inline-count" id="opinionCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="opinionToggle" checked>
@@ -571,6 +556,7 @@
             <div class="toggle-label">
                 <div class="color-indicator blue"></div>
                 <span>To-Be Verbs (E-Prime)</span>
+                <span class="inline-count" id="toBeCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="ePrimeToggle" checked>
@@ -581,6 +567,7 @@
             <div class="toggle-label">
                 <div class="color-indicator pink"></div>
                 <span>Absolute Statements</span>
+                <span class="inline-count" id="absoluteCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="absoluteToggle" checked>
@@ -608,6 +595,7 @@
             <div class="toggle-label">
                 <div class="color-indicator purple"></div>
                 <span>Passive Voice</span>
+                <span class="inline-count" id="passiveCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="passiveToggle" checked>
@@ -618,6 +606,7 @@
             <div class="toggle-label">
                 <div class="color-indicator gold"></div>
                 <span>Weasel Words</span>
+                <span class="inline-count" id="weaselCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="weaselToggle" checked>
@@ -628,6 +617,7 @@
             <div class="toggle-label">
                 <div class="color-indicator deeppink"></div>
                 <span>Presuppositions</span>
+                <span class="inline-count" id="presuppositionCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="presuppositionToggle" checked>
@@ -638,6 +628,7 @@
             <div class="toggle-label">
                 <div class="color-indicator" style="background-color: #4169e1;"></div>
                 <span>Probability Perception</span>
+                <span class="inline-count" id="probabilityCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="probabilityToggle" checked>
@@ -665,6 +656,7 @@
             <div class="toggle-label">
                 <div class="color-indicator crimson"></div>
                 <span>War Metaphors</span>
+                <span class="inline-count" id="metaphorCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="metaphorToggle" checked>
@@ -675,6 +667,7 @@
             <div class="toggle-label">
                 <div class="color-indicator teal"></div>
                 <span>Minimizers</span>
+                <span class="inline-count" id="minimizerCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="minimizerToggle" checked>
@@ -685,6 +678,7 @@
             <div class="toggle-label">
                 <div class="color-indicator orangered"></div>
                 <span>Maximizers</span>
+                <span class="inline-count" id="maximizerCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="maximizerToggle" checked>
@@ -695,6 +689,7 @@
             <div class="toggle-label">
                 <div class="color-indicator indigo"></div>
                 <span>False Balance</span>
+                <span class="inline-count" id="falseBalanceCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="falseBalanceToggle" checked>
@@ -705,6 +700,7 @@
             <div class="toggle-label">
                 <div class="color-indicator darkgreen"></div>
                 <span>Euphemisms</span>
+                <span class="inline-count" id="euphemismCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="euphemismToggle" checked>
@@ -732,6 +728,7 @@
             <div class="toggle-label">
                 <div class="color-indicator coral"></div>
                 <span>Emotional Manipulation</span>
+                <span class="inline-count" id="emotionalCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="emotionalToggle" checked>
@@ -742,6 +739,7 @@
             <div class="toggle-label">
                 <div class="color-indicator maroon"></div>
                 <span>Gaslighting</span>
+                <span class="inline-count" id="gaslightingCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="gaslightingToggle" checked>
@@ -752,6 +750,7 @@
             <div class="toggle-label">
                 <div class="color-indicator darkviolet"></div>
                 <span>False Dilemmas</span>
+                <span class="inline-count" id="falseDilemmaCount">0</span>
             </div>
             <label class="toggle">
                 <input type="checkbox" id="falseDilemmaToggle" checked>
@@ -804,96 +803,6 @@
         <button id="exportCustomGroups" class="button" style="flex: 1; background: #607D8B; color: white; padding: 6px; font-size: 11px; border-radius: 4px;">Export All</button>
         <button id="importCustomGroups" class="button" style="flex: 1; background: #607D8B; color: white; padding: 6px; font-size: 11px; border-radius: 4px;">Import</button>
         <input type="file" id="importFileInput" accept=".json" style="display: none;">
-    </div>
-</div>
-
-<div class="stats">
-    <div class="stats-title">Excellence Indicators</div>
-    <div class="stats-grid">
-        <div class="stat-item excellence">
-            <span class="stat-label">Attribution</span>
-            <span class="stat-value" id="attributionExcellenceCount">0</span>
-        </div>
-        <div class="stat-item excellence">
-            <span class="stat-label">Nuance</span>
-            <span class="stat-value" id="nuanceExcellenceCount">0</span>
-        </div>
-        <div class="stat-item excellence">
-            <span class="stat-label">Transparency</span>
-            <span class="stat-value" id="transparencyExcellenceCount">0</span>
-        </div>
-        <div class="stat-item excellence">
-            <span class="stat-label">Discourse</span>
-            <span class="stat-value" id="discourseExcellenceCount">0</span>
-        </div>
-        <div class="stat-item excellence">
-            <span class="stat-label">Evidence</span>
-            <span class="stat-value" id="evidenceExcellenceCount">0</span>
-        </div>
-    </div>
-    
-    <div class="stats-title" style="margin-top: 15px;">Bias Indicators</div>
-    <div class="stats-grid">
-        <div class="stat-item">
-            <span class="stat-label">Opinion</span>
-            <span class="stat-value" id="opinionCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">To-be</span>
-            <span class="stat-value" id="toBeCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Absolute</span>
-            <span class="stat-value" id="absoluteCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Passive</span>
-            <span class="stat-value" id="passiveCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Weasel</span>
-            <span class="stat-value" id="weaselCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Presupp.</span>
-            <span class="stat-value" id="presuppositionCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Metaphor</span>
-            <span class="stat-value" id="metaphorCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Minimizer</span>
-            <span class="stat-value" id="minimizerCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Maximizer</span>
-            <span class="stat-value" id="maximizerCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">False Bal.</span>
-            <span class="stat-value" id="falseBalanceCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Euphemism</span>
-            <span class="stat-value" id="euphemismCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Emotional</span>
-            <span class="stat-value" id="emotionalCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Gaslight</span>
-            <span class="stat-value" id="gaslightingCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Dilemma</span>
-            <span class="stat-value" id="falseDilemmaCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Probability</span>
-            <span class="stat-value" id="probabilityCount">0</span>
-        </div>
     </div>
 </div>
 

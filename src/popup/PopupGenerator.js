@@ -58,6 +58,7 @@ export class PopupGenerator {
                     <div class="toggle-label">
                         <div class="color-indicator" style="${subColorStyle}"></div>
                         <span>${subConfig.icon || ''} ${subConfig.name}</span>
+                        <span class="inline-count" id="${subConfig.statKey}">0</span>
                     </div>
                     <label class="toggle toggle-small">
                         <input type="checkbox"

@@ -101,7 +101,7 @@ Six bias types have subcategories — structured taxonomies that provide more sp
 - `HoverContentGenerator` shows subcategory-specific names, implications, and suggestions in hover cards
 - `BiasConfig.hasSubCategories(id)`, `getSubCategories(id)`, `getSubCategory(id, subId)`, `resolveType(compositeType)`, and `getCompositeType(parentId, subId)` provide generic subcategory metadata lookups
 - `PopupGenerator` renders nested subcategory toggles under parent types
-- `StatsDisplay` shows per-subcategory counts
+- Detection counts (including per-subcategory and custom-group counts) render as inline badges on each popup toggle row; badge element ids equal the stat keys (`updateStats`/`setInlineCount` in popup-dynamic.js)
 - Legacy methods `getOpinionSubCategory(word)` and `getOpinionSubCategories()` are retained as deprecated wrappers
 
 ### Excellence Detection

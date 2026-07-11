@@ -1,11 +1,11 @@
 // popup/StatsDisplay.js - Statistics display utility
 //
 // UNUSED — deliberately not wired up. Nothing imports this module; the popup
-// renders its stats grid from the static markup in popup.html via
-// popup-dynamic.js. Set aside on 2026-07-11 (per-subcategory stat rendering
-// judged not useful enough to ship). If that changes, bundle it into
-// popup-dynamic.js like SettingsManager/PopupGenerator; otherwise it is safe
-// to delete.
+// shows detection counts inline on each toggle row (see updateStats /
+// setInlineCount in popup-dynamic.js). Set aside on 2026-07-11 when the
+// dedicated stats section was removed from the popup. If a richer stats view
+// is ever wanted, bundle this into popup-dynamic.js like
+// SettingsManager/PopupGenerator; otherwise it is safe to delete.
 import { BiasConfig } from '../config/BiasConfig.js';
 
 export class StatsDisplay {
