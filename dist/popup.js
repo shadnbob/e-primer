@@ -1486,6 +1486,125 @@
             whenAcceptable: 'Supervised medical detoxification is a real clinical term, and "natural" has defined regulatory meanings in some labeling contexts'
           }
         }
+      },
+      ISMS: {
+        id: "isms",
+        name: "Political -isms",
+        description: "System-words (socialism, capitalism, fascism, populism, nationalism) whose referents differ between speakers",
+        category: "explainer",
+        isExplainer: true,
+        color: "#607d8b",
+        className: "bias-highlight-isms",
+        settingKey: "highlightIsms",
+        statKey: "ismsCount",
+        enabled: true,
+        tooltip: "A political system-word whose meaning varies widely between speakers and eras",
+        basicTip: "A political system-word whose meaning varies widely between speakers and eras",
+        whenConcerning: "When the -ism does the arguing \u2014 attaching one variant's record to another variant's proposal, or ending analysis with a label",
+        whenAcceptable: "When the specific variant, institutions, or historical movement is named, or in scholarly usage with criteria",
+        lookFor: [
+          "Which variant or tradition of this -ism is meant?",
+          "Which concrete institutions or policies are being described?",
+          "Would the people described accept the label?",
+          "Is evidence offered, or just the word?"
+        ],
+        examples: {
+          problematic: [
+            "that's just socialism (about a tax-funded service)",
+            "capitalism causes X (textbook model or actual economy?)",
+            "their fascist agenda (no features named)",
+            "globalist elites (insinuated, unspecified)"
+          ],
+          acceptable: [
+            "the Nordic model combines markets with a large welfare state",
+            "Mussolini's Fascist Party took power in 1922",
+            "the party ran on a populist platform of X and Y",
+            "self-described democratic socialists propose\u2026"
+          ]
+        },
+        contextualGuidance: {
+          academic: "Expect the -ism to be defined and operationalized; scholarly usage names criteria",
+          news: "Watch for system-words standing in for specific policies and actors",
+          opinion: 'Labels are expected, but claims about what an -ism "wants" should name who is meant',
+          instructions: "Rarely relevant; treat as informational"
+        },
+        subCategories: {
+          socialism: {
+            id: "socialism",
+            name: "Socialism",
+            icon: "\u{1F3ED}",
+            color: "#607d8b",
+            description: "A 19th-century term whose core meaning \u2014 social or collective ownership of the means of production \u2014 now spans a huge range: Marxist state ownership, democratic socialism (an electoral route, itself contested), and social democracy (a market economy with a large welfare state, technically a different tradition).",
+            implication: 'The same word covers the Soviet economy and a public library. In US discourse, Nordic countries are routinely called socialist while their own governments describe them as market economies with strong safety nets. Used as an epithet, "socialism" attaches the record of one variant to proposals from another.',
+            suggestion: "Ask which institutions are actually proposed or described: who would own what, decided by whom?",
+            examples: '"That policy is socialism" \u2014 state ownership of industry, or a tax-funded service like roads and fire departments?',
+            settingKey: "highlightIsmsSocialism",
+            statKey: "ismsSocialismCount",
+            basicTip: '"Socialism" spans Marxist state ownership to welfare-state social democracy \u2014 the word alone does not say which.',
+            whenConcerning: "When one variant's record is attached to a different variant's proposal, or the word ends the argument",
+            whenAcceptable: "When the specific tradition or institutions are named, or groups self-describe"
+          },
+          capitalism: {
+            id: "capitalism",
+            name: "Capitalism",
+            icon: "\u{1F3E6}",
+            color: "#6d4c41",
+            description: 'Popularized largely by its critics (Marx wrote of the "capitalist mode of production"; the noun spread later through writers like Sombart and Weber), "capitalism" can mean the minimal definition \u2014 private ownership and market exchange \u2014 or the entire actually-existing economy with its subsidies, monopolies, and regulations.',
+            implication: 'Defenders often argue for the textbook model of free exchange while critics attack the existing arrangement (or vice versa), so both sides can be right about different referents. Qualifiers like "crony capitalism" and "late capitalism" (a scholarly term from Sombart and Mandel, now mostly ironic) signal that a specific variant is meant \u2014 or just add color.',
+            suggestion: "Ask whether the claim is about markets in principle or about the current economy in practice \u2014 they support different conclusions.",
+            examples: '"Capitalism causes X" / "capitalism lifted millions from poverty" \u2014 the same word, often two different systems.',
+            settingKey: "highlightIsmsCapitalism",
+            statKey: "ismsCapitalismCount",
+            basicTip: '"Capitalism" can mean markets in principle or the actual economy in practice \u2014 arguments often mix the two.',
+            whenConcerning: "When praise or blame switches between the ideal model and the existing system without saying so",
+            whenAcceptable: "When the referent is specified: a policy, an industry structure, a named arrangement"
+          },
+          fascism: {
+            id: "fascism",
+            name: "Fascism",
+            icon: "\u{1F4DA}",
+            color: "#455a64",
+            description: "Historically, the movement founded by Mussolini in Italy (in power 1922\u201343) and, by extension, kindred interwar regimes: ultranationalism, a one-party state, a cult of the leader, suppression of opposition, and glorification of violence. Scholars (Paxton, Griffin, Eco) still debate the precise defining features.",
+            implication: 'Outside historical and scholarly use, the word drifts toward a generic intensifier for any disliked authority \u2014 Orwell observed as early as 1944 that it had become "almost entirely meaningless" in casual use. Calling something fascist ends analysis: it asserts the conclusion instead of showing which specific features apply.',
+            suggestion: "Ask which concrete features are being claimed \u2014 and whether the same evidence is offered, or just the label.",
+            examples: '"That policy is fascist" \u2014 which element: the leader cult? one-party rule? political violence? Or is it simply disliked?',
+            settingKey: "highlightIsmsFascism",
+            statKey: "ismsFascismCount",
+            basicTip: '"Fascism" names specific historical movements; in casual use it often just intensifies disapproval.',
+            whenConcerning: "When the label substitutes for naming concrete features, ending analysis",
+            whenAcceptable: "For the historical movements, self-described groups, or analysis that states its criteria"
+          },
+          populism: {
+            id: "populism",
+            name: "Populism",
+            icon: "\u{1F4E3}",
+            color: "#7e57c2",
+            description: `Named for the US People's Party of the 1890s. In political science it describes a style, found on both left and right, that frames politics as a virtuous "the people" against a corrupt "elite" (Mudde calls it a "thin" ideology that attaches to others).`,
+            implication: 'In headlines the word often just means "popular and irresponsible" or "demagogic" \u2014 a way to dismiss a movement without engaging its claims. The scholarly sense is descriptive; the journalistic sense is usually pejorative, and readers rarely know which one they are getting.',
+            suggestion: 'Ask what the labeled movement actually proposes, and who is being cast as "the people" and "the elite."',
+            examples: '"Populist economic policy" \u2014 described, or dismissed? The label alone does not say what the policy is.',
+            settingKey: "highlightIsmsPopulism",
+            statKey: "ismsPopulismCount",
+            basicTip: '"Populist" is descriptive in scholarship and usually pejorative in headlines \u2014 check which sense is in play.',
+            whenConcerning: "When the label dismisses a movement without engaging its actual claims",
+            whenAcceptable: "In the political-science sense with the people/elite framing made explicit"
+          },
+          nationalism: {
+            id: "nationalism",
+            name: "Nationalism & Globalism",
+            icon: "\u{1F5FA}\uFE0F",
+            color: "#00838f",
+            description: 'Nationalism ranges from a founding principle of modern states (self-determination movements) to aggressive supremacy; Orwell distinguished patriotism (devotion to a place and way of life) from nationalism (competitive prestige-seeking). "Globalism" is its shifting antonym.',
+            implication: 'Both words work as boundary markers more than descriptions. "Globalist" in particular ranges from a neutral label for supporters of international institutions and trade to a conspiracy trope with a documented antisemitic history \u2014 the ambiguity itself is why the word inflames. "Nationalist" likewise spans self-determination and chauvinism.',
+            suggestion: "Ask which policies or loyalties are actually meant, and whether the person described would accept the label.",
+            examples: '"Globalist agenda" \u2014 trade agreements and treaties, or an insinuated hidden cabal? The sentence rarely says.',
+            settingKey: "highlightIsmsNationalism",
+            statKey: "ismsNationalismCount",
+            basicTip: '"Nationalist" spans self-determination to chauvinism; "globalist" spans trade policy to conspiracy trope.',
+            whenConcerning: "When either word insinuates loyalty or conspiracy without naming policies or people",
+            whenAcceptable: "For self-described movements, or when the specific policies and institutions are stated"
+          }
+        }
       }
     };
     // Excellence detection types
@@ -2149,7 +2268,7 @@
       "advancedSectionToggle": ["passiveToggle", "weaselToggle", "presuppositionToggle", "probabilityToggle"],
       "framingSectionToggle": ["metaphorToggle", "minimizerToggle", "maximizerToggle", "falseBalanceToggle", "euphemismToggle"],
       "manipulationSectionToggle": ["emotionalToggle", "gaslightingToggle", "falseDilemmaToggle"],
-      "explainerSectionToggle": ["spectrumToggle", "scistatsToggle"]
+      "explainerSectionToggle": ["spectrumToggle", "scistatsToggle", "ismsToggle"]
     };
     let customGroups = [];
     let editingGroupId = null;

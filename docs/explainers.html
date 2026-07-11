@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explainer Playground — E-Prime Bias Detector</title>
+    <meta name="description" content="Test passages for the explainer dictionaries: political spectrum labels, science & statistics phrases, and political -isms.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --ink: #1a1a1a;
+            --paper: #f6f4f0;
+            --paper-warm: #eee9e0;
+            --accent: #c44b2b;
+            --muted: #8a8078;
+            --rule: #d4cfc7;
+            --green: #2d7a4f;
+            --spectrum: #7e57c2;
+            --scistats: #546e7a;
+            --isms: #607d8b;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            background: var(--paper);
+            line-height: 1.7;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page-header {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 64px 40px 56px;
+        }
+        .page-header-inner { max-width: 780px; margin: 0 auto; }
+        .eyebrow {
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .page-header h1 {
+            font-family: 'Newsreader', serif;
+            font-size: clamp(34px, 5vw, 52px);
+            font-weight: 600;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+        .page-header p { color: #b0aaa0; max-width: 640px; }
+        .page-header a { color: var(--paper); }
+
+        main { max-width: 780px; margin: 0 auto; padding: 48px 40px 80px; }
+
+        .howto {
+            background: var(--paper-warm);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 20px 24px;
+            margin-bottom: 48px;
+            font-size: 15.5px;
+        }
+        .howto strong { font-weight: 600; }
+        .howto ol { margin: 10px 0 0 20px; }
+
+        section.explainer { margin-bottom: 64px; }
+        section.explainer > h2 {
+            font-family: 'Newsreader', serif;
+            font-size: 32px;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--band, var(--rule));
+            margin-bottom: 8px;
+        }
+        .families {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 14px 0 22px;
+        }
+        .family-chip {
+            font-size: 13px;
+            background: var(--paper-warm);
+            border: 1px solid var(--rule);
+            border-radius: 20px;
+            padding: 3px 12px;
+            color: #555;
+        }
+        section.explainer > p.lede { color: #444; margin-bottom: 22px; }
+
+        .passage {
+            background: white;
+            border: 1px solid var(--rule);
+            border-radius: 10px;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .passage-label {
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .passage.trigger .passage-label { color: var(--band, var(--accent)); }
+        .passage.guard { background: #fbfaf7; border-style: dashed; }
+        .passage.guard .passage-label { color: var(--green); }
+        .passage p {
+            font-family: 'Newsreader', serif;
+            font-size: 18.5px;
+            line-height: 1.8;
+        }
+        .passage p + p { margin-top: 14px; }
+        .passage .expected {
+            margin-top: 14px;
+            font-size: 14px;
+            color: var(--muted);
+            border-top: 1px dashed var(--rule);
+            padding-top: 10px;
+        }
+
+        .site-footer {
+            background: var(--ink);
+            color: #b0aaa0;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+        .site-footer a { color: var(--paper); margin: 0 12px; }
+    </style>
+</head>
+<body>
+
+<header class="page-header">
+    <div class="page-header-inner">
+        <div class="eyebrow">Explainer Playground</div>
+        <h1>Contested terms, explained in place</h1>
+        <p>
+            Explainer dictionaries annotate terms whose meanings shift between countries, eras,
+            disciplines, and speakers — with context, not accusations. This page exists to exercise
+            them: with the extension installed, the passages below should light up, and the guard
+            passages should stay clean. Back to the <a href="index.html">main page</a> or the
+            <a href="reference.html">full pattern reference</a>.
+        </p>
+    </div>
+</header>
+
+<main>
+    <div class="howto">
+        <strong>How to use this page</strong>
+        <ol>
+            <li>Load the extension (Chrome: <code>chrome://extensions</code> → Load unpacked → <code>dist/</code>).</li>
+            <li>Open this page. Highlights appear within a second or two.</li>
+            <li>Click any highlight — explainer cards carry a gray <strong>Context</strong> badge, never a severity level.</li>
+            <li>Check the dashed <strong>guard passages</strong>: nothing in them should be highlighted by the explainers.</li>
+        </ol>
+    </div>
+
+    <!-- ========== POLITICAL SPECTRUM LABELS ========== -->
+    <section class="explainer" style="--band: #7e57c2;">
+        <h2>Political Spectrum Labels</h2>
+        <div class="families">
+            <span class="family-chip">🧭 Left / Right</span>
+            <span class="family-chip">📜 Liberal</span>
+            <span class="family-chip">🏛️ Conservative</span>
+        </div>
+        <p class="lede">
+            Direction-words inherited from 1789 seating charts, and labels that reversed meaning as
+            they crossed oceans. The cards explain where each label came from and why two readers can
+            take opposite meanings from the same sentence.
+        </p>
+
+        <div class="passage trigger">
+            <div class="passage-label">Should highlight</div>
+            <p>
+                Left-wing commentators accused the government of drifting toward the far right, while
+                conservatives insisted the reforms were simply prudent. One columnist described the
+                senator as liberal on trade but pointed out that the left has never fully trusted him;
+                rightist papers, meanwhile, celebrated what they called a victory for the center-right.
+            </p>
+            <div class="expected" data-skip-analysis="true">Expected: left-wing, far right, conservatives, liberal, the left, rightist, center-right — each with its family's card.</div>
+        </div>
+
+        <div class="passage guard">
+            <div class="passage-label">Should stay clean</div>
+            <p>
+                You have the right to remain silent. A conservative estimate puts the repair bill at
+                five thousand dollars, which left the committee with little choice: turn left at the
+                second junction, apply a liberal amount of primer, and hope the liberal arts faculty
+                approves the budget at the right time.
+            </p>
+            <div class="expected" data-skip-analysis="true">Everyday senses only — no spectrum highlights.</div>
+        </div>
+    </section>
+
+    <!-- ========== SCIENCE & STATISTICS ========== -->
+    <section class="explainer" style="--band: #546e7a;">
+        <h2>Science &amp; Statistics</h2>
+        <div class="families">
+            <span class="family-chip">🔬 Proof &amp; "The Science"</span>
+            <span class="family-chip">📊 Statistical Significance</span>
+            <span class="family-chip">🔗 Linked &amp; Associated</span>
+            <span class="family-chip">⚖️ Relative vs Absolute Risk</span>
+            <span class="family-chip">🔍 No Evidence</span>
+            <span class="family-chip">🌿 Natural &amp; Chemical-Free</span>
+        </div>
+        <p class="lede">
+            Research and marketing phrases whose technical meaning differs from how they read.
+            The cards hand you the question to ask: What's the effect size? What's the baseline?
+            Who looked, and how hard?
+        </p>
+
+        <div class="passage trigger">
+            <div class="passage-label">Should highlight — health news</div>
+            <p>
+                A new study found that daily coffee is linked to a significantly lower risk of stroke:
+                regular drinkers were 30% less likely to be affected, and researchers reported a
+                significant reduction in related hospital visits. Skeptics note the drink merely
+                correlates with wealth — but supporters say the association between coffee and health
+                keeps showing up, and that critics dismiss it as just a theory.
+            </p>
+            <div class="expected" data-skip-analysis="true">Expected: linked to, significantly lower, 30% less likely, significant reduction, correlates with(–ish), association between, just a theory.</div>
+        </div>
+
+        <div class="passage trigger">
+            <div class="passage-label">Should highlight — marketing copy</div>
+            <p>
+                Our chemical-free detox tea is scientifically proven to flush out toxins — an
+                all-natural superfood blend with no evidence of side effects. Clinically proven,
+                trusted by thousands: this doubles your chances of feeling great, because the
+                science says so.
+            </p>
+            <div class="expected" data-skip-analysis="true">Expected: chemical-free, detox, scientifically proven, toxins, all-natural, superfood, no evidence, clinically proven, doubles your chances, the science says.</div>
+        </div>
+
+        <div class="passage guard">
+            <div class="passage-label">Should stay clean</div>
+            <p>
+                She brought her significant other to the lecture on music theory, having made a
+                significant investment in tickets. In theory the professor would discuss the toxin
+                isolated from the bacterium, but he spent the hour on game theory instead.
+            </p>
+            <div class="expected" data-skip-analysis="true">Everyday and technical-singular senses only — no science &amp; statistics highlights.</div>
+        </div>
+    </section>
+
+    <!-- ========== POLITICAL -ISMS ========== -->
+    <section class="explainer" style="--band: #607d8b;">
+        <h2>Political -isms</h2>
+        <div class="families">
+            <span class="family-chip">🏭 Socialism</span>
+            <span class="family-chip">🏦 Capitalism</span>
+            <span class="family-chip">📚 Fascism</span>
+            <span class="family-chip">📣 Populism</span>
+            <span class="family-chip">🗺️ Nationalism &amp; Globalism</span>
+        </div>
+        <p class="lede">
+            System-words whose referents differ so much between speakers that arguments about them
+            are often arguments about different things. The cards anchor each word to its history
+            and ask which variant is actually meant.
+        </p>
+
+        <div class="passage trigger">
+            <div class="passage-label">Should highlight</div>
+            <p>
+                The mayor's opponents branded the transit plan socialism, while her allies said the
+                city was finally taming crony capitalism. A populist challenger blamed globalist
+                trade deals; a rival called that rhetoric a slide toward fascism. Editorials asked
+                whether nationalist industrial policy could coexist with the free market, and whether
+                democratic socialists and social democrats even want the same thing.
+            </p>
+            <div class="expected" data-skip-analysis="true">Expected: socialism, crony capitalism, populist, globalist, fascism, nationalist, free market, democratic socialists, social democrats.</div>
+        </div>
+
+        <div class="passage guard">
+            <div class="passage-label">Should stay clean</div>
+            <p>
+                The venture capitalist wired the funds on Tuesday. Venture capitalists rarely attend
+                municipal budget hearings, she noted, and the social committee's optimism about the
+                gala remained unshaken.
+            </p>
+            <div class="expected" data-skip-analysis="true">"Venture capitalist(s)" is a job title, and "social" alone is not "socialism" — no -ism highlights.</div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div>
+        <a href="index.html">Home</a>
+        <a href="reference.html">Pattern Reference</a>
+        <a href="https://github.com/shadnbob/e-primer">GitHub</a>
+    </div>
+    <p style="margin-top: 12px;">E-Prime Bias Detector &mdash; context, not accusations.</p>
+</footer>
+
+</body>
+</html>

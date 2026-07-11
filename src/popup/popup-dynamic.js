@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'advancedSectionToggle': ['passiveToggle', 'weaselToggle', 'presuppositionToggle', 'probabilityToggle'],
         'framingSectionToggle': ['metaphorToggle', 'minimizerToggle', 'maximizerToggle', 'falseBalanceToggle', 'euphemismToggle'],
         'manipulationSectionToggle': ['emotionalToggle', 'gaslightingToggle', 'falseDilemmaToggle'],
-        'explainerSectionToggle': ['spectrumToggle', 'scistatsToggle']
+        'explainerSectionToggle': ['spectrumToggle', 'scistatsToggle', 'ismsToggle']
     };
 
     let customGroups = [];

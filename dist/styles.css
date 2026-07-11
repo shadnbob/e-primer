@@ -952,6 +952,13 @@
     position: relative;
 }
 
+.bias-highlight-isms {
+    background-color: rgba(96, 125, 139, 0.3);
+    border-bottom: 1px solid #607d8b;
+    cursor: help;
+    position: relative;
+}
+
 .excellence-attribution {
     border-bottom: 2px solid #28a745;
     background-color: rgba(40, 167, 69, 0.1);
@@ -1010,6 +1017,7 @@
 .bias-highlight-probability::after,
 .bias-highlight-spectrum::after,
 .bias-highlight-scistats::after,
+.bias-highlight-isms::after,
 .excellence-attribution::after,
 .excellence-nuance::after,
 .excellence-transparency::after,
@@ -1051,6 +1059,7 @@
 .bias-highlight-probability:hover::after,
 .bias-highlight-spectrum:hover::after,
 .bias-highlight-scistats:hover::after,
+.bias-highlight-isms:hover::after,
 .excellence-attribution:hover::after,
 .excellence-nuance:hover::after,
 .excellence-transparency:hover::after,

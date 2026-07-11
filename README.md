@@ -143,6 +143,9 @@ Explainer dictionaries annotate contested terms with context rather than flaggin
 
 - **Political Spectrum Labels** — Left/Right and Liberal/Conservative labels (3 subcategories: left/right, liberal, conservative). These terms mean genuinely different things across countries, eras, and speakers — "liberal" in Australia leans center-right, the Left/Right axis dates to seating in the 1789 French National Assembly, and what a "conservative" conserves depends on where they live. Guarded senses like "the right to remain silent", "a conservative estimate", and "liberal arts" never trigger.
 - **Science & Statistics** — research and reporting phrases whose technical meaning differs from how they read (6 subcategories: proof & "the science", statistical significance, linked & associated, relative vs absolute risk, no evidence, natural & chemical-free). "Significant" means *probably not chance*, not *big*; "linked to" is not *causes*; "doubles the risk" is meaningless without the baseline; "no evidence" ranges from *thoroughly checked* to *nobody has looked*; and "chemical-free" is a marketing category, not a scientific one. Guarded senses like "significant other" and "music theory" never trigger.
+- **Political -isms** — system-words whose referents differ between speakers (5 subcategories: socialism, capitalism, fascism, populism, nationalism & globalism). "Socialism" spans Marxist state ownership to welfare-state social democracy; "capitalism" can mean markets in principle or the actual economy in practice; "fascism" names specific interwar movements but drifts toward a generic intensifier (Orwell flagged this in 1944); "populist" is descriptive in scholarship and pejorative in headlines; "globalist" ranges from trade policy to conspiracy trope. "Venture capitalist" — a job title — never triggers.
+
+Try all three on the [Explainer Playground](https://shadnbob.github.io/e-primer/explainers.html) (`docs/explainers.html`), a test page with passages that should light up and guard passages that should stay clean.
 
 ### Excellence Detection
 - **Clear Attribution** — specific, verifiable sources
@@ -215,7 +218,7 @@ e-primer/
 │   │   ├── opinion-words.js          # Opinion/subjective terms
 │   │   ├── absolute-words.js         # Universal quantifiers
 │   │   ├── tobe-verbs.js             # E-Prime verb forms
-│   │   └── ...                       # 13 more pattern dictionaries
+│   │   └── ...                       # 14 more pattern dictionaries
 │   ├── popup/
 │   │   ├── popup-dynamic.js          # Popup entry point
 │   │   ├── PopupGenerator.js         # Dynamic UI generation
@@ -260,7 +263,7 @@ See [EXTENDING.md](EXTENDING.md) for the full guide. The short version:
 
 The extension runs as a content script on every web page. On load:
 
-1. **Pattern compilation** — all word lists and regex patterns from the 17 dictionaries are pre-compiled into optimized RegExp objects
+1. **Pattern compilation** — all word lists and regex patterns from the 18 dictionaries are pre-compiled into optimized RegExp objects
 2. **Text node collection** — a TreeWalker traverses the DOM collecting text nodes, skipping scripts, styles, and the extension's own highlights
 3. **Batch processing** — text nodes are analyzed in batches to avoid blocking the UI thread
 4. **Pattern matching** — each enabled detector runs its compiled patterns against the text
