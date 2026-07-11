@@ -1595,7 +1595,7 @@
             icon: "\u{1F5FA}\uFE0F",
             color: "#00838f",
             description: 'Nationalism ranges from a founding principle of modern states (self-determination movements) to aggressive supremacy; Orwell distinguished patriotism (devotion to a place and way of life) from nationalism (competitive prestige-seeking). "Globalism" is its shifting antonym.',
-            implication: 'Both words work as boundary markers more than descriptions. "Globalist" in particular ranges from a neutral label for supporters of international institutions and trade to a conspiracy trope with a documented antisemitic history \u2014 the ambiguity itself is why the word inflames. "Nationalist" likewise spans self-determination and chauvinism.',
+            implication: 'Both words work as boundary markers more than descriptions. "Globalist" in particular ranges from a neutral label for supporters of international institutions and trade to conspiracy tropes \u2014 the ambiguity itself is why the word inflames. "Nationalist" likewise spans self-determination and chauvinism.',
             suggestion: "Ask which policies or loyalties are actually meant, and whether the person described would accept the label.",
             examples: '"Globalist agenda" \u2014 trade agreements and treaties, or an insinuated hidden cabal? The sentence rarely says.',
             settingKey: "highlightIsmsNationalism",
@@ -1603,6 +1603,318 @@
             basicTip: '"Nationalist" spans self-determination to chauvinism; "globalist" spans trade policy to conspiracy trope.',
             whenConcerning: "When either word insinuates loyalty or conspiracy without naming policies or people",
             whenAcceptable: "For self-described movements, or when the specific policies and institutions are stated"
+          }
+        }
+      },
+      CIVICS: {
+        id: "civics",
+        name: "Speech & Civic Terms",
+        description: "Legal standards and civic values whose legal sense and cultural sense get swapped mid-argument",
+        category: "explainer",
+        isExplainer: true,
+        color: "#5c6bc0",
+        className: "bias-highlight-civics",
+        settingKey: "highlightCivics",
+        statKey: "civicsCount",
+        enabled: true,
+        tooltip: "A civic term whose legal meaning and cultural meaning often get swapped",
+        basicTip: "A civic term whose legal meaning and cultural meaning often get swapped",
+        whenConcerning: "When a legal claim and a cultural-norm claim trade places mid-argument, or courtroom standards are asserted to bind actors they do not bind",
+        whenAcceptable: "When the speaker specifies which sense is meant: the law, or the value",
+        lookFor: [
+          "Is this a claim about law or about norms?",
+          "Who exercised what power, with what remedy available?",
+          "Does the standard invoked actually bind this actor?",
+          "What fairness is really being demanded?"
+        ],
+        examples: {
+          problematic: [
+            "they violated my free speech (a private host declined)",
+            "that's censorship (a disagreement)",
+            "that's slander (a true statement)",
+            "innocent until proven guilty (about a hiring decision)"
+          ],
+          acceptable: [
+            "the ordinance likely violates the First Amendment",
+            "the platform's moderation policy removed the post",
+            "the court found the statement defamatory",
+            "the defendant is presumed innocent at trial"
+          ]
+        },
+        contextualGuidance: {
+          academic: "Expect the legal/normative distinction to be explicit",
+          news: "Watch for censorship and rights language applied across very different powers and remedies",
+          opinion: "Values arguments are legitimate \u2014 but should not borrow the authority of settled law",
+          instructions: "Rarely relevant; treat as informational"
+        },
+        subCategories: {
+          free_speech: {
+            id: "free_speech",
+            name: "Free Speech",
+            icon: "\u{1F5E3}\uFE0F",
+            color: "#5c6bc0",
+            description: 'Two related but distinct things share the name: a legal right \u2014 in the US, the First Amendment, which restrains *government* ("Congress shall make no law\u2026") \u2014 and a broader cultural value of open discourse (argued by Milton and Mill long before any constitution).',
+            implication: "The most common collapse online: one person argues the law (a platform or employer is not the government, so no right was violated) while the other argues the value (a culture of sanction chills discourse regardless of who applies it). Both senses are legitimate; treating them as one produces arguments where both sides are right about different things.",
+            suggestion: "Ask which sense is in play: a legal claim about state power, or a cultural claim about norms of open discourse?",
+            examples: '"They violated my free speech" \u2014 did a government act, or did a private party decline to host or associate?',
+            settingKey: "highlightCivicsFreeSpeech",
+            statKey: "civicsFreeSpeechCount",
+            basicTip: '"Free speech" names both a legal right against government and a cultural value \u2014 arguments often swap the two.',
+            whenConcerning: "When the legal and cultural senses trade places mid-argument",
+            whenAcceptable: "When the speaker specifies law or value, or the state really is the actor"
+          },
+          censorship: {
+            id: "censorship",
+            name: "Censorship",
+            icon: "\u2702\uFE0F",
+            color: "#8d6e63",
+            description: "Historically, suppression by authority \u2014 licensing regimes and prior restraint (Milton's Areopagitica argued against them in 1644). The word now stretches across state suppression, platform moderation, editorial judgment, and sometimes mere criticism.",
+            implication: "State censorship, platform moderation, editorial selection, and social pushback differ enormously in power and remedy \u2014 a government can imprison, a platform can remove, an editor can decline, a critic can only object. The single word erases those differences. Whether large platforms' moderation *should* be treated like public censorship is a genuine, unsettled debate; the word alone does not resolve it.",
+            suggestion: "Ask who exercised what power, with what alternatives left to the speaker \u2014 and what remedy is actually being proposed.",
+            examples: '"They censored me" \u2014 a takedown? a declined submission? a ban? disagreement? Each is a different claim.',
+            settingKey: "highlightCivicsCensorship",
+            statKey: "civicsCensorshipCount",
+            basicTip: 'State suppression, platform moderation, editorial choice, and criticism differ in power and remedy \u2014 "censorship" covers them all.',
+            whenConcerning: "When the word equates very different powers, or stands in for naming who did what",
+            whenAcceptable: "When the actor and the power exercised are specified"
+          },
+          rights: {
+            id: "rights",
+            name: "Rights Claims",
+            icon: "\u{1F4DC}",
+            color: "#00838f",
+            description: 'Rights-talk mixes distinct claims: legal rights (enforceable in some jurisdiction, against some party), moral rights (claims about what ought to be, whatever the law says), and rhetorical entitlement ("I have a right to\u2026" as emphasis).',
+            implication: `A legal right names who must do what \u2014 enforceable, specific, jurisdiction-bound. A moral right is an argument, not a fact about the law. Sliding between them lets a contested "ought" borrow the authority of an established "is," and vice versa: "there's no right to X" may be legally true and morally beside the point.`,
+            suggestion: "Ask: enforceable where, against whom? And if it is a moral claim, what is the argument for it?",
+            examples: '"I have a right to say this here" \u2014 under law, the host usually decides "here"; the moral claim needs its own defense.',
+            settingKey: "highlightCivicsRights",
+            statKey: "civicsRightsCount",
+            basicTip: "Legal rights are enforceable and specific; moral rights are arguments \u2014 rights-talk often slides between them.",
+            whenConcerning: "When a moral claim borrows legal authority, or a legal fact is used to dismiss a moral argument",
+            whenAcceptable: "When the claim specifies its kind: a law, a proposed law, or a moral argument"
+          },
+          legal_standards: {
+            id: "legal_standards",
+            name: "Legal Standards",
+            icon: "\u2696\uFE0F",
+            color: "#6d4c41",
+            description: 'Courtroom standards imported into everyday judgment: "innocent until proven guilty" and "due process" govern what the *state* must do before punishing. "Defamation" (libel if written, slander if spoken) requires a false statement of fact \u2014 and in the US, for public figures, knowing or reckless falsehood (NYT v. Sullivan, 1964).',
+            implication: `A boycott is not a verdict and an employer is not a court, so courtroom standards do not transfer automatically \u2014 yet the worry behind invoking them (serious consequences without fair process) is a real normative question, not a confusion. "That's slander!" about a true statement or an opinion misuses a term with a precise meaning.`,
+            suggestion: "Ask whether the standard invoked binds the actor in question \u2014 and if not, what fairness is actually being demanded.",
+            examples: `"Innocent until proven guilty" \u2014 a rule for the state's power to punish; whether private judgment should wait for verdicts is a separate argument.`,
+            settingKey: "highlightCivicsLegalStandards",
+            statKey: "civicsLegalStandardsCount",
+            basicTip: "Courtroom standards bind the state; invoking them elsewhere raises a real fairness question but does not settle it.",
+            whenConcerning: `When legal terms assert conclusions ("that's slander") without their elements, or courtroom rules are claimed to bind private actors automatically`,
+            whenAcceptable: "In actual legal contexts, or when the fairness argument is made on its own terms"
+          }
+        }
+      },
+      ECONTERMS: {
+        id: "econterms",
+        name: "Economic Terms",
+        description: "Everyday economics vocabulary where a technical meaning differs from how the phrase reads",
+        category: "explainer",
+        isExplainer: true,
+        color: "#6d4c41",
+        className: "bias-highlight-econterms",
+        settingKey: "highlightEconTerms",
+        statKey: "econTermsCount",
+        enabled: true,
+        tooltip: "An economic phrase whose technical meaning differs from how it reads",
+        basicTip: "An economic phrase whose technical meaning differs from how it reads",
+        whenConcerning: 'When rates pass for levels, flows for stocks, one measure for "the economy", or records go unadjusted',
+        whenAcceptable: "When the measure, period, and comparison are stated",
+        lookFor: [
+          "Rate of change, or level?",
+          "Yearly flow, or accumulated stock?",
+          'Which measure of "the economy", for whom?',
+          "Adjusted for inflation and scale?"
+        ],
+        examples: {
+          problematic: [
+            "inflation is falling (so why are prices still high?)",
+            "we cut the deficit (while the debt grew \u2014 both true)",
+            "good for the economy (which measure, for whom?)",
+            "record profits (nominal, in a bigger economy)"
+          ],
+          acceptable: [
+            "prices rose 3% over the year, down from 7%",
+            "the deficit fell to 4% of GDP; debt reached 98% of GDP",
+            "unemployment fell while median real wages were flat",
+            "profits rose 12% after inflation, a 40-year high as a share of revenue"
+          ]
+        },
+        contextualGuidance: {
+          academic: "Expect explicit measures, periods, and adjustments",
+          news: "Rate/level and deficit/debt confusion is routine in headlines; check the numbers behind the phrase",
+          opinion: "Economic claims support opposite conclusions depending on the measure chosen \u2014 check which one is doing the work",
+          instructions: "Rarely relevant; treat as informational"
+        },
+        subCategories: {
+          inflation: {
+            id: "inflation",
+            name: "Inflation Is a Rate",
+            icon: "\u{1F4C8}",
+            color: "#6d4c41",
+            description: 'Inflation measures how fast prices are *rising*. "Inflation is falling" therefore means prices are rising more slowly \u2014 not that prices are falling (that would be deflation, which is rare and brings its own problems).',
+            implication: 'During 2021\u201324 this confusion was everywhere: headlines celebrated "falling inflation" while readers wondered why groceries still cost more, because the price *level* kept the earlier increases. Disinflation (a slowing rate) and deflation (falling prices) are different phenomena with nearly identical-sounding coverage.',
+            suggestion: "Ask whether the sentence is about the rate of change or the level of prices \u2014 and over what period.",
+            examples: '"Inflation fell to 3%" \u2014 prices are still rising 3% a year, on top of every previous increase.',
+            settingKey: "highlightEconTermsInflation",
+            statKey: "econTermsInflationCount",
+            basicTip: 'Inflation is a rate: "falling inflation" means prices rising more slowly, not prices falling.',
+            whenConcerning: 'When rate language invites level conclusions ("inflation fell, so prices are back to normal")',
+            whenAcceptable: "When the rate/level distinction is explicit or the numbers are given"
+          },
+          deficit_debt: {
+            id: "deficit_debt",
+            name: "Deficit vs Debt",
+            icon: "\u{1F3DB}\uFE0F",
+            color: "#546e7a",
+            description: "The deficit is a yearly flow \u2014 this year's gap between spending and revenue. The debt is the accumulated stock of all past deficits. Cutting the deficit still grows the debt, just more slowly.",
+            implication: 'The two get conflated daily, which lets rhetoric mislead in both directions: "we cut the deficit in half" can coexist with record debt, and "the debt hit a record" is nearly always true in a growing economy and says little by itself. Scale also vanishes \u2014 figures mean little without comparison to GDP.',
+            suggestion: "Ask which one is meant \u2014 the yearly gap or the accumulated total \u2014 and compared to what (last year, GDP, projections)?",
+            examples: '"Cut the deficit" while "the debt grew" \u2014 both true at once, and routinely deployed against each other.',
+            settingKey: "highlightEconTermsDeficitDebt",
+            statKey: "econTermsDeficitDebtCount",
+            basicTip: "The deficit is this year's gap; the debt is the accumulated total. Cutting one still grows the other.",
+            whenConcerning: "When the words trade places, or figures come without a GDP-scale comparison",
+            whenAcceptable: "When flow, stock, and scale are distinguished"
+          },
+          recession_economy: {
+            id: "recession_economy",
+            name: 'Recession & "The Economy"',
+            icon: "\u{1F321}\uFE0F",
+            color: "#00838f",
+            description: 'A "recession" has no single agreed definition: the informal rule of thumb (two consecutive quarters of shrinking GDP) differs from the US convention, where the NBER dates recessions after the fact using many indicators. And "the economy" is not one thing \u2014 GDP, stock indices, employment, and wages routinely move in different directions.',
+            implication: 'Whether "we are in a recession" can be genuinely disputed for months, which makes the word a political football. "Good for the economy" often means good for one measure and one group \u2014 the stock market is not household income, and GDP growth says nothing about how gains are distributed.',
+            suggestion: "Ask which measure and whose experience is meant: output, jobs, wages, prices, or portfolios?",
+            examples: '"The economy is booming" \u2014 GDP? the S&P 500? median wages? All three can point different ways at once.',
+            settingKey: "highlightEconTermsRecession",
+            statKey: "econTermsRecessionCount",
+            basicTip: '"Recession" has competing definitions, and "the economy" bundles measures that move in different directions.',
+            whenConcerning: "When one measure stands in for the whole, or the definitional dispute is presented as settled",
+            whenAcceptable: "When the measure and the definition in use are named"
+          },
+          class_records: {
+            id: "class_records",
+            name: "Middle Class & Records",
+            icon: "\u{1F3E0}",
+            color: "#7e57c2",
+            description: '"Middle class" has no standard definition \u2014 income bands, wealth, occupation, and self-image all give different answers, and in surveys large majorities across very different incomes place themselves in it. "Record profits" and similar records are often nominal: in a growing economy with inflation, records are routine.',
+            implication: 'Because nearly everyone hears themselves in "the middle class," policies pitched to it can target very different people than the listener imagines. Records reported without inflation adjustment or share-of-revenue context can describe an ordinary year in a bigger economy \u2014 or a genuinely extraordinary one; the phrase alone cannot say.',
+            suggestion: "Ask what boundaries are meant by the class label, and whether the record is adjusted for inflation and scale.",
+            examples: '"Tax relief for the middle class" \u2014 which incomes, exactly? "Record profits" \u2014 real, or nominal in a larger economy?',
+            settingKey: "highlightEconTermsClassRecords",
+            statKey: "econTermsClassRecordsCount",
+            basicTip: "Nearly everyone self-identifies as middle class, and nominal records are routine \u2014 both phrases need numbers.",
+            whenConcerning: "When the class label targets sympathy without boundaries, or records come unadjusted",
+            whenAcceptable: "When income ranges or inflation-adjusted comparisons are given"
+          }
+        }
+      },
+      EPISTEMICS: {
+        id: "epistemics",
+        name: "Media & Truth Terms",
+        description: "The vocabulary used to talk about truth and coverage itself \u2014 words that both describe real phenomena and dismiss opponents",
+        category: "explainer",
+        isExplainer: true,
+        color: "#7e57c2",
+        className: "bias-highlight-epistemics",
+        settingKey: "highlightEpistemics",
+        statKey: "epistemicsCount",
+        enabled: true,
+        tooltip: "A media/truth term that both describes a real phenomenon and gets used to dismiss",
+        basicTip: "A media/truth term that both describes a real phenomenon and gets used to dismiss",
+        whenConcerning: "When the label does the arguing \u2014 dismissing a claim or an outlet without engaging its content",
+        whenAcceptable: "When the specific claim, outlet, or evidence is named and the label is defended, not assumed",
+        lookFor: [
+          "What exactly is claimed to be false, and by what standard?",
+          "Who applied this label, and could it be contested?",
+          "Is the underlying claim falsifiable?",
+          "Which outlets or actors are actually meant?"
+        ],
+        examples: {
+          problematic: [
+            "fake news (about accurate but unwelcome reporting)",
+            "flagged as misinformation (by whom, on what basis?)",
+            "just a conspiracy theory (unexamined)",
+            "the media won't tell you this (which outlets?)"
+          ],
+          acceptable: [
+            "the story was fabricated; the outlet retracted it",
+            "three independent fact-checks found the claim false because\u2026",
+            "the theory is unfalsifiable: contrary evidence is read as cover-up",
+            "coverage in outlets A and B omitted the report; outlet C covered it"
+          ]
+        },
+        contextualGuidance: {
+          academic: "Expect the taxonomy (mis/dis/mal) and labeling criteria to be explicit",
+          news: "Watch for truth-labels applied without stating who judged and how",
+          opinion: 'Claims about "the media" or "the narrative" should name outlets and cases',
+          instructions: "Rarely relevant; treat as informational"
+        },
+        subCategories: {
+          fake_news: {
+            id: "fake_news",
+            name: "Fake News",
+            icon: "\u{1F4F0}",
+            color: "#8d6e63",
+            description: "Around 2016 the phrase named something specific: fabricated stories manufactured for clicks and ad revenue. Within roughly a year it had been captured as an epithet for unfavorable coverage \u2014 one of the fastest semantic captures on record.",
+            implication: "The phrase now points in two directions at once: at genuinely fabricated content, and at accurate-but-unwelcome reporting. Without specification it mostly signals the speaker's stance toward the outlet, not the story's accuracy \u2014 and its overuse makes the original, real phenomenon harder to name.",
+            suggestion: "Ask what exactly is claimed to be false \u2014 the facts, the framing, or the outlet \u2014 and what the evidence is.",
+            examples: '"That story is fake news" \u2014 fabricated? mistaken in part? accurately reported but unwelcome? Three different claims.',
+            settingKey: "highlightEpistemicsFakeNews",
+            statKey: "epistemicsFakeNewsCount",
+            basicTip: '"Fake news" named fabricated content, then became an epithet for unwelcome coverage \u2014 ask which is meant.',
+            whenConcerning: "When the phrase dismisses reporting without naming what is false",
+            whenAcceptable: "For genuinely fabricated content, with the fabrication shown"
+          },
+          misinfo_disinfo: {
+            id: "misinfo_disinfo",
+            name: "Mis- & Disinformation",
+            icon: "\u{1F500}",
+            color: "#5c6bc0",
+            description: "In the researcher taxonomy: misinformation is false content spread without intent to deceive; disinformation is false content spread deliberately; malinformation is genuine information deployed to harm. The prefixes carry the intent claim.",
+            implication: 'In practice the labels get applied beyond clear falsehood \u2014 to contested-but-arguable claims, and sometimes to positions that later became mainstream, which is why the labeling power itself is disputed. Calling something "disinformation" asserts intent to deceive; that is a strong claim that needs its own evidence.',
+            suggestion: "Ask two separate questions: is the claim actually false, and who established that? And if intent is asserted, on what basis?",
+            examples: '"Flagged as misinformation" \u2014 false by what standard, judged by whom, and has that judgment been revisited?',
+            settingKey: "highlightEpistemicsMisinfo",
+            statKey: "epistemicsMisinfoCount",
+            basicTip: "Mis- means false; dis- means deliberately false. Both labels carry claims that need their own evidence.",
+            whenConcerning: "When the label substitutes for showing falsehood, or intent is asserted without basis",
+            whenAcceptable: "When the falsehood is demonstrated and the judging standard is named"
+          },
+          conspiracy: {
+            id: "conspiracy",
+            name: "Conspiracy Theory",
+            icon: "\u{1F9F5}",
+            color: "#00838f",
+            description: "Descriptively, a claim that events are best explained by a secret plot. Real conspiracies exist and have been documented (Watergate; the tobacco industry's coordination to obscure smoking risks) \u2014 the label is not automatically wrong.",
+            implication: "The term does double duty: it describes a reasoning style that resists disproof (missing evidence becomes proof of the cover-up; everything connects), and it dismisses unwelcome claims without examination. The useful question is not the label but the structure: could any evidence count against this claim?",
+            suggestion: "Ask whether the claim is falsifiable and what specific evidence supports it \u2014 not whether someone has applied the label.",
+            examples: '"Just a conspiracy theory" \u2014 is the claim unfalsifiable, or merely unwelcome? The label alone cannot say.',
+            settingKey: "highlightEpistemicsConspiracy",
+            statKey: "epistemicsConspiracyCount",
+            basicTip: "Real conspiracies exist; the useful test is falsifiability, not the label.",
+            whenConcerning: "When the label ends inquiry into a claim that could be examined",
+            whenAcceptable: "When describing the unfalsifiable reasoning structure, with examples"
+          },
+          narrative_media: {
+            id: "narrative_media",
+            name: 'Narratives & "The Media"',
+            icon: "\u{1F4E1}",
+            color: "#7e57c2",
+            description: '"The mainstream media" bundles thousands of outlets with different owners, incentives, audiences, and politics into a single actor; "the narrative" implies coverage is a coordinated story rather than the noisier reality of herding, incentives, and error. "Do your own research" ranges from good advice to a dismissal of all expertise.',
+            implication: 'Monolith-words make coverage claims unfalsifiable: any outlet that contradicts "the narrative" gets excluded from "the media" that supposedly maintains it. Real, studiable phenomena exist underneath \u2014 ownership concentration, pack journalism, shared blind spots \u2014 but they need naming specifically to be examined at all.',
+            suggestion: "Ask which outlets, which claims, and which incentives are actually meant \u2014 and what would count as coverage that breaks the pattern.",
+            examples: `"The media won't tell you this" \u2014 which outlets? (Often the claim itself comes from a large outlet.)`,
+            settingKey: "highlightEpistemicsNarrative",
+            statKey: "epistemicsNarrativeCount",
+            basicTip: '"The media" and "the narrative" bundle many actors into one \u2014 real patterns underneath need specific naming.',
+            whenConcerning: "When the monolith framing makes the claim unfalsifiable",
+            whenAcceptable: "When specific outlets, cases, and incentives are named"
           }
         }
       }
@@ -2268,7 +2580,7 @@
       "advancedSectionToggle": ["passiveToggle", "weaselToggle", "presuppositionToggle", "probabilityToggle"],
       "framingSectionToggle": ["metaphorToggle", "minimizerToggle", "maximizerToggle", "falseBalanceToggle", "euphemismToggle"],
       "manipulationSectionToggle": ["emotionalToggle", "gaslightingToggle", "falseDilemmaToggle"],
-      "explainerSectionToggle": ["spectrumToggle", "scistatsToggle", "ismsToggle"]
+      "explainerSectionToggle": ["spectrumToggle", "scistatsToggle", "ismsToggle", "civicsToggle", "econtermsToggle", "epistemicsToggle"]
     };
     let customGroups = [];
     let editingGroupId = null;

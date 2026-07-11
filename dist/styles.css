@@ -959,6 +959,27 @@
     position: relative;
 }
 
+.bias-highlight-civics {
+    background-color: rgba(92, 107, 192, 0.3);
+    border-bottom: 1px solid #5c6bc0;
+    cursor: help;
+    position: relative;
+}
+
+.bias-highlight-econterms {
+    background-color: rgba(109, 76, 65, 0.3);
+    border-bottom: 1px solid #6d4c41;
+    cursor: help;
+    position: relative;
+}
+
+.bias-highlight-epistemics {
+    background-color: rgba(126, 87, 194, 0.3);
+    border-bottom: 1px solid #7e57c2;
+    cursor: help;
+    position: relative;
+}
+
 .excellence-attribution {
     border-bottom: 2px solid #28a745;
     background-color: rgba(40, 167, 69, 0.1);
@@ -1018,6 +1039,9 @@
 .bias-highlight-spectrum::after,
 .bias-highlight-scistats::after,
 .bias-highlight-isms::after,
+.bias-highlight-civics::after,
+.bias-highlight-econterms::after,
+.bias-highlight-epistemics::after,
 .excellence-attribution::after,
 .excellence-nuance::after,
 .excellence-transparency::after,
@@ -1060,6 +1084,9 @@
 .bias-highlight-spectrum:hover::after,
 .bias-highlight-scistats:hover::after,
 .bias-highlight-isms:hover::after,
+.bias-highlight-civics:hover::after,
+.bias-highlight-econterms:hover::after,
+.bias-highlight-epistemics:hover::after,
 .excellence-attribution:hover::after,
 .excellence-nuance:hover::after,
 .excellence-transparency:hover::after,

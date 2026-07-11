@@ -18,6 +18,9 @@ import { probabilityLanguage } from './probability-language.js';
 import { spectrumLabels, spectrumWords } from './spectrum-labels.js';
 import { sciStatsTerms, sciStatsWords } from './science-stats.js';
 import { politicalIsms, politicalIsmsWords } from './political-isms.js';
+import { civicTerms, civicTermsWords } from './civic-terms.js';
+import { econTerms, econTermsWords } from './econ-terms.js';
+import { epistemicTerms, epistemicTermsWords } from './epistemic-terms.js';
 
 // Helper: check if a words entry is intensity-grouped ({ 1: [...], 2: [...] })
 // vs a flat array ([...])
@@ -61,7 +64,10 @@ export class BiasPatterns {
             probability: probabilityLanguage,
             spectrum: spectrumLabels,
             scistats: sciStatsTerms,
-            isms: politicalIsms
+            isms: politicalIsms,
+            civics: civicTerms,
+            econterms: econTerms,
+            epistemics: epistemicTerms
         };
     }
 
@@ -76,6 +82,9 @@ export class BiasPatterns {
         dictionaries.set('spectrum', spectrumWords);
         dictionaries.set('scistats', sciStatsWords);
         dictionaries.set('isms', politicalIsmsWords);
+        dictionaries.set('civics', civicTermsWords);
+        dictionaries.set('econterms', econTermsWords);
+        dictionaries.set('epistemics', epistemicTermsWords);
         return dictionaries;
     }
 
