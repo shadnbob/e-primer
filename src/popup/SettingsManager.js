@@ -20,10 +20,16 @@ export class SettingsManager {
             'enableToggle': 'enableAnalysis'
         };
 
-        // Add bias type toggles
+        // Add bias type toggles (and their subcategory toggles)
         this.biasTypes.forEach(biasType => {
             const toggleId = this.getToggleId(biasType.id);
             mappings[toggleId] = biasType.settingKey;
+
+            if (biasType.subCategories) {
+                for (const [subId, sub] of Object.entries(biasType.subCategories)) {
+                    mappings[`${biasType.id}_${subId}Toggle`] = sub.settingKey;
+                }
+            }
         });
 
         // Add excellence type toggles
@@ -41,9 +47,14 @@ export class SettingsManager {
     generateStatMappings() {
         const mappings = {};
 
-        // Add bias type stats
+        // Add bias type stats (and their subcategory stats)
         this.biasTypes.forEach(biasType => {
             mappings[biasType.statKey] = biasType.statKey;
+            if (biasType.subCategories) {
+                for (const sub of Object.values(biasType.subCategories)) {
+                    mappings[sub.statKey] = sub.statKey;
+                }
+            }
         });
 
         // Add excellence type stats

@@ -1,182 +1,12 @@
-// popup-dynamic.js - Enhanced with dynamic settings management
+// popup-dynamic.js - Popup logic. Bundled to popup.js by build.js (esbuild),
+// so settings metadata derives from BiasConfig instead of hand-kept copies.
+import { SettingsManager } from './SettingsManager.js';
+import { PopupGenerator } from './PopupGenerator.js';
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Dynamic Settings Manager - Compiled from SettingsManager.js
-    class SettingsManager {
-        constructor() {
-            // Hardcoded BiasConfig data for popup context
-            this.biasTypes = [
-                { id: 'opinion', settingKey: 'highlightOpinion', statKey: 'opinionCount',
-                  subCategories: {
-                    certainty: { settingKey: 'highlightOpinionCertainty', statKey: 'opinionCertaintyCount' },
-                    hedging: { settingKey: 'highlightOpinionHedging', statKey: 'opinionHedgingCount' },
-                    evaluative_positive: { settingKey: 'highlightOpinionEvaluativePositive', statKey: 'opinionEvaluativePositiveCount' },
-                    evaluative_negative: { settingKey: 'highlightOpinionEvaluativeNegative', statKey: 'opinionEvaluativeNegativeCount' },
-                    emotional_charge: { settingKey: 'highlightOpinionEmotionalCharge', statKey: 'opinionEmotionalChargeCount' },
-                    comparative: { settingKey: 'highlightOpinionComparative', statKey: 'opinionComparativeCount' },
-                    political_framing: { settingKey: 'highlightOpinionPoliticalFraming', statKey: 'opinionPoliticalFramingCount' },
-                    intensifiers: { settingKey: 'highlightOpinionIntensifiers', statKey: 'opinionIntensifiersCount' },
-                    credibility_undermining: { settingKey: 'highlightOpinionCredibilityUndermining', statKey: 'opinionCredibilityUnderminingCount' },
-                    loaded_political: { settingKey: 'highlightOpinionLoadedPolitical', statKey: 'opinionLoadedPoliticalCount' },
-                    moral_judgments: { settingKey: 'highlightOpinionMoralJudgments', statKey: 'opinionMoralJudgmentsCount' },
-                    emotional_appeals: { settingKey: 'highlightOpinionEmotionalAppeals', statKey: 'opinionEmotionalAppealsCount' }
-                  }
-                },
-                { id: 'tobe', settingKey: 'highlightToBe', statKey: 'toBeCount' },
-                { id: 'absolute', settingKey: 'highlightAbsolutes', statKey: 'absoluteCount' },
-                { id: 'passive', settingKey: 'highlightPassive', statKey: 'passiveCount' },
-                { id: 'weasel', settingKey: 'highlightWeasel', statKey: 'weaselCount' },
-                { id: 'presupposition', settingKey: 'highlightPresupposition', statKey: 'presuppositionCount' },
-                { id: 'metaphor', settingKey: 'highlightMetaphors', statKey: 'metaphorCount' },
-                { id: 'minimizer', settingKey: 'highlightMinimizers', statKey: 'minimizerCount' },
-                { id: 'maximizer', settingKey: 'highlightMaximizers', statKey: 'maximizerCount' },
-                { id: 'falsebalance', settingKey: 'highlightFalseBalance', statKey: 'falseBalanceCount' },
-                { id: 'euphemism', settingKey: 'highlightEuphemism', statKey: 'euphemismCount',
-                  subCategories: {
-                    political_euphemism: { settingKey: 'highlightEuphemismPolitical', statKey: 'euphemismPoliticalCount' },
-                    corporate_euphemism: { settingKey: 'highlightEuphemismCorporate', statKey: 'euphemismCorporateCount' },
-                    social_euphemism: { settingKey: 'highlightEuphemismSocial', statKey: 'euphemismSocialCount' },
-                    military_euphemism: { settingKey: 'highlightEuphemismMilitary', statKey: 'euphemismMilitaryCount' },
-                    dysphemism: { settingKey: 'highlightEuphemismDysphemism', statKey: 'euphemismDysphemismCount' },
-                    medical_euphemism: { settingKey: 'highlightEuphemismMedical', statKey: 'euphemismMedicalCount' },
-                    environmental_euphemism: { settingKey: 'highlightEuphemismEnvironmental', statKey: 'euphemismEnvironmentalCount' }
-                  }
-                },
-                { id: 'emotional', settingKey: 'highlightEmotional', statKey: 'emotionalCount' },
-                { id: 'gaslighting', settingKey: 'highlightGaslighting', statKey: 'gaslightingCount' },
-                { id: 'falsedilemma', settingKey: 'highlightFalseDilemma', statKey: 'falseDilemmaCount' },
-                { id: 'probability', settingKey: 'highlightProbability', statKey: 'probabilityCount' }
-            ];
-            
-            this.excellenceTypes = [
-                { id: 'attribution', settingKey: 'highlightAttributionExcellence', statKey: 'attributionExcellenceCount' },
-                { id: 'nuance', settingKey: 'highlightNuanceExcellence', statKey: 'nuanceExcellenceCount' },
-                { id: 'transparency', settingKey: 'highlightTransparencyExcellence', statKey: 'transparencyExcellenceCount' },
-                { id: 'discourse', settingKey: 'highlightDiscourseExcellence', statKey: 'discourseExcellenceCount' },
-                { id: 'evidence', settingKey: 'highlightEvidenceExcellence', statKey: 'evidenceExcellenceCount' }
-            ];
-            
-            this.defaultSettings = {
-                enableAnalysis: true,
-                analysisMode: 'balanced',
-                highlightOpinion: true,
-                highlightToBe: true,
-                highlightAbsolutes: true,
-                highlightPassive: true,
-                highlightWeasel: true,
-                highlightPresupposition: true,
-                highlightMetaphors: true,
-                highlightMinimizers: true,
-                highlightMaximizers: true,
-                highlightFalseBalance: true,
-                highlightEuphemism: true,
-                highlightEmotional: true,
-                highlightGaslighting: true,
-                highlightFalseDilemma: true,
-                highlightProbability: true,
-                highlightAttributionExcellence: true,
-                highlightNuanceExcellence: true,
-                highlightTransparencyExcellence: true,
-                highlightDiscourseExcellence: true,
-                highlightEvidenceExcellence: true
-            };
-            
-            this.biasTypes.forEach(bt => {
-                if (bt.subCategories) {
-                    for (const sub of Object.values(bt.subCategories)) {
-                        this.defaultSettings[sub.settingKey] = true;
-                    }
-                }
-            });
-            
-            // Generate dynamic mappings
-            this.toggleMappings = this.generateToggleMappings();
-            this.statMappings = this.generateStatMappings();
-        }
-
-        generateToggleMappings() {
-            const mappings = {
-                'enableToggle': 'enableAnalysis'
-            };
-
-            this.biasTypes.forEach(biasType => {
-                const toggleId = this.getToggleId(biasType.id);
-                mappings[toggleId] = biasType.settingKey;
-                
-                if (biasType.subCategories) {
-                    for (const [subId, sub] of Object.entries(biasType.subCategories)) {
-                        mappings[`${biasType.id}_${subId}Toggle`] = sub.settingKey;
-                    }
-                }
-            });
-
-            this.excellenceTypes.forEach(excellenceType => {
-                const toggleId = this.getExcellenceToggleId(excellenceType.id);
-                mappings[toggleId] = excellenceType.settingKey;
-            });
-
-            return mappings;
-        }
-
-        generateStatMappings() {
-            const mappings = {};
-
-            this.biasTypes.forEach(biasType => {
-                mappings[biasType.statKey] = biasType.statKey;
-                if (biasType.subCategories) {
-                    for (const sub of Object.values(biasType.subCategories)) {
-                        mappings[sub.statKey] = sub.statKey;
-                    }
-                }
-            });
-
-            this.excellenceTypes.forEach(excellenceType => {
-                mappings[excellenceType.statKey] = excellenceType.statKey;
-            });
-
-            return mappings;
-        }
-
-        getToggleId(biasTypeId) {
-            const idMappings = {
-                'opinion': 'opinionToggle',
-                'tobe': 'ePrimeToggle',
-                'absolute': 'absoluteToggle',
-                'passive': 'passiveToggle',
-                'weasel': 'weaselToggle',
-                'presupposition': 'presuppositionToggle',
-                'metaphor': 'metaphorToggle',
-                'minimizer': 'minimizerToggle',
-                'maximizer': 'maximizerToggle',
-                'falsebalance': 'falseBalanceToggle',
-                'euphemism': 'euphemismToggle',
-                'emotional': 'emotionalToggle',
-                'gaslighting': 'gaslightingToggle',
-                'falsedilemma': 'falseDilemmaToggle',
-                'probability': 'probabilityToggle'
-            };
-            
-            return idMappings[biasTypeId] || `${biasTypeId}Toggle`;
-        }
-
-        getExcellenceToggleId(excellenceTypeId) {
-            return `${excellenceTypeId}ExcellenceToggle`;
-        }
-
-        getToggleMappings() {
-            return this.toggleMappings;
-        }
-
-        getStatMappings() {
-            return this.statMappings;
-        }
-
-        getDefaultSettings() {
-            return this.defaultSettings;
-        }
-    }
-
-    // Initialize settings manager
+    // All bias/excellence/subcategory metadata comes from BiasConfig
     const settingsManager = new SettingsManager();
+    const popupGenerator = new PopupGenerator();
     const toggleMappings = settingsManager.getToggleMappings();
     const statMappings = settingsManager.getStatMappings();
 
@@ -199,8 +29,16 @@ document.addEventListener('DOMContentLoaded', function() {
     let customGroups = [];
     let editingGroupId = null;
 
-    // Initialize settings
-    loadSettings();
+    // Inject subcategory toggle groups into the static markup first so the
+    // toggle listeners below find their elements
+    renderSubcategoryGroups();
+
+    // Custom groups load before settings: their setting keys join the
+    // storage.sync defaults so every payload sent to the content script
+    // carries them (missing keys used to resurrect disabled groups)
+    loadCustomGroups(function() {
+        loadSettings();
+    });
 
     // Setup event listeners
     setupToggleListeners();
@@ -209,20 +47,50 @@ document.addEventListener('DOMContentLoaded', function() {
     setupSectionToggles();
     setupModeSelector();
     setupInfoLink();
-    loadCustomGroups();
     setupCustomDictionaryUI();
 
     // Request initial stats
     requestStats();
 
+    // The static popup.html only contains parent toggles; subcategory groups
+    // are generated from BiasConfig and inserted after their parent's row
+    function renderSubcategoryGroups() {
+        settingsManager.biasTypes.forEach(function(biasType) {
+            if (!biasType.subCategories) return;
+            if (document.querySelector(`.subcategory-group[data-parent="${biasType.id}"]`)) return;
+
+            const parentToggle = document.getElementById(settingsManager.getToggleId(biasType.id));
+            const container = parentToggle && parentToggle.closest('.toggle-container');
+            if (!container) return;
+
+            container.classList.add('has-subcategories');
+            container.dataset.biasType = biasType.id;
+
+            const label = container.querySelector('.toggle-label');
+            if (label && !label.querySelector('.subcat-chevron')) {
+                const chevron = document.createElement('span');
+                chevron.className = 'subcat-chevron';
+                label.appendChild(chevron);
+            }
+
+            container.insertAdjacentHTML('afterend', popupGenerator.generateSubcategoryGroup(biasType));
+        });
+    }
+
     function loadSettings() {
-        const defaults = settingsManager.getDefaultSettings();
-        
+        const defaults = Object.assign({}, settingsManager.getDefaultSettings());
+        // Custom group keys ride along so sync.get returns their stored state
+        // (falling back to each group's own enabled flag)
+        customGroups.forEach(function(g) {
+            defaults[g.settingKey] = g.enabled !== false;
+        });
+
         chrome.storage.sync.get(defaults, function(items) {
             currentSettings = items;
             updateUI();
             updateModeUI();
             updateAllSectionToggleStates();
+            renderCustomGroupToggles();
         });
     }
 
@@ -645,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-refresh stats every 2 seconds
     setInterval(requestStats, 2000);
 
-    function loadCustomGroups() {
+    function loadCustomGroups(callback) {
         chrome.storage.local.get('customGroups', function(data) {
             const stored = data.customGroups;
             if (stored && stored.version === 1 && stored.groups) {
@@ -653,7 +521,11 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 customGroups = [];
             }
-            renderCustomGroupToggles();
+            if (callback) {
+                callback();
+            } else {
+                renderCustomGroupToggles();
+            }
         });
     }
 
@@ -689,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span style="font-size: 10px; color: #999; margin-left: 4px;">(${group.words.length})</span>
                 </div>
                 <label class="toggle">
-                    <input type="checkbox" data-custom-toggle="${escapeHtml(group.id)}" data-setting-key="${escapeHtml(group.settingKey)}" ${group.enabled ? 'checked' : ''}>
+                    <input type="checkbox" data-custom-toggle="${escapeHtml(group.id)}" data-setting-key="${escapeHtml(group.settingKey)}" ${currentSettings[group.settingKey] !== false ? 'checked' : ''}>
                     <span class="slider"></span>
                 </label>
             </div>
@@ -800,7 +672,7 @@ document.addEventListener('DOMContentLoaded', function() {
             customGroups.push({
                 id,
                 name,
-                color,
+                color: sanitizeColor(color),
                 description,
                 enabled: true,
                 words: words.slice(0, 1000),
@@ -811,6 +683,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 createdAt: Date.now(),
                 updatedAt: Date.now()
             });
+            currentSettings['highlight_' + id] = true;
+            chrome.storage.sync.set(currentSettings);
         }
 
         saveCustomGroups();
@@ -826,7 +700,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!editingGroupId) return;
         if (!confirm('Delete this custom group?')) return;
 
+        const removed = customGroups.find(g => g.id === editingGroupId);
         customGroups = customGroups.filter(g => g.id !== editingGroupId);
+        if (removed) {
+            delete currentSettings[removed.settingKey];
+        }
         saveCustomGroups();
         renderCustomGroupToggles();
         closeEditor();
@@ -899,9 +777,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         createdAt: Date.now(),
                         updatedAt: Date.now()
                     });
+                    currentSettings['highlight_' + id] = true;
                     imported++;
                 }
                 saveCustomGroups();
+                chrome.storage.sync.set(currentSettings);
                 renderCustomGroupToggles();
                 alert(`Imported ${imported} group(s)`);
 

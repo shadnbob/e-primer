@@ -707,9 +707,20 @@ export class BiasDetector {
 
         // Extract only the changed nodes for processing
         const changedNodes = this.domProcessor.extractChangedTextNodes(mutations);
-        
+
         if (changedNodes.length > 0) {
-            await this.processBatch(changedNodes);
+            // Disconnect while we mutate the DOM ourselves — otherwise our own
+            // replaceChild calls echo back through the observer and trigger a
+            // wasted re-scan of the untouched text segments we just created
+            const hadObserver = !!this.observer;
+            this.disconnectObserver();
+            try {
+                await this.processBatch(changedNodes);
+            } finally {
+                if (hadObserver) {
+                    this.setupMutationObserver();
+                }
+            }
         }
     }
 

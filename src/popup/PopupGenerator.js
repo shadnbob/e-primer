@@ -34,29 +34,43 @@ export class PopupGenerator {
             </div>`;
         
         if (hasSubCats) {
-            html += `<div class="subcategory-group collapsed" data-parent="${biasType.id}">`;
-            for (const [subId, subConfig] of Object.entries(biasType.subCategories)) {
-                const subColorStyle = subConfig.color ? this.getColorIndicatorStyle(subConfig.color) : colorStyle;
-                html += `
-                    <div class="toggle-container subcategory-toggle" data-sub-type="${subId}" data-parent-type="${biasType.id}">
-                        <div class="toggle-label">
-                            <div class="color-indicator" style="${subColorStyle}"></div>
-                            <span>${subConfig.icon || ''} ${subConfig.name}</span>
-                        </div>
-                        <label class="toggle toggle-small">
-                            <input type="checkbox" 
-                                   id="${biasType.id}_${subId}Toggle" 
-                                   data-setting-key="${subConfig.settingKey}"
-                                   data-parent-type="${biasType.id}"
-                                   data-sub-type="${subId}"
-                                   ${isEnabled}>
-                            <span class="slider"></span>
-                        </label>
-                    </div>`;
-            }
-            html += `</div>`;
+            html += this.generateSubcategoryGroup(biasType);
         }
-        
+
+        return html;
+    }
+
+    /**
+     * Generate the collapsible subcategory toggle group for one bias type.
+     * Used standalone by the popup to augment the static markup with
+     * subcategory toggles (element IDs must match SettingsManager's
+     * `${parentId}_${subId}Toggle` mapping convention).
+     */
+    generateSubcategoryGroup(biasType) {
+        const parentColorStyle = this.getColorIndicatorStyle(biasType.color);
+        const isEnabled = biasType.enabled ? 'checked' : '';
+
+        let html = `<div class="subcategory-group collapsed" data-parent="${biasType.id}">`;
+        for (const [subId, subConfig] of Object.entries(biasType.subCategories)) {
+            const subColorStyle = subConfig.color ? this.getColorIndicatorStyle(subConfig.color) : parentColorStyle;
+            html += `
+                <div class="toggle-container subcategory-toggle" data-sub-type="${subId}" data-parent-type="${biasType.id}">
+                    <div class="toggle-label">
+                        <div class="color-indicator" style="${subColorStyle}"></div>
+                        <span>${subConfig.icon || ''} ${subConfig.name}</span>
+                    </div>
+                    <label class="toggle toggle-small">
+                        <input type="checkbox"
+                               id="${biasType.id}_${subId}Toggle"
+                               data-setting-key="${subConfig.settingKey}"
+                               data-parent-type="${biasType.id}"
+                               data-sub-type="${subId}"
+                               ${isEnabled}>
+                        <span class="slider"></span>
+                    </label>
+                </div>`;
+        }
+        html += `</div>`;
         return html;
     }
 

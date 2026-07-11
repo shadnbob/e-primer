@@ -29,6 +29,22 @@ function getBuildConfig(targetName) {
   };
 }
 
+// Popup bundle: popup.html loads popup.js as a plain script, so the popup
+// source imports (BiasConfig, SettingsManager, PopupGenerator) are bundled
+// the same way the content script is
+function getPopupBuildConfig(targetName) {
+  const outputDir = targetName === 'firefox' ? 'dist-firefox' : 'dist';
+  return {
+    entryPoints: ['src/popup/popup-dynamic.js'],
+    bundle: true,
+    outfile: `${outputDir}/popup.js`,
+    format: 'iife',
+    target: targetName === 'firefox' ? 'firefox78' : 'chrome90',
+    sourcemap: true,
+    logLevel: 'info',
+  };
+}
+
 // Ensure output directories exist
 function ensureDirectories(targets) {
   const dirs = targets.map(t => t === 'firefox' ? 'dist-firefox' : 'dist');
@@ -46,8 +62,7 @@ function copyStaticFiles(targetName) {
   
   const filesToCopy = [
     manifestFile,
-    'popup.html', 
-    'src/popup/popup-dynamic.js',
+    'popup.html',
     'src/highlight-styles.css',
     'info.html'
   ];
@@ -55,19 +70,14 @@ function copyStaticFiles(targetName) {
   filesToCopy.forEach(file => {
     const source = path.join(__dirname, file);
     let destFile = file.includes('/') ? path.basename(file) : file;
-    
-    // Rename popup-dynamic.js to popup.js
-    if (destFile === 'popup-dynamic.js') {
-      destFile = 'popup.js';
-    }
-    
+
     // Rename manifest files to manifest.json
     if (destFile.startsWith('manifest-')) {
       destFile = 'manifest.json';
     }
-    
+
     const dest = path.join(__dirname, outputDir, destFile);
-    
+
     if (fs.existsSync(source)) {
       fs.copyFileSync(source, dest);
       console.log(`Copied ${file} to ${outputDir}/${destFile}`);
@@ -92,26 +102,13 @@ function copyStaticFiles(targetName) {
     console.log(`Copied images directory to ${outputDir}/`);
   }
 
-  // Copy source files needed for dynamic popup
-  const sourceFiles = [
-    { src: 'src/popup/PopupGenerator.js', dest: 'src/popup/PopupGenerator.js' },
-    { src: 'src/config/BiasConfig.js', dest: 'src/config/BiasConfig.js' },
-    { src: 'src/build/StyleGenerator.js', dest: 'src/build/StyleGenerator.js' }
-  ];
-
-  sourceFiles.forEach(({ src, dest }) => {
-    const source = path.join(__dirname, src);
-    const destPath = path.join(__dirname, outputDir, dest);
-    const destDir = path.dirname(destPath);
-    
-    if (fs.existsSync(source)) {
-      if (!fs.existsSync(destDir)) {
-        fs.mkdirSync(destDir, { recursive: true });
-      }
-      fs.copyFileSync(source, destPath);
-      console.log(`Copied ${src} to ${outputDir}/${dest}`);
-    }
-  });
+  // Remove the raw source copies older builds placed in dist; the popup is
+  // a self-contained bundle now and nothing loads these
+  const staleSourceDir = path.join(__dirname, outputDir, 'src');
+  if (fs.existsSync(staleSourceDir)) {
+    fs.rmSync(staleSourceDir, { recursive: true, force: true });
+    console.log(`Removed stale ${outputDir}/src source copies`);
+  }
 }
 
 // Generate CSS from BiasConfig
@@ -178,20 +175,24 @@ async function buildTarget(targetName) {
     console.log('Starting watch mode for Chrome...');
     const ctx = await esbuild.context(buildConfig);
     await ctx.watch();
-    
+
+    const popupCtx = await esbuild.context(getPopupBuildConfig(targetName));
+    await popupCtx.watch();
+
     // Watch for static file changes
-    const staticFiles = ['manifest.json', 'popup.html', 'popup.js', 'styles.css', 'info.html'];
+    const staticFiles = ['manifest.json', 'popup.html', 'styles.css', 'info.html'];
     staticFiles.forEach(file => {
       fs.watchFile(file, () => {
         console.log(`${file} changed, copying...`);
         copyStaticFiles('chrome');
       });
     });
-    
+
     console.log('Watching for changes...');
   } else {
     // Single build
     await esbuild.build(buildConfig);
+    await esbuild.build(getPopupBuildConfig(targetName));
     console.log(`Build complete for ${targetName}!`);
   }
   

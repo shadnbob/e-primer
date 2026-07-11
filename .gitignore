@@ -7,7 +7,9 @@ package-lock.json
 yarn.lock
 
 # Build output
-dist/
+# NOTE: dist/ and dist-firefox/ are intentionally committed (README offers
+# install-without-building), so they are NOT ignored here — an ignore entry
+# would make `git add` silently skip newly built files inside them.
 build/
 *.tsbuildinfo
 

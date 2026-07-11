@@ -191,11 +191,7 @@ import { yourBias, yourBiasWords } from './your-bias.js';
 dictionaries.set('yourbias', yourBiasWords);
 ```
 
-### 4. Sync popup-dynamic.js Defaults
-
-Add the new subcategory `settingKey` defaults to `popup-dynamic.js` to match BiasConfig.
-
-### 5. Build and Test
+### 4. Build and Test
 
 Run `npm run build:all` and `npm test`. The generic architecture handles everything else automatically — subcategory detection, hover cards, popup toggles, stats display, and settings persistence all work without additional code changes.
 

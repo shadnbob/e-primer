@@ -6075,7 +6075,15 @@
       BiasConfig.debugLog("Content changed, processing updates...");
       const changedNodes = this.domProcessor.extractChangedTextNodes(mutations);
       if (changedNodes.length > 0) {
-        await this.processBatch(changedNodes);
+        const hadObserver = !!this.observer;
+        this.disconnectObserver();
+        try {
+          await this.processBatch(changedNodes);
+        } finally {
+          if (hadObserver) {
+            this.setupMutationObserver();
+          }
+        }
       }
     }
     disconnectObserver() {

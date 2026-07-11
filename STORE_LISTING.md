@@ -63,11 +63,8 @@ Highlights biased language patterns in web page text and identifies markers of q
 ### activeTab
 Required to read the text content of the currently active web page for real-time language pattern analysis and highlighting.
 
-### scripting
-Required to inject the content script that performs text analysis and applies visual highlights to detected patterns on web pages.
-
 ### storage
-Required to persist user preference settings (which detection categories are enabled, analysis mode selection) locally across browser sessions.
+Required to persist user preference settings (which detection categories are enabled, analysis mode selection) and user-defined custom dictionaries locally across browser sessions.
 
 ## Privacy Practices
 
