@@ -91,7 +91,11 @@ export class BiasDetector {
                     };
                     
                     if (hasSubCategories) {
-                        const subCategory = this.patterns.getSubCategory(type, match[0]);
+                        // Regex dictionary entries produce match text that differs
+                        // from the entry itself, so fall back to the pattern
+                        // source (the dictionary string) for the lookup
+                        const subCategory = this.patterns.getSubCategory(type, match[0])
+                            || this.patterns.getSubCategory(type, pattern.source);
                         if (subCategory) {
                             matchData.type = BiasConfig.getCompositeType(type, subCategory.id);
                             matchData.subCategory = subCategory;
@@ -348,18 +352,25 @@ export class BiasDetector {
     deduplicateMatches(matches) {
         const sorted = matches.sort((a, b) => {
             if (a.index !== b.index) return a.index - b.index;
-            
+
             // Prefer contextual matches over regular matches
             if (a.isContextual && !b.isContextual) return -1;
             if (!a.isContextual && b.isContextual) return 1;
-            
+
             // If both contextual, prefer higher confidence
             if (a.isContextual && b.isContextual) {
                 const aConf = a.confidence || 0.5;
                 const bConf = b.confidence || 0.5;
                 if (aConf !== bConf) return bConf - aConf;
             }
-            
+
+            // Words like "liberal"/"conservative" live in both the opinion
+            // dictionary and the spectrum explainer; the explainer card is
+            // the richer one, so it wins same-span conflicts
+            const aExplainer = this._isExplainerMatch(a);
+            const bExplainer = this._isExplainerMatch(b);
+            if (aExplainer !== bExplainer) return aExplainer ? -1 : 1;
+
             return b.length - a.length; // Prefer longer matches
         });
 
@@ -406,6 +417,12 @@ export class BiasDetector {
         }
 
         return deduplicated;
+    }
+
+    _isExplainerMatch(match) {
+        const { parentId } = BiasConfig.resolveType(match.parentType || match.type);
+        const config = BiasConfig.getBiasTypeConfig(parentId);
+        return !!(config && config.isExplainer);
     }
 
     // Update settings with selective highlighting

@@ -938,6 +938,13 @@
     position: relative;
 }
 
+.bias-highlight-spectrum {
+    background-color: rgba(126, 87, 194, 0.3);
+    border-bottom: 1px solid #7e57c2;
+    cursor: help;
+    position: relative;
+}
+
 .excellence-attribution {
     border-bottom: 2px solid #28a745;
     background-color: rgba(40, 167, 69, 0.1);
@@ -994,6 +1001,7 @@
 .bias-highlight-gaslighting::after,
 .bias-highlight-falsedilemma::after,
 .bias-highlight-probability::after,
+.bias-highlight-spectrum::after,
 .excellence-attribution::after,
 .excellence-nuance::after,
 .excellence-transparency::after,
@@ -1033,6 +1041,7 @@
 .bias-highlight-gaslighting:hover::after,
 .bias-highlight-falsedilemma:hover::after,
 .bias-highlight-probability:hover::after,
+.bias-highlight-spectrum:hover::after,
 .excellence-attribution:hover::after,
 .excellence-nuance:hover::after,
 .excellence-transparency:hover::after,

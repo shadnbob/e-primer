@@ -1272,9 +1272,101 @@ export class BiasConfig {
                 opinion: 'Watch for vague probability used to support arguments without evidence',
                 instructions: 'Generally inappropriate for safety-critical information without specific data'
             }
+        },
+        SPECTRUM: {
+            id: 'spectrum',
+            name: 'Political Spectrum Labels',
+            description: 'Left/Right and Liberal/Conservative labels that mean different things to different people',
+            category: 'explainer',
+            // Explainer types get neutral "Context" framing instead of a
+            // severity badge — they explain contested terms, they do not
+            // accuse the writer of bias
+            isExplainer: true,
+            color: '#7e57c2',
+            className: 'bias-highlight-spectrum',
+            settingKey: 'highlightSpectrum',
+            statKey: 'spectrumCount',
+            enabled: true,
+            tooltip: 'A political label whose meaning shifts across countries, eras, and speakers',
+            basicTip: 'A political label whose meaning shifts across countries, eras, and speakers',
+            whenConcerning: 'When used as an unexplained catch-all, applied to people who would not accept the label, or substituted for naming actual positions',
+            whenAcceptable: 'When the writer specifies which policies, movements, or self-identified groups they mean, or the label is part of a proper name (a party, a caucus)',
+            lookFor: [
+                'Which specific positions does the writer mean?',
+                'Would the people described accept this label?',
+                'Does the label mean the same thing in this country and era as where you learned it?',
+                'Is the label doing the arguing instead of evidence?'
+            ],
+            examples: {
+                problematic: [
+                    'the left wants to destroy the economy',
+                    'conservatives don\'t care about the poor',
+                    'typical liberal thinking',
+                    'the far-right is behind this (unnamed)'
+                ],
+                acceptable: [
+                    'the party\'s left wing opposed the bill',
+                    'fiscally conservative voters in exit polls',
+                    'the Liberal Party of Australia',
+                    'self-described leftists at the rally'
+                ]
+            },
+            contextualGuidance: {
+                academic: 'Expect labels to be defined and operationalized; unexplained spectrum terms are a weakness',
+                news: 'Watch for labels standing in for named actors and specific positions in supposedly neutral reporting',
+                opinion: 'Labels are expected, but strong claims about a labeled group should name who is meant',
+                instructions: 'Rarely relevant; treat as informational'
+            },
+            subCategories: {
+                left_right: {
+                    id: 'left_right',
+                    name: 'Left / Right',
+                    icon: '🧭',
+                    color: '#7e57c2',
+                    description: 'Left and Right as political directions — a metaphor inherited from seating in the French National Assembly of 1789, where supporters of the king sat to the president\'s right and revolutionaries to his left.',
+                    implication: 'The spectrum compresses many independent questions (economic, cultural, institutional) into a single axis, and its content shifts by country and era — positions called "right" in one nation may be called "left" in another. Prefixes like "far-" and "radical" often work to delegitimize rather than to locate.',
+                    suggestion: 'Ask which specific positions, parties, or movements are meant. Where possible, name policies and stances instead of directions.',
+                    examples: '"The left opposes this" — which parties, movements, or thinkers? On what grounds? Would they accept the label?',
+                    settingKey: 'highlightSpectrumLeftRight',
+                    statKey: 'spectrumLeftRightCount',
+                    basicTip: 'Left/Right labels compress many separate questions into one axis and shift meaning across countries and eras.',
+                    whenConcerning: 'When "the left/the right" stands in for an unnamed everyone, or "far-/radical" is used to dismiss rather than describe',
+                    whenAcceptable: 'When describing self-identified movements, a party\'s internal wings, or a defined coalition'
+                },
+                liberal: {
+                    id: 'liberal',
+                    name: 'Liberal',
+                    icon: '📜',
+                    color: '#26a69a',
+                    description: '"Liberal" (from Latin liber, "free") has carried near-opposite meanings: classical liberalism — individual rights, free markets, limited government (Locke, Smith, Mill) — versus modern American usage, where since the New Deal it has meant social-welfare progressivism.',
+                    implication: 'In much of Europe, Latin America, and Australia, "liberal" still leans market-oriented — Australia\'s Liberal Party sits center-right. A sentence about "liberals" can assert opposite things depending on where the writer and the reader learned the word, and as an epithet it attributes a single belief to a vast, varied group.',
+                    suggestion: 'Identify which tradition is meant, or name the actual policy, party, or group instead of the label.',
+                    examples: '"Liberals believe X" — American progressives? Classical liberals? A specific party? "Liberal democracy" uses the classical sense.',
+                    settingKey: 'highlightSpectrumLiberal',
+                    statKey: 'spectrumLiberalCount',
+                    basicTip: '"Liberal" carries near-opposite meanings across countries and traditions.',
+                    whenConcerning: 'When used as a catch-all epithet or when the intended tradition is ambiguous',
+                    whenAcceptable: 'When the tradition or group is specified, or in proper names ("Liberal Democrats")'
+                },
+                conservative: {
+                    id: 'conservative',
+                    name: 'Conservative',
+                    icon: '🏛️',
+                    color: '#8d6e63',
+                    description: 'Conservatism, articulated by Edmund Burke in reaction to the French Revolution, names a disposition: preserving established institutions, preferring gradual change, and distrusting wholesale redesign of society.',
+                    implication: 'What is being conserved differs completely by time and place — monarchy in one country, free markets in another, a secular constitution in a third — so the label names a posture toward change, not a fixed platform. Used as a monolith ("conservatives want…"), it erases those differences and substitutes identity for argument.',
+                    suggestion: 'Ask what, specifically, is being conserved, and which policies or groups are actually meant.',
+                    examples: '"Conservatives oppose this" — which movement, party, or tradition? (Note: "a conservative estimate" is an unrelated sense of the word.)',
+                    settingKey: 'highlightSpectrumConservative',
+                    statKey: 'spectrumConservativeCount',
+                    basicTip: 'A "conservative" defends whatever is established where they live — the content of the label varies by country and era.',
+                    whenConcerning: 'When treating diverse traditions as one bloc, or using the label as an insult or badge instead of an argument',
+                    whenAcceptable: 'When naming self-identified groups, parties, or a specified tradition'
+                }
+            }
         }
     };
-    
+
     // Excellence detection types
     static EXCELLENCE_TYPES = {
         ATTRIBUTION: {
@@ -1412,6 +1504,12 @@ export class BiasConfig {
             name: 'Manipulation Tactics',
             description: 'Techniques designed to mislead',
             icon: '⚠️',
+            expanded: false
+        },
+        explainer: {
+            name: 'Explainers',
+            description: 'Contested terms explained, not judged',
+            icon: '💬',
             expanded: false
         }
     };

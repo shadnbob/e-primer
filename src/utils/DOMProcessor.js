@@ -187,6 +187,11 @@ export class DOMProcessor {
             const parentConfig = BiasConfig.getBiasTypeConfig(parentId);
             const subConfig = parentConfig && parentConfig.subCategories ? parentConfig.subCategories[subCategoryId] : null;
             if (subConfig) {
+                // Explainers describe contested terms; "Possible …" framing
+                // would wrongly read as an accusation
+                if (parentConfig.isExplainer) {
+                    return `${subConfig.name} — a contested label; click for context`;
+                }
                 return `Possible ${parentConfig.name} - ${subConfig.name}`;
             }
         }

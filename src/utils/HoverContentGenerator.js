@@ -155,10 +155,16 @@ export class HoverContentGenerator {
             content += `<div class="hover-card-header">${this.getTypeName(type, true)}</div>`;
         } else {
             const typeName = subConfig ? subConfig.name : this.getTypeName(type, false);
+            // Explainer types describe contested terms rather than flag
+            // problems, so they get a neutral "Context" badge instead of a
+            // severity level
+            const badge = biasConfig && biasConfig.isExplainer
+                ? `<span class="intensity-badge intensity-context">Context</span>`
+                : `<span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>`;
             content += `
                 <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
                     ${typeName}
-                    <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
+                    ${badge}
                 </div>
             `;
         }
@@ -213,7 +219,11 @@ export class HoverContentGenerator {
         
         const effectiveConfig = subConfig || biasConfig;
         if (effectiveConfig) {
-            const tipText = (subConfig && subConfig.basicTip) || (biasConfig && biasConfig.basicTip);
+            // Explainer cards lead with the term's history (the subcategory
+            // description) — that context is their whole point
+            const tipText = (biasConfig && biasConfig.isExplainer && subConfig && subConfig.description)
+                || (subConfig && subConfig.basicTip)
+                || (biasConfig && biasConfig.basicTip);
             if (tipText) {
                 content += `<div class="hover-card-reason">${tipText}</div>`;
             }

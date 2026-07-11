@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the E-Prime Bias Detector, a browser extension that detects biased language patterns in web content using E-Prime principles and advanced linguistic analysis. The extension identifies 15 different types of linguistic bias patterns and includes an excellence detection system that highlights good writing practices.
+This is the E-Prime Bias Detector, a browser extension that detects biased language patterns in web content using E-Prime principles and advanced linguistic analysis. The extension identifies 16 different types of linguistic patterns — 15 bias types plus an "explainer" type that annotates contested political labels with context — and includes an excellence detection system that highlights good writing practices.
 
 ## Development Commands
 
@@ -65,7 +65,7 @@ The project uses a modern ES6 module architecture with esbuild for multi-target 
 
 - `src/config/`: Configuration management
 - `src/content/`: Content script logic and main detector
-- `src/dictionaries/`: Pattern definitions for each bias type (14 dictionary files + index)
+- `src/dictionaries/`: Pattern definitions for each bias type (16 dictionary files + index)
 - `src/popup/`: Popup interface components (popup-dynamic.js entry; SettingsManager.js and PopupGenerator.js derive settings metadata and subcategory toggle markup from BiasConfig; StatsDisplay.js is **unused** — set aside, see its header note)
 - `src/utils/`: Shared utilities and processors
 - `src/build/`: Build-time utilities (StyleGenerator.js, ReferencePageGenerator.js)
@@ -75,23 +75,25 @@ The project uses a modern ES6 module architecture with esbuild for multi-target 
 
 ### Detection Categories
 
-The extension detects bias patterns in 4 main categories (15 types total, all enabled by default):
+The extension detects patterns in 5 main categories (16 types total, all enabled by default):
 1. **Basic Detection**: Opinion words, to-be verbs, absolute statements
 2. **Advanced Detection**: Passive voice, weasel words, presuppositions, probability perception
 3. **Framing & Rhetoric**: War metaphors, minimizers, maximizers
 4. **Manipulation Tactics**: False balance, euphemisms, emotional manipulation, gaslighting, false dilemmas
+5. **Explainers**: Political spectrum labels (contested terms explained, not judged — see "Explainer types" below)
 
 ### Subcategory System
 
-Six bias types have subcategories — structured taxonomies that provide more specific detection and tailored guidance. Each subcategory has its own `icon`, `color`, `name`, `description`, `implication`, `suggestion`, `examples`, and `words` array in its dictionary file, plus `settingKey`, `statKey`, `basicTip`, `whenConcerning`, and `whenAcceptable` metadata in BiasConfig.
+Seven types have subcategories — structured taxonomies that provide more specific detection and tailored guidance. Each subcategory has its own `icon`, `color`, `name`, `description`, `implication`, `suggestion`, `examples`, and `words` array in its dictionary file, plus `settingKey`, `statKey`, `basicTip`, `whenConcerning`, and `whenAcceptable` metadata in BiasConfig.
 
-**Bias types with subcategories (40 total subcategories):**
+**Types with subcategories (43 total subcategories):**
 1. **Opinion Words** (12): certainty, hedging, evaluative_positive, evaluative_negative, emotional_charge, comparative, political_framing, intensifiers, credibility_undermining, loaded_political, moral_judgments, emotional_appeals
 2. **Euphemisms** (7): political_euphemism, corporate_euphemism, social_euphemism, military_euphemism, dysphemism, medical_euphemism, environmental_euphemism
 3. **Emotional Manipulation** (6): fear_appeal, guilt_induction, flattery_manipulation, outrage_fuel, sympathy_exploitation, false_urgency
 4. **Weasel Words** (5): unnamed_sources, hedged_evidence, vague_quantifiers, appeal_to_authority, passive_attribution
 5. **Maximizers** (5): scale_inflation, catastrophizing, dramatic_verbs, superlative_hype, paradigm_shift
 6. **Gaslighting** (5): reality_denial, emotional_invalidation, memory_manipulation, credibility_attack, deflection
+7. **Political Spectrum Labels** (3): left_right, liberal, conservative — an *explainer* type (see below)
 
 **How subcategories flow through the code:**
 - Dictionary files export a structured object (e.g., `euphemismWords`) with subcategory keys, plus a flat array (e.g., `euphemismsFlat`) for backward-compatible regex matching
@@ -115,6 +117,7 @@ The system also identifies positive writing patterns:
 
 ## Key Technical Details
 
+- **Explainer types**: Types with `isExplainer: true` (currently `spectrum`) annotate contested terms with history/context rather than flagging problems — hover cards show a neutral "Context" badge instead of a severity level, and tooltips avoid "Possible …" phrasing. Content must stay politically even-handed, subcategory colors must avoid partisan coding (no red/blue), and patterns should prefer precision over recall (regex sense-guards keep "the right to remain silent", "conservative estimate", "liberal arts" unmatched). Regex dictionary entries attribute to subcategories via the pattern-source fallback in `BiasDetector.detectPatterns`.
 - **Pattern Compilation**: All regex patterns are pre-compiled for performance
 - **Modular Design**: ES6 modules with proper imports/exports
 - **Performance Optimized**: Batch processing with configurable batch size and mutation debouncing

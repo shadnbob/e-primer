@@ -138,6 +138,9 @@ Many phrases are ambiguous. "It seems" can be weaseling ("it seems like this is 
 - **Gaslighting** — phrases that undermine perception and memory (5 subcategories: reality denial, emotional invalidation, memory manipulation, credibility attack, deflection)
 - **False Dilemmas** — language that forces artificial binary choices
 
+### Explainers
+- **Political Spectrum Labels** — Left/Right and Liberal/Conservative labels, annotated with context rather than flagged as problems (3 subcategories: left/right, liberal, conservative). These terms mean genuinely different things across countries, eras, and speakers — "liberal" in Australia leans center-right, the Left/Right axis dates to seating in the 1789 French National Assembly, and what a "conservative" conserves depends on where they live. Explainer highlights carry a neutral "Context" badge: the goal is to surface a label's history and its different meanings to different audiences, not to accuse the writer of bias. Everyday senses ("the right to remain silent", "a conservative estimate", "liberal arts") are deliberately excluded.
+
 ### Excellence Detection
 - **Clear Attribution** — specific, verifiable sources
 - **Nuanced Language** — acknowledges complexity and avoids absolutes
@@ -209,7 +212,7 @@ e-primer/
 │   │   ├── opinion-words.js          # Opinion/subjective terms
 │   │   ├── absolute-words.js         # Universal quantifiers
 │   │   ├── tobe-verbs.js             # E-Prime verb forms
-│   │   └── ...                       # 11 more pattern dictionaries
+│   │   └── ...                       # 12 more pattern dictionaries
 │   ├── popup/
 │   │   ├── popup-dynamic.js          # Popup entry point
 │   │   ├── PopupGenerator.js         # Dynamic UI generation
@@ -254,7 +257,7 @@ See [EXTENDING.md](EXTENDING.md) for the full guide. The short version:
 
 The extension runs as a content script on every web page. On load:
 
-1. **Pattern compilation** — all word lists and regex patterns from the 15 dictionaries are pre-compiled into optimized RegExp objects
+1. **Pattern compilation** — all word lists and regex patterns from the 16 dictionaries are pre-compiled into optimized RegExp objects
 2. **Text node collection** — a TreeWalker traverses the DOM collecting text nodes, skipping scripts, styles, and the extension's own highlights
 3. **Batch processing** — text nodes are analyzed in batches to avoid blocking the UI thread
 4. **Pattern matching** — each enabled detector runs its compiled patterns against the text

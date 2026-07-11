@@ -1259,6 +1259,98 @@
           opinion: "Watch for vague probability used to support arguments without evidence",
           instructions: "Generally inappropriate for safety-critical information without specific data"
         }
+      },
+      SPECTRUM: {
+        id: "spectrum",
+        name: "Political Spectrum Labels",
+        description: "Left/Right and Liberal/Conservative labels that mean different things to different people",
+        category: "explainer",
+        // Explainer types get neutral "Context" framing instead of a
+        // severity badge — they explain contested terms, they do not
+        // accuse the writer of bias
+        isExplainer: true,
+        color: "#7e57c2",
+        className: "bias-highlight-spectrum",
+        settingKey: "highlightSpectrum",
+        statKey: "spectrumCount",
+        enabled: true,
+        tooltip: "A political label whose meaning shifts across countries, eras, and speakers",
+        basicTip: "A political label whose meaning shifts across countries, eras, and speakers",
+        whenConcerning: "When used as an unexplained catch-all, applied to people who would not accept the label, or substituted for naming actual positions",
+        whenAcceptable: "When the writer specifies which policies, movements, or self-identified groups they mean, or the label is part of a proper name (a party, a caucus)",
+        lookFor: [
+          "Which specific positions does the writer mean?",
+          "Would the people described accept this label?",
+          "Does the label mean the same thing in this country and era as where you learned it?",
+          "Is the label doing the arguing instead of evidence?"
+        ],
+        examples: {
+          problematic: [
+            "the left wants to destroy the economy",
+            "conservatives don't care about the poor",
+            "typical liberal thinking",
+            "the far-right is behind this (unnamed)"
+          ],
+          acceptable: [
+            "the party's left wing opposed the bill",
+            "fiscally conservative voters in exit polls",
+            "the Liberal Party of Australia",
+            "self-described leftists at the rally"
+          ]
+        },
+        contextualGuidance: {
+          academic: "Expect labels to be defined and operationalized; unexplained spectrum terms are a weakness",
+          news: "Watch for labels standing in for named actors and specific positions in supposedly neutral reporting",
+          opinion: "Labels are expected, but strong claims about a labeled group should name who is meant",
+          instructions: "Rarely relevant; treat as informational"
+        },
+        subCategories: {
+          left_right: {
+            id: "left_right",
+            name: "Left / Right",
+            icon: "\u{1F9ED}",
+            color: "#7e57c2",
+            description: "Left and Right as political directions \u2014 a metaphor inherited from seating in the French National Assembly of 1789, where supporters of the king sat to the president's right and revolutionaries to his left.",
+            implication: 'The spectrum compresses many independent questions (economic, cultural, institutional) into a single axis, and its content shifts by country and era \u2014 positions called "right" in one nation may be called "left" in another. Prefixes like "far-" and "radical" often work to delegitimize rather than to locate.',
+            suggestion: "Ask which specific positions, parties, or movements are meant. Where possible, name policies and stances instead of directions.",
+            examples: '"The left opposes this" \u2014 which parties, movements, or thinkers? On what grounds? Would they accept the label?',
+            settingKey: "highlightSpectrumLeftRight",
+            statKey: "spectrumLeftRightCount",
+            basicTip: "Left/Right labels compress many separate questions into one axis and shift meaning across countries and eras.",
+            whenConcerning: 'When "the left/the right" stands in for an unnamed everyone, or "far-/radical" is used to dismiss rather than describe',
+            whenAcceptable: "When describing self-identified movements, a party's internal wings, or a defined coalition"
+          },
+          liberal: {
+            id: "liberal",
+            name: "Liberal",
+            icon: "\u{1F4DC}",
+            color: "#26a69a",
+            description: '"Liberal" (from Latin liber, "free") has carried near-opposite meanings: classical liberalism \u2014 individual rights, free markets, limited government (Locke, Smith, Mill) \u2014 versus modern American usage, where since the New Deal it has meant social-welfare progressivism.',
+            implication: `In much of Europe, Latin America, and Australia, "liberal" still leans market-oriented \u2014 Australia's Liberal Party sits center-right. A sentence about "liberals" can assert opposite things depending on where the writer and the reader learned the word, and as an epithet it attributes a single belief to a vast, varied group.`,
+            suggestion: "Identify which tradition is meant, or name the actual policy, party, or group instead of the label.",
+            examples: '"Liberals believe X" \u2014 American progressives? Classical liberals? A specific party? "Liberal democracy" uses the classical sense.',
+            settingKey: "highlightSpectrumLiberal",
+            statKey: "spectrumLiberalCount",
+            basicTip: '"Liberal" carries near-opposite meanings across countries and traditions.',
+            whenConcerning: "When used as a catch-all epithet or when the intended tradition is ambiguous",
+            whenAcceptable: 'When the tradition or group is specified, or in proper names ("Liberal Democrats")'
+          },
+          conservative: {
+            id: "conservative",
+            name: "Conservative",
+            icon: "\u{1F3DB}\uFE0F",
+            color: "#8d6e63",
+            description: "Conservatism, articulated by Edmund Burke in reaction to the French Revolution, names a disposition: preserving established institutions, preferring gradual change, and distrusting wholesale redesign of society.",
+            implication: 'What is being conserved differs completely by time and place \u2014 monarchy in one country, free markets in another, a secular constitution in a third \u2014 so the label names a posture toward change, not a fixed platform. Used as a monolith ("conservatives want\u2026"), it erases those differences and substitutes identity for argument.',
+            suggestion: "Ask what, specifically, is being conserved, and which policies or groups are actually meant.",
+            examples: '"Conservatives oppose this" \u2014 which movement, party, or tradition? (Note: "a conservative estimate" is an unrelated sense of the word.)',
+            settingKey: "highlightSpectrumConservative",
+            statKey: "spectrumConservativeCount",
+            basicTip: 'A "conservative" defends whatever is established where they live \u2014 the content of the label varies by country and era.',
+            whenConcerning: "When treating diverse traditions as one bloc, or using the label as an insult or badge instead of an argument",
+            whenAcceptable: "When naming self-identified groups, parties, or a specified tradition"
+          }
+        }
       }
     };
     // Excellence detection types
@@ -1397,6 +1489,12 @@
         name: "Manipulation Tactics",
         description: "Techniques designed to mislead",
         icon: "\u26A0\uFE0F",
+        expanded: false
+      },
+      explainer: {
+        name: "Explainers",
+        description: "Contested terms explained, not judged",
+        icon: "\u{1F4AC}",
         expanded: false
       }
     };
@@ -3474,6 +3572,81 @@
     "near future"
   ];
 
+  // src/dictionaries/spectrum-labels.js
+  var spectrumWords = {
+    left_right: {
+      icon: "\u{1F9ED}",
+      color: "#7e57c2",
+      name: "Left / Right",
+      description: "Left and Right as political directions \u2014 a metaphor inherited from seating in the French National Assembly of 1789, where supporters of the king sat to the president's right and revolutionaries to his left.",
+      implication: 'The spectrum compresses many independent questions (economic, cultural, institutional) into a single axis, and its content shifts by country and era \u2014 positions called "right" in one nation may be called "left" in another. Prefixes like "far-" and "radical" often work to delegitimize rather than to locate.',
+      suggestion: "Ask which specific positions, parties, or movements are meant. Where possible, name policies and stances instead of directions.",
+      examples: '"The left opposes this" \u2014 which parties, movements, or thinkers? On what grounds? Would they accept the label?',
+      words: [
+        "left-wing",
+        "right-wing",
+        "leftist",
+        "leftists",
+        "rightist",
+        "rightists",
+        "far-left",
+        "far-right",
+        "alt-right",
+        "ultra-left",
+        "ultra-right",
+        "center-left",
+        "center-right",
+        "centre-left",
+        "centre-right",
+        "left-leaning",
+        "right-leaning",
+        "\\b(far|hard|radical|extreme|political) (left|right)\\b",
+        "\\b(left|right) wing\\b",
+        "\\bthe (left|right)\\b(?!\\s+(to|of|hand|way|answer|thing|side|turn|track|time|place|direction|choice|call|amount|angle|one|price|moment|decision|lane|foot|arm|eye|ear|button|click|margin|column|edge|bank))"
+      ]
+    },
+    liberal: {
+      icon: "\u{1F4DC}",
+      color: "#26a69a",
+      name: "Liberal",
+      description: '"Liberal" (from Latin liber, "free") has carried near-opposite meanings: classical liberalism \u2014 individual rights, free markets, limited government (Locke, Smith, Mill) \u2014 versus modern American usage, where since the New Deal it has meant social-welfare progressivism.',
+      implication: `In much of Europe, Latin America, and Australia, "liberal" still leans market-oriented \u2014 Australia's Liberal Party sits center-right. A sentence about "liberals" can assert opposite things depending on where the writer and the reader learned the word, and as an epithet it attributes a single belief to a vast, varied group.`,
+      suggestion: "Identify which tradition is meant, or name the actual policy, party, or group instead of the label.",
+      examples: '"Liberals believe X" \u2014 American progressives? Classical liberals? A specific party? "Liberal democracy" uses the classical sense.',
+      words: [
+        "liberals",
+        "liberalism",
+        "neoliberal",
+        "neoliberals",
+        "neoliberalism",
+        "illiberal",
+        "\\bclassical liberals?\\b",
+        "\\bliberal\\b(?!\\s+(arts|education|studies|application|amounts?|use|helping|dose|doses|sprinkling|seasoning))"
+      ]
+    },
+    conservative: {
+      icon: "\u{1F3DB}\uFE0F",
+      color: "#8d6e63",
+      name: "Conservative",
+      description: "Conservatism, articulated by Edmund Burke in reaction to the French Revolution, names a disposition: preserving established institutions, preferring gradual change, and distrusting wholesale redesign of society.",
+      implication: 'What is being conserved differs completely by time and place \u2014 monarchy in one country, free markets in another, a secular constitution in a third \u2014 so the label names a posture toward change, not a fixed platform. Used as a monolith ("conservatives want\u2026"), it erases those differences and substitutes identity for argument.',
+      suggestion: "Ask what, specifically, is being conserved, and which policies or groups are actually meant.",
+      examples: '"Conservatives oppose this" \u2014 which movement, party, or tradition? (Note: "a conservative estimate" is an unrelated sense of the word.)',
+      words: [
+        "conservatism",
+        "neoconservative",
+        "neoconservatives",
+        "neocon",
+        "neocons",
+        "paleoconservative",
+        "ultraconservative",
+        "arch-conservative",
+        "\\bconservatives?\\b(?!\\s+(estimate|estimates|assumption|assumptions|approach|guess|figure|figures|number|numbers|investment|investments|treatment|dress|styling|management|projection|projections))"
+      ]
+    }
+  };
+  var spectrumLabels = Object.values(spectrumWords).flatMap((sub) => sub.words);
+
   // src/dictionaries/index.js
   function isIntensityGrouped(words) {
     if (Array.isArray(words))
@@ -3510,7 +3683,8 @@
         emotional: emotionalTriggers,
         gaslighting: gaslightingPhrases,
         falsedilemma: falseDilemmaPhrases,
-        probability: probabilityLanguage
+        probability: probabilityLanguage,
+        spectrum: spectrumLabels
       };
     }
     loadSubCategoryDictionaries() {
@@ -3521,6 +3695,7 @@
       dictionaries.set("maximizer", maximizerWords);
       dictionaries.set("emotional", emotionalTriggerWords);
       dictionaries.set("gaslighting", gaslightingWords);
+      dictionaries.set("spectrum", spectrumWords);
       return dictionaries;
     }
     // Build word→intensity lookup maps from all dictionaries
@@ -3817,10 +3992,11 @@
         content += `<div class="hover-card-header">${this.getTypeName(type, true)}</div>`;
       } else {
         const typeName = subConfig ? subConfig.name : this.getTypeName(type, false);
+        const badge = biasConfig && biasConfig.isExplainer ? `<span class="intensity-badge intensity-context">Context</span>` : `<span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>`;
         content += `
                 <div class="hover-card-header"${this.getSubCategoryStyle(match)}>
                     ${typeName}
-                    <span class="intensity-badge intensity-${intensity}">${intensityLabel}</span>
+                    ${badge}
                 </div>
             `;
       }
@@ -3863,7 +4039,7 @@
       }
       const effectiveConfig = subConfig || biasConfig;
       if (effectiveConfig) {
-        const tipText = subConfig && subConfig.basicTip || biasConfig && biasConfig.basicTip;
+        const tipText = biasConfig && biasConfig.isExplainer && subConfig && subConfig.description || subConfig && subConfig.basicTip || biasConfig && biasConfig.basicTip;
         if (tipText) {
           content += `<div class="hover-card-reason">${tipText}</div>`;
         }
@@ -4231,7 +4407,8 @@
           emotional: "#ff7f50",
           gaslighting: "#800000",
           falsedilemma: "#9400d3",
-          probability: "#4169e1"
+          probability: "#4169e1",
+          spectrum: "#7e57c2"
         };
         const baseType = matchData.type.startsWith("opinion_") ? "opinion" : matchData.type;
         this.popup.style.borderTopColor = typeColors[baseType] || "#dc3545";
@@ -4484,6 +4661,9 @@
         const parentConfig = BiasConfig.getBiasTypeConfig(parentId);
         const subConfig = parentConfig && parentConfig.subCategories ? parentConfig.subCategories[subCategoryId] : null;
         if (subConfig) {
+          if (parentConfig.isExplainer) {
+            return `${subConfig.name} \u2014 a contested label; click for context`;
+          }
           return `Possible ${parentConfig.name} - ${subConfig.name}`;
         }
       }
@@ -5610,7 +5790,7 @@
               pattern: pattern.source
             };
             if (hasSubCategories) {
-              const subCategory = this.patterns.getSubCategory(type, match[0]);
+              const subCategory = this.patterns.getSubCategory(type, match[0]) || this.patterns.getSubCategory(type, pattern.source);
               if (subCategory) {
                 matchData.type = BiasConfig.getCompositeType(type, subCategory.id);
                 matchData.subCategory = subCategory;
@@ -5814,6 +5994,10 @@
           if (aConf !== bConf)
             return bConf - aConf;
         }
+        const aExplainer = this._isExplainerMatch(a);
+        const bExplainer = this._isExplainerMatch(b);
+        if (aExplainer !== bExplainer)
+          return aExplainer ? -1 : 1;
         return b.length - a.length;
       });
       const neutralOverrides = matches.filter((m) => m.isNeutralOverride);
@@ -5846,6 +6030,11 @@
         }
       }
       return deduplicated;
+    }
+    _isExplainerMatch(match) {
+      const { parentId } = BiasConfig.resolveType(match.parentType || match.type);
+      const config = BiasConfig.getBiasTypeConfig(parentId);
+      return !!(config && config.isExplainer);
     }
     // Update settings with selective highlighting
     async updateSettings(newSettings) {

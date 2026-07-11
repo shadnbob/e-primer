@@ -254,7 +254,8 @@ export class PopupManager {
                 passive: '#800080', weasel: '#b8860b', presupposition: '#ff1493',
                 metaphor: '#dc143c', minimizer: '#008080', maximizer: '#ff4500',
                 falsebalance: '#4b0082', euphemism: '#006400', emotional: '#ff7f50',
-                gaslighting: '#800000', falsedilemma: '#9400d3', probability: '#4169e1'
+                gaslighting: '#800000', falsedilemma: '#9400d3', probability: '#4169e1',
+                spectrum: '#7e57c2'
             };
             const baseType = matchData.type.startsWith('opinion_') ? 'opinion' : matchData.type;
             this.popup.style.borderTopColor = typeColors[baseType] || '#dc3545';
