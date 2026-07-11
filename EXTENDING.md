@@ -128,7 +128,7 @@ Create patterns in `src/dictionaries/new-excellence-patterns.js` and follow the 
 
 ## Adding Subcategories to a Bias Type
 
-Twelve types currently have subcategories (opinion, euphemism, emotional, weasel, maximizer, gaslighting, spectrum, scistats, isms, civics, econterms, epistemics). To add subcategories to another type or extend existing ones:
+Thirteen types currently have subcategories (opinion, euphemism, emotional, weasel, maximizer, gaslighting, spectrum, scistats, isms, civics, econterms, epistemics, debate). To add subcategories to another type or extend existing ones:
 
 ### 1. Restructure the Dictionary File
 

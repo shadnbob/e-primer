@@ -21,6 +21,7 @@ import { politicalIsms, politicalIsmsWords } from './political-isms.js';
 import { civicTerms, civicTermsWords } from './civic-terms.js';
 import { econTerms, econTermsWords } from './econ-terms.js';
 import { epistemicTerms, epistemicTermsWords } from './epistemic-terms.js';
+import { discourseConcepts, discourseConceptsWords } from './discourse-concepts.js';
 
 // Helper: check if a words entry is intensity-grouped ({ 1: [...], 2: [...] })
 // vs a flat array ([...])
@@ -67,7 +68,8 @@ export class BiasPatterns {
             isms: politicalIsms,
             civics: civicTerms,
             econterms: econTerms,
-            epistemics: epistemicTerms
+            epistemics: epistemicTerms,
+            debate: discourseConcepts
         };
     }
 
@@ -85,6 +87,7 @@ export class BiasPatterns {
         dictionaries.set('civics', civicTermsWords);
         dictionaries.set('econterms', econTermsWords);
         dictionaries.set('epistemics', epistemicTermsWords);
+        dictionaries.set('debate', discourseConceptsWords);
         return dictionaries;
     }
 
@@ -213,20 +216,27 @@ export class BiasPatterns {
         if (!cleanPattern) return null;
 
         try {
-            const isComplexPattern = cleanPattern.includes('\\') || 
-                                   cleanPattern.includes('(') || 
+            const isComplexPattern = cleanPattern.includes('\\') ||
+                                   cleanPattern.includes('(') ||
                                    cleanPattern.includes('[');
 
             let regexPattern;
             const flags = 'gi';
 
+            // Text nodes preserve the source's line breaks, so a literal space
+            // in a phrase must tolerate any whitespace run ("demanding
+            // tolerance" wraps across lines in real HTML). For complex
+            // patterns, skip ones containing character classes, where a space
+            // may be a class member rather than a separator.
             if (isComplexPattern) {
-                regexPattern = cleanPattern;
+                regexPattern = cleanPattern.includes('[')
+                    ? cleanPattern
+                    : cleanPattern.replace(/ /g, '\\s+');
             } else {
                 const escaped = this.escapeRegExp(cleanPattern);
-                regexPattern = cleanPattern.includes(' ') ? 
-                              escaped : 
-                              `\\b${escaped}\\b`;
+                regexPattern = cleanPattern.includes(' ')
+                    ? escaped.replace(/ /g, '\\s+')
+                    : `\\b${escaped}\\b`;
             }
 
             const regex = new RegExp(regexPattern, flags);

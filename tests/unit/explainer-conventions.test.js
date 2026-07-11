@@ -23,9 +23,9 @@ describe('Explainer conventions (all isExplainer types)', () => {
   const explainerConfigs = Object.values(BiasConfig.BIAS_TYPES).filter(c => c.isExplainer);
   const patterns = new BiasPatterns();
 
-  test('there are six explainer types', () => {
+  test('there are seven explainer types', () => {
     expect(explainerConfigs.map(c => c.id).sort()).toEqual(
-      ['civics', 'econterms', 'epistemics', 'isms', 'scistats', 'spectrum']
+      ['civics', 'debate', 'econterms', 'epistemics', 'isms', 'scistats', 'spectrum']
     );
   });
 
@@ -109,6 +109,42 @@ describe('Economic Terms detection', () => {
     expect(subsOf('The team erased the deficit in the fourth quarter.')).toEqual([]);
     expect(subsOf('Record high temperatures hit the region.')).toEqual([]);
     expect(subsOf('She deflated the balloon after the party.')).toEqual([]);
+  });
+});
+
+describe('Discourse Concepts detection', () => {
+  let detector, patterns;
+  beforeEach(() => { detector = new BiasDetector(); patterns = detector.compiledDetectors.get('debate').patterns; });
+  afterEach(() => detector.destroy());
+  const subsOf = text => detector.detectPatterns(text, patterns, 'debate').map(m => m.subCategory && m.subCategory.id);
+
+  test('families detect and attribute', () => {
+    expect(subsOf('They invoked the paradox of tolerance to justify the ban.')).toContain('tolerance_paradox');
+    expect(subsOf('Critics demanding tolerance were accused of preaching tolerance selectively.'))
+      .toEqual(expect.arrayContaining(['tolerance_paradox']));
+    expect(subsOf('We must be intolerant of intolerance, the pamphlet said.')).toContain('tolerance_paradox');
+    expect(subsOf('That is a slippery slope argument, and the thin end of the wedge.'))
+      .toEqual(expect.arrayContaining(['slippery_slope']));
+    expect(subsOf('Pure whataboutism, she replied — a classic tu quoque.'))
+      .toEqual(expect.arrayContaining(['whataboutism']));
+    expect(subsOf('He attacked a straw man, then finished with an ad hominem instead of a steelman.'))
+      .toEqual(expect.arrayContaining(['strawman_adhominem']));
+    expect(subsOf('The proposal sits outside the Overton window.')).toContain('overton_window');
+    expect(subsOf('A textbook motte-and-bailey, the reviewer wrote.')).toContain('motte_bailey');
+  });
+
+  test('engineering, policy, and literal senses stay unmatched', () => {
+    expect(subsOf('The machinist checked the tolerance on the bearing.')).toEqual([]);
+    expect(subsOf('Zero tolerance policies spread through schools in the 1990s.')).toEqual([]);
+    expect(subsOf('The ski slope was slippery after the overnight rain.')).toEqual([]);
+    expect(subsOf('She tolerated the noise from the construction site.')).toEqual([]);
+  });
+
+  test('phrases match across source line breaks', () => {
+    // HTML text nodes preserve the source's wrapping, so multi-word phrases
+    // must tolerate newlines and indentation between words
+    expect(subsOf('a community demanding\n                tolerance must act')).toContain('tolerance_paradox');
+    expect(subsOf('cited the paradox\nof tolerance in the ruling')).toContain('tolerance_paradox');
   });
 });
 

@@ -147,6 +147,7 @@ Explainer dictionaries annotate contested terms with context rather than flaggin
 - **Speech & Civic Terms** — the most common online argument-collapse (4 subcategories: free speech, censorship, rights claims, legal standards). "Free speech" names both a legal right against government and a cultural value of open discourse; "censorship" covers powers as different as state suppression and a declined submission; courtroom standards like "innocent until proven guilty" bind the state, not private judgment — though the fairness worry behind invoking them is real. "Banned substances" and "animal rights" never trigger.
 - **Economic Terms** — the vocabulary news cycles run on (4 subcategories: inflation-is-a-rate, deficit vs debt, recession & "the economy", middle class & records). "Falling inflation" means prices rising more slowly, not falling; cutting the deficit still grows the debt; "the economy" bundles measures that move in different directions; nearly everyone self-identifies as middle class. Sports deficits and record-high temperatures never trigger.
 - **Media & Truth Terms** — the meta-layer: words about truth and coverage itself (4 subcategories: fake news, mis- & disinformation, conspiracy theory, narratives & "the media"). Each both describes a real phenomenon and gets used to dismiss opponents; the cards present both faces — "fake news" named fabricated content before becoming an epithet, real conspiracies exist (Watergate), and "the media" bundles thousands of outlets into one actor. Literary narratives and criminal-law conspiracy never trigger.
+- **Discourse Concepts** — named paradoxes and debate-moves deployed as labels (6 subcategories: paradox of tolerance, slippery slope, whataboutism, strawman & ad hominem, Overton window, motte-and-bailey). Popper's paradox of tolerance is far more qualified than the meme version — counter intolerance by argument while argument works — and it never answers *who counts as intolerant*; slope arguments are fallacious without a mechanism and legitimate with one; "whataboutism!" can dodge a fair consistency test; fallacy accusations are claims that need the same evidence they demand. Machining tolerances, zero-tolerance policies, and slippery ski slopes never trigger.
 
 Try all three on the [Explainer Playground](https://shadnbob.github.io/e-primer/explainers.html) (`docs/explainers.html`), a test page with passages that should light up and guard passages that should stay clean.
 
@@ -221,7 +222,7 @@ e-primer/
 │   │   ├── opinion-words.js          # Opinion/subjective terms
 │   │   ├── absolute-words.js         # Universal quantifiers
 │   │   ├── tobe-verbs.js             # E-Prime verb forms
-│   │   └── ...                       # 17 more pattern dictionaries
+│   │   └── ...                       # 18 more pattern dictionaries
 │   ├── popup/
 │   │   ├── popup-dynamic.js          # Popup entry point
 │   │   ├── PopupGenerator.js         # Dynamic UI generation
@@ -266,7 +267,7 @@ See [EXTENDING.md](EXTENDING.md) for the full guide. The short version:
 
 The extension runs as a content script on every web page. On load:
 
-1. **Pattern compilation** — all word lists and regex patterns from the 21 dictionaries are pre-compiled into optimized RegExp objects
+1. **Pattern compilation** — all word lists and regex patterns from the 22 dictionaries are pre-compiled into optimized RegExp objects
 2. **Text node collection** — a TreeWalker traverses the DOM collecting text nodes, skipping scripts, styles, and the extension's own highlights
 3. **Batch processing** — text nodes are analyzed in batches to avoid blocking the UI thread
 4. **Pattern matching** — each enabled detector runs its compiled patterns against the text

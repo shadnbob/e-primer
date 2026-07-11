@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the E-Prime Bias Detector, a browser extension that detects biased language patterns in web content using E-Prime principles and advanced linguistic analysis. The extension identifies 21 different types of linguistic patterns — 15 bias types plus six "explainer" types that annotate contested terms (political spectrum labels, science & statistics phrases, political -isms, speech & civic terms, economic terms, media & truth terms) with context — and includes an excellence detection system that highlights good writing practices.
+This is the E-Prime Bias Detector, a browser extension that detects biased language patterns in web content using E-Prime principles and advanced linguistic analysis. The extension identifies 22 different types of linguistic patterns — 15 bias types plus seven "explainer" types that annotate contested terms (political spectrum labels, science & statistics phrases, political -isms, speech & civic terms, economic terms, media & truth terms, discourse concepts) with context — and includes an excellence detection system that highlights good writing practices.
 
 ## Development Commands
 
@@ -65,7 +65,7 @@ The project uses a modern ES6 module architecture with esbuild for multi-target 
 
 - `src/config/`: Configuration management
 - `src/content/`: Content script logic and main detector
-- `src/dictionaries/`: Pattern definitions for each bias type (21 dictionary files + index)
+- `src/dictionaries/`: Pattern definitions for each bias type (22 dictionary files + index)
 - `src/popup/`: Popup interface components (popup-dynamic.js entry; SettingsManager.js and PopupGenerator.js derive settings metadata and subcategory toggle markup from BiasConfig; StatsDisplay.js is **unused** — set aside, see its header note)
 - `src/utils/`: Shared utilities and processors
 - `src/build/`: Build-time utilities (StyleGenerator.js, ReferencePageGenerator.js)
@@ -75,18 +75,18 @@ The project uses a modern ES6 module architecture with esbuild for multi-target 
 
 ### Detection Categories
 
-The extension detects patterns in 5 main categories (21 types total, all enabled by default):
+The extension detects patterns in 5 main categories (22 types total, all enabled by default):
 1. **Basic Detection**: Opinion words, to-be verbs, absolute statements
 2. **Advanced Detection**: Passive voice, weasel words, presuppositions, probability perception
 3. **Framing & Rhetoric**: War metaphors, minimizers, maximizers
 4. **Manipulation Tactics**: False balance, euphemisms, emotional manipulation, gaslighting, false dilemmas
-5. **Explainers**: Political spectrum labels, science & statistics phrases, political -isms, speech & civic terms, economic terms, media & truth terms (contested terms explained, not judged — see "Explainer types" below). A hand-authored demo page for all explainers lives at `docs/explainers.html`
+5. **Explainers**: Political spectrum labels, science & statistics phrases, political -isms, speech & civic terms, economic terms, media & truth terms, discourse concepts (contested terms explained, not judged — see "Explainer types" below). A hand-authored demo page for all explainers lives at `docs/explainers.html`
 
 ### Subcategory System
 
-Twelve types have subcategories — structured taxonomies that provide more specific detection and tailored guidance. Each subcategory has its own `icon`, `color`, `name`, `description`, `implication`, `suggestion`, `examples`, and `words` array in its dictionary file, plus `settingKey`, `statKey`, `basicTip`, `whenConcerning`, and `whenAcceptable` metadata in BiasConfig.
+Thirteen types have subcategories — structured taxonomies that provide more specific detection and tailored guidance. Each subcategory has its own `icon`, `color`, `name`, `description`, `implication`, `suggestion`, `examples`, and `words` array in its dictionary file, plus `settingKey`, `statKey`, `basicTip`, `whenConcerning`, and `whenAcceptable` metadata in BiasConfig.
 
-**Types with subcategories (66 total subcategories):**
+**Types with subcategories (72 total subcategories):**
 1. **Opinion Words** (12): certainty, hedging, evaluative_positive, evaluative_negative, emotional_charge, comparative, political_framing, intensifiers, credibility_undermining, loaded_political, moral_judgments, emotional_appeals
 2. **Euphemisms** (7): political_euphemism, corporate_euphemism, social_euphemism, military_euphemism, dysphemism, medical_euphemism, environmental_euphemism
 3. **Emotional Manipulation** (6): fear_appeal, guilt_induction, flattery_manipulation, outrage_fuel, sympathy_exploitation, false_urgency
@@ -99,6 +99,7 @@ Twelve types have subcategories — structured taxonomies that provide more spec
 10. **Speech & Civic Terms** (4): free_speech, censorship, rights, legal_standards — an *explainer* type (see below)
 11. **Economic Terms** (4): inflation, deficit_debt, recession_economy, class_records — an *explainer* type (see below)
 12. **Media & Truth Terms** (4): fake_news, misinfo_disinfo, conspiracy, narrative_media — an *explainer* type (see below)
+13. **Discourse Concepts** (6): tolerance_paradox, slippery_slope, whataboutism, strawman_adhominem, overton_window, motte_bailey — an *explainer* type (see below)
 
 **How subcategories flow through the code:**
 - Dictionary files export a structured object (e.g., `euphemismWords`) with subcategory keys, plus a flat array (e.g., `euphemismsFlat`) for backward-compatible regex matching
@@ -122,7 +123,7 @@ The system also identifies positive writing patterns:
 
 ## Key Technical Details
 
-- **Explainer types**: Types with `isExplainer: true` (currently `spectrum`, `scistats`, `isms`, `civics`, `econterms`, and `epistemics`) annotate contested terms with history/context rather than flagging problems — hover cards show a neutral "Context" badge instead of a severity level, and tooltips avoid "Possible …" phrasing. Content must stay politically even-handed, subcategory colors must avoid partisan coding (no red/blue), and patterns should prefer precision over recall (regex sense-guards keep "the right to remain silent", "conservative estimate", "liberal arts" unmatched). Regex dictionary entries attribute to subcategories via the pattern-source fallback in `BiasDetector.detectPatterns`.
+- **Explainer types**: Types with `isExplainer: true` (currently `spectrum`, `scistats`, `isms`, `civics`, `econterms`, `epistemics`, and `debate`) annotate contested terms with history/context rather than flagging problems — hover cards show a neutral "Context" badge instead of a severity level, and tooltips avoid "Possible …" phrasing. Content must stay politically even-handed, subcategory colors must avoid partisan coding (no red/blue), and patterns should prefer precision over recall (regex sense-guards keep "the right to remain silent", "conservative estimate", "liberal arts" unmatched). Regex dictionary entries attribute to subcategories via the pattern-source fallback in `BiasDetector.detectPatterns`.
 - **Pattern Compilation**: All regex patterns are pre-compiled for performance
 - **Modular Design**: ES6 modules with proper imports/exports
 - **Performance Optimized**: Batch processing with configurable batch size and mutation debouncing

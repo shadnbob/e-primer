@@ -1917,6 +1917,140 @@
             whenAcceptable: "When specific outlets, cases, and incentives are named"
           }
         }
+      },
+      DEBATE: {
+        id: "debate",
+        name: "Discourse Concepts",
+        description: "Named paradoxes and debate-moves deployed as labels \u2014 each names a real move and doubles as a dismissal",
+        category: "explainer",
+        isExplainer: true,
+        color: "#78909c",
+        className: "bias-highlight-debate",
+        settingKey: "highlightDebate",
+        statKey: "debateCount",
+        enabled: true,
+        tooltip: "A named debate concept that both describes a real move and gets used to end arguments",
+        basicTip: "A named debate concept that both describes a real move and gets used to end arguments",
+        whenConcerning: "When the concept-name substitutes for showing the move it alleges, or ends an argument the concept itself cannot settle",
+        whenAcceptable: "When the move is demonstrated (quotes, mechanism, standard) rather than just named",
+        lookFor: [
+          "Is the move shown, or only named?",
+          "Does the concept actually settle the question it is invoked for?",
+          "Who decides the judgment the concept depends on?",
+          "Would the label survive being applied to the speaker's own side?"
+        ],
+        examples: {
+          problematic: [
+            "paradox of tolerance, therefore the ban is justified (who judged?)",
+            "slippery slope fallacy! (mechanism ignored)",
+            "that's just whataboutism (a fair consistency test dodged)",
+            "strawman! (without quoting the original)"
+          ],
+          acceptable: [
+            "Popper's test: they answer arguments with violence, so suppression is on the table",
+            "the mechanism is precedent: the rule was extended twice this decade",
+            "the comparison doesn't answer the charge \u2014 both can be wrong",
+            "here is the original claim, and here is the weaker version attacked"
+          ]
+        },
+        contextualGuidance: {
+          academic: "Expect the concept's conditions to be stated and applied, not just invoked",
+          news: "Watch for concept-names doing the work of analysis in coverage of debates",
+          opinion: "Naming a fallacy is the start of an argument, not the end of one",
+          instructions: "Rarely relevant; treat as informational"
+        },
+        subCategories: {
+          tolerance_paradox: {
+            id: "tolerance_paradox",
+            name: "Paradox of Tolerance",
+            icon: "\u{1F91D}",
+            color: "#5c6bc0",
+            description: `From Karl Popper's The Open Society and Its Enemies (1945): "unlimited tolerance must lead to the disappearance of tolerance." The meme version stops there. Popper's footnote continues: intolerant philosophies should be countered by argument and public opinion as long as that works \u2014 he reserved suppression for movements that reject rational debate and answer arguments with violence.`,
+            implication: 'The paradox gets invoked as a finished argument, but it does not answer the hard question \u2014 who counts as intolerant, judged by whom, by what standard \u2014 which is decided *before* the paradox applies and is where the actual disagreement lives. Both failure modes are real: unlimited tolerance can shelter movements that would end it, and an elastic definition of "intolerance" can license excluding ordinary disagreement.',
+            suggestion: "Ask what specific conduct is called intolerant, whether argument and public opinion have failed, and who gets to decide \u2014 the paradox itself settles none of these.",
+            examples: `"We must be intolerant of intolerance" \u2014 of violent rejection of debate (Popper's case), or of a position the speaker opposes?`,
+            settingKey: "highlightDebateToleranceParadox",
+            statKey: "debateToleranceParadoxCount",
+            basicTip: "Popper's paradox is qualified \u2014 counter by argument while you can \u2014 and it never answers who counts as intolerant.",
+            whenConcerning: "When the paradox is deployed as a finished argument, skipping the who-decides question",
+            whenAcceptable: "When Popper's actual conditions (rejection of debate, resort to violence) are argued, not assumed"
+          },
+          slippery_slope: {
+            id: "slippery_slope",
+            name: "Slippery Slope",
+            icon: "\u{1F6DD}",
+            color: "#6d4c41",
+            description: "Named as a fallacy when a chain from step A to feared outcome Z is asserted without any mechanism. But slope arguments are not automatically fallacious: precedent, incentive shifts, and boundary erosion are real, studiable mechanisms, and courts treat precedent-based slope arguments seriously.",
+            implication: `The label cuts both ways: "that's a slippery slope fallacy" can dismiss a legitimate argument about how a rule will actually be extended, while a bare slope claim can smuggle in an unargued chain of dominoes. The difference is whether a mechanism is shown and whether anything plausibly stops the slide.`,
+            suggestion: "Ask for the mechanism: what specifically carries step one to the feared end, and what would stop it along the way?",
+            examples: '"This leads inevitably to X" \u2014 by what mechanism? / "Slippery slope fallacy!" \u2014 is there a mechanism being ignored?',
+            settingKey: "highlightDebateSlipperySlope",
+            statKey: "debateSlipperySlopeCount",
+            basicTip: "Slope arguments are fallacious without a mechanism and legitimate with one \u2014 the label alone cannot tell you which.",
+            whenConcerning: "When either the slope or the fallacy-label is asserted without examining the mechanism",
+            whenAcceptable: "When the mechanism (precedent, incentives) and its limits are actually argued"
+          },
+          whataboutism: {
+            id: "whataboutism",
+            name: "Whataboutism",
+            icon: "\u{1F449}",
+            color: "#00838f",
+            description: `A Cold War-era label (Soviet spokesmen answering criticism with "and you are lynching Negroes"-style replies): deflecting a charge by pointing at the accuser's conduct instead of answering. The classical name is tu quoque \u2014 "you too."`,
+            implication: "The move is real: changing the subject is not a defense, and two wrongs remain two wrongs. But the label also gets used to dodge legitimate consistency challenges \u2014 when the accuser's own standard is part of the argument (selective enforcement, hypocrisy in rule-making), the comparison is evidence, not deflection.",
+            suggestion: "Ask whether the comparison answers the charge or replaces it \u2014 and whether the accuser's consistency is actually relevant to the claim.",
+            examples: `"What about your side's scandal?" \u2014 deflection from this charge, or a fair test of the standard being applied?`,
+            settingKey: "highlightDebateWhataboutism",
+            statKey: "debateWhataboutismCount",
+            basicTip: "Pointing at the accuser can be deflection or a fair consistency test \u2014 the label alone does not distinguish them.",
+            whenConcerning: "When the label dodges a relevant consistency challenge, or the comparison dodges the charge",
+            whenAcceptable: "When the charge is answered first, or the accuser's standard is genuinely at issue"
+          },
+          strawman_adhominem: {
+            id: "strawman_adhominem",
+            name: "Strawman & Ad Hominem",
+            icon: "\u{1F3AF}",
+            color: "#8d6e63",
+            description: "A strawman attacks a weakened version of an opponent's claim; ad hominem attacks the arguer instead of the argument; a steelman argues against the strongest version. All three name the relationship between a response and the actual claim.",
+            implication: `The accusations are moves too: "that's a strawman" asserts misrepresentation without showing it, and "ad hominem!" can deflect personal accountability even where character is the question \u2014 credibility, conflicts of interest, and track records are legitimately about the person. The labels need the same evidence they demand.`,
+            suggestion: "For strawman claims: quote the original and the response. For ad hominem: is the personal point relevant to credibility, or substituting for engagement?",
+            examples: `"You're strawmanning me" \u2014 what was the real claim? "That's ad hominem" \u2014 or is the witness's reliability the issue?`,
+            settingKey: "highlightDebateStrawman",
+            statKey: "debateStrawmanCount",
+            basicTip: "Fallacy accusations are claims too: a strawman charge needs the original quoted; ad hominem is legitimate when credibility is the question.",
+            whenConcerning: "When the accusation substitutes for showing the misrepresentation or irrelevance it alleges",
+            whenAcceptable: "When the original claim and the response are both on the table"
+          },
+          overton_window: {
+            id: "overton_window",
+            name: "Overton Window",
+            icon: "\u{1FA9F}",
+            color: "#607d8b",
+            description: "Named for Joseph Overton (Mackinac Center, 1990s): the range of policies politically acceptable to the mainstream at a given moment. Originally a descriptive claim about feasibility \u2014 politicians can only move within the window; movements move the window.",
+            implication: 'The concept now does three jobs at once: description (what is currently sayable), strategy ("shift the window"), and accusation ("normalizing extremism"). It can also smuggle in inevitability \u2014 windows do not move like weather; specific actors move them by choice, and naming the concept does not say whether a given shift is good or bad.',
+            suggestion: "Ask whether the sentence describes what is acceptable, argues what should be, or accuses someone of moving the boundary \u2014 three different claims.",
+            examples: `"That's outside the Overton window" \u2014 a prediction about viability, not an argument about merit.`,
+            settingKey: "highlightDebateOvertonWindow",
+            statKey: "debateOvertonWindowCount",
+            basicTip: "The Overton window describes what is currently sayable \u2014 it is not an argument about what is right.",
+            whenConcerning: "When description of acceptability stands in for argument about merit, or shifts are framed as weather",
+            whenAcceptable: "In the descriptive sense, with the actors doing the moving named"
+          },
+          motte_bailey: {
+            id: "motte_bailey",
+            name: "Motte-and-Bailey",
+            icon: "\u{1F3F0}",
+            color: "#7e57c2",
+            description: `Nicholas Shackel's term (2005), from the medieval castle: a modest, defensible claim (the motte) and a sweeping, attractive claim (the bailey) share one vocabulary. Challenged on the bailey, the arguer retreats to the motte ("all I'm saying is\u2026"), then reoccupies the bailey once the challenge passes.`,
+            implication: "The pattern is real and explains how many contested terms work \u2014 one word doing double duty for a modest and a sweeping claim. But naming it is a structural accusation that needs showing (quote the bailey, quote the motte, same speaker), and it misfires against groups: different people making different claims is not one arguer switching.",
+            suggestion: "Ask which claim \u2014 the modest one or the sweeping one \u2014 is actually being defended right now, and which one the conclusion needs.",
+            examples: `"All I'm saying is X (modest)" \u2014 but was the earlier claim X, or something much bigger using the same words?`,
+            settingKey: "highlightDebateMotteBailey",
+            statKey: "debateMotteBaileyCount",
+            basicTip: "A motte-and-bailey charge alleges one speaker switching between a modest and a sweeping claim \u2014 it needs both quotes.",
+            whenConcerning: "When the charge is made without both claims shown, or against a group rather than a switching speaker",
+            whenAcceptable: "When the modest and sweeping claims are quoted from the same source"
+          }
+        }
       }
     };
     // Excellence detection types
@@ -2580,7 +2714,7 @@
       "advancedSectionToggle": ["passiveToggle", "weaselToggle", "presuppositionToggle", "probabilityToggle"],
       "framingSectionToggle": ["metaphorToggle", "minimizerToggle", "maximizerToggle", "falseBalanceToggle", "euphemismToggle"],
       "manipulationSectionToggle": ["emotionalToggle", "gaslightingToggle", "falseDilemmaToggle"],
-      "explainerSectionToggle": ["spectrumToggle", "scistatsToggle", "ismsToggle", "civicsToggle", "econtermsToggle", "epistemicsToggle"]
+      "explainerSectionToggle": ["spectrumToggle", "scistatsToggle", "ismsToggle", "civicsToggle", "econtermsToggle", "epistemicsToggle", "debateToggle"]
     };
     let customGroups = [];
     let editingGroupId = null;
