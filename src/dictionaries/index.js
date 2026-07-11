@@ -16,6 +16,7 @@ import { gaslightingPhrases, gaslightingWords } from './gaslighting.js';
 import { falseDilemmaPhrases } from './false-dilemma.js';
 import { probabilityLanguage } from './probability-language.js';
 import { spectrumLabels, spectrumWords } from './spectrum-labels.js';
+import { sciStatsTerms, sciStatsWords } from './science-stats.js';
 
 // Helper: check if a words entry is intensity-grouped ({ 1: [...], 2: [...] })
 // vs a flat array ([...])
@@ -57,7 +58,8 @@ export class BiasPatterns {
             gaslighting: gaslightingPhrases,
             falsedilemma: falseDilemmaPhrases,
             probability: probabilityLanguage,
-            spectrum: spectrumLabels
+            spectrum: spectrumLabels,
+            scistats: sciStatsTerms
         };
     }
 
@@ -70,6 +72,7 @@ export class BiasPatterns {
         dictionaries.set('emotional', emotionalTriggerWords);
         dictionaries.set('gaslighting', gaslightingWords);
         dictionaries.set('spectrum', spectrumWords);
+        dictionaries.set('scistats', sciStatsWords);
         return dictionaries;
     }
 

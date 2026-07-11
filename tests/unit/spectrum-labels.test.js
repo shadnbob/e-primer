@@ -159,7 +159,7 @@ describe('Spectrum Labels explainer', () => {
     test('tooltip avoids accusatory phrasing for explainer types', () => {
       const processor = new DOMProcessor();
       const tooltip = processor.getTooltipText('spectrum_left_right');
-      expect(tooltip).toContain('contested label');
+      expect(tooltip).toContain('click for context');
       expect(tooltip).not.toContain('Possible');
     });
   });

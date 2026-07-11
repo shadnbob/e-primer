@@ -1364,6 +1364,141 @@ export class BiasConfig {
                     whenAcceptable: 'When naming self-identified groups, parties, or a specified tradition'
                 }
             }
+        },
+        SCISTATS: {
+            id: 'scistats',
+            name: 'Science & Statistics',
+            description: 'Research and statistics phrases that often mean less (or more) than they seem',
+            category: 'explainer',
+            isExplainer: true,
+            color: '#546e7a',
+            className: 'bias-highlight-scistats',
+            settingKey: 'highlightSciStats',
+            statKey: 'sciStatsCount',
+            enabled: true,
+            tooltip: 'A science or statistics phrase whose technical meaning differs from how it reads',
+            basicTip: 'A science or statistics phrase whose technical meaning differs from how it reads',
+            whenConcerning: 'When technical-sounding language substitutes for the numbers: effect sizes, base rates, study design, or named substances',
+            whenAcceptable: 'When the underlying quantities are given nearby (absolute risks, effect sizes, study details)',
+            lookFor: [
+                'What are the actual numbers behind this phrase?',
+                'What kind of study produced this claim?',
+                'What is the baseline?',
+                'Would the sentence survive replacing the phrase with its technical meaning?'
+            ],
+            examples: {
+                problematic: [
+                    'significantly higher risk (no effect size given)',
+                    'linked to cancer (observational study, unmentioned)',
+                    'doubles the risk (of 1 in a million)',
+                    'chemical-free formula',
+                    'it\'s just a theory'
+                ],
+                acceptable: [
+                    'risk rose from 1.0% to 1.4%',
+                    'a randomized trial of 12,000 patients found…',
+                    'the germ theory of disease',
+                    'three large studies searched for and found no effect'
+                ]
+            },
+            contextualGuidance: {
+                academic: 'Expect effect sizes and study design alongside significance and association language',
+                news: 'Watch for relative risks without baselines and association framed as cause in health and science reporting',
+                opinion: 'Technical-sounding phrases lend borrowed authority; check the numbers behind them',
+                instructions: 'Purity marketing ("chemical-free", "detox") is common in product copy; ask which substances and doses'
+            },
+            subCategories: {
+                theory_proof: {
+                    id: 'theory_proof',
+                    name: 'Proof & "The Science"',
+                    icon: '🔬',
+                    color: '#5c6bc0',
+                    description: 'In science, a "theory" is the strongest kind of explanation — a framework repeatedly tested against evidence (germ theory, the theory of gravity) — while in everyday speech it means a hunch. And empirical science does not "prove" claims the way mathematics does; it accumulates evidence and fails to falsify.',
+                    implication: '"Just a theory" uses the everyday sense to dismiss well-tested science. "Scientifically proven," "settled science," and "the science says" invoke Science as a single settled authority — often claiming more certainty than the underlying studies support, in either direction.',
+                    suggestion: 'Ask what the actual evidence is: how many studies, of what kind, on whom, and how consistent the results are.',
+                    examples: '"Evolution is just a theory" (so is gravity); "clinically proven" (in which trial, against what comparison?)',
+                    settingKey: 'highlightSciStatsProof',
+                    statKey: 'sciStatsProofCount',
+                    basicTip: '"Theory" means a hunch in conversation but the best-tested kind of explanation in science; "proven" claims more certainty than empirical science delivers.',
+                    whenConcerning: 'When "theory" dismisses tested science, or "proven"/"the science says" ends scrutiny of a claim or product',
+                    whenAcceptable: 'In casual speech about everyday hunches, or where a claim really is formally provable'
+                },
+                significance: {
+                    id: 'significance',
+                    name: 'Statistical Significance',
+                    icon: '📊',
+                    color: '#00897b',
+                    description: 'In statistics, "significant" means the result is unlikely to be chance alone (conventionally p < 0.05). It says nothing about size or importance — a tiny, practically meaningless effect can be statistically significant in a large study.',
+                    implication: 'Reporting routinely lets the statistical meaning borrow the everyday meaning ("large, important"), making trivial effects sound consequential. The reverse also misleads: a "non-significant" result in a small study is not proof of no effect.',
+                    suggestion: 'Look for the effect size: how big is the difference, in absolute terms, for real people?',
+                    examples: '"Significantly higher risk" might mean 1.0% → 1.1%. Ask: how much higher, from what baseline?',
+                    settingKey: 'highlightSciStatsSignificance',
+                    statKey: 'sciStatsSignificanceCount',
+                    basicTip: 'Statistically "significant" means "probably not chance" — not big, and not important.',
+                    whenConcerning: 'When "significant" implies importance without an effect size',
+                    whenAcceptable: 'In technical writing where the statistical sense is explicit and quantified'
+                },
+                causation: {
+                    id: 'causation',
+                    name: 'Linked & Associated',
+                    icon: '🔗',
+                    color: '#7e57c2',
+                    description: '"Linked to," "associated with," and "correlated with" report that two things move together — not that one causes the other.',
+                    implication: 'Association headlines invite causal conclusions the underlying study cannot support: confounding (ice-cream sales and drownings both rise in summer), reverse causation, and selection effects all produce correlations without causation. "May cause" stacks a hedge on top of an association.',
+                    suggestion: 'Ask what kind of study produced the claim (randomized trial vs. observational) and what else could explain the association.',
+                    examples: '"Coffee linked to longer life" — or do healthier people happen to drink more coffee?',
+                    settingKey: 'highlightSciStatsCausation',
+                    statKey: 'sciStatsCausationCount',
+                    basicTip: '"Linked to" means two things move together — not that one causes the other.',
+                    whenConcerning: 'When an association is framed to imply cause, or the study design goes unmentioned',
+                    whenAcceptable: 'When explicitly presented as correlational, with confounders discussed'
+                },
+                risk_scale: {
+                    id: 'risk_scale',
+                    name: 'Relative vs Absolute Risk',
+                    icon: '⚖️',
+                    color: '#6d4c41',
+                    description: '"Doubles the risk" and "50% more likely" are relative changes; they say nothing about the starting point. Doubling a one-in-a-million risk is still two in a million.',
+                    implication: 'Relative risk is the standard way to make a health headline dramatic: it makes small dangers sound alarming and modest benefits sound miraculous. The absolute change — from what, to what — is what actually matters for decisions.',
+                    suggestion: 'Find the base rate: from what, to what, out of how many people?',
+                    examples: '"Doubles the risk" — of a 1-in-100 event or a 1-in-a-million event? "From 1.0% to 1.4%" is the honest form.',
+                    settingKey: 'highlightSciStatsRiskScale',
+                    statKey: 'sciStatsRiskScaleCount',
+                    basicTip: 'Relative risk ("twice as likely") is meaningless without the baseline — doubling a tiny risk is still tiny.',
+                    whenConcerning: 'When only the relative change is given and the baseline is missing',
+                    whenAcceptable: 'When absolute numbers accompany it ("from 1.0% to 1.4%")'
+                },
+                evidence_absence: {
+                    id: 'evidence_absence',
+                    name: 'No Evidence',
+                    icon: '🔍',
+                    color: '#546e7a',
+                    description: '"No evidence that X" can mean anything from "well studied, and X does not happen" to "nobody has looked yet." Absence of evidence is only evidence of absence when someone has actually searched, hard, where the evidence would be.',
+                    implication: 'The phrase serves both responsible debunking and premature dismissal: early in any question, "no evidence" is trivially true and tells you nothing. It can also launder uncertainty into reassurance — "no evidence of harm" is not "evidence of safety."',
+                    suggestion: 'Ask whether anyone has looked, how hard, and what they would have found if the claim were true.',
+                    examples: '"No evidence of side effects" — after how many patients, and how much follow-up?',
+                    settingKey: 'highlightSciStatsNoEvidence',
+                    statKey: 'sciStatsNoEvidenceCount',
+                    basicTip: '"No evidence" ranges from "thoroughly checked, not true" to "nobody has looked." Ask which.',
+                    whenConcerning: 'When "no evidence" stands in for "we checked and it is false" without saying who checked, or dismisses a question nobody has studied',
+                    whenAcceptable: 'When paired with the state of the research ("three large trials found no effect")'
+                },
+                purity: {
+                    id: 'purity',
+                    name: 'Natural & Chemical-Free',
+                    icon: '🌿',
+                    color: '#689f38',
+                    description: 'Everything is chemicals — water, air, apples. "Chemical-free," "toxins," "all-natural," and "detox" are marketing categories, not scientific ones; toxicity is a property of dose, not of a substance\'s origin.',
+                    implication: 'Purity language sells safety by category: natural-therefore-safe and synthetic-therefore-dangerous are both false (arsenic and botulinum toxin are natural; vitamin C is synthesized). Unnamed "toxins" cannot be checked, and healthy livers and kidneys already handle metabolic waste.',
+                    suggestion: 'Ask which substance, at what dose, compared to what — and what specifically a "toxin" or "detox" refers to.',
+                    examples: '"Chemical-free cleaning spray" (it is made of chemicals); "flushes out toxins" (which ones, measured how?)',
+                    settingKey: 'highlightSciStatsPurity',
+                    statKey: 'sciStatsPurityCount',
+                    basicTip: '"Chemical-free" and "toxins" are marketing words — toxicity lives in the dose, not the origin.',
+                    whenConcerning: 'When purity words substitute for naming substances and doses, especially in selling',
+                    whenAcceptable: 'Supervised medical detoxification is a real clinical term, and "natural" has defined regulatory meanings in some labeling contexts'
+                }
+            }
         }
     };
 

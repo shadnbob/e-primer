@@ -139,7 +139,10 @@ Many phrases are ambiguous. "It seems" can be weaseling ("it seems like this is 
 - **False Dilemmas** — language that forces artificial binary choices
 
 ### Explainers
-- **Political Spectrum Labels** — Left/Right and Liberal/Conservative labels, annotated with context rather than flagged as problems (3 subcategories: left/right, liberal, conservative). These terms mean genuinely different things across countries, eras, and speakers — "liberal" in Australia leans center-right, the Left/Right axis dates to seating in the 1789 French National Assembly, and what a "conservative" conserves depends on where they live. Explainer highlights carry a neutral "Context" badge: the goal is to surface a label's history and its different meanings to different audiences, not to accuse the writer of bias. Everyday senses ("the right to remain silent", "a conservative estimate", "liberal arts") are deliberately excluded.
+Explainer dictionaries annotate contested terms with context rather than flagging them as problems. Their highlights carry a neutral "Context" badge — the goal is to surface a term's history, technical meaning, and different readings, not to accuse the writer of bias. Everyday senses are deliberately excluded from matching.
+
+- **Political Spectrum Labels** — Left/Right and Liberal/Conservative labels (3 subcategories: left/right, liberal, conservative). These terms mean genuinely different things across countries, eras, and speakers — "liberal" in Australia leans center-right, the Left/Right axis dates to seating in the 1789 French National Assembly, and what a "conservative" conserves depends on where they live. Guarded senses like "the right to remain silent", "a conservative estimate", and "liberal arts" never trigger.
+- **Science & Statistics** — research and reporting phrases whose technical meaning differs from how they read (6 subcategories: proof & "the science", statistical significance, linked & associated, relative vs absolute risk, no evidence, natural & chemical-free). "Significant" means *probably not chance*, not *big*; "linked to" is not *causes*; "doubles the risk" is meaningless without the baseline; "no evidence" ranges from *thoroughly checked* to *nobody has looked*; and "chemical-free" is a marketing category, not a scientific one. Guarded senses like "significant other" and "music theory" never trigger.
 
 ### Excellence Detection
 - **Clear Attribution** — specific, verifiable sources
@@ -212,7 +215,7 @@ e-primer/
 │   │   ├── opinion-words.js          # Opinion/subjective terms
 │   │   ├── absolute-words.js         # Universal quantifiers
 │   │   ├── tobe-verbs.js             # E-Prime verb forms
-│   │   └── ...                       # 12 more pattern dictionaries
+│   │   └── ...                       # 13 more pattern dictionaries
 │   ├── popup/
 │   │   ├── popup-dynamic.js          # Popup entry point
 │   │   ├── PopupGenerator.js         # Dynamic UI generation
@@ -257,7 +260,7 @@ See [EXTENDING.md](EXTENDING.md) for the full guide. The short version:
 
 The extension runs as a content script on every web page. On load:
 
-1. **Pattern compilation** — all word lists and regex patterns from the 16 dictionaries are pre-compiled into optimized RegExp objects
+1. **Pattern compilation** — all word lists and regex patterns from the 17 dictionaries are pre-compiled into optimized RegExp objects
 2. **Text node collection** — a TreeWalker traverses the DOM collecting text nodes, skipping scripts, styles, and the extension's own highlights
 3. **Batch processing** — text nodes are analyzed in batches to avoid blocking the UI thread
 4. **Pattern matching** — each enabled detector runs its compiled patterns against the text
