@@ -1,0 +1,65 @@
+# GitHub Actions workflow: continuous integration for e-primer.
+#
+# Any file under .github/workflows/ is a workflow. GitHub reads it from the
+# repository itself — pushing this file is what "installs" it; there is
+# nothing to configure in the UI. Results appear under the repo's Actions
+# tab, and as a green check / red X next to commits and pull requests.
+
+name: CI
+
+# "on" declares the triggers: run this workflow for every push to main and
+# for every pull request that targets main. PRs run against the merged
+# result, so a PR can't break main without the red X showing first.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A workflow contains one or more jobs. Each job gets a fresh virtual
+# machine (a "runner") that exists only for the duration of the job —
+# nothing installed in one run survives to the next, which is exactly the
+# point: it proves the repo builds from scratch.
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    # Steps run in order inside the job's VM. A step is either `uses:`
+    # (a reusable action published by someone else) or `run:` (a shell
+    # command). If any step fails, the job stops and the run is marked red.
+    steps:
+      # The VM starts empty — this action clones the repo into it.
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      # Installs Node 20 (matching the WSL dev environment) and caches the
+      # npm download cache between runs, keyed on package-lock.json.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # `npm ci` installs exactly what package-lock.json specifies (and
+      # fails if the lockfile disagrees with package.json) — reproducible,
+      # unlike `npm install`, which may resolve newer versions.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run the test suite
+        run: npx vitest run
+
+      - name: Build both extension targets
+        run: npm run build:all
+
+      # dist/ and dist-firefox/ are committed on purpose (install without
+      # building), which makes "source edited, rebuild forgotten" this
+      # repo's most likely silent failure. After the fresh build above,
+      # `git diff --exit-code` exits non-zero if any tracked build output
+      # differs from what is committed — turning stale dist into a red X.
+      - name: Fail if committed build output is stale
+        run: |
+          if ! git diff --exit-code --stat -- dist dist-firefox docs/reference.html; then
+            echo '::error::Committed build output is stale. Run `npm run build:all` and commit the result.'
+            exit 1
+          fi

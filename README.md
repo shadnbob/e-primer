@@ -1,5 +1,7 @@
 # E-Prime Bias Detector
 
+[![CI](https://github.com/shadnbob/e-primer/actions/workflows/ci.yml/badge.svg)](https://github.com/shadnbob/e-primer/actions/workflows/ci.yml)
+
 A browser extension for Chrome and Firefox that detects biased language patterns in web content. It highlights problematic rhetoric — opinion presented as fact, vague sourcing, emotional manipulation, false dilemmas — alongside markers of quality writing like clear attribution, nuance, and transparency. The goal is to build critical reading habits, not to tell you what to think.
 
 ## Why This Exists

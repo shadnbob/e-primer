@@ -3,7 +3,8 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
+# NOTE: package-lock.json is intentionally committed — CI's `npm ci` installs
+# from it for reproducible builds — so it is NOT ignored here.
 yarn.lock
 
 # Build output

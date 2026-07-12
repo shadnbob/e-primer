@@ -23,6 +23,7 @@ This is the E-Prime Bias Detector, a browser extension that detects biased langu
 - **Test Watch**: `npm run test:watch` - Auto-run tests on file changes
 - **Manual Testing**: Use test files in `tests/manual/` directory for browser testing
 - **No linting/type checking**: This project does not have lint or typecheck commands configured
+- **CI**: `.github/workflows/ci.yml` runs the suite and `build:all` on every push/PR to main, then fails if committed `dist/`, `dist-firefox/`, or `docs/reference.html` differ from the fresh build — so always rebuild and commit dist alongside src changes
 
 ## Build System
 
