@@ -37,6 +37,21 @@ function flattenWords(words) {
     return Object.values(words).flat();
 }
 
+// Helper: regex-escape a literal dictionary string
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// The regex source compilePattern produces for a simple (non-regex) entry:
+// single words get word boundaries; phrases instead tolerate any whitespace
+// run between words, because text nodes preserve the source's line breaks
+function canonicalSimpleSource(entry) {
+    const escaped = escapeRegExp(entry);
+    return entry.includes(' ')
+        ? escaped.replace(/ /g, '\\s+')
+        : `\\b${escaped}\\b`;
+}
+
 export class BiasPatterns {
     constructor() {
         this.rawPatterns = this.loadRawPatterns();
@@ -237,10 +252,7 @@ export class BiasPatterns {
                     ? cleanPattern
                     : cleanPattern.replace(/ /g, '\\s+');
             } else {
-                const escaped = this.escapeRegExp(cleanPattern);
-                regexPattern = cleanPattern.includes(' ')
-                    ? escaped.replace(/ /g, '\\s+')
-                    : `\\b${escaped}\\b`;
+                regexPattern = canonicalSimpleSource(cleanPattern);
             }
 
             const regex = new RegExp(regexPattern, flags);
@@ -262,7 +274,7 @@ export class BiasPatterns {
     }
 
     escapeRegExp(string) {
-        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return escapeRegExp(string);
     }
 
     getCompiledPatterns(type) {
@@ -285,6 +297,104 @@ export class BiasPatterns {
         }
         return stats;
     }
+}
+
+// ---------------------------------------------------------------------------
+// Detection plans
+//
+// Running ~600 per-entry regexes against every text node costs linearly in
+// dictionary size, so BiasDetector scans with a *detection plan* instead: all
+// of a type's simple word entries fold into one \b(?:a|b|...)\b alternation,
+// all simple phrase entries into one (?:a\s+b|...) alternation, and complex
+// regex entries keep their own regexes. The compiledPatterns arrays stay
+// one-object-per-entry — they are the type's source of truth (tests inspect
+// and even push into them); plans are derived views.
+// ---------------------------------------------------------------------------
+
+// Whitespace-insensitive lookup key: phrase matches can span line breaks
+// (their regexes join words with \s+), so entries and matched text both
+// normalize to single spaces before comparison
+function entryKey(text) {
+    return text.toLowerCase().replace(/\s+/g, ' ');
+}
+
+// A pattern may join an alternation only when its regex provably is the
+// canonical compilation of its source string. Anything else — complex
+// entries, hand-built objects pushed into the array — runs individually with
+// its exact regex, so folding never changes what a pattern matches.
+function isCanonicalSimple(pattern) {
+    return !!pattern &&
+        typeof pattern.source === 'string' &&
+        pattern.regex instanceof RegExp &&
+        pattern.regex.flags === 'gi' &&
+        pattern.regex.source === canonicalSimpleSource(pattern.source);
+}
+
+// Compile simple entries into one alternation regex. Longest-first ordering
+// makes the alternation prefer the longest entry at a position, mirroring how
+// deduplicateMatches resolves same-index overlaps between the per-entry
+// regexes this replaces. resolveEntry maps matched text back to the
+// dictionary entry, standing in for the per-entry pattern.source that
+// subcategory attribution falls back on (e.g. a phrase matched across a
+// line break no longer equals its entry verbatim).
+function compileAlternationGroup(sources, type, isPhraseGroup) {
+    const entryLookup = new Map();
+    for (const source of sources) {
+        const key = entryKey(source);
+        if (!entryLookup.has(key)) {
+            entryLookup.set(key, source);
+        }
+    }
+
+    const ordered = [...entryLookup.values()].sort((a, b) => b.length - a.length);
+    const branches = ordered.map(source => isPhraseGroup
+        ? escapeRegExp(source).replace(/ /g, '\\s+')
+        : escapeRegExp(source));
+    // Word entries share the boundary assertions: \b(?:A|B)\b is equivalent
+    // to \bA\b|\bB\b for literal branches. Phrases compile without \b, same
+    // as their individual regexes did.
+    const alternation = isPhraseGroup
+        ? `(?:${branches.join('|')})`
+        : `\\b(?:${branches.join('|')})\\b`;
+
+    // Engines compile a regex on first execution; a large alternation is
+    // worth compiling here rather than mid-scan of the first page
+    const regex = new RegExp(alternation, 'gi');
+    regex.test('');
+
+    return {
+        source: `<${ordered.length} combined ${type} ${isPhraseGroup ? 'phrases' : 'words'}>`,
+        regex: regex,
+        type: type,
+        isComplex: false,
+        resolveEntry: (matchText) => entryLookup.get(entryKey(matchText))
+    };
+}
+
+// Fold a compiled-patterns array into the few regexes worth executing:
+// [word alternation?, phrase alternation?, ...individual patterns as-is]
+export function buildDetectionPlan(patterns, type) {
+    const words = [];
+    const phrases = [];
+    const individual = [];
+
+    for (const pattern of patterns) {
+        if (isCanonicalSimple(pattern)) {
+            (pattern.source.includes(' ') ? phrases : words).push(pattern.source);
+        } else {
+            individual.push(pattern);
+        }
+    }
+
+    const plan = [];
+    if (words.length > 0) {
+        plan.push(compileAlternationGroup(words, type, false));
+    }
+    if (phrases.length > 0) {
+        plan.push(compileAlternationGroup(phrases, type, true));
+    }
+    plan.push(...individual);
+    return plan;
 }
 
 // Only export what's actually used

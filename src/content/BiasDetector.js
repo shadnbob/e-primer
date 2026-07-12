@@ -1,6 +1,6 @@
 // content/BiasDetector.js - Refactored core detection class
 import { BiasConfig } from '../config/BiasConfig.js';
-import { BiasPatterns } from '../dictionaries/index.js';
+import { BiasPatterns, buildDetectionPlan } from '../dictionaries/index.js';
 import { DOMProcessor } from '../utils/DOMProcessor.js';
 import { PerformanceMonitor } from '../utils/PerformanceMonitor.js';
 import { ExcellenceDetector } from '../utils/ExcellenceDetector.js';
@@ -18,6 +18,10 @@ export class BiasDetector {
         this.observer = null;
         this.performanceMonitor = new PerformanceMonitor();
         this.mode = this.settings.analysisMode || 'balanced'; // 'problems', 'excellence', or 'balanced'
+
+        // Per-array detection plans (see detectPatterns), rebuilt when an
+        // array's length changes
+        this._detectionPlans = new WeakMap();
 
         // Pre-compile all patterns for better performance
         this.compiledDetectors = this.initializeDetectors();
@@ -59,6 +63,9 @@ export class BiasDetector {
         
         for (const [key, config] of Object.entries(BiasConfig.BIAS_TYPES)) {
             const patterns = this.patterns.getCompiledPatterns(config.id);
+            // Build the detection plan now so the fold and its regex
+            // compilation happen at construction, not on the first analysis
+            this._getDetectionPlan(patterns, config.id);
             detectors.set(config.id, {
                 ...config,
                 patterns,
@@ -70,41 +77,62 @@ export class BiasDetector {
         return detectors;
     }
 
+    // Detection plan for a patterns array: simple entries folded into per-type
+    // alternation regexes, complex and hand-built patterns kept as-is. Cached
+    // by array identity so the fold happens once, not per text node; a length
+    // change (patterns pushed or removed) rebuilds the plan.
+    _getDetectionPlan(patterns, type) {
+        let cached = this._detectionPlans.get(patterns);
+        if (!cached || cached.builtFrom !== patterns.length) {
+            cached = {
+                builtFrom: patterns.length,
+                plan: buildDetectionPlan(patterns, type)
+            };
+            this._detectionPlans.set(patterns, cached);
+        }
+        return cached.plan;
+    }
+
     // Generic pattern detection method
     detectPatterns(text, patterns, type) {
         const matches = [];
         const hasSubCategories = BiasConfig.hasSubCategories(type);
-        
-        for (const pattern of patterns) {
+
+        for (const pattern of this._getDetectionPlan(patterns, type)) {
             try {
                 let match;
                 // Reset regex lastIndex to avoid issues with global flag
                 pattern.regex.lastIndex = 0;
-                
+
                 while ((match = pattern.regex.exec(text)) !== null) {
+                    // Alternation patterns map the matched text back to its
+                    // dictionary entry; per-entry patterns carry theirs as source
+                    const source = pattern.resolveEntry
+                        ? (pattern.resolveEntry(match[0]) || pattern.source)
+                        : pattern.source;
                     const matchData = {
                         index: match.index,
                         length: match[0].length,
                         text: match[0],
                         type: type,
-                        pattern: pattern.source
+                        pattern: source
                     };
-                    
+
                     if (hasSubCategories) {
                         // Regex dictionary entries produce match text that differs
                         // from the entry itself, so fall back to the pattern
                         // source (the dictionary string) for the lookup
                         const subCategory = this.patterns.getSubCategory(type, match[0])
-                            || this.patterns.getSubCategory(type, pattern.source);
+                            || this.patterns.getSubCategory(type, source);
                         if (subCategory) {
                             matchData.type = BiasConfig.getCompositeType(type, subCategory.id);
                             matchData.subCategory = subCategory;
                             matchData.parentType = type;
                         }
                     }
-                    
+
                     matches.push(matchData);
-                    
+
                     // Prevent infinite loops with zero-width matches
                     if (match.index === pattern.regex.lastIndex) {
                         pattern.regex.lastIndex++;
@@ -117,7 +145,7 @@ export class BiasDetector {
                 continue;
             }
         }
-        
+
         return matches;
     }
 

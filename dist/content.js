@@ -5140,6 +5140,13 @@
       return words;
     return Object.values(words).flat();
   }
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+  function canonicalSimpleSource(entry) {
+    const escaped = escapeRegExp(entry);
+    return entry.includes(" ") ? escaped.replace(/ /g, "\\s+") : `\\b${escaped}\\b`;
+  }
   var BiasPatterns = class {
     constructor() {
       this.rawPatterns = this.loadRawPatterns();
@@ -5310,8 +5317,7 @@
         if (isComplexPattern) {
           regexPattern = cleanPattern.includes("[") ? cleanPattern : cleanPattern.replace(/ /g, "\\s+");
         } else {
-          const escaped = this.escapeRegExp(cleanPattern);
-          regexPattern = cleanPattern.includes(" ") ? escaped.replace(/ /g, "\\s+") : `\\b${escaped}\\b`;
+          regexPattern = canonicalSimpleSource(cleanPattern);
         }
         const regex = new RegExp(regexPattern, flags);
         regex.test("test string");
@@ -5327,7 +5333,7 @@
       }
     }
     escapeRegExp(string) {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return escapeRegExp(string);
     }
     getCompiledPatterns(type) {
       return this.compiledPatterns.get(type) || [];
@@ -5348,6 +5354,54 @@
       return stats;
     }
   };
+  function entryKey(text) {
+    return text.toLowerCase().replace(/\s+/g, " ");
+  }
+  function isCanonicalSimple(pattern) {
+    return !!pattern && typeof pattern.source === "string" && pattern.regex instanceof RegExp && pattern.regex.flags === "gi" && pattern.regex.source === canonicalSimpleSource(pattern.source);
+  }
+  function compileAlternationGroup(sources, type, isPhraseGroup) {
+    const entryLookup = /* @__PURE__ */ new Map();
+    for (const source of sources) {
+      const key = entryKey(source);
+      if (!entryLookup.has(key)) {
+        entryLookup.set(key, source);
+      }
+    }
+    const ordered = [...entryLookup.values()].sort((a, b) => b.length - a.length);
+    const branches = ordered.map((source) => isPhraseGroup ? escapeRegExp(source).replace(/ /g, "\\s+") : escapeRegExp(source));
+    const alternation = isPhraseGroup ? `(?:${branches.join("|")})` : `\\b(?:${branches.join("|")})\\b`;
+    const regex = new RegExp(alternation, "gi");
+    regex.test("");
+    return {
+      source: `<${ordered.length} combined ${type} ${isPhraseGroup ? "phrases" : "words"}>`,
+      regex,
+      type,
+      isComplex: false,
+      resolveEntry: (matchText) => entryLookup.get(entryKey(matchText))
+    };
+  }
+  function buildDetectionPlan(patterns, type) {
+    const words = [];
+    const phrases = [];
+    const individual = [];
+    for (const pattern of patterns) {
+      if (isCanonicalSimple(pattern)) {
+        (pattern.source.includes(" ") ? phrases : words).push(pattern.source);
+      } else {
+        individual.push(pattern);
+      }
+    }
+    const plan = [];
+    if (words.length > 0) {
+      plan.push(compileAlternationGroup(words, type, false));
+    }
+    if (phrases.length > 0) {
+      plan.push(compileAlternationGroup(phrases, type, true));
+    }
+    plan.push(...individual);
+    return plan;
+  }
 
   // src/utils/HoverContentGenerator.js
   var HoverContentGenerator = class {
@@ -7234,6 +7288,7 @@
       this.observer = null;
       this.performanceMonitor = new PerformanceMonitor();
       this.mode = this.settings.analysisMode || "balanced";
+      this._detectionPlans = /* @__PURE__ */ new WeakMap();
       this.compiledDetectors = this.initializeDetectors();
       this.customDictionary = new CustomDictionaryManager();
       this._customReady = false;
@@ -7267,6 +7322,7 @@
       const detectors = /* @__PURE__ */ new Map();
       for (const [key, config] of Object.entries(BiasConfig.BIAS_TYPES)) {
         const patterns = this.patterns.getCompiledPatterns(config.id);
+        this._getDetectionPlan(patterns, config.id);
         detectors.set(config.id, {
           ...config,
           patterns,
@@ -7276,24 +7332,40 @@
       }
       return detectors;
     }
+    // Detection plan for a patterns array: simple entries folded into per-type
+    // alternation regexes, complex and hand-built patterns kept as-is. Cached
+    // by array identity so the fold happens once, not per text node; a length
+    // change (patterns pushed or removed) rebuilds the plan.
+    _getDetectionPlan(patterns, type) {
+      let cached = this._detectionPlans.get(patterns);
+      if (!cached || cached.builtFrom !== patterns.length) {
+        cached = {
+          builtFrom: patterns.length,
+          plan: buildDetectionPlan(patterns, type)
+        };
+        this._detectionPlans.set(patterns, cached);
+      }
+      return cached.plan;
+    }
     // Generic pattern detection method
     detectPatterns(text, patterns, type) {
       const matches = [];
       const hasSubCategories = BiasConfig.hasSubCategories(type);
-      for (const pattern of patterns) {
+      for (const pattern of this._getDetectionPlan(patterns, type)) {
         try {
           let match;
           pattern.regex.lastIndex = 0;
           while ((match = pattern.regex.exec(text)) !== null) {
+            const source = pattern.resolveEntry ? pattern.resolveEntry(match[0]) || pattern.source : pattern.source;
             const matchData = {
               index: match.index,
               length: match[0].length,
               text: match[0],
               type,
-              pattern: pattern.source
+              pattern: source
             };
             if (hasSubCategories) {
-              const subCategory = this.patterns.getSubCategory(type, match[0]) || this.patterns.getSubCategory(type, pattern.source);
+              const subCategory = this.patterns.getSubCategory(type, match[0]) || this.patterns.getSubCategory(type, source);
               if (subCategory) {
                 matchData.type = BiasConfig.getCompositeType(type, subCategory.id);
                 matchData.subCategory = subCategory;
