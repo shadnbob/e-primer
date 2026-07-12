@@ -37,6 +37,26 @@ import { getPopupManager } from '../utils/PopupManager.js';
         return settings.siteMode !== 'ondemand' || manuallyActivated;
     }
 
+    // Add a term to the persistent ignore list; the detector's ignore filter
+    // change forces a reanalysis that removes every instance on the page
+    function handleIgnoreWord(word) {
+        const term = String(word || '').trim().toLowerCase().replace(/\s+/g, ' ');
+        if (!term || !biasDetector) return;
+
+        const list = Array.isArray(lastSettings.ignoredWords) ? lastSettings.ignoredWords.slice() : [];
+        if (list.includes(term)) return;
+        list.push(term);
+
+        lastSettings = { ...lastSettings, ignoredWords: list };
+        try {
+            chrome.storage.sync.set({ ignoredWords: list });
+        } catch (e) {
+            console.warn('Could not persist ignored word:', e && e.message);
+        }
+        const detectorSettings = { ...lastSettings, enableAnalysis: effectiveEnable(lastSettings) };
+        biasDetector.updateSettings(detectorSettings);
+    }
+
     // Initialize the detector
     function initialize() {
         if (isInitialized) return;
@@ -46,6 +66,7 @@ import { getPopupManager } from '../utils/PopupManager.js';
             
             // Initialize popup manager for efficient popup handling
             const popupManager = getPopupManager();
+            popupManager.onIgnoreWord = handleIgnoreWord;
 
             setupMessageListeners();
             loadSettingsAndStart();

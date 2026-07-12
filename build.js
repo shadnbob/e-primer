@@ -45,6 +45,20 @@ function getPopupBuildConfig(targetName) {
   };
 }
 
+// Options-page bundle, same shape as the popup's
+function getOptionsBuildConfig(targetName) {
+  const outputDir = targetName === 'firefox' ? 'dist-firefox' : 'dist';
+  return {
+    entryPoints: ['src/options/options.js'],
+    bundle: true,
+    outfile: `${outputDir}/options.js`,
+    format: 'iife',
+    target: targetName === 'firefox' ? 'firefox78' : 'chrome90',
+    sourcemap: true,
+    logLevel: 'info',
+  };
+}
+
 // Ensure output directories exist
 function ensureDirectories(targets) {
   const dirs = targets.map(t => t === 'firefox' ? 'dist-firefox' : 'dist');
@@ -63,6 +77,7 @@ function copyStaticFiles(targetName) {
   const filesToCopy = [
     manifestFile,
     'popup.html',
+    'options.html',
     'src/highlight-styles.css',
     'info.html'
   ];
@@ -179,8 +194,11 @@ async function buildTarget(targetName) {
     const popupCtx = await esbuild.context(getPopupBuildConfig(targetName));
     await popupCtx.watch();
 
+    const optionsCtx = await esbuild.context(getOptionsBuildConfig(targetName));
+    await optionsCtx.watch();
+
     // Watch for static file changes
-    const staticFiles = ['manifest.json', 'popup.html', 'styles.css', 'info.html'];
+    const staticFiles = ['manifest.json', 'popup.html', 'options.html', 'styles.css', 'info.html'];
     staticFiles.forEach(file => {
       fs.watchFile(file, () => {
         console.log(`${file} changed, copying...`);
@@ -193,6 +211,7 @@ async function buildTarget(targetName) {
     // Single build
     await esbuild.build(buildConfig);
     await esbuild.build(getPopupBuildConfig(targetName));
+    await esbuild.build(getOptionsBuildConfig(targetName));
     console.log(`Build complete for ${targetName}!`);
   }
   

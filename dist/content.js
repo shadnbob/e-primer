@@ -5785,6 +5785,7 @@
       this.hoverGenerator = new HoverContentGenerator();
       this.currentTarget = null;
       this.hideTimeout = null;
+      this.onIgnoreWord = null;
       this.init();
     }
     init() {
@@ -6067,6 +6068,34 @@
         this.removeCurrentHighlight();
       });
       this.contentContainer.appendChild(removeBtn);
+      if (this.onIgnoreWord) {
+        const ignoreBtn = document.createElement("button");
+        ignoreBtn.className = "ignore-word-btn";
+        ignoreBtn.textContent = "Ignore this word everywhere";
+        ignoreBtn.style.cssText = `
+                display: block;
+                width: 100%;
+                margin-top: 6px;
+                padding: 8px 12px;
+                background: #f8f7f5;
+                color: #8a8078;
+                border: 1px solid #d4cfc7;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: 500;
+                transition: all 0.15s;
+            `;
+        ignoreBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const word = this.currentTarget ? this.currentTarget.textContent : null;
+          if (word) {
+            this.onIgnoreWord(word);
+          }
+          this.hide();
+        });
+        this.contentContainer.appendChild(ignoreBtn);
+      }
     }
     removeCurrentHighlight() {
       if (!this.currentTarget)
@@ -7972,12 +8001,30 @@
         return false;
       return settings.siteMode !== "ondemand" || manuallyActivated;
     }
+    function handleIgnoreWord(word) {
+      const term = String(word || "").trim().toLowerCase().replace(/\s+/g, " ");
+      if (!term || !biasDetector)
+        return;
+      const list = Array.isArray(lastSettings.ignoredWords) ? lastSettings.ignoredWords.slice() : [];
+      if (list.includes(term))
+        return;
+      list.push(term);
+      lastSettings = { ...lastSettings, ignoredWords: list };
+      try {
+        chrome.storage.sync.set({ ignoredWords: list });
+      } catch (e) {
+        console.warn("Could not persist ignored word:", e && e.message);
+      }
+      const detectorSettings = { ...lastSettings, enableAnalysis: effectiveEnable(lastSettings) };
+      biasDetector.updateSettings(detectorSettings);
+    }
     function initialize() {
       if (isInitialized)
         return;
       try {
         biasDetector = new BiasDetector();
         const popupManager = getPopupManager();
+        popupManager.onIgnoreWord = handleIgnoreWord;
         setupMessageListeners();
         loadSettingsAndStart();
         isInitialized = true;

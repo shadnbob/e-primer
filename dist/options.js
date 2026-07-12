@@ -2511,375 +2511,6 @@
   var CATEGORIES = BiasConfig.CATEGORIES;
   var PERFORMANCE = BiasConfig.PERFORMANCE;
 
-  // src/popup/SettingsManager.js
-  var SettingsManager = class {
-    constructor() {
-      this.biasTypes = BiasConfig.getAllBiasTypes();
-      this.excellenceTypes = BiasConfig.EXCELLENCE_TYPES;
-      this.defaultSettings = BiasConfig.getDefaultSettings();
-      this.toggleMappings = this.generateToggleMappings();
-      this.statMappings = this.generateStatMappings();
-    }
-    /**
-     * Generate toggle element ID to setting key mappings
-     */
-    generateToggleMappings() {
-      const mappings = {
-        "enableToggle": "enableAnalysis"
-      };
-      this.biasTypes.forEach((biasType) => {
-        const toggleId = this.getToggleId(biasType.id);
-        mappings[toggleId] = biasType.settingKey;
-        if (biasType.subCategories) {
-          for (const [subId, sub] of Object.entries(biasType.subCategories)) {
-            mappings[`${biasType.id}_${subId}Toggle`] = sub.settingKey;
-          }
-        }
-      });
-      Object.values(this.excellenceTypes).forEach((excellenceType) => {
-        const toggleId = this.getExcellenceToggleId(excellenceType.id);
-        mappings[toggleId] = excellenceType.settingKey;
-      });
-      return mappings;
-    }
-    /**
-     * Generate stat element ID to stat key mappings
-     */
-    generateStatMappings() {
-      const mappings = {};
-      this.biasTypes.forEach((biasType) => {
-        mappings[biasType.statKey] = biasType.statKey;
-        if (biasType.subCategories) {
-          for (const sub of Object.values(biasType.subCategories)) {
-            mappings[sub.statKey] = sub.statKey;
-          }
-        }
-      });
-      Object.values(this.excellenceTypes).forEach((excellenceType) => {
-        mappings[excellenceType.statKey] = excellenceType.statKey;
-      });
-      return mappings;
-    }
-    /**
-     * Get toggle element ID for a bias type
-     */
-    getToggleId(biasTypeId) {
-      const idMappings = {
-        "opinion": "opinionToggle",
-        "tobe": "ePrimeToggle",
-        "absolute": "absoluteToggle",
-        "passive": "passiveToggle",
-        "weasel": "weaselToggle",
-        "presupposition": "presuppositionToggle",
-        "metaphor": "metaphorToggle",
-        "minimizer": "minimizerToggle",
-        "maximizer": "maximizerToggle",
-        "falsebalance": "falseBalanceToggle",
-        "euphemism": "euphemismToggle",
-        "emotional": "emotionalToggle",
-        "gaslighting": "gaslightingToggle",
-        "falsedilemma": "falseDilemmaToggle",
-        "probability": "probabilityToggle"
-      };
-      return idMappings[biasTypeId] || `${biasTypeId}Toggle`;
-    }
-    /**
-     * Get excellence toggle element ID
-     */
-    getExcellenceToggleId(excellenceTypeId) {
-      return `${excellenceTypeId}ExcellenceToggle`;
-    }
-    /**
-     * Get all toggle mappings
-     */
-    getToggleMappings() {
-      return this.toggleMappings;
-    }
-    /**
-     * Get all stat mappings  
-     */
-    getStatMappings() {
-      return this.statMappings;
-    }
-    /**
-     * Get default settings
-     */
-    getDefaultSettings() {
-      return this.defaultSettings;
-    }
-    /**
-     * Get setting key from toggle element
-     */
-    getSettingKeyFromToggle(toggleId) {
-      return this.toggleMappings[toggleId];
-    }
-    /**
-     * Validate settings object against known settings
-     */
-    validateSettings(settings) {
-      const validatedSettings = {};
-      const allSettingKeys = Object.values(this.toggleMappings);
-      allSettingKeys.forEach((settingKey) => {
-        if (settings.hasOwnProperty(settingKey)) {
-          validatedSettings[settingKey] = settings[settingKey];
-        }
-      });
-      if (settings.hasOwnProperty("analysisMode")) {
-        validatedSettings.analysisMode = settings.analysisMode;
-      }
-      return validatedSettings;
-    }
-    /**
-     * Get all bias types for UI generation
-     */
-    getAllBiasTypes() {
-      return this.biasTypes;
-    }
-    /**
-     * Get all excellence types for UI generation
-     */
-    getAllExcellenceTypes() {
-      return Object.values(this.excellenceTypes);
-    }
-  };
-
-  // src/popup/PopupGenerator.js
-  var PopupGenerator = class {
-    constructor() {
-      this.biasTypes = BiasConfig.getAllBiasTypes();
-      this.excellenceTypes = BiasConfig.EXCELLENCE_TYPES;
-      this.categories = BiasConfig.CATEGORIES;
-    }
-    /**
-     * Generate a single bias type toggle
-     */
-    generateBiasTypeToggle(biasType) {
-      const colorStyle = this.getColorIndicatorStyle(biasType.color);
-      const isEnabled = biasType.enabled ? "checked" : "";
-      const hasSubCats = biasType.subCategories && Object.keys(biasType.subCategories).length > 0;
-      let html = `
-            <div class="toggle-container${hasSubCats ? " has-subcategories" : ""}" data-bias-type="${biasType.id}">
-                <div class="toggle-label">
-                    <div class="color-indicator" style="${colorStyle}"></div>
-                    <span>${biasType.name}</span>
-                    ${hasSubCats ? '<span class="subcat-chevron"></span>' : ""}
-                </div>
-                <label class="toggle">
-                    <input type="checkbox" 
-                           id="${biasType.id}Toggle" 
-                           data-setting-key="${biasType.settingKey}"
-                           data-bias-type="${biasType.id}"
-                           ${isEnabled}>
-                    <span class="slider"></span>
-                </label>
-            </div>`;
-      if (hasSubCats) {
-        html += this.generateSubcategoryGroup(biasType);
-      }
-      return html;
-    }
-    /**
-     * Generate the collapsible subcategory toggle group for one bias type.
-     * Used standalone by the popup to augment the static markup with
-     * subcategory toggles (element IDs must match SettingsManager's
-     * `${parentId}_${subId}Toggle` mapping convention).
-     */
-    generateSubcategoryGroup(biasType) {
-      const parentColorStyle = this.getColorIndicatorStyle(biasType.color);
-      const isEnabled = biasType.enabled ? "checked" : "";
-      let html = `<div class="subcategory-group collapsed" data-parent="${biasType.id}">`;
-      for (const [subId, subConfig] of Object.entries(biasType.subCategories)) {
-        const subColorStyle = subConfig.color ? this.getColorIndicatorStyle(subConfig.color) : parentColorStyle;
-        html += `
-                <div class="toggle-container subcategory-toggle" data-sub-type="${subId}" data-parent-type="${biasType.id}">
-                    <div class="toggle-label">
-                        <div class="color-indicator" style="${subColorStyle}"></div>
-                        <span>${subConfig.icon || ""} ${subConfig.name}</span>
-                        <span class="inline-count" id="${subConfig.statKey}">0</span>
-                    </div>
-                    <label class="toggle toggle-small">
-                        <input type="checkbox"
-                               id="${biasType.id}_${subId}Toggle"
-                               data-setting-key="${subConfig.settingKey}"
-                               data-parent-type="${biasType.id}"
-                               data-sub-type="${subId}"
-                               ${isEnabled}>
-                        <span class="slider"></span>
-                    </label>
-                </div>`;
-      }
-      html += `</div>`;
-      return html;
-    }
-    /**
-     * Generate a single excellence type toggle
-     */
-    generateExcellenceTypeToggle(excellenceType) {
-      const colorClass = this.getExcellenceColorClass(excellenceType.className);
-      const isEnabled = excellenceType.enabled ? "checked" : "";
-      return `
-            <div class="toggle-container" data-excellence-type="${excellenceType.id}">
-                <div class="toggle-label">
-                    <div class="color-indicator ${colorClass}"></div>
-                    <span>${excellenceType.name}</span>
-                </div>
-                <label class="toggle">
-                    <input type="checkbox" 
-                           id="${excellenceType.id}ExcellenceToggle" 
-                           data-setting-key="${excellenceType.settingKey}"
-                           data-excellence-type="${excellenceType.id}"
-                           ${isEnabled}>
-                    <span class="slider"></span>
-                </label>
-            </div>`;
-    }
-    /**
-     * Generate a complete category section
-     */
-    generateCategorySection(categoryKey) {
-      const category = this.categories[categoryKey];
-      const biasTypesInCategory = this.biasTypes.filter((type) => type.category === categoryKey);
-      if (biasTypesInCategory.length === 0) {
-        return "";
-      }
-      const togglesHTML = biasTypesInCategory.map((type) => this.generateBiasTypeToggle(type)).join("");
-      const collapsedClass = category.expanded ? "" : "collapsed";
-      return `
-            <div class="category-section ${collapsedClass}" data-category="${categoryKey}">
-                <div class="category-header">
-                    <span>${category.name}</span>
-                    <span class="chevron">\u25BC</span>
-                </div>
-                <div class="category-body">
-                    ${togglesHTML}
-                </div>
-            </div>`;
-    }
-    /**
-     * Generate the excellence detection section
-     */
-    generateExcellenceSection() {
-      const excellenceToggles = Object.values(this.excellenceTypes).map((type) => this.generateExcellenceTypeToggle(type)).join("");
-      return `
-            <div class="category-section" data-category="excellence">
-                <div class="category-header">
-                    <span>Excellence Detection \u2728</span>
-                    <span class="chevron">\u25BC</span>
-                </div>
-                <div class="category-body">
-                    ${excellenceToggles}
-                </div>
-            </div>`;
-    }
-    /**
-     * Generate all bias detection sections
-     */
-    generateAllBiasSections() {
-      const categoryOrder = ["basic", "advanced", "framing", "manipulation"];
-      return categoryOrder.map((categoryKey) => this.generateCategorySection(categoryKey)).filter((html) => html).join("");
-    }
-    /**
-     * Generate statistics grid for bias types
-     */
-    generateBiasStatsGrid() {
-      return this.biasTypes.map((biasType) => `
-                <div class="stat-item" data-stat-type="${biasType.id}">
-                    <span class="stat-label">${this.getShortLabel(biasType.name)}</span>
-                    <span class="stat-value" id="${biasType.statKey}">0</span>
-                </div>`).join("");
-    }
-    /**
-     * Generate statistics grid for excellence types
-     */
-    generateExcellenceStatsGrid() {
-      return Object.values(this.excellenceTypes).map((excellenceType) => `
-                <div class="stat-item excellence" data-stat-type="${excellenceType.id}">
-                    <span class="stat-label">${excellenceType.name}</span>
-                    <span class="stat-value" id="${excellenceType.statKey}">0</span>
-                </div>`).join("");
-    }
-    /**
-     * Get color indicator style for bias types
-     */
-    getColorIndicatorStyle(color) {
-      return `background-color: ${color};`;
-    }
-    /**
-     * Get CSS class for excellence color indicators
-     */
-    getExcellenceColorClass(className) {
-      const colorMap = {
-        "excellence-attribution": "green",
-        "excellence-nuance": "lightgreen",
-        "excellence-transparency": "green",
-        "excellence-discourse": "turquoise",
-        "excellence-evidence": "info"
-      };
-      return colorMap[className] || "green";
-    }
-    /**
-     * Generate short labels for statistics
-     */
-    getShortLabel(name) {
-      const shortLabels = {
-        "Opinion Words": "Opinion",
-        "To-Be Verbs (E-Prime)": "To-be",
-        "Absolute Statements": "Absolute",
-        "Passive Voice": "Passive",
-        "Weasel Words": "Weasel",
-        "Presuppositions": "Presupp.",
-        "War Metaphors": "Metaphor",
-        "Minimizers": "Minimizer",
-        "Maximizers": "Maximizer",
-        "False Balance": "False Bal.",
-        "Euphemisms": "Euphemism",
-        "Emotional Manipulation": "Emotional",
-        "Gaslighting": "Gaslight",
-        "False Dilemmas": "Dilemma",
-        "Probability Perception": "Probability"
-      };
-      return shortLabels[name] || name.substring(0, 8);
-    }
-    /**
-     * Get all setting keys for event handler setup
-     */
-    getAllSettingKeys() {
-      const biasSettings = [];
-      this.biasTypes.forEach((type) => {
-        biasSettings.push(type.settingKey);
-        if (type.subCategories) {
-          for (const sub of Object.values(type.subCategories)) {
-            biasSettings.push(sub.settingKey);
-          }
-        }
-      });
-      const excellenceSettings = Object.values(this.excellenceTypes).map((type) => type.settingKey);
-      return [...biasSettings, ...excellenceSettings];
-    }
-    /**
-     * Get setting key from element
-     */
-    getSettingKeyFromElement(element) {
-      return element.dataset.settingKey;
-    }
-    /**
-     * Get bias type configuration by setting key
-     */
-    getBiasTypeBySettingKey(settingKey) {
-      for (const type of this.biasTypes) {
-        if (type.settingKey === settingKey)
-          return type;
-        if (type.subCategories) {
-          for (const sub of Object.values(type.subCategories)) {
-            if (sub.settingKey === settingKey)
-              return sub;
-          }
-        }
-      }
-      return Object.values(this.excellenceTypes).find((type) => type.settingKey === settingKey);
-    }
-  };
-
   // src/utils/sanitize.js
   function escapeHtml(value) {
     return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -2888,594 +2519,289 @@
     return /^#[0-9a-fA-F]{6}$/.test(String(color)) ? color : "#e67e22";
   }
 
-  // src/popup/popup-dynamic.js
+  // src/options/options.js
   document.addEventListener("DOMContentLoaded", function() {
-    const settingsManager = new SettingsManager();
-    const popupGenerator = new PopupGenerator();
-    const toggleMappings = settingsManager.getToggleMappings();
-    const statMappings = settingsManager.getStatMappings();
     let currentSettings = {};
-    let isUpdating = false;
-    const sectionToggleMap = {
-      "excellenceSectionToggle": [
-        "attributionExcellenceToggle",
-        "nuanceExcellenceToggle",
-        "transparencyExcellenceToggle",
-        "discourseExcellenceToggle",
-        "evidenceExcellenceToggle"
-      ],
-      "basicSectionToggle": ["opinionToggle", "ePrimeToggle", "absoluteToggle"],
-      "advancedSectionToggle": ["passiveToggle", "weaselToggle", "presuppositionToggle", "probabilityToggle"],
-      "framingSectionToggle": ["metaphorToggle", "minimizerToggle", "maximizerToggle", "falseBalanceToggle", "euphemismToggle"],
-      "manipulationSectionToggle": ["emotionalToggle", "gaslightingToggle", "falseDilemmaToggle"],
-      "explainerSectionToggle": ["spectrumToggle", "scistatsToggle", "ismsToggle", "civicsToggle", "econtermsToggle", "epistemicsToggle", "debateToggle", "fallacyToggle"]
-    };
     let customGroups = [];
-    let siteStatus = null;
-    let settingsLoaded = false;
-    renderSubcategoryGroups();
-    loadCustomGroups(function() {
-      loadSettings();
-    });
-    setupToggleListeners();
-    setupButtonListeners();
-    setupCategoryCollapse();
-    setupSectionToggles();
-    setupModeSelector();
-    setupInfoLink();
-    setupCustomDictionaryUI();
-    setupSiteControls();
-    setupDensityControl();
-    loadSiteStatus();
-    requestStats();
-    function renderSubcategoryGroups() {
-      settingsManager.biasTypes.forEach(function(biasType) {
-        if (!biasType.subCategories)
-          return;
-        if (document.querySelector(`.subcategory-group[data-parent="${biasType.id}"]`))
-          return;
-        const parentToggle = document.getElementById(settingsManager.getToggleId(biasType.id));
-        const container = parentToggle && parentToggle.closest(".toggle-container");
-        if (!container)
-          return;
-        container.classList.add("has-subcategories");
-        container.dataset.biasType = biasType.id;
-        const label = container.querySelector(".toggle-label");
-        if (label && !label.querySelector(".subcat-chevron")) {
-          const chevron = document.createElement("span");
-          chevron.className = "subcat-chevron";
-          label.appendChild(chevron);
-        }
-        container.insertAdjacentHTML("afterend", popupGenerator.generateSubcategoryGroup(biasType));
-      });
-    }
-    function loadSettings() {
-      const defaults = Object.assign({}, settingsManager.getDefaultSettings());
-      customGroups.forEach(function(g) {
-        defaults[g.settingKey] = g.enabled !== false;
-      });
-      chrome.storage.sync.get(defaults, function(items) {
-        currentSettings = items;
-        settingsLoaded = true;
-        updateUI();
-        updateModeUI();
-        updateAllSectionToggleStates();
-        renderCustomGroupToggles();
-      });
-    }
-    function loadSiteStatus() {
-      const label = document.getElementById("siteHostLabel");
-      const toggle = document.getElementById("siteEnabledToggle");
-      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        if (!tabs[0])
-          return;
-        chrome.tabs.sendMessage(tabs[0].id, { action: "getSiteStatus" }, function(status) {
-          if (chrome.runtime.lastError || !status || !status.success || !status.hostname) {
-            if (label)
-              label.textContent = "Run on this page (unavailable)";
-            if (toggle)
-              toggle.disabled = true;
-            return;
-          }
-          siteStatus = status;
-          if (label)
-            label.textContent = "Run on " + status.hostname;
-          if (toggle)
-            toggle.checked = !status.siteDisabled;
-        });
-      });
-    }
-    function setupSiteControls() {
-      const siteToggle = document.getElementById("siteEnabledToggle");
-      if (siteToggle) {
-        siteToggle.addEventListener("change", function() {
-          if (!settingsLoaded || !siteStatus || !siteStatus.hostname)
-            return;
-          const host = siteStatus.hostname;
-          const sites = Array.isArray(currentSettings.disabledSites) ? currentSettings.disabledSites.filter((s) => s !== host) : [];
-          if (!this.checked)
-            sites.push(host);
-          currentSettings.disabledSites = sites;
-          chrome.storage.sync.set(currentSettings, function() {
-            sendSettingsToContentScript();
-          });
-        });
-      }
-      const autoRunToggle = document.getElementById("autoRunToggle");
-      if (autoRunToggle) {
-        autoRunToggle.addEventListener("change", function() {
-          if (isUpdating || !settingsLoaded)
-            return;
-          currentSettings.siteMode = this.checked ? "auto" : "ondemand";
-          chrome.storage.sync.set(currentSettings, function() {
-            sendSettingsToContentScript();
-          });
-        });
-      }
-    }
-    function setupDensityControl() {
-      document.querySelectorAll('input[name="density"]').forEach(function(input) {
-        input.addEventListener("change", function(event) {
-          if (isUpdating || !settingsLoaded)
-            return;
-          currentSettings.highlightDensity = event.target.value;
-          chrome.storage.sync.set(currentSettings, function() {
-            sendSettingsToContentScript();
-          });
-        });
-      });
-    }
-    function updateUI() {
-      isUpdating = true;
-      for (const [toggleId, settingKey] of Object.entries(toggleMappings)) {
-        const toggle = document.getElementById(toggleId);
-        if (toggle) {
-          toggle.checked = currentSettings[settingKey];
-        }
-      }
-      settingsManager.biasTypes.forEach((biasType) => {
-        if (!biasType.subCategories)
-          return;
-        const parentEnabled = currentSettings[biasType.settingKey];
-        const group = document.querySelector(`.subcategory-group[data-parent="${biasType.id}"]`);
-        if (group) {
-          group.classList.toggle("disabled", !parentEnabled);
-        }
-        for (const [subId] of Object.entries(biasType.subCategories)) {
-          const subToggle = document.getElementById(`${biasType.id}_${subId}Toggle`);
-          if (subToggle) {
-            subToggle.disabled = !parentEnabled;
-          }
-        }
-      });
-      const autoRunToggle = document.getElementById("autoRunToggle");
-      if (autoRunToggle) {
-        autoRunToggle.checked = currentSettings.siteMode !== "ondemand";
-      }
-      document.querySelectorAll('input[name="density"]').forEach((input) => {
-        input.checked = input.value === (currentSettings.highlightDensity || "standard");
-      });
-      updateStatusText();
-      isUpdating = false;
-    }
-    function updateModeUI() {
-      const modeInputs = document.querySelectorAll('input[name="mode"]');
-      modeInputs.forEach((input) => {
-        if (input.value === currentSettings.analysisMode) {
-          input.checked = true;
-        }
-      });
-    }
-    function updateStatusText() {
-      const statusText = document.getElementById("statusText");
-      if (statusText) {
-        const mode = currentSettings.analysisMode || "balanced";
-        let modeText = "";
-        switch (mode) {
-          case "problems":
-            modeText = "Detecting problematic language patterns.";
-            break;
-          case "excellence":
-            modeText = "Highlighting excellent writing practices.";
-            break;
-          case "balanced":
-            modeText = "Showing both problems and excellence.";
-            break;
-        }
-        statusText.innerHTML = `<strong>Active:</strong> ${modeText}`;
-      }
-    }
-    function setupToggleListeners() {
-      for (const toggleId of Object.keys(toggleMappings)) {
-        const toggle = document.getElementById(toggleId);
-        if (toggle) {
-          toggle.addEventListener("change", handleToggleChange);
-        }
-      }
-    }
-    function handleToggleChange(event) {
-      if (isUpdating)
-        return;
-      const toggleId = event.target.id;
-      const settingKey = toggleMappings[toggleId];
-      if (settingKey) {
-        currentSettings[settingKey] = event.target.checked;
-        chrome.storage.sync.set(currentSettings, function() {
-          sendSettingsToContentScript();
-        });
-      }
-    }
-    function setupButtonListeners() {
-      const refreshButton = document.getElementById("refreshButton");
-      const clearButton = document.getElementById("clearButton");
-      if (refreshButton) {
-        refreshButton.addEventListener("click", handleRefresh);
-      }
-      if (clearButton) {
-        clearButton.addEventListener("click", handleClear);
-      }
-    }
-    function handleRefresh() {
-      const refreshButton = document.getElementById("refreshButton");
-      refreshButton.disabled = true;
-      refreshButton.textContent = "Analyzing...";
-      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: "forceAnalyze" }, function(response) {
-          if (chrome.runtime.lastError) {
-            console.error("Error:", chrome.runtime.lastError);
-            refreshButton.disabled = false;
-            refreshButton.textContent = "Refresh Analysis";
-            return;
-          }
-          if (response && response.success) {
-            updateStats(response.stats);
-            if (response.analysisEnabled !== void 0) {
-              currentSettings.enableAnalysis = response.analysisEnabled;
-              const enableToggle = document.getElementById("enableToggle");
-              if (enableToggle) {
-                isUpdating = true;
-                enableToggle.checked = response.analysisEnabled;
-                isUpdating = false;
-              }
-            }
-            setTimeout(() => {
-              refreshButton.disabled = false;
-              refreshButton.textContent = "Refresh Analysis";
-            }, 1e3);
-          } else {
-            refreshButton.disabled = false;
-            refreshButton.textContent = "Refresh Analysis";
-          }
-        });
-      });
-    }
-    function handleClear() {
-      const clearButton = document.getElementById("clearButton");
-      clearButton.disabled = true;
-      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: "clearHighlights" }, function(response) {
-          if (chrome.runtime.lastError) {
-            console.error("Error:", chrome.runtime.lastError);
-            clearButton.disabled = false;
-            return;
-          }
-          if (response && response.success) {
-            updateStats(response.stats);
-            if (response.analysisEnabled !== void 0) {
-              currentSettings.enableAnalysis = response.analysisEnabled;
-              const enableToggle = document.getElementById("enableToggle");
-              if (enableToggle) {
-                isUpdating = true;
-                enableToggle.checked = response.analysisEnabled;
-                isUpdating = false;
-              }
-            }
-            setTimeout(() => {
-              clearButton.disabled = false;
-            }, 500);
-          }
-        });
-      });
-    }
-    function setupCategoryCollapse() {
-      const headers = document.querySelectorAll(".category-header");
-      headers.forEach((header) => {
-        header.addEventListener("click", function(e) {
-          if (e.target.closest(".section-toggle"))
-            return;
-          const section = this.parentElement;
-          section.classList.toggle("collapsed");
-        });
-      });
-      document.querySelectorAll(".toggle-container.has-subcategories").forEach((container) => {
-        const label = container.querySelector(".toggle-label");
-        if (label) {
-          label.style.cursor = "pointer";
-          label.addEventListener("click", function(e) {
-            if (e.target.closest(".toggle"))
-              return;
-            const parentId = container.dataset.biasType;
-            const group = document.querySelector(`.subcategory-group[data-parent="${parentId}"]`);
-            if (group) {
-              group.classList.toggle("collapsed");
-              container.classList.toggle("expanded");
-            }
-          });
-        }
-      });
-    }
-    function setupSectionToggles() {
-      for (const [sectionToggleId, childToggleIds] of Object.entries(sectionToggleMap)) {
-        const sectionToggle = document.getElementById(sectionToggleId);
-        if (!sectionToggle)
-          continue;
-        sectionToggle.addEventListener("change", function() {
-          const checked = this.checked;
-          isUpdating = true;
-          childToggleIds.forEach((childId) => {
-            const childToggle = document.getElementById(childId);
-            if (childToggle) {
-              childToggle.checked = checked;
-              const settingKey = toggleMappings[childId];
-              if (settingKey) {
-                currentSettings[settingKey] = checked;
-              }
-            }
-          });
-          isUpdating = false;
-          chrome.storage.sync.set(currentSettings, function() {
-            sendSettingsToContentScript();
-          });
-        });
-        childToggleIds.forEach((childId) => {
-          const childToggle = document.getElementById(childId);
-          if (childToggle) {
-            childToggle.addEventListener("change", function() {
-              updateSectionToggleState(sectionToggleId, childToggleIds);
-            });
-          }
-        });
-      }
-      setupParentSubcategoryToggles();
-    }
-    function setupParentSubcategoryToggles() {
-      settingsManager.biasTypes.forEach((biasType) => {
-        if (!biasType.subCategories)
-          return;
-        const parentToggle = document.getElementById(settingsManager.getToggleId(biasType.id));
-        if (!parentToggle)
-          return;
-        const subToggleIds = Object.keys(biasType.subCategories).map((subId) => `${biasType.id}_${subId}Toggle`);
-        parentToggle.addEventListener("change", function() {
-          const checked = this.checked;
-          isUpdating = true;
-          subToggleIds.forEach((subToggleId) => {
-            const subToggle = document.getElementById(subToggleId);
-            if (subToggle) {
-              subToggle.checked = checked;
-              subToggle.disabled = !checked;
-              const settingKey = toggleMappings[subToggleId];
-              if (settingKey) {
-                currentSettings[settingKey] = checked;
-              }
-            }
-          });
-          const group = document.querySelector(`.subcategory-group[data-parent="${biasType.id}"]`);
-          if (group) {
-            group.classList.toggle("disabled", !checked);
-          }
-          isUpdating = false;
-        });
-        subToggleIds.forEach((subToggleId) => {
-          const subToggle = document.getElementById(subToggleId);
-          if (subToggle) {
-            subToggle.addEventListener("change", function() {
-              if (isUpdating)
-                return;
-              updateParentToggleState(biasType.id, subToggleIds);
-            });
-          }
-        });
-      });
-    }
-    function updateParentToggleState(parentId, subToggleIds) {
-      const parentToggle = document.getElementById(settingsManager.getToggleId(parentId));
-      if (!parentToggle)
-        return;
-      const allChecked = subToggleIds.every((id) => {
-        const el = document.getElementById(id);
-        return el && el.checked;
-      });
-      const noneChecked = subToggleIds.every((id) => {
-        const el = document.getElementById(id);
-        return el && !el.checked;
-      });
-      isUpdating = true;
-      parentToggle.checked = !noneChecked;
-      parentToggle.indeterminate = !allChecked && !noneChecked;
-      isUpdating = false;
-    }
-    function updateSectionToggleState(sectionToggleId, childToggleIds) {
-      const sectionToggle = document.getElementById(sectionToggleId);
-      if (!sectionToggle)
-        return;
-      const allChecked = childToggleIds.every((id) => {
-        const el = document.getElementById(id);
-        return el && el.checked;
-      });
-      const noneChecked = childToggleIds.every((id) => {
-        const el = document.getElementById(id);
-        return el && !el.checked;
-      });
-      isUpdating = true;
-      sectionToggle.checked = allChecked;
-      sectionToggle.indeterminate = !allChecked && !noneChecked;
-      isUpdating = false;
-    }
-    function updateAllSectionToggleStates() {
-      for (const [sectionToggleId, childToggleIds] of Object.entries(sectionToggleMap)) {
-        updateSectionToggleState(sectionToggleId, childToggleIds);
-      }
-    }
-    function setupModeSelector() {
-      const modeInputs = document.querySelectorAll('input[name="mode"]');
-      modeInputs.forEach((input) => {
-        input.addEventListener("change", handleModeChange);
-      });
-    }
-    function handleModeChange(event) {
-      const newMode = event.target.value;
-      currentSettings.analysisMode = newMode;
-      chrome.storage.sync.set(currentSettings, function() {
-        sendSettingsToContentScript();
-        updateStatusText();
-      });
-    }
-    function setupInfoLink() {
-      const infoLink = document.getElementById("infoLink");
-      if (infoLink) {
-        infoLink.addEventListener("click", function(e) {
-          e.preventDefault();
-          chrome.tabs.create({ url: "info.html" });
-        });
-      }
-    }
-    function sendSettingsToContentScript() {
-      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          action: "updateSettings",
-          settings: currentSettings
-        }, function(response) {
-          if (chrome.runtime.lastError) {
-            console.error("Error:", chrome.runtime.lastError);
-            return;
-          }
-          if (response && response.stats) {
-            updateStats(response.stats);
-          }
-        });
-      });
-    }
-    function requestStats() {
-      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        if (tabs[0]) {
-          chrome.tabs.sendMessage(tabs[0].id, { action: "getStats" }, function(stats) {
-            if (chrome.runtime.lastError) {
-              console.error("Error:", chrome.runtime.lastError);
-              return;
-            }
-            if (stats) {
-              updateStats(stats);
-            }
-          });
-        }
-      });
-    }
-    function updateStats(stats) {
-      if (!stats)
-        return;
-      for (const [elementId, statKey] of Object.entries(statMappings)) {
-        if (stats[statKey] !== void 0) {
-          setInlineCount(elementId, stats[statKey]);
-        }
-      }
-      customGroups.forEach(function(group) {
-        if (stats[group.statKey] !== void 0) {
-          setInlineCount(group.statKey, stats[group.statKey]);
-        }
-      });
-    }
-    function setInlineCount(elementId, value) {
-      const element = document.getElementById(elementId);
-      if (!element)
-        return;
-      const count = value || 0;
-      element.textContent = count;
-      element.classList.toggle("active", count > 0);
-    }
-    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-      if (request.action === "updateStats") {
-        updateStats(request.stats);
-      }
-    });
-    setInterval(requestStats, 2e3);
-    function loadCustomGroups(callback) {
+    let editingGroupId = null;
+    function loadAll() {
       chrome.storage.local.get("customGroups", function(data) {
         const stored = data.customGroups;
-        if (stored && stored.version === 1 && stored.groups) {
-          customGroups = Object.values(stored.groups);
-        } else {
-          customGroups = [];
-        }
-        if (callback) {
-          callback();
-        } else {
-          renderCustomGroupToggles();
-        }
-      });
-    }
-    function renderCustomGroupToggles() {
-      const container = document.getElementById("customGroupToggles");
-      if (!container)
-        return;
-      if (customGroups.length === 0) {
-        container.innerHTML = '<div style="padding: 8px 15px; font-size: 11px; color: #999; text-align: center;">No custom groups yet</div>';
-        return;
-      }
-      container.innerHTML = customGroups.map((group) => `
-            <div class="toggle-container" data-custom-group="${escapeHtml(group.id)}">
-                <div class="toggle-label" style="cursor: pointer;" data-edit-group="${escapeHtml(group.id)}">
-                    <div class="color-indicator" style="background-color: ${sanitizeColor(group.color)};"></div>
-                    <span>${escapeHtml(group.name)}</span>
-                    <span style="font-size: 10px; color: #999; margin-left: 4px;">(${group.words.length})</span>
-                    <span class="inline-count" id="${escapeHtml(group.statKey)}">0</span>
-                </div>
-                <label class="toggle">
-                    <input type="checkbox" data-custom-toggle="${escapeHtml(group.id)}" data-setting-key="${escapeHtml(group.settingKey)}" ${currentSettings[group.settingKey] !== false ? "checked" : ""}>
-                    <span class="slider"></span>
-                </label>
-            </div>
-        `).join("");
-      container.querySelectorAll("[data-edit-group]").forEach((el) => {
-        el.addEventListener("click", function() {
-          chrome.runtime.openOptionsPage();
+        customGroups = stored && stored.version === 1 && stored.groups ? Object.values(stored.groups) : [];
+        const defaults = Object.assign({}, BiasConfig.getDefaultSettings());
+        customGroups.forEach((g) => {
+          defaults[g.settingKey] = g.enabled !== false;
         });
-      });
-      container.querySelectorAll("[data-custom-toggle]").forEach((toggle) => {
-        toggle.addEventListener("change", function() {
-          const groupId = this.dataset.customToggle;
-          const settingKey = this.dataset.settingKey;
-          const enabled = this.checked;
-          const group = customGroups.find((g) => g.id === groupId);
-          if (group)
-            group.enabled = enabled;
-          currentSettings[settingKey] = enabled;
-          saveCustomGroups();
-          chrome.storage.sync.set(currentSettings, function() {
-            sendSettingsToContentScript();
-          });
+        chrome.storage.sync.get(defaults, function(items) {
+          currentSettings = items;
+          renderAll();
         });
       });
     }
-    function setupCustomDictionaryUI() {
-      const manageBtn = document.getElementById("manageCustomGroupsBtn");
-      if (manageBtn) {
-        manageBtn.addEventListener("click", () => chrome.runtime.openOptionsPage());
-      }
+    function saveSettings(done) {
+      chrome.storage.sync.set(currentSettings, function() {
+        broadcast({ action: "updateSettings", settings: currentSettings });
+        if (done)
+          done();
+      });
     }
-    function saveCustomGroups() {
+    function saveCustomGroups(done) {
       const groups = {};
       let maxCounter = 0;
       customGroups.forEach((g) => {
         groups[g.id] = g;
-        const match = g.id.match(/_(\d+)$/);
-        if (match)
-          maxCounter = Math.max(maxCounter, parseInt(match[1]));
+        const m = g.id.match(/_(\d+)$/);
+        if (m)
+          maxCounter = Math.max(maxCounter, parseInt(m[1], 10));
       });
-      chrome.storage.local.set({
-        customGroups: { version: 1, idCounter: maxCounter, groups }
+      chrome.storage.local.set({ customGroups: { version: 1, idCounter: maxCounter, groups } }, function() {
+        chrome.storage.sync.set(currentSettings, function() {
+          broadcast({ action: "reloadCustomDictionaries" });
+          if (done)
+            done();
+        });
       });
     }
+    function broadcast(message) {
+      chrome.tabs.query({}, function(tabs) {
+        tabs.forEach((tab) => {
+          if (tab.id === void 0)
+            return;
+          chrome.tabs.sendMessage(tab.id, message, function() {
+            void chrome.runtime.lastError;
+          });
+        });
+      });
+    }
+    function flash(id) {
+      const el = document.getElementById(id);
+      if (!el)
+        return;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 1600);
+    }
+    function renderAll() {
+      document.querySelectorAll('input[name="siteMode"]').forEach((input) => {
+        input.checked = input.value === (currentSettings.siteMode || "auto");
+      });
+      document.querySelectorAll('input[name="density"]').forEach((input) => {
+        input.checked = input.value === (currentSettings.highlightDensity || "standard");
+      });
+      document.getElementById("disabledSites").value = (currentSettings.disabledSites || []).join("\n");
+      document.getElementById("ignoredWords").value = (currentSettings.ignoredWords || []).join("\n");
+      renderGroupList();
+    }
+    function renderGroupList() {
+      const list = document.getElementById("groupList");
+      if (!customGroups.length) {
+        list.innerHTML = '<div class="empty">No custom groups yet.</div>';
+        return;
+      }
+      list.innerHTML = customGroups.map((g) => `
+            <div class="group-row">
+                <span class="group-dot" style="background: ${sanitizeColor(g.color)};"></span>
+                <span class="group-name">${escapeHtml(g.name)}</span>
+                <span class="group-count">${g.words.length} terms</span>
+                <button class="btn secondary" data-edit="${escapeHtml(g.id)}">Edit</button>
+            </div>
+        `).join("");
+      list.querySelectorAll("[data-edit]").forEach((btn) => {
+        btn.addEventListener("click", () => openEditor(btn.dataset.edit));
+      });
+    }
+    function parseLines(value) {
+      return Array.from(new Set(
+        value.split("\n").map((s) => s.trim().toLowerCase()).filter(Boolean)
+      ));
+    }
+    document.querySelectorAll('input[name="siteMode"]').forEach((input) => {
+      input.addEventListener("change", (e) => {
+        currentSettings.siteMode = e.target.value === "ondemand" ? "ondemand" : "auto";
+        saveSettings();
+      });
+    });
+    document.querySelectorAll('input[name="density"]').forEach((input) => {
+      input.addEventListener("change", (e) => {
+        currentSettings.highlightDensity = e.target.value;
+        saveSettings();
+      });
+    });
+    document.getElementById("saveSites").addEventListener("click", () => {
+      currentSettings.disabledSites = parseLines(document.getElementById("disabledSites").value);
+      document.getElementById("disabledSites").value = currentSettings.disabledSites.join("\n");
+      saveSettings(() => flash("sitesSaved"));
+    });
+    document.getElementById("saveIgnored").addEventListener("click", () => {
+      currentSettings.ignoredWords = parseLines(document.getElementById("ignoredWords").value);
+      document.getElementById("ignoredWords").value = currentSettings.ignoredWords.join("\n");
+      saveSettings(() => flash("ignoredSaved"));
+    });
+    function openEditor(groupId) {
+      editingGroupId = groupId || null;
+      const editor = document.getElementById("editor");
+      const del = document.getElementById("deleteGroup");
+      if (groupId) {
+        const g = customGroups.find((x) => x.id === groupId);
+        if (!g)
+          return;
+        document.getElementById("editorTitle").textContent = "Edit: " + g.name;
+        document.getElementById("groupName").value = g.name;
+        document.getElementById("groupDesc").value = g.description || "";
+        document.getElementById("groupColor").value = sanitizeColor(g.color);
+        document.getElementById("groupWords").value = (g.words || []).join("\n");
+        del.style.display = "inline-block";
+      } else {
+        document.getElementById("editorTitle").textContent = "New Custom Group";
+        document.getElementById("groupName").value = "";
+        document.getElementById("groupDesc").value = "";
+        document.getElementById("groupColor").value = "#e67e22";
+        document.getElementById("groupWords").value = "";
+        del.style.display = "none";
+      }
+      editor.style.display = "block";
+      document.getElementById("groupName").focus();
+    }
+    function closeEditor() {
+      document.getElementById("editor").style.display = "none";
+      editingGroupId = null;
+    }
+    document.getElementById("addGroup").addEventListener("click", () => openEditor(null));
+    document.getElementById("cancelGroup").addEventListener("click", closeEditor);
+    document.getElementById("saveGroup").addEventListener("click", () => {
+      const name = document.getElementById("groupName").value.trim();
+      const description = document.getElementById("groupDesc").value.trim();
+      const color = sanitizeColor(document.getElementById("groupColor").value);
+      const words = document.getElementById("groupWords").value.split("\n").map((w) => w.trim()).filter(Boolean);
+      if (!name) {
+        alert("Group name is required");
+        return;
+      }
+      if (!words.length) {
+        alert("Add at least one word or phrase");
+        return;
+      }
+      if (editingGroupId) {
+        const g = customGroups.find((x) => x.id === editingGroupId);
+        if (g) {
+          g.name = name;
+          g.description = description;
+          g.color = color;
+          g.words = words.slice(0, 1e3);
+          g.hoverContent = { basicTip: description || "Custom detection: " + name };
+          g.updatedAt = Date.now();
+        }
+      } else {
+        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").substring(0, 30);
+        const id = "custom_" + slug + "_" + Date.now();
+        customGroups.push({
+          id,
+          name,
+          color,
+          description,
+          enabled: true,
+          words: words.slice(0, 1e3),
+          hoverContent: { basicTip: description || "Custom detection: " + name },
+          settingKey: "highlight_" + id,
+          statKey: id + "Count",
+          className: "bias-highlight-custom-" + id,
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        });
+        currentSettings["highlight_" + id] = true;
+      }
+      saveCustomGroups(() => {
+        renderGroupList();
+        closeEditor();
+      });
+    });
+    document.getElementById("deleteGroup").addEventListener("click", () => {
+      if (!editingGroupId)
+        return;
+      if (!confirm("Delete this custom group?"))
+        return;
+      const removed = customGroups.find((g) => g.id === editingGroupId);
+      customGroups = customGroups.filter((g) => g.id !== editingGroupId);
+      if (removed)
+        delete currentSettings[removed.settingKey];
+      saveCustomGroups(() => {
+        renderGroupList();
+        closeEditor();
+      });
+    });
+    document.getElementById("exportGroups").addEventListener("click", () => {
+      if (!customGroups.length) {
+        alert("No custom groups to export");
+        return;
+      }
+      const data = {
+        version: 1,
+        exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+        groups: customGroups.map((g) => ({
+          name: g.name,
+          color: g.color,
+          description: g.description,
+          words: g.words,
+          hoverContent: g.hoverContent
+        }))
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "custom-dictionaries.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    document.getElementById("importGroups").addEventListener("click", () => {
+      document.getElementById("importFile").click();
+    });
+    document.getElementById("importFile").addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file)
+        return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!data.groups || !Array.isArray(data.groups)) {
+            alert("Invalid import file format");
+            return;
+          }
+          let imported = 0;
+          for (const g of data.groups) {
+            if (!g.name || customGroups.length >= 50)
+              continue;
+            const slug = String(g.name).toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").substring(0, 30);
+            const id = "custom_" + slug + "_" + Date.now() + "_" + imported;
+            customGroups.push({
+              id,
+              name: String(g.name),
+              color: sanitizeColor(g.color),
+              description: g.description || "",
+              enabled: true,
+              words: (g.words || []).slice(0, 1e3),
+              hoverContent: g.hoverContent || { basicTip: g.description || "Custom: " + g.name },
+              settingKey: "highlight_" + id,
+              statKey: id + "Count",
+              className: "bias-highlight-custom-" + id,
+              createdAt: Date.now(),
+              updatedAt: Date.now()
+            });
+            currentSettings["highlight_" + id] = true;
+            imported++;
+          }
+          saveCustomGroups(() => {
+            renderGroupList();
+            alert("Imported " + imported + " group(s)");
+          });
+        } catch (err) {
+          alert("Failed to import: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    });
+    loadAll();
   });
 })();
-//# sourceMappingURL=popup.js.map
+//# sourceMappingURL=options.js.map

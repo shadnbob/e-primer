@@ -40,7 +40,8 @@ The project uses a modern ES6 module architecture with esbuild for multi-target 
 - **Firefox Output**: `dist-firefox/content.js` (Manifest V2)
 - **Source Maps**: Generated for debugging during development
 - **Popup Bundle**: `src/popup/popup-dynamic.js` is bundled (with its BiasConfig/SettingsManager/PopupGenerator imports) to `{dist}/popup.js`; `popup.html` loads it as a plain script
-- **Static Files**: Appropriate manifest, `popup.html`, `highlight-styles.css`, `info.html`, and `images/` copied to target directories
+- **Options Bundle**: `src/options/options.js` is bundled the same way to `{dist}/options.js`; `options.html` (registered via `options_ui`, opens in a tab) hosts run behavior, density, ignored words, and full custom-dictionary management — the popup keeps quick toggles and counts and links there via "Manage custom dictionaries"
+- **Static Files**: Appropriate manifest, `popup.html`, `options.html`, `highlight-styles.css`, `info.html`, and `images/` copied to target directories
 - **CSS Generation**: `styles.css` is dynamically generated from `BiasConfig.js` via `StyleGenerator.js` at build time
 - **Reference Page**: `docs/reference.html` is generated from BiasConfig and all dictionaries via `ReferencePageGenerator.js` at build time (once, not per-target)
 
@@ -67,6 +68,7 @@ The project uses a modern ES6 module architecture with esbuild for multi-target 
 - `src/content/`: Content script logic and main detector
 - `src/dictionaries/`: Pattern definitions for each bias type (23 dictionary files + index)
 - `src/popup/`: Popup interface components (popup-dynamic.js entry; SettingsManager.js and PopupGenerator.js derive settings metadata and subcategory toggle markup from BiasConfig; StatsDisplay.js is **unused** — set aside, see its header note)
+- `src/options/`: Options-page entry (options.js) — run behavior (auto/on-demand + disabled sites), highlight density, ignored words, custom-dictionary CRUD/import/export; broadcasts changes to all open tabs
 - `src/utils/`: Shared utilities and processors
 - `src/build/`: Build-time utilities (StyleGenerator.js, ReferencePageGenerator.js)
 - `docs/`: GitHub Pages site (index.html, reference.html, privacy.html)

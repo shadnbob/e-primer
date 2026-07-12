@@ -8,7 +8,11 @@ export class PopupManager {
         this.hoverGenerator = new HoverContentGenerator();
         this.currentTarget = null;
         this.hideTimeout = null;
-        
+
+        // Optional hook set by the content script: adds an "Ignore this word"
+        // button to highlight cards that feeds the persistent ignore list
+        this.onIgnoreWord = null;
+
         this.init();
     }
     
@@ -355,8 +359,37 @@ export class PopupManager {
             e.stopPropagation();
             this.removeCurrentHighlight();
         });
-        
+
         this.contentContainer.appendChild(removeBtn);
+
+        if (this.onIgnoreWord) {
+            const ignoreBtn = document.createElement('button');
+            ignoreBtn.className = 'ignore-word-btn';
+            ignoreBtn.textContent = 'Ignore this word everywhere';
+            ignoreBtn.style.cssText = `
+                display: block;
+                width: 100%;
+                margin-top: 6px;
+                padding: 8px 12px;
+                background: #f8f7f5;
+                color: #8a8078;
+                border: 1px solid #d4cfc7;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: 500;
+                transition: all 0.15s;
+            `;
+            ignoreBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const word = this.currentTarget ? this.currentTarget.textContent : null;
+                if (word) {
+                    this.onIgnoreWord(word);
+                }
+                this.hide();
+            });
+            this.contentContainer.appendChild(ignoreBtn);
+        }
     }
     
     removeCurrentHighlight() {

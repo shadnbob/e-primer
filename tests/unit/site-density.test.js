@@ -16,6 +16,7 @@
 
 import { BiasConfig } from '../../src/config/BiasConfig.js';
 import { BiasDetector } from '../../src/content/BiasDetector.js';
+import { getPopupManager, destroyPopupManager } from '../../src/utils/PopupManager.js';
 
 describe('Settings contract for site/density/ignore keys', () => {
   test('siteMode passes through and defaults invalid values to auto', () => {
@@ -116,5 +117,45 @@ describe('Highlight density quota', () => {
     expect(spy).toHaveBeenCalledTimes(2);
 
     spy.mockRestore();
+  });
+});
+
+describe('Ignore-word button on highlight cards', () => {
+  test('appears when the hook is set and passes the clicked word', () => {
+    destroyPopupManager();
+    document.body.innerHTML = '';
+    const pm = getPopupManager();
+    const received = [];
+    pm.onIgnoreWord = w => received.push(w);
+
+    const span = document.createElement('span');
+    span.className = 'bias-highlight-opinion';
+    span.textContent = 'Obviously';
+    document.body.appendChild(span);
+
+    pm.show(span, { clientX: 0, clientY: 0 });
+    const btn = document.querySelector('.ignore-word-btn');
+    expect(btn).toBeTruthy();
+    btn.click();
+    expect(received).toEqual(['Obviously']);
+
+    destroyPopupManager();
+  });
+
+  test('absent when no hook is registered', () => {
+    destroyPopupManager();
+    document.body.innerHTML = '';
+    const pm = getPopupManager();
+
+    const span = document.createElement('span');
+    span.className = 'bias-highlight-opinion';
+    span.textContent = 'Clearly';
+    document.body.appendChild(span);
+
+    pm.show(span, { clientX: 0, clientY: 0 });
+    expect(document.querySelector('.ignore-word-btn')).toBeNull();
+    expect(document.querySelector('.remove-highlight-btn')).toBeTruthy();
+
+    destroyPopupManager();
   });
 });
