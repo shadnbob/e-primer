@@ -257,7 +257,7 @@ export class PopupManager {
                 gaslighting: '#800000', falsedilemma: '#9400d3', probability: '#4169e1',
                 spectrum: '#7e57c2', scistats: '#546e7a', isms: '#607d8b',
                 civics: '#5c6bc0', econterms: '#6d4c41', epistemics: '#7e57c2',
-                debate: '#78909c'
+                debate: '#78909c', fallacy: '#a1887f'
             };
             const baseType = matchData.type.startsWith('opinion_') ? 'opinion' : matchData.type;
             this.popup.style.borderTopColor = typeColors[baseType] || '#dc3545';

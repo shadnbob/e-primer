@@ -987,6 +987,13 @@
     position: relative;
 }
 
+.bias-highlight-fallacy {
+    background-color: rgba(161, 136, 127, 0.3);
+    border-bottom: 1px solid #a1887f;
+    cursor: help;
+    position: relative;
+}
+
 .excellence-attribution {
     border-bottom: 2px solid #28a745;
     background-color: rgba(40, 167, 69, 0.1);
@@ -1050,6 +1057,7 @@
 .bias-highlight-econterms::after,
 .bias-highlight-epistemics::after,
 .bias-highlight-debate::after,
+.bias-highlight-fallacy::after,
 .excellence-attribution::after,
 .excellence-nuance::after,
 .excellence-transparency::after,
@@ -1096,6 +1104,7 @@
 .bias-highlight-econterms:hover::after,
 .bias-highlight-epistemics:hover::after,
 .bias-highlight-debate:hover::after,
+.bias-highlight-fallacy:hover::after,
 .excellence-attribution:hover::after,
 .excellence-nuance:hover::after,
 .excellence-transparency:hover::after,

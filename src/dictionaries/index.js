@@ -22,6 +22,7 @@ import { civicTerms, civicTermsWords } from './civic-terms.js';
 import { econTerms, econTermsWords } from './econ-terms.js';
 import { epistemicTerms, epistemicTermsWords } from './epistemic-terms.js';
 import { discourseConcepts, discourseConceptsWords } from './discourse-concepts.js';
+import { logicalFallacies, logicalFallaciesWords } from './logical-fallacies.js';
 
 // Helper: check if a words entry is intensity-grouped ({ 1: [...], 2: [...] })
 // vs a flat array ([...])
@@ -69,7 +70,8 @@ export class BiasPatterns {
             civics: civicTerms,
             econterms: econTerms,
             epistemics: epistemicTerms,
-            debate: discourseConcepts
+            debate: discourseConcepts,
+            fallacy: logicalFallacies
         };
     }
 
@@ -88,6 +90,7 @@ export class BiasPatterns {
         dictionaries.set('econterms', econTermsWords);
         dictionaries.set('epistemics', epistemicTermsWords);
         dictionaries.set('debate', discourseConceptsWords);
+        dictionaries.set('fallacy', logicalFallaciesWords);
         return dictionaries;
     }
 
@@ -227,7 +230,8 @@ export class BiasPatterns {
             // in a phrase must tolerate any whitespace run ("demanding
             // tolerance" wraps across lines in real HTML). For complex
             // patterns, skip ones containing character classes, where a space
-            // may be a class member rather than a separator.
+            // may be a class member rather than a separator — authors of
+            // class-bearing patterns must write \s+ between words themselves.
             if (isComplexPattern) {
                 regexPattern = cleanPattern.includes('[')
                     ? cleanPattern

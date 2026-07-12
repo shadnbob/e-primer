@@ -2051,6 +2051,170 @@
             whenAcceptable: "When the modest and sweeping claims are quoted from the same source"
           }
         }
+      },
+      FALLACY: {
+        id: "fallacy",
+        name: "Logical Fallacies",
+        description: "The named fallacy catalog \u2014 each name describes a real reasoning failure and doubles as an argument-ender (strawman, ad hominem, whataboutism, and slippery slope live under Discourse Concepts)",
+        category: "explainer",
+        isExplainer: true,
+        color: "#a1887f",
+        className: "bias-highlight-fallacy",
+        settingKey: "highlightFallacy",
+        statKey: "fallacyCount",
+        enabled: true,
+        tooltip: "A named fallacy \u2014 it describes a real reasoning failure and gets thrown as an argument-ender",
+        basicTip: "A named fallacy \u2014 it describes a real reasoning failure and gets thrown as an argument-ender",
+        whenConcerning: "When the fallacy-name substitutes for showing the failure it alleges, or dismisses the conclusion rather than the argument",
+        whenAcceptable: "When the reasoning failure is demonstrated \u2014 premises quoted, selection shown, mechanism examined \u2014 rather than just named",
+        lookFor: [
+          "Is the fallacy shown, or only named?",
+          "Does the accusation meet the standard it demands?",
+          "Even if the argument fails, what is the best remaining case for the conclusion?",
+          "Would the label survive being applied to the speaker's own side?"
+        ],
+        examples: {
+          problematic: [
+            "that's a red herring (an inconvenient point ducked)",
+            "cherry-picking! (without showing the fuller data)",
+            "correlation isn't causation (about a randomized trial)",
+            "your argument is fallacious, so you're wrong (the fallacy fallacy)"
+          ],
+          acceptable: [
+            "the premise assumes the conclusion: here are both, quoted",
+            "the full dataset shows the opposite trend; these three points were selected",
+            "the standard was met, then redefined \u2014 here is the original claim",
+            "the argument fails, but the claim has independent support worth weighing"
+          ]
+        },
+        contextualGuidance: {
+          academic: "Expect fallacy claims to be demonstrated with the argument's actual structure",
+          news: "Watch for fallacy-names doing the work of analysis in debate coverage",
+          opinion: "Naming a fallacy is the start of an argument, not the end of one",
+          instructions: "Rarely relevant; treat as informational"
+        },
+        subCategories: {
+          relevance: {
+            id: "relevance",
+            name: "Red Herring & Non Sequitur",
+            icon: "\u{1F41F}",
+            color: "#00838f",
+            description: "Relevance fallacies: a red herring drags the argument toward something vivid but beside the point; a non sequitur draws a conclusion that does not follow from what preceded it; a Gish gallop buries an opponent under more claims than can be answered in the time available.",
+            implication: 'The moves are real \u2014 misdirection and overload win debates without winning arguments. But the labels also get used to duck relevant points: calling context a "red herring" or a cumulative case a "Gish gallop" can itself be the evasion.',
+            suggestion: "Ask what the original question was and whether the point at issue actually bears on it \u2014 in either direction.",
+            examples: `"That's a red herring" \u2014 is it off the point, or an inconvenient part of it?`,
+            settingKey: "highlightFallacyRelevance",
+            statKey: "fallacyRelevanceCount",
+            basicTip: "Red herrings and non sequiturs break relevance \u2014 but the labels can also duck points that are relevant.",
+            whenConcerning: "When the label dismisses a point without showing it is off-topic, or misdirection goes unnamed",
+            whenAcceptable: "When the original question and the drift away from it are both shown"
+          },
+          circular: {
+            id: "circular",
+            name: "Begging the Question",
+            icon: "\u{1F501}",
+            color: "#5c6bc0",
+            description: 'Begging the question (petitio principii) means assuming the conclusion inside the premises \u2014 circular reasoning: "the report is reliable because it says so." Separately, everyday usage has largely repurposed "begs the question" to mean "raises the question," which usage guides now widely note.',
+            implication: 'Two confusions travel with this phrase: circular arguments can sound rigorous while proving nothing, and the fallacy-name itself now means different things to different readers. Someone accused of "begging the question" may just have prompted one.',
+            suggestion: "For the fallacy: ask whether any premise already assumes the conclusion. For the phrase: check which sense the writer means.",
+            examples: '"This begs the question" \u2014 a circularity charge, or just "this raises the question"? They are different claims.',
+            settingKey: "highlightFallacyCircular",
+            statKey: "fallacyCircularCount",
+            basicTip: '"Begs the question" names circular reasoning \u2014 and, in everyday use, just means "raises the question." Check which.',
+            whenConcerning: "When circularity is alleged without quoting the premise that assumes the conclusion",
+            whenAcceptable: "When both premise and conclusion are shown, or the everyday sense is clearly meant"
+          },
+          crowd_authority: {
+            id: "crowd_authority",
+            name: "Appeals & Bandwagon",
+            icon: "\u{1F4E2}",
+            color: "#8d6e63",
+            description: "Borrowed-force fallacies: appeal to popularity (ad populum / bandwagon), authority, nature (the naturalistic fallacy), emotion, tradition, novelty, and ignorance. Each substitutes something other than evidence \u2014 numbers, prestige, origin, feeling, age, newness, or the absence of disproof \u2014 for an argument.",
+            implication: 'The nuance the labels flatten: deferring to relevant expert consensus is evidence, not fallacy \u2014 the fallacy is substituting prestige for argument or citing authority outside its domain. Likewise popularity is weak evidence, not zero. "Appeal to X!" can dismiss legitimate weight along with borrowed force.',
+            suggestion: "Ask what would remain of the claim if the crowd, the authority, or the feeling were removed \u2014 and whether the cited authority actually has domain expertise.",
+            examples: `"Experts agree" \u2014 relevant consensus (evidence) or borrowed prestige (fallacy)? "Everyone's switching" \u2014 to what, and why?`,
+            settingKey: "highlightFallacyCrowdAuthority",
+            statKey: "fallacyCrowdAuthorityCount",
+            basicTip: "Appeals borrow force from crowds, authorities, nature, or feelings \u2014 but relevant expert consensus is evidence, not fallacy.",
+            whenConcerning: "When prestige or popularity substitutes for argument, or the label dismisses relevant expertise",
+            whenAcceptable: "When the authority has domain expertise and the evidence behind the consensus is available"
+          },
+          evidence_games: {
+            id: "evidence_games",
+            name: "Cherry-Picking & Selection",
+            icon: "\u{1F352}",
+            color: "#6d4c41",
+            description: "Selection fallacies: cherry-picking keeps the favorable data and discards the rest; the Texas sharpshooter draws the target around the bullet holes after firing; hasty generalization scales a small sample into a rule; anecdotal evidence substitutes a story for a distribution; survivorship bias studies only what made it through the filter.",
+            implication: 'These are among the most consequential reasoning failures because the presented evidence is genuine \u2014 only the selection is dishonest, so each claim survives fact-checking. The accusation cuts both ways too: "cherry-picking!" needs the fuller dataset shown, not just alleged.',
+            suggestion: "Ask what the full base of evidence looks like: what was left out, who did not survive to be counted, and whether the pattern was predicted or drawn afterward.",
+            examples: `"Every example they gave is true" \u2014 and what about the examples they didn't give?`,
+            settingKey: "highlightFallacyEvidenceGames",
+            statKey: "fallacyEvidenceGamesCount",
+            basicTip: "Selection fallacies present true evidence dishonestly chosen \u2014 the counter is the fuller dataset, shown.",
+            whenConcerning: "When selective evidence poses as the whole picture, or the accusation comes without the fuller data",
+            whenAcceptable: "When the selection criteria are stated and the full base of evidence is on the table"
+          },
+          goalposts_burden: {
+            id: "goalposts_burden",
+            name: "Goalposts, Burden & No True Scotsman",
+            icon: "\u{1F945}",
+            color: "#607d8b",
+            description: `Rule-changing moves: moving the goalposts redefines success after each demand is met; burden-of-proof games assign the proving to the other side ("prove it isn't true"); special pleading exempts one's own case from one's own standard; No True Scotsman rescues a generalization by redefining membership ("no real X would do that").`,
+            implication: "Each move makes a position unfalsifiable in practice. The labels need care in return: standards can legitimately tighten as stakes rise (not every raised bar is moved goalposts), the burden genuinely rests with whoever asserts, and some membership definitions are real (a vegetarian who eats steak is not a counterexample to vegetarianism).",
+            suggestion: "Ask what was originally claimed and what would count as meeting or refuting it \u2014 fixed in advance, on both sides.",
+            examples: `"That wasn't real socialism" \u2014 a definitional argument that needs making, or a retreat that saves the theory from every failure?`,
+            settingKey: "highlightFallacyGoalposts",
+            statKey: "fallacyGoalpostsCount",
+            basicTip: "Goalpost-moving, burden-shifting, and No True Scotsman make positions unfalsifiable \u2014 fix the success criteria in advance.",
+            whenConcerning: "When success or membership gets redefined after the fact, or the asserter assigns the proving to others",
+            whenAcceptable: "When definitions and standards are argued openly and fixed before the evidence arrives"
+          },
+          causal: {
+            id: "causal",
+            name: "Post Hoc & Causal Shortcuts",
+            icon: "\u{1F3B2}",
+            color: "#7e57c2",
+            description: `Causal fallacies: post hoc ergo propter hoc ("after it, therefore because of it") reads sequence as causation; the gambler's fallacy expects independent events to remember the past; the sunk cost fallacy lets what is already spent dictate what to do next.`,
+            implication: 'The corrective slogans get weaponized too: "correlation is not causation" is true and yet gets used to wave away strong, well-controlled observational evidence \u2014 correlation plus mechanism plus dose-response plus ruled-out confounders is how much of science works. The slogan starts the examination; it does not end it.',
+            suggestion: "For causal claims: ask for the mechanism and the controls. For the slogan: ask whether the evidence is actually just correlation, or more.",
+            examples: `"I took it and got better" (post hoc); "correlation isn't causation" (about a randomized trial \u2014 it was causation).`,
+            settingKey: "highlightFallacyCausal",
+            statKey: "fallacyCausalCount",
+            basicTip: `Post hoc reads sequence as cause; "correlation isn't causation" is true \u2014 and gets used to dismiss evidence that is more than correlation.`,
+            whenConcerning: "When sequence poses as cause, or the corrective slogan waves away controlled evidence",
+            whenAcceptable: "When mechanisms and controls are examined rather than asserted or dismissed"
+          },
+          comparison: {
+            id: "comparison",
+            name: "False Equivalence & Extreme Comparisons",
+            icon: "\u{1FA9E}",
+            color: "#546e7a",
+            description: `Comparison fallacies: false equivalence treats unlike things as alike because they share a surface feature; false dichotomies and "false choice" framings force two options where more exist; Godwin's law names the drift of every long argument toward a Hitler comparison (reductio ad Hitlerum).`,
+            implication: `Comparisons carry arguments \u2014 and dismissing them cuts both ways: "false equivalence!" can duck a fair parallel, and invoking Godwin's law can dodge a historically apt warning. What matters is whether the compared cases are alike in the respects the argument needs.`,
+            suggestion: "Ask in which specific respects the two things are being equated, and whether those respects are the ones that matter for the conclusion.",
+            examples: `"You can't compare X to Y" \u2014 why not, in the respect being argued? "This is just like [atrocity]" \u2014 in what specific way?`,
+            settingKey: "highlightFallacyComparison",
+            statKey: "fallacyComparisonCount",
+            basicTip: "Comparisons carry arguments: what matters is whether the cases are alike in the respects the conclusion needs.",
+            whenConcerning: "When equivalence or its dismissal is asserted without naming the respects compared",
+            whenAcceptable: "When the specific points of likeness and difference are argued"
+          },
+          meta: {
+            id: "meta",
+            name: "The Fallacy Fallacy & Question Games",
+            icon: "\u{1FA83}",
+            color: "#a1887f",
+            description: 'The fallacy fallacy: concluding that a claim is false because an argument for it was fallacious \u2014 bad arguments get made for true things. Question-framing does double duty too: "just asking questions" can be a cover for insinuating without asserting (sealioning: relentless polite demands that exhaust rather than inquire), and a loaded question smuggles its premise ("when did you stop\u2026?").',
+            implication: "This family is the type's own warning label: spotting a fallacy licenses discounting an argument, never the conclusion \u2014 and fallacy-naming can itself become sport that replaces engagement. Meanwhile the question-labels can dismiss sincere inquiry as bad faith; the difference is whether answers are ever accepted.",
+            suggestion: "Separate the argument from the claim: refute the reasoning, then ask what the best remaining case for the conclusion is. For question games: does any answer get engaged?",
+            examples: `"Your argument is fallacious, so you're wrong" \u2014 the first half can be true and the second not follow.`,
+            settingKey: "highlightFallacyMeta",
+            statKey: "fallacyMetaCount",
+            basicTip: "Naming a fallacy discounts an argument, never the conclusion \u2014 that mistake is itself the fallacy fallacy.",
+            whenConcerning: "When a fallacy verdict stands in for engaging the claim, or question-labels dismiss sincere inquiry",
+            whenAcceptable: "When the reasoning is refuted and the conclusion is then weighed on its remaining merits"
+          }
+        }
       }
     };
     // Excellence detection types
@@ -4488,7 +4652,7 @@
       words: [
         "capitalism",
         "capitalistic",
-        "\\blate[- ](stage )?capitalism\\b",
+        "\\blate[- ](stage\\s+)?capitalism\\b",
         "\\bcrony capitalism\\b",
         "\\bfree[- ]markets?\\b",
         "(?<!venture )(?<!venture-)\\bcapitalists?\\b"
@@ -4838,6 +5002,133 @@
   };
   var discourseConcepts = Object.values(discourseConceptsWords).flatMap((sub) => sub.words);
 
+  // src/dictionaries/logical-fallacies.js
+  var logicalFallaciesWords = {
+    relevance: {
+      icon: "\u{1F41F}",
+      color: "#00838f",
+      name: "Red Herring & Non Sequitur",
+      description: "Relevance fallacies: a red herring drags the argument toward something vivid but beside the point; a non sequitur draws a conclusion that does not follow from what preceded it; a Gish gallop buries an opponent under more claims than can be answered in the time available.",
+      implication: 'The moves are real \u2014 misdirection and overload win debates without winning arguments. But the labels also get used to duck relevant points: calling context a "red herring" or a cumulative case a "Gish gallop" can itself be the evasion.',
+      suggestion: "Ask what the original question was and whether the point at issue actually bears on it \u2014 in either direction.",
+      examples: `"That's a red herring" \u2014 is it off the point, or an inconvenient part of it?`,
+      words: [
+        "\\bred herrings?\\b",
+        "\\bnon sequiturs?\\b",
+        "\\bgish gallop\\b"
+      ]
+    },
+    circular: {
+      icon: "\u{1F501}",
+      color: "#5c6bc0",
+      name: "Begging the Question",
+      description: 'Begging the question (petitio principii) means assuming the conclusion inside the premises \u2014 circular reasoning: "the report is reliable because it says so." Separately, everyday usage has largely repurposed "begs the question" to mean "raises the question," which usage guides now widely note.',
+      implication: 'Two confusions travel with this phrase: circular arguments can sound rigorous while proving nothing, and the fallacy-name itself now means different things to different readers. Someone accused of "begging the question" may just have prompted one.',
+      suggestion: "For the fallacy: ask whether any premise already assumes the conclusion. For the phrase: check which sense the writer means.",
+      examples: '"This begs the question" \u2014 a circularity charge, or just "this raises the question"? They are different claims.',
+      words: [
+        "\\bbeg(s|ged|ging)? the question\\b",
+        "\\bcircular (reasoning|argument|arguments|logic)\\b"
+      ]
+    },
+    crowd_authority: {
+      icon: "\u{1F4E2}",
+      color: "#8d6e63",
+      name: "Appeals & Bandwagon",
+      description: "Borrowed-force fallacies: appeal to popularity (ad populum / bandwagon), authority, nature (the naturalistic fallacy), emotion, tradition, novelty, and ignorance. Each substitutes something other than evidence \u2014 numbers, prestige, origin, feeling, age, newness, or the absence of disproof \u2014 for an argument.",
+      implication: 'The nuance the labels flatten: deferring to relevant expert consensus is evidence, not fallacy \u2014 the fallacy is substituting prestige for argument or citing authority outside its domain. Likewise popularity is weak evidence, not zero. "Appeal to X!" can dismiss legitimate weight along with borrowed force.',
+      suggestion: "Ask what would remain of the claim if the crowd, the authority, or the feeling were removed \u2014 and whether the cited authority actually has domain expertise.",
+      examples: `"Experts agree" \u2014 relevant consensus (evidence) or borrowed prestige (fallacy)? "Everyone's switching" \u2014 to what, and why?`,
+      words: [
+        "\\bappeal(s|ed|ing)? to (popularity|authority|nature|emotion|emotions|tradition|novelty|ignorance)\\b",
+        "\\bad populum\\b",
+        "\\bnaturalistic fallacy\\b",
+        "\\bbandwagon\\b"
+      ]
+    },
+    evidence_games: {
+      icon: "\u{1F352}",
+      color: "#6d4c41",
+      name: "Cherry-Picking & Selection",
+      description: "Selection fallacies: cherry-picking keeps the favorable data and discards the rest; the Texas sharpshooter draws the target around the bullet holes after firing; hasty generalization scales a small sample into a rule; anecdotal evidence substitutes a story for a distribution; survivorship bias studies only what made it through the filter.",
+      implication: 'These are among the most consequential reasoning failures because the presented evidence is genuine \u2014 only the selection is dishonest, so each claim survives fact-checking. The accusation cuts both ways too: "cherry-picking!" needs the fuller dataset shown, not just alleged.',
+      suggestion: "Ask what the full base of evidence looks like: what was left out, who did not survive to be counted, and whether the pattern was predicted or drawn afterward.",
+      examples: `"Every example they gave is true" \u2014 and what about the examples they didn't give?`,
+      words: [
+        "\\bcherry[- ]pick(s|ed|ing)?\\b",
+        "\\btexas sharpshooter\\b",
+        "\\banecdotal evidence\\b",
+        "\\bhasty generalizations?\\b",
+        "\\bsurvivorship bias\\b"
+      ]
+    },
+    goalposts_burden: {
+      icon: "\u{1F945}",
+      color: "#607d8b",
+      name: "Goalposts, Burden & No True Scotsman",
+      description: `Rule-changing moves: moving the goalposts redefines success after each demand is met; burden-of-proof games assign the proving to the other side ("prove it isn't true"); special pleading exempts one's own case from one's own standard; No True Scotsman rescues a generalization by redefining membership ("no real X would do that").`,
+      implication: "Each move makes a position unfalsifiable in practice. The labels need care in return: standards can legitimately tighten as stakes rise (not every raised bar is moved goalposts), the burden genuinely rests with whoever asserts, and some membership definitions are real (a vegetarian who eats steak is not a counterexample to vegetarianism).",
+      suggestion: "Ask what was originally claimed and what would count as meeting or refuting it \u2014 fixed in advance, on both sides.",
+      examples: `"That wasn't real socialism" \u2014 a definitional argument that needs making, or a retreat that saves the theory from every failure?`,
+      words: [
+        "\\b(mov(e|es|ed|ing)|shift(s|ed|ing)?) the goalposts\\b",
+        "\\bgoalpost[- ]moving\\b",
+        "\\bburden of proof\\b",
+        "\\bspecial pleading\\b",
+        "\\bno true scotsman\\b",
+        "\\b(that|it|this)\\s+(was\\s+not|is\\s+not|wasn['\u2019]t|isn['\u2019]t|was\\s+never)\\s+(real|true)\\s+(socialism|communism|capitalism)\\b"
+      ]
+    },
+    causal: {
+      icon: "\u{1F3B2}",
+      color: "#7e57c2",
+      name: "Post Hoc & Causal Shortcuts",
+      description: `Causal fallacies: post hoc ergo propter hoc ("after it, therefore because of it") reads sequence as causation; the gambler's fallacy expects independent events to remember the past; the sunk cost fallacy lets what is already spent dictate what to do next.`,
+      implication: 'The corrective slogans get weaponized too: "correlation is not causation" is true and yet gets used to wave away strong, well-controlled observational evidence \u2014 correlation plus mechanism plus dose-response plus ruled-out confounders is how much of science works. The slogan starts the examination; it does not end it.',
+      suggestion: "For causal claims: ask for the mechanism and the controls. For the slogan: ask whether the evidence is actually just correlation, or more.",
+      examples: `"I took it and got better" (post hoc); "correlation isn't causation" (about a randomized trial \u2014 it was causation).`,
+      words: [
+        "\\bpost hoc\\b(?!\\s+(analysis|analyses|test|tests|comparison|comparisons|power))",
+        "\\bcorrelation\\s+(is\\s+not|isn['\u2019]t|does\\s+not\\s+(equal|imply|mean)|doesn['\u2019]t\\s+(equal|imply|mean))\\s+causation\\b",
+        "\\bgambler['\u2019]s\\s+fallacy\\b",
+        "\\bsunk[- ]cost fallacy\\b"
+      ]
+    },
+    comparison: {
+      icon: "\u{1FA9E}",
+      color: "#546e7a",
+      name: "False Equivalence & Extreme Comparisons",
+      description: `Comparison fallacies: false equivalence treats unlike things as alike because they share a surface feature; false dichotomies and "false choice" framings force two options where more exist; Godwin's law names the drift of every long argument toward a Hitler comparison (reductio ad Hitlerum).`,
+      implication: `Comparisons carry arguments \u2014 and dismissing them cuts both ways: "false equivalence!" can duck a fair parallel, and invoking Godwin's law can dodge a historically apt warning. What matters is whether the compared cases are alike in the respects the argument needs.`,
+      suggestion: "Ask in which specific respects the two things are being equated, and whether those respects are the ones that matter for the conclusion.",
+      examples: `"You can't compare X to Y" \u2014 why not, in the respect being argued? "This is just like [atrocity]" \u2014 in what specific way?`,
+      words: [
+        "\\bfalse equivalen(ce|cy|cies)\\b",
+        "\\bfalse dichotom(y|ies)\\b",
+        "\\bfalse choices?\\b",
+        "\\bgodwin['\u2019]s\\s+law\\b",
+        "\\breductio ad hitlerum\\b"
+      ]
+    },
+    meta: {
+      icon: "\u{1FA83}",
+      color: "#a1887f",
+      name: "The Fallacy Fallacy & Question Games",
+      description: 'The fallacy fallacy: concluding that a claim is false because an argument for it was fallacious \u2014 bad arguments get made for true things. Question-framing does double duty too: "just asking questions" can be a cover for insinuating without asserting (sealioning: relentless polite demands that exhaust rather than inquire), and a loaded question smuggles its premise ("when did you stop\u2026?").',
+      implication: "This family is the type's own warning label: spotting a fallacy licenses discounting an argument, never the conclusion \u2014 and fallacy-naming can itself become sport that replaces engagement. Meanwhile the question-labels can dismiss sincere inquiry as bad faith; the difference is whether answers are ever accepted.",
+      suggestion: "Separate the argument from the claim: refute the reasoning, then ask what the best remaining case for the conclusion is. For question games: does any answer get engaged?",
+      examples: `"Your argument is fallacious, so you're wrong" \u2014 the first half can be true and the second not follow.`,
+      words: [
+        "\\bfallacy fallacy\\b",
+        "\\bargument from fallacy\\b",
+        "\\bsealioning\\b",
+        "\\bjust asking questions\\b",
+        "\\bloaded questions?\\b"
+      ]
+    }
+  };
+  var logicalFallacies = Object.values(logicalFallaciesWords).flatMap((sub) => sub.words);
+
   // src/dictionaries/index.js
   function isIntensityGrouped(words) {
     if (Array.isArray(words))
@@ -4881,7 +5172,8 @@
         civics: civicTerms,
         econterms: econTerms,
         epistemics: epistemicTerms,
-        debate: discourseConcepts
+        debate: discourseConcepts,
+        fallacy: logicalFallacies
       };
     }
     loadSubCategoryDictionaries() {
@@ -4899,6 +5191,7 @@
       dictionaries.set("econterms", econTermsWords);
       dictionaries.set("epistemics", epistemicTermsWords);
       dictionaries.set("debate", discourseConceptsWords);
+      dictionaries.set("fallacy", logicalFallaciesWords);
       return dictionaries;
     }
     // Build word→intensity lookup maps from all dictionaries
@@ -5617,7 +5910,8 @@
           civics: "#5c6bc0",
           econterms: "#6d4c41",
           epistemics: "#7e57c2",
-          debate: "#78909c"
+          debate: "#78909c",
+          fallacy: "#a1887f"
         };
         const baseType = matchData.type.startsWith("opinion_") ? "opinion" : matchData.type;
         this.popup.style.borderTopColor = typeColors[baseType] || "#dc3545";

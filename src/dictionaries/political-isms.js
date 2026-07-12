@@ -43,7 +43,7 @@ export const politicalIsmsWords = {
         examples: '"Capitalism causes X" / "capitalism lifted millions from poverty" — the same word, often two different systems.',
         words: [
             "capitalism", "capitalistic",
-            "\\blate[- ](stage )?capitalism\\b",
+            "\\blate[- ](stage\\s+)?capitalism\\b",
             "\\bcrony capitalism\\b",
             "\\bfree[- ]markets?\\b",
             "(?<!venture )(?<!venture-)\\bcapitalists?\\b"

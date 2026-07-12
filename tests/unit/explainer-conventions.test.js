@@ -23,9 +23,9 @@ describe('Explainer conventions (all isExplainer types)', () => {
   const explainerConfigs = Object.values(BiasConfig.BIAS_TYPES).filter(c => c.isExplainer);
   const patterns = new BiasPatterns();
 
-  test('there are seven explainer types', () => {
+  test('there are eight explainer types', () => {
     expect(explainerConfigs.map(c => c.id).sort()).toEqual(
-      ['civics', 'debate', 'econterms', 'epistemics', 'isms', 'scistats', 'spectrum']
+      ['civics', 'debate', 'econterms', 'epistemics', 'fallacy', 'isms', 'scistats', 'spectrum']
     );
   });
 
@@ -145,6 +145,46 @@ describe('Discourse Concepts detection', () => {
     // must tolerate newlines and indentation between words
     expect(subsOf('a community demanding\n                tolerance must act')).toContain('tolerance_paradox');
     expect(subsOf('cited the paradox\nof tolerance in the ruling')).toContain('tolerance_paradox');
+  });
+});
+
+describe('Logical Fallacies detection', () => {
+  let detector, patterns;
+  beforeEach(() => { detector = new BiasDetector(); patterns = detector.compiledDetectors.get('fallacy').patterns; });
+  afterEach(() => detector.destroy());
+  const subsOf = text => detector.detectPatterns(text, patterns, 'fallacy').map(m => m.subCategory && m.subCategory.id);
+
+  test('families detect and attribute', () => {
+    expect(subsOf('That objection is a red herring and a non sequitur.'))
+      .toEqual(expect.arrayContaining(['relevance']));
+    expect(subsOf('Which begs the question — pure circular reasoning.'))
+      .toEqual(expect.arrayContaining(['circular']));
+    expect(subsOf('An appeal to authority, followed by the bandwagon.'))
+      .toEqual(expect.arrayContaining(['crowd_authority']));
+    expect(subsOf('They cherry-picked results — classic survivorship bias and anecdotal evidence.'))
+      .toEqual(expect.arrayContaining(['evidence_games']));
+    expect(subsOf('Moving the goalposts again; the burden of proof is yours, no true Scotsman.'))
+      .toEqual(expect.arrayContaining(['goalposts_burden']));
+    expect(subsOf('It was not real socialism, he insisted.')).toContain('goalposts_burden');
+    expect(subsOf('Post hoc reasoning plus the sunk cost fallacy.'))
+      .toEqual(expect.arrayContaining(['causal']));
+    expect(subsOf("Correlation isn't causation, she recited.")).toContain('causal');
+    expect(subsOf('A false equivalence bordering on Godwin\'s law — a false choice.'))
+      .toEqual(expect.arrayContaining(['comparison']));
+    expect(subsOf('The fallacy fallacy: he was just asking questions, then sealioning with a loaded question.'))
+      .toEqual(expect.arrayContaining(['meta']));
+  });
+
+  test('statistics and finance senses stay unmatched', () => {
+    expect(subsOf('The paper reports a post hoc analysis with Bonferroni correction.')).toEqual([]);
+    expect(subsOf('Post hoc tests confirmed the pairwise differences.')).toEqual([]);
+    expect(subsOf('They wrote off the sunk costs and moved on.')).toEqual([]);
+    expect(subsOf('Her pleading eyes said everything.')).toEqual([]);
+  });
+
+  test('class-bearing signature phrases match across line wraps', () => {
+    expect(subsOf('he insisted it was never real\n                capitalism at all')).toContain('goalposts_burden');
+    expect(subsOf("correlation isn't\n causation, she recited")).toContain('causal');
   });
 });
 
