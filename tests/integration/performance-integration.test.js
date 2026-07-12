@@ -399,6 +399,9 @@ describe('Performance Integration Tests', () => {
         })
       });
 
+      // Volume assertion below needs the per-term density quota off
+      detector.settings.highlightDensity = 'everything';
+
       const startTime = performance.now();
 
       // ACT: Analyze bias-heavy content

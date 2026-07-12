@@ -355,11 +355,15 @@ describe('Full Detection Workflow Integration', () => {
         })
       });
 
+      // This test measures raw detection volume under heavy repetition, so
+      // the per-term density quota must be off (stats count highlights)
+      detector.settings.highlightDensity = 'everything';
+
       // ACT: Time the analysis
       const startTime = performance.now();
       const stats = await detector.analyzeDocument();
       const endTime = performance.now();
-      
+
       const processingTime = endTime - startTime;
 
       // ASSERT: Should complete in reasonable time with meaningful results

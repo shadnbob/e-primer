@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let customGroups = [];
     let editingGroupId = null;
+    let siteStatus = null;
+    let settingsLoaded = false;
 
     // Inject subcategory toggle groups into the static markup first so the
     // toggle listeners below find their elements
@@ -49,6 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
     setupModeSelector();
     setupInfoLink();
     setupCustomDictionaryUI();
+    setupSiteControls();
+    setupDensityControl();
+    loadSiteStatus();
 
     // Request initial stats
     requestStats();
@@ -88,10 +93,73 @@ document.addEventListener('DOMContentLoaded', function() {
 
         chrome.storage.sync.get(defaults, function(items) {
             currentSettings = items;
+            settingsLoaded = true;
             updateUI();
             updateModeUI();
             updateAllSectionToggleStates();
             renderCustomGroupToggles();
+        });
+    }
+
+    // The per-site toggle and run-mode/density controls are not part of the
+    // generated toggle mappings: the site toggle edits array membership and
+    // the others carry string settings
+    function loadSiteStatus() {
+        const label = document.getElementById('siteHostLabel');
+        const toggle = document.getElementById('siteEnabledToggle');
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (!tabs[0]) return;
+            chrome.tabs.sendMessage(tabs[0].id, {action: 'getSiteStatus'}, function(status) {
+                if (chrome.runtime.lastError || !status || !status.success || !status.hostname) {
+                    if (label) label.textContent = 'Run on this page (unavailable)';
+                    if (toggle) toggle.disabled = true;
+                    return;
+                }
+                siteStatus = status;
+                if (label) label.textContent = 'Run on ' + status.hostname;
+                if (toggle) toggle.checked = !status.siteDisabled;
+            });
+        });
+    }
+
+    function setupSiteControls() {
+        const siteToggle = document.getElementById('siteEnabledToggle');
+        if (siteToggle) {
+            siteToggle.addEventListener('change', function() {
+                if (!settingsLoaded || !siteStatus || !siteStatus.hostname) return;
+                const host = siteStatus.hostname;
+                const sites = Array.isArray(currentSettings.disabledSites)
+                    ? currentSettings.disabledSites.filter(s => s !== host)
+                    : [];
+                if (!this.checked) sites.push(host);
+                currentSettings.disabledSites = sites;
+                chrome.storage.sync.set(currentSettings, function() {
+                    sendSettingsToContentScript();
+                });
+            });
+        }
+
+        const autoRunToggle = document.getElementById('autoRunToggle');
+        if (autoRunToggle) {
+            autoRunToggle.addEventListener('change', function() {
+                if (isUpdating || !settingsLoaded) return;
+                currentSettings.siteMode = this.checked ? 'auto' : 'ondemand';
+                chrome.storage.sync.set(currentSettings, function() {
+                    sendSettingsToContentScript();
+                });
+            });
+        }
+    }
+
+    function setupDensityControl() {
+        document.querySelectorAll('input[name="density"]').forEach(function(input) {
+            input.addEventListener('change', function(event) {
+                if (isUpdating || !settingsLoaded) return;
+                currentSettings.highlightDensity = event.target.value;
+                chrome.storage.sync.set(currentSettings, function() {
+                    sendSettingsToContentScript();
+                });
+            });
         });
     }
 
@@ -120,8 +188,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
+        const autoRunToggle = document.getElementById('autoRunToggle');
+        if (autoRunToggle) {
+            autoRunToggle.checked = currentSettings.siteMode !== 'ondemand';
+        }
+        document.querySelectorAll('input[name="density"]').forEach(input => {
+            input.checked = input.value === (currentSettings.highlightDensity || 'standard');
+        });
+
         updateStatusText();
-        
+
         isUpdating = false;
     }
     

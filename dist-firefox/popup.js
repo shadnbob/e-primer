@@ -2365,8 +2365,16 @@
     static getDefaultSettings() {
       const settings = {
         enableAnalysis: true,
-        analysisMode: "balanced"
+        analysisMode: "balanced",
         // 'problems', 'excellence', or 'balanced'
+        siteMode: "auto",
+        // 'auto' analyzes on load; 'ondemand' waits for the popup's Analyze
+        highlightDensity: "standard",
+        // 'focused' | 'standard' | 'everything' — see DENSITY_LIMITS
+        disabledSites: [],
+        // hostnames where analysis never runs
+        ignoredWords: []
+        // terms the user never wants highlighted (compared whitespace/case-insensitively)
       };
       for (const [key, config] of Object.entries(this.BIAS_TYPES)) {
         settings[config.settingKey] = config.enabled;
@@ -2452,6 +2460,12 @@
       for (const [key, value] of Object.entries(settings)) {
         if (key === "enableAnalysis" || key === "analysisMode") {
           validated[key] = key === "analysisMode" ? value : Boolean(value);
+        } else if (key === "siteMode") {
+          validated[key] = value === "ondemand" ? "ondemand" : "auto";
+        } else if (key === "highlightDensity") {
+          validated[key] = Object.prototype.hasOwnProperty.call(this.DENSITY_LIMITS, value) ? value : "standard";
+        } else if (key === "disabledSites" || key === "ignoredWords") {
+          validated[key] = Array.isArray(value) ? value.filter((v) => typeof v === "string").map((v) => v.trim().toLowerCase()).filter(Boolean).slice(0, 1e3) : [];
         } else if (key.startsWith("highlight_custom_")) {
           validated[key] = Boolean(value);
         } else if (Object.values(this.BIAS_TYPES).some((config) => {
@@ -2474,6 +2488,14 @@
       MAX_TEXT_LENGTH: 1e4,
       MIN_SIGNIFICANT_TEXT: 5,
       UI_UPDATE_INTERVAL: 200
+    };
+    // How many highlights each unique (type, term) pair gets per page.
+    // 'standard' keeps pages readable while still showing what fires;
+    // 'everything' is the pre-density behavior.
+    static DENSITY_LIMITS = {
+      focused: 1,
+      standard: 3,
+      everything: Infinity
     };
     // Development logging. Keep false in production builds: the content script
     // runs on every page, and these logs (and their argument evaluation) are
@@ -2882,6 +2904,8 @@
     };
     let customGroups = [];
     let editingGroupId = null;
+    let siteStatus = null;
+    let settingsLoaded = false;
     renderSubcategoryGroups();
     loadCustomGroups(function() {
       loadSettings();
@@ -2893,6 +2917,9 @@
     setupModeSelector();
     setupInfoLink();
     setupCustomDictionaryUI();
+    setupSiteControls();
+    setupDensityControl();
+    loadSiteStatus();
     requestStats();
     function renderSubcategoryGroups() {
       settingsManager.biasTypes.forEach(function(biasType) {
@@ -2922,10 +2949,73 @@
       });
       chrome.storage.sync.get(defaults, function(items) {
         currentSettings = items;
+        settingsLoaded = true;
         updateUI();
         updateModeUI();
         updateAllSectionToggleStates();
         renderCustomGroupToggles();
+      });
+    }
+    function loadSiteStatus() {
+      const label = document.getElementById("siteHostLabel");
+      const toggle = document.getElementById("siteEnabledToggle");
+      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+        if (!tabs[0])
+          return;
+        chrome.tabs.sendMessage(tabs[0].id, { action: "getSiteStatus" }, function(status) {
+          if (chrome.runtime.lastError || !status || !status.success || !status.hostname) {
+            if (label)
+              label.textContent = "Run on this page (unavailable)";
+            if (toggle)
+              toggle.disabled = true;
+            return;
+          }
+          siteStatus = status;
+          if (label)
+            label.textContent = "Run on " + status.hostname;
+          if (toggle)
+            toggle.checked = !status.siteDisabled;
+        });
+      });
+    }
+    function setupSiteControls() {
+      const siteToggle = document.getElementById("siteEnabledToggle");
+      if (siteToggle) {
+        siteToggle.addEventListener("change", function() {
+          if (!settingsLoaded || !siteStatus || !siteStatus.hostname)
+            return;
+          const host = siteStatus.hostname;
+          const sites = Array.isArray(currentSettings.disabledSites) ? currentSettings.disabledSites.filter((s) => s !== host) : [];
+          if (!this.checked)
+            sites.push(host);
+          currentSettings.disabledSites = sites;
+          chrome.storage.sync.set(currentSettings, function() {
+            sendSettingsToContentScript();
+          });
+        });
+      }
+      const autoRunToggle = document.getElementById("autoRunToggle");
+      if (autoRunToggle) {
+        autoRunToggle.addEventListener("change", function() {
+          if (isUpdating || !settingsLoaded)
+            return;
+          currentSettings.siteMode = this.checked ? "auto" : "ondemand";
+          chrome.storage.sync.set(currentSettings, function() {
+            sendSettingsToContentScript();
+          });
+        });
+      }
+    }
+    function setupDensityControl() {
+      document.querySelectorAll('input[name="density"]').forEach(function(input) {
+        input.addEventListener("change", function(event) {
+          if (isUpdating || !settingsLoaded)
+            return;
+          currentSettings.highlightDensity = event.target.value;
+          chrome.storage.sync.set(currentSettings, function() {
+            sendSettingsToContentScript();
+          });
+        });
       });
     }
     function updateUI() {
@@ -2950,6 +3040,13 @@
             subToggle.disabled = !parentEnabled;
           }
         }
+      });
+      const autoRunToggle = document.getElementById("autoRunToggle");
+      if (autoRunToggle) {
+        autoRunToggle.checked = currentSettings.siteMode !== "ondemand";
+      }
+      document.querySelectorAll('input[name="density"]').forEach((input) => {
+        input.checked = input.value === (currentSettings.highlightDensity || "standard");
       });
       updateStatusText();
       isUpdating = false;

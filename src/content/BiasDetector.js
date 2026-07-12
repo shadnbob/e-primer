@@ -32,6 +32,11 @@ export class BiasDetector {
 
         // Serializes analyzeDocument runs; see analyzeDocument()
         this._analysisQueue = null;
+
+        // Per-page highlight quota per unique (type, term); reset with stats
+        this._densitySeen = new Map();
+        this._ignoredCacheSource = null;
+        this._ignoredCache = new Set();
     }
 
     async _initCustomDictionaries() {
@@ -354,8 +359,12 @@ export class BiasDetector {
     highlightMatches(node, matches) {
         // Sort matches by index and remove overlaps; neutral winners suppress
         // whatever they overlapped but never render as highlights themselves
-        const sortedMatches = this.deduplicateMatches(matches)
+        const deduplicated = this.deduplicateMatches(matches)
             .filter(match => match.type !== 'neutral');
+
+        // Density quota and the user's ignore list apply after deduplication
+        // so suppressed matches never consume quota
+        const sortedMatches = this._applyDensityAndIgnores(deduplicated);
 
         if (sortedMatches.length === 0) return;
 
@@ -453,6 +462,42 @@ export class BiasDetector {
         return !!(config && config.isExplainer);
     }
 
+    // Enforce the highlight-density quota (per unique type+term, per page) and
+    // drop terms on the user's ignore list. Counts persist across incremental
+    // mutation batches and reset with each full analysis. Stats count what is
+    // actually highlighted, so badges match what the user sees.
+    _applyDensityAndIgnores(matches) {
+        const density = this.settings.highlightDensity || 'standard';
+        const limit = BiasConfig.DENSITY_LIMITS[density] !== undefined
+            ? BiasConfig.DENSITY_LIMITS[density]
+            : BiasConfig.DENSITY_LIMITS.standard;
+        const ignored = this._ignoredSet();
+
+        const kept = [];
+        for (const match of matches) {
+            const termKey = match.text.toLowerCase().replace(/\s+/g, ' ');
+            if (ignored.has(termKey)) continue;
+
+            const seenKey = `${match.type}|${termKey}`;
+            const count = this._densitySeen.get(seenKey) || 0;
+            if (count >= limit) continue;
+            this._densitySeen.set(seenKey, count + 1);
+            kept.push(match);
+        }
+        return kept;
+    }
+
+    _ignoredSet() {
+        const source = this.settings.ignoredWords;
+        if (source !== this._ignoredCacheSource) {
+            this._ignoredCacheSource = source;
+            this._ignoredCache = new Set(
+                (Array.isArray(source) ? source : []).map(w => w.toLowerCase().replace(/\s+/g, ' '))
+            );
+        }
+        return this._ignoredCache;
+    }
+
     // Update settings with selective highlighting
     async updateSettings(newSettings) {
         const oldSettings = { ...this.settings };
@@ -517,6 +562,13 @@ export class BiasDetector {
                     needsReanalysis = true;
                 }
             }
+        }
+
+        // Density or ignore-list changes alter which matches render everywhere
+        const listKey = list => (Array.isArray(list) ? list.join('\n') : '');
+        if (oldSettings.highlightDensity !== newSettings.highlightDensity ||
+            listKey(oldSettings.ignoredWords) !== listKey(newSettings.ignoredWords)) {
+            needsReanalysis = true;
         }
 
         // Check custom dictionary group changes
@@ -655,6 +707,7 @@ export class BiasDetector {
 
     resetStats() {
         this.stats = this.createEmptyStats();
+        this._densitySeen = new Map();
     }
 
     createEmptyStats() {

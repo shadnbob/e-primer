@@ -2381,7 +2381,11 @@ export class BiasConfig {
     static getDefaultSettings() {
         const settings = {
             enableAnalysis: true,
-            analysisMode: 'balanced' // 'problems', 'excellence', or 'balanced'
+            analysisMode: 'balanced', // 'problems', 'excellence', or 'balanced'
+            siteMode: 'auto', // 'auto' analyzes on load; 'ondemand' waits for the popup's Analyze
+            highlightDensity: 'standard', // 'focused' | 'standard' | 'everything' — see DENSITY_LIMITS
+            disabledSites: [], // hostnames where analysis never runs
+            ignoredWords: [] // terms the user never wants highlighted (compared whitespace/case-insensitively)
         };
 
         for (const [key, config] of Object.entries(this.BIAS_TYPES)) {
@@ -2486,6 +2490,18 @@ export class BiasConfig {
         for (const [key, value] of Object.entries(settings)) {
             if (key === 'enableAnalysis' || key === 'analysisMode') {
                 validated[key] = key === 'analysisMode' ? value : Boolean(value);
+            } else if (key === 'siteMode') {
+                validated[key] = value === 'ondemand' ? 'ondemand' : 'auto';
+            } else if (key === 'highlightDensity') {
+                validated[key] = Object.prototype.hasOwnProperty.call(this.DENSITY_LIMITS, value) ? value : 'standard';
+            } else if (key === 'disabledSites' || key === 'ignoredWords') {
+                validated[key] = Array.isArray(value)
+                    ? value
+                        .filter(v => typeof v === 'string')
+                        .map(v => v.trim().toLowerCase())
+                        .filter(Boolean)
+                        .slice(0, 1000)
+                    : [];
             } else if (key.startsWith('highlight_custom_')) {
                 // Custom dictionary group toggles (settingKey = `highlight_${ID_PREFIX}...`)
                 validated[key] = Boolean(value);
@@ -2511,6 +2527,15 @@ export class BiasConfig {
         MAX_TEXT_LENGTH: 10000,
         MIN_SIGNIFICANT_TEXT: 5,
         UI_UPDATE_INTERVAL: 200
+    };
+
+    // How many highlights each unique (type, term) pair gets per page.
+    // 'standard' keeps pages readable while still showing what fires;
+    // 'everything' is the pre-density behavior.
+    static DENSITY_LIMITS = {
+        focused: 1,
+        standard: 3,
+        everything: Infinity
     };
 
     // Development logging. Keep false in production builds: the content script

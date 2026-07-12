@@ -2365,8 +2365,16 @@
     static getDefaultSettings() {
       const settings = {
         enableAnalysis: true,
-        analysisMode: "balanced"
+        analysisMode: "balanced",
         // 'problems', 'excellence', or 'balanced'
+        siteMode: "auto",
+        // 'auto' analyzes on load; 'ondemand' waits for the popup's Analyze
+        highlightDensity: "standard",
+        // 'focused' | 'standard' | 'everything' — see DENSITY_LIMITS
+        disabledSites: [],
+        // hostnames where analysis never runs
+        ignoredWords: []
+        // terms the user never wants highlighted (compared whitespace/case-insensitively)
       };
       for (const [key, config] of Object.entries(this.BIAS_TYPES)) {
         settings[config.settingKey] = config.enabled;
@@ -2452,6 +2460,12 @@
       for (const [key, value] of Object.entries(settings)) {
         if (key === "enableAnalysis" || key === "analysisMode") {
           validated[key] = key === "analysisMode" ? value : Boolean(value);
+        } else if (key === "siteMode") {
+          validated[key] = value === "ondemand" ? "ondemand" : "auto";
+        } else if (key === "highlightDensity") {
+          validated[key] = Object.prototype.hasOwnProperty.call(this.DENSITY_LIMITS, value) ? value : "standard";
+        } else if (key === "disabledSites" || key === "ignoredWords") {
+          validated[key] = Array.isArray(value) ? value.filter((v) => typeof v === "string").map((v) => v.trim().toLowerCase()).filter(Boolean).slice(0, 1e3) : [];
         } else if (key.startsWith("highlight_custom_")) {
           validated[key] = Boolean(value);
         } else if (Object.values(this.BIAS_TYPES).some((config) => {
@@ -2474,6 +2488,14 @@
       MAX_TEXT_LENGTH: 1e4,
       MIN_SIGNIFICANT_TEXT: 5,
       UI_UPDATE_INTERVAL: 200
+    };
+    // How many highlights each unique (type, term) pair gets per page.
+    // 'standard' keeps pages readable while still showing what fires;
+    // 'everything' is the pre-density behavior.
+    static DENSITY_LIMITS = {
+      focused: 1,
+      standard: 3,
+      everything: Infinity
     };
     // Development logging. Keep false in production builds: the content script
     // runs on every page, and these logs (and their argument evaluation) are
@@ -7294,6 +7316,9 @@
       this._customReady = false;
       this._customReadyPromise = this._initCustomDictionaries();
       this._analysisQueue = null;
+      this._densitySeen = /* @__PURE__ */ new Map();
+      this._ignoredCacheSource = null;
+      this._ignoredCache = /* @__PURE__ */ new Set();
     }
     async _initCustomDictionaries() {
       try {
@@ -7540,7 +7565,8 @@
     }
     // Highlight matches in a text node
     highlightMatches(node, matches) {
-      const sortedMatches = this.deduplicateMatches(matches).filter((match) => match.type !== "neutral");
+      const deduplicated = this.deduplicateMatches(matches).filter((match) => match.type !== "neutral");
+      const sortedMatches = this._applyDensityAndIgnores(deduplicated);
       if (sortedMatches.length === 0)
         return;
       const fragment = this.domProcessor.createHighlightedFragment(
@@ -7611,6 +7637,38 @@
       const config = BiasConfig.getBiasTypeConfig(parentId);
       return !!(config && config.isExplainer);
     }
+    // Enforce the highlight-density quota (per unique type+term, per page) and
+    // drop terms on the user's ignore list. Counts persist across incremental
+    // mutation batches and reset with each full analysis. Stats count what is
+    // actually highlighted, so badges match what the user sees.
+    _applyDensityAndIgnores(matches) {
+      const density = this.settings.highlightDensity || "standard";
+      const limit = BiasConfig.DENSITY_LIMITS[density] !== void 0 ? BiasConfig.DENSITY_LIMITS[density] : BiasConfig.DENSITY_LIMITS.standard;
+      const ignored = this._ignoredSet();
+      const kept = [];
+      for (const match of matches) {
+        const termKey = match.text.toLowerCase().replace(/\s+/g, " ");
+        if (ignored.has(termKey))
+          continue;
+        const seenKey = `${match.type}|${termKey}`;
+        const count = this._densitySeen.get(seenKey) || 0;
+        if (count >= limit)
+          continue;
+        this._densitySeen.set(seenKey, count + 1);
+        kept.push(match);
+      }
+      return kept;
+    }
+    _ignoredSet() {
+      const source = this.settings.ignoredWords;
+      if (source !== this._ignoredCacheSource) {
+        this._ignoredCacheSource = source;
+        this._ignoredCache = new Set(
+          (Array.isArray(source) ? source : []).map((w) => w.toLowerCase().replace(/\s+/g, " "))
+        );
+      }
+      return this._ignoredCache;
+    }
     // Update settings with selective highlighting
     async updateSettings(newSettings) {
       const oldSettings = { ...this.settings };
@@ -7659,6 +7717,10 @@
             needsReanalysis = true;
           }
         }
+      }
+      const listKey = (list) => Array.isArray(list) ? list.join("\n") : "";
+      if (oldSettings.highlightDensity !== newSettings.highlightDensity || listKey(oldSettings.ignoredWords) !== listKey(newSettings.ignoredWords)) {
+        needsReanalysis = true;
       }
       for (const group of this.customDictionary.getAllGroups()) {
         const settingKey = group.settingKey;
@@ -7769,6 +7831,7 @@
     }
     resetStats() {
       this.stats = this.createEmptyStats();
+      this._densitySeen = /* @__PURE__ */ new Map();
     }
     createEmptyStats() {
       const stats = BiasConfig.createEmptyStats();
@@ -7889,6 +7952,26 @@
     "use strict";
     let biasDetector = null;
     let isInitialized = false;
+    let lastSettings = BiasConfig.getDefaultSettings();
+    let manuallyActivated = false;
+    function currentHostname() {
+      try {
+        return (location.hostname || "").toLowerCase();
+      } catch (e) {
+        return "";
+      }
+    }
+    function isSiteDisabled(settings) {
+      return (settings.disabledSites || []).includes(currentHostname());
+    }
+    function siteAllowed(settings) {
+      return Boolean(settings.enableAnalysis) && !isSiteDisabled(settings);
+    }
+    function effectiveEnable(settings) {
+      if (!siteAllowed(settings))
+        return false;
+      return settings.siteMode !== "ondemand" || manuallyActivated;
+    }
     function initialize() {
       if (isInitialized)
         return;
@@ -7907,8 +7990,10 @@
       const defaultSettings = BiasConfig.getDefaultSettings();
       function applySettingsAndStart(items) {
         const validatedSettings = BiasConfig.validateSettings(items);
-        biasDetector.updateSettings(validatedSettings).then(() => {
-          if (validatedSettings.enableAnalysis) {
+        lastSettings = validatedSettings;
+        const detectorSettings = { ...validatedSettings, enableAnalysis: effectiveEnable(validatedSettings) };
+        biasDetector.updateSettings(detectorSettings).then(() => {
+          if (detectorSettings.enableAnalysis) {
             setTimeout(() => {
               biasDetector.analyzeDocument();
               biasDetector.setupMutationObserver();
@@ -7981,6 +8066,14 @@
           case "reloadCustomDictionaries":
             await handleReloadCustomDictionaries(sendResponse);
             break;
+          case "getSiteStatus":
+            sendResponse({
+              success: true,
+              hostname: currentHostname(),
+              siteDisabled: isSiteDisabled(lastSettings),
+              siteMode: lastSettings.siteMode || "auto"
+            });
+            break;
           default:
             sendResponse({ success: false, error: "Unknown action" });
         }
@@ -7993,7 +8086,12 @@
       if (BiasConfig.DEBUG)
         console.log("Content script received new settings:", request.settings);
       const validatedSettings = BiasConfig.validateSettings(request.settings);
-      await biasDetector.updateSettings(validatedSettings);
+      lastSettings = validatedSettings;
+      if (!siteAllowed(validatedSettings)) {
+        manuallyActivated = false;
+      }
+      const detectorSettings = { ...validatedSettings, enableAnalysis: effectiveEnable(validatedSettings) };
+      await biasDetector.updateSettings(detectorSettings);
       const stats = biasDetector.getStats();
       sendResponse({
         success: true,
@@ -8009,6 +8107,15 @@
     }
     async function handleForceAnalyze(sendResponse) {
       BiasConfig.debugLog("Force analyze requested - enabling analysis");
+      if (isSiteDisabled(lastSettings)) {
+        sendResponse({
+          success: false,
+          siteDisabled: true,
+          error: "Analysis is turned off for this site"
+        });
+        return;
+      }
+      manuallyActivated = true;
       try {
         biasDetector.disconnectObserver();
         biasDetector.clearHighlights();
@@ -8037,6 +8144,7 @@
     }
     function handleClearHighlights(sendResponse) {
       BiasConfig.debugLog("Clear highlights requested - disabling analysis");
+      manuallyActivated = false;
       biasDetector.disconnectObserver();
       biasDetector.clearHighlights();
       biasDetector.settings.enableAnalysis = false;

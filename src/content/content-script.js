@@ -11,6 +11,32 @@ import { getPopupManager } from '../utils/PopupManager.js';
     let biasDetector = null;
     let isInitialized = false;
 
+    // Site gating: analysis is blocked on disabled sites, and in on-demand
+    // mode it waits for the popup's Analyze button. The detector itself only
+    // sees an effective enableAnalysis flag — flipping it drives the existing
+    // clear/analyze transitions — while the popup keeps the user's real
+    // master-toggle state.
+    let lastSettings = BiasConfig.getDefaultSettings();
+    let manuallyActivated = false; // Analyze was pressed on this page load
+
+    function currentHostname() {
+        try { return (location.hostname || '').toLowerCase(); } catch (e) { return ''; }
+    }
+
+    function isSiteDisabled(settings) {
+        return (settings.disabledSites || []).includes(currentHostname());
+    }
+
+    function siteAllowed(settings) {
+        return Boolean(settings.enableAnalysis) && !isSiteDisabled(settings);
+    }
+
+    // The enableAnalysis value the detector should run with
+    function effectiveEnable(settings) {
+        if (!siteAllowed(settings)) return false;
+        return settings.siteMode !== 'ondemand' || manuallyActivated;
+    }
+
     // Initialize the detector
     function initialize() {
         if (isInitialized) return;
@@ -35,8 +61,10 @@ import { getPopupManager } from '../utils/PopupManager.js';
 
         function applySettingsAndStart(items) {
             const validatedSettings = BiasConfig.validateSettings(items);
-            biasDetector.updateSettings(validatedSettings).then(() => {
-                if (validatedSettings.enableAnalysis) {
+            lastSettings = validatedSettings;
+            const detectorSettings = { ...validatedSettings, enableAnalysis: effectiveEnable(validatedSettings) };
+            biasDetector.updateSettings(detectorSettings).then(() => {
+                if (detectorSettings.enableAnalysis) {
                     setTimeout(() => {
                         biasDetector.analyzeDocument();
                         biasDetector.setupMutationObserver();
@@ -125,6 +153,15 @@ import { getPopupManager } from '../utils/PopupManager.js';
                     await handleReloadCustomDictionaries(sendResponse);
                     break;
 
+                case 'getSiteStatus':
+                    sendResponse({
+                        success: true,
+                        hostname: currentHostname(),
+                        siteDisabled: isSiteDisabled(lastSettings),
+                        siteMode: lastSettings.siteMode || 'auto'
+                    });
+                    break;
+
                 default:
                     sendResponse({ success: false, error: 'Unknown action' });
             }
@@ -139,14 +176,19 @@ import { getPopupManager } from '../utils/PopupManager.js';
         if (BiasConfig.DEBUG) console.log('Content script received new settings:', request.settings);
 
         const validatedSettings = BiasConfig.validateSettings(request.settings);
-        await biasDetector.updateSettings(validatedSettings);
-        
+        lastSettings = validatedSettings;
+        if (!siteAllowed(validatedSettings)) {
+            manuallyActivated = false;
+        }
+        const detectorSettings = { ...validatedSettings, enableAnalysis: effectiveEnable(validatedSettings) };
+        await biasDetector.updateSettings(detectorSettings);
+
         // Get stats after settings update is fully complete
         const stats = biasDetector.getStats();
-        sendResponse({ 
-            success: true, 
+        sendResponse({
+            success: true,
             stats: stats,
-            message: 'Settings updated successfully' 
+            message: 'Settings updated successfully'
         });
     }
 
@@ -160,7 +202,17 @@ import { getPopupManager } from '../utils/PopupManager.js';
     // Handle force analyze request - also re-enables analysis
     async function handleForceAnalyze(sendResponse) {
         BiasConfig.debugLog('Force analyze requested - enabling analysis');
-        
+
+        if (isSiteDisabled(lastSettings)) {
+            sendResponse({
+                success: false,
+                siteDisabled: true,
+                error: 'Analysis is turned off for this site'
+            });
+            return;
+        }
+        manuallyActivated = true;
+
         try {
             // Disconnect observer FIRST to prevent race conditions
             // where clearing highlights triggers mutations that re-analyze
@@ -199,7 +251,8 @@ import { getPopupManager } from '../utils/PopupManager.js';
     // Handle clear highlights request - also disables analysis
     function handleClearHighlights(sendResponse) {
         BiasConfig.debugLog('Clear highlights requested - disabling analysis');
-        
+        manuallyActivated = false;
+
         // Disconnect observer FIRST to prevent mutation-triggered re-analysis
         biasDetector.disconnectObserver();
         biasDetector.clearHighlights();

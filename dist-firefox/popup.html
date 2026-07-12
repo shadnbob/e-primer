@@ -443,6 +443,21 @@
             <span>Balanced View</span>
         </label>
     </div>
+    <h4 style="margin-top: 12px;" title="How many times each unique term highlights per page">Highlight Density</h4>
+    <div class="mode-options">
+        <label title="Each term highlights once per page">
+            <input type="radio" name="density" value="focused">
+            <span>Focused</span>
+        </label>
+        <label title="Each term highlights up to 3 times per page">
+            <input type="radio" name="density" value="standard" checked>
+            <span>Standard</span>
+        </label>
+        <label title="Highlight every occurrence">
+            <input type="radio" name="density" value="everything">
+            <span>Everything</span>
+        </label>
+    </div>
 </div>
 
 
@@ -452,6 +467,31 @@
         <input type="checkbox" id="enableToggle" checked>
         <span class="slider"></span>
     </label>
+</div>
+
+<!-- Site & run controls -->
+<div class="category-section" id="siteControls">
+    <div class="category-body">
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <span id="siteHostLabel">Run on this site</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="siteEnabledToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <span>Analyze automatically</span>
+                <span style="font-size: 10px; color: #999; margin-left: 4px;">(off = only when you click Refresh)</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="autoRunToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
 </div>
 
 <!-- Excellence Detection -->
