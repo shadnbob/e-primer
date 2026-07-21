@@ -112,6 +112,7 @@ const createRealisticTextNodes = (document, texts) => {
         // Simulate DOM replacement behavior
         return oldChild;
       }),
+      insertBefore: vi.fn(),
       appendChild: vi.fn(),
       normalize: vi.fn()
     };
@@ -306,8 +307,10 @@ describe('Full Detection Workflow Integration', () => {
         enableAnalysis: false
       });
 
-      // Reset for second analysis
+      // Reset for second analysis (anchored highlighting empties analyzed
+      // nodes in place, so re-present the text)
       nodeIndex = -1;
+      textNodes[0].textContent = testTexts[0];
       const disabledStats = await detector.analyzeDocument();
 
       // ASSERT: Disabled analysis should return empty stats
@@ -321,6 +324,7 @@ describe('Full Detection Workflow Integration', () => {
       });
 
       nodeIndex = -1;
+      textNodes[0].textContent = testTexts[0];
       const reEnabledStats = await detector.analyzeDocument();
 
       // ASSERT: Re-enabled analysis should detect patterns again

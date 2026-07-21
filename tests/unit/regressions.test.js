@@ -174,6 +174,73 @@ describe('Regressions', () => {
     });
   });
 
+  describe('framework-safe highlighting (React interop)', () => {
+    let detector;
+    const TEASER = 'Obviously this teaser is clearly cut off';
+    const FULL = 'The full post text, now expanded, is undeniably here and it is clearly complete.';
+
+    beforeEach(() => {
+      document.body.innerHTML = '';
+      detector = new BiasDetector();
+    });
+
+    afterEach(() => {
+      detector.destroy();
+    });
+
+    function mountPost(text = TEASER) {
+      const p = document.createElement('p');
+      const reactNode = document.createTextNode(text);
+      p.appendChild(reactNode);
+      document.body.appendChild(p);
+      return { p, reactNode };
+    }
+
+    test('the original text node survives highlighting as an empty anchor', async () => {
+      const { p, reactNode } = mountPost();
+      await detector.processTextNode(reactNode);
+
+      expect(reactNode.parentNode).toBe(p);   // a React fiber's reference stays valid
+      expect(reactNode.textContent).toBe(''); // emptied in place, not replaced
+      expect(p.textContent).toBe(TEASER);     // visible text unchanged
+      expect(p.querySelectorAll('[class*="bias-highlight-"]').length).toBeGreaterThan(0);
+    });
+
+    test('React-style remove+insert ("See more") neither throws nor duplicates', async () => {
+      const { p, reactNode } = mountPost();
+      await detector.processTextNode(reactNode);
+
+      // This is the exact call that used to throw NotFoundError and blank
+      // Facebook posts: React removing the node it created
+      expect(() => p.removeChild(reactNode)).not.toThrow();
+      p.appendChild(document.createTextNode(FULL));
+
+      // The observer runs this un-debounced on the same mutation batch
+      detector.domProcessor.purgeStaleFragments([
+        { type: 'childList', removedNodes: [reactNode], addedNodes: [] }
+      ]);
+
+      expect(p.textContent).toBe(FULL); // no leftover teaser fragments
+    });
+
+    test('React-style in-place data update neither loses nor duplicates text', async () => {
+      const { p, reactNode } = mountPost();
+      await detector.processTextNode(reactNode);
+
+      reactNode.textContent = FULL; // React reuses its own node
+      detector.domProcessor.purgeStaleFragments([
+        { type: 'characterData', target: reactNode, removedNodes: [] }
+      ]);
+
+      expect(p.textContent).toBe(FULL);
+
+      // The reclaimed node re-highlights through the normal path
+      await detector.processTextNode(reactNode);
+      expect(p.textContent).toBe(FULL);
+      expect(p.querySelectorAll('[class*="bias-highlight-"]').length).toBeGreaterThan(0);
+    });
+  });
+
   describe('single-pass text collection', () => {
     test('collects shadow DOM text without a second element sweep', () => {
       const host = document.createElement('div');

@@ -368,20 +368,16 @@ export class BiasDetector {
 
         if (sortedMatches.length === 0) return;
 
-        // Create document fragment with highlighted content
-        const fragment = this.domProcessor.createHighlightedFragment(
-            node.textContent, 
-            sortedMatches
-        );
+        // Framework-safe: the original text node stays in the DOM as an
+        // emptied anchor so page scripts holding references to it (React
+        // fibers on sites like Facebook) never crash on removeChild —
+        // see DOMProcessor.applyHighlights
+        const applied = this.domProcessor.applyHighlights(node, sortedMatches);
+        if (!applied) return;
 
         // Update stats
         for (const match of sortedMatches) {
             this.updateStats(match);
-        }
-
-        // Replace the original node
-        if (node.parentNode) {
-            node.parentNode.replaceChild(fragment, node);
         }
     }
 
@@ -727,6 +723,12 @@ export class BiasDetector {
         let debounceTimer = null;
         
         this.observer = new MutationObserver((mutations) => {
+            // Immediate, not debounced: if the page reclaimed one of our
+            // highlight anchors (e.g. React swapping in the full text after
+            // "See more"), our fragments would duplicate the new content for
+            // as long as they linger
+            this.domProcessor.purgeStaleFragments(mutations);
+
             if (this.shouldProcessMutations(mutations)) {
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(() => {

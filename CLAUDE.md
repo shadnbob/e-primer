@@ -173,6 +173,7 @@ The project has a comprehensive automated test suite using Vitest. See `tests/RE
 - **Settings property names**: Always use `highlight*` format (e.g., `highlightOpinion`, not `detectOpinionWords`)
 - **DOM API safety**: Check method exists before calling (e.g., `element.removeAttribute && element.removeAttribute()`)
 - **Error handling**: Use defensive error extraction: `error?.message ?? String(error)`
+- **Framework-safe highlighting**: NEVER replace or remove a page text node. `DOMProcessor.applyHighlights` inserts highlight fragments *before* the original node and empties it in place — the node stays in the DOM as an anchor — so React-style code holding node references (Facebook) never crashes on `removeChild`; `purgeStaleFragments` (run un-debounced in the mutation observer) deletes our fragments the instant the page reclaims an anchor. Breaking this invariant blanks posts and swallows "See more" expansions on React sites
 - **Settings state**: Disabled detectors must preserve zero stats during reanalysis
 - **Performance tests**: Large document processing benchmarks
 - **Data quality**: Dictionary validation and consistency checks

@@ -14,7 +14,8 @@ const mockTextNode = (content) => ({
   textContent: content,
   nodeType: 3, // TEXT_NODE
   parentNode: {
-    replaceChild: vi.fn()
+    replaceChild: vi.fn(),
+    insertBefore: vi.fn()
   }
 });
 
@@ -975,29 +976,33 @@ describe('BiasDetector', () => {
 
   describe('Highlight Matches', () => {
 
-    test('should call createHighlightedFragment and replaceChild', () => {
+    test('should insert highlights before the node and keep it as an empty anchor', () => {
       const node = mockTextNode('Some test text');
       const matches = [
         { index: 5, length: 4, text: 'test', type: 'opinion', isExcellence: false }
       ];
 
-      const mockFragment = { appendChild: vi.fn() };
+      const mockFragment = { appendChild: vi.fn(), childNodes: [] };
       detector.domProcessor.createHighlightedFragment = vi.fn(() => mockFragment);
 
       detector.highlightMatches(node, matches);
 
       expect(detector.domProcessor.createHighlightedFragment).toHaveBeenCalled();
-      expect(node.parentNode.replaceChild).toHaveBeenCalledWith(mockFragment, node);
+      // Framework-safe contract: the page's node is never replaced —
+      // fragments go in front of it and it stays as an emptied anchor
+      expect(node.parentNode.insertBefore).toHaveBeenCalledWith(mockFragment, node);
+      expect(node.parentNode.replaceChild).not.toHaveBeenCalled();
+      expect(node.textContent).toBe('');
     });
 
-    test('should not replace when no matches after dedup', () => {
+    test('should not insert when no matches after dedup', () => {
       const node = mockTextNode('Some test text');
       const matches = [];
 
       const spy = vi.spyOn(detector, 'deduplicateMatches').mockReturnValue([]);
       detector.highlightMatches(node, matches);
 
-      expect(node.parentNode.replaceChild).not.toHaveBeenCalled();
+      expect(node.parentNode.insertBefore).not.toHaveBeenCalled();
       spy.mockRestore();
     });
 

@@ -6146,6 +6146,7 @@
       this.customClassPrefix = "bias-highlight-custom-";
       this.processedParents = /* @__PURE__ */ new Set();
       this.hoverGenerator = new HoverContentGenerator();
+      this._anchoredFragments = /* @__PURE__ */ new WeakMap();
       this.popupManager = null;
     }
     // Collect all text nodes from a root element in a single pass. The walker
@@ -6263,6 +6264,59 @@
       }
       return fragment;
     }
+    // Framework-safe application of highlights to a text node.
+    //
+    // Frameworks like React keep references to the DOM nodes they created and
+    // later call removeChild on them or update their data in place. Replacing
+    // the text node (the old approach) made those calls throw NotFoundError,
+    // and React's error handling then blanked the surrounding component —
+    // on Facebook this manifested as "See more" never expanding and posts
+    // disappearing. Instead: insert the highlight fragment BEFORE the
+    // original node and empty the original in place. The framework's node
+    // reference stays valid, and purgeStaleFragments removes our fragments
+    // the instant the framework reclaims the anchor.
+    applyHighlights(node, matches) {
+      const parent = node.parentNode;
+      if (!parent)
+        return false;
+      const fragment = this.createHighlightedFragment(node.textContent, matches);
+      const inserted = Array.from(fragment.childNodes);
+      parent.insertBefore(fragment, node);
+      node.textContent = "";
+      this._anchoredFragments.set(node, inserted);
+      return true;
+    }
+    // Called on every mutation batch, before any debounced re-analysis:
+    // if the page removed one of our anchors (framework remove+insert) or
+    // wrote new text into one (framework in-place update), our inserted
+    // fragments now duplicate content the page has replaced — delete them
+    // immediately so nothing ever renders twice.
+    purgeStaleFragments(mutations) {
+      for (const mutation of mutations) {
+        if (mutation.removedNodes) {
+          for (const removed of mutation.removedNodes) {
+            this._purgeAnchor(removed);
+          }
+        }
+        if (mutation.type === "characterData" && this._anchoredFragments.has(mutation.target) && mutation.target.textContent !== "") {
+          this._purgeAnchor(mutation.target);
+        }
+      }
+    }
+    _purgeAnchor(node) {
+      const fragments = this._anchoredFragments.get(node);
+      if (!fragments)
+        return;
+      this._anchoredFragments.delete(node);
+      for (const fragmentNode of fragments) {
+        if (fragmentNode.parentNode) {
+          fragmentNode.parentNode.removeChild(fragmentNode);
+        }
+      }
+    }
+    clearFragmentRegistry() {
+      this._anchoredFragments = /* @__PURE__ */ new WeakMap();
+    }
     getTooltipText(type) {
       const { parentId, subCategoryId } = BiasConfig.resolveType(type);
       if (subCategoryId) {
@@ -6370,6 +6424,7 @@
     removeAllHighlights() {
       const selector = Object.values(this.getHighlightSelectors()).join(", ");
       this.removeHighlightsBySelector(selector);
+      this.clearFragmentRegistry();
     }
     // Shared unwrap logic: replace matching highlight spans with plain text
     removeHighlightsBySelector(selector) {
@@ -7598,15 +7653,11 @@
       const sortedMatches = this._applyDensityAndIgnores(deduplicated);
       if (sortedMatches.length === 0)
         return;
-      const fragment = this.domProcessor.createHighlightedFragment(
-        node.textContent,
-        sortedMatches
-      );
+      const applied = this.domProcessor.applyHighlights(node, sortedMatches);
+      if (!applied)
+        return;
       for (const match of sortedMatches) {
         this.updateStats(match);
-      }
-      if (node.parentNode) {
-        node.parentNode.replaceChild(fragment, node);
       }
     }
     // Remove overlapping matches, preferring contextual matches and higher confidence
@@ -7876,6 +7927,7 @@
       }
       let debounceTimer = null;
       this.observer = new MutationObserver((mutations) => {
+        this.domProcessor.purgeStaleFragments(mutations);
         if (this.shouldProcessMutations(mutations)) {
           clearTimeout(debounceTimer);
           debounceTimer = setTimeout(() => {

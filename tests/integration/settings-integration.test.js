@@ -95,6 +95,7 @@ describe('Settings Integration Tests', () => {
           tagName: 'P', 
           classList: { contains: vi.fn(() => false) },
           replaceChild: vi.fn((newChild, oldChild) => oldChild),
+          insertBefore: vi.fn(),
           appendChild: vi.fn(),
           normalize: vi.fn()
         }
@@ -121,7 +122,10 @@ describe('Settings Integration Tests', () => {
         highlightAbsolutes: true
       });
 
+      // The anchor approach empties analyzed nodes in place; re-present the
+      // text as a freshly rendered page would
       nodeIndex = -1;
+      textNodes[0].textContent = testText;
       const opinionDisabledStats = await detector.analyzeDocument();
 
       // ASSERT: Should detect absolutes but not opinions
@@ -136,6 +140,7 @@ describe('Settings Integration Tests', () => {
       });
 
       nodeIndex = -1;
+      textNodes[0].textContent = testText;
       const absoluteDisabledStats = await detector.analyzeDocument();
 
       // ASSERT: Should detect opinions but not absolutes
@@ -153,6 +158,7 @@ describe('Settings Integration Tests', () => {
           tagName: 'P', 
           classList: { contains: vi.fn(() => false) },
           replaceChild: vi.fn((newChild, oldChild) => oldChild),
+          insertBefore: vi.fn(),
           appendChild: vi.fn(),
           normalize: vi.fn()
         }
@@ -226,6 +232,7 @@ describe('Settings Integration Tests', () => {
           tagName: 'P', 
           classList: { contains: vi.fn(() => false) },
           replaceChild: vi.fn((newChild, oldChild) => oldChild),
+          insertBefore: vi.fn(),
           appendChild: vi.fn(),
           normalize: vi.fn()
         }
@@ -234,6 +241,8 @@ describe('Settings Integration Tests', () => {
       let nodeIndex = -1;
       const resetTreeWalker = () => {
         nodeIndex = -1;
+        // Anchored highlighting empties nodes in place; restore their text
+        textNodes.forEach((n, i) => { n.textContent = mixedContent[i]; });
         mockDocument.createTreeWalker.mockReturnValue({
           nextNode: vi.fn(() => {
             nodeIndex++;
@@ -298,6 +307,7 @@ describe('Settings Integration Tests', () => {
           tagName: 'P', 
           classList: { contains: vi.fn(() => false) },
           replaceChild: vi.fn((newChild, oldChild) => oldChild),
+          insertBefore: vi.fn(),
           appendChild: vi.fn(),
           normalize: vi.fn()
         }
@@ -342,6 +352,7 @@ describe('Settings Integration Tests', () => {
           tagName: 'P', 
           classList: { contains: vi.fn(() => false) },
           replaceChild: vi.fn((newChild, oldChild) => oldChild),
+          insertBefore: vi.fn(),
           appendChild: vi.fn(),
           normalize: vi.fn()
         }
@@ -458,6 +469,7 @@ describe('Settings Integration Tests', () => {
           tagName: 'P', 
           classList: { contains: vi.fn(() => false) },
           replaceChild: vi.fn((newChild, oldChild) => oldChild),
+          insertBefore: vi.fn(),
           appendChild: vi.fn(),
           normalize: vi.fn()
         }
@@ -511,6 +523,7 @@ describe('Settings Integration Tests', () => {
           tagName: 'P', 
           classList: { contains: vi.fn(() => false) },
           replaceChild: vi.fn((newChild, oldChild) => oldChild),
+          insertBefore: vi.fn(),
           appendChild: vi.fn(),
           normalize: vi.fn()
         }
@@ -580,6 +593,7 @@ describe('Settings Integration Tests', () => {
           tagName: 'P', 
           classList: { contains: vi.fn(() => false) },
           replaceChild: vi.fn((newChild, oldChild) => oldChild),
+          insertBefore: vi.fn(),
           appendChild: vi.fn(),
           normalize: vi.fn()
         }
@@ -621,6 +635,7 @@ describe('Settings Integration Tests', () => {
           tagName: 'P', 
           classList: { contains: vi.fn(() => false) },
           replaceChild: vi.fn((newChild, oldChild) => oldChild),
+          insertBefore: vi.fn(),
           appendChild: vi.fn(),
           normalize: vi.fn()
         }
