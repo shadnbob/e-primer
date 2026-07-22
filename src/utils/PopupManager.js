@@ -9,9 +9,11 @@ export class PopupManager {
         this.currentTarget = null;
         this.hideTimeout = null;
 
-        // Optional hook set by the content script: adds an "Ignore this word"
-        // button to highlight cards that feeds the persistent ignore list
+        // Optional hooks set by the content script: "Ignore this word" feeds
+        // the persistent ignore list; onRemoveHighlight routes right-click /
+        // Remove-Highlight through DOMProcessor's anchor-safe removal
         this.onIgnoreWord = null;
+        this.onRemoveHighlight = null;
 
         this.init();
     }
@@ -400,20 +402,21 @@ export class PopupManager {
     
     removeHighlight(target) {
         if (!target) return;
-        
-        // Get the parent node before removing
-        const parent = target.parentNode;
-        
-        // Create a text node with the highlighted text
-        const textNode = document.createTextNode(target.textContent);
-        
-        // Replace the highlighted element with plain text
-        parent.replaceChild(textNode, target);
-        
-        // Normalize the parent to merge adjacent text nodes
-        if (parent && parent.normalize) {
-            parent.normalize();
+
+        // Preferred path: DOMProcessor's anchor-safe single removal
+        // (skip-analysis replacement, registry patch, no normalize)
+        if (this.onRemoveHighlight) {
+            this.onRemoveHighlight(target);
+            return;
         }
+
+        // Fallback when no hook is wired: unwrap WITHOUT normalize —
+        // normalize() deletes the empty anchor text nodes that keep
+        // framework references valid (see DOMProcessor.applyHighlights)
+        const parent = target.parentNode;
+        if (!parent) return;
+        const textNode = document.createTextNode(target.textContent);
+        parent.replaceChild(textNode, target);
     }
     
     // Public methods for external control

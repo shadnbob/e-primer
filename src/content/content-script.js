@@ -67,6 +67,7 @@ import { getPopupManager } from '../utils/PopupManager.js';
             // Initialize popup manager for efficient popup handling
             const popupManager = getPopupManager();
             popupManager.onIgnoreWord = handleIgnoreWord;
+            popupManager.onRemoveHighlight = (el) => biasDetector.domProcessor.removeSingleHighlight(el);
 
             setupMessageListeners();
             loadSettingsAndStart();

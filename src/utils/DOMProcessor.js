@@ -206,8 +206,48 @@ export class DOMProcessor {
 
         parent.insertBefore(fragment, node);
         node.textContent = '';
+        // Element fragments carry a back-reference so single-highlight
+        // removal (right-click) can keep the registry accurate
+        for (const insertedNode of inserted) {
+            if (insertedNode.nodeType === Node.ELEMENT_NODE) {
+                insertedNode._eprimerAnchor = node;
+            }
+        }
         this._anchoredFragments.set(node, inserted);
         return true;
+    }
+
+    // Right-click removal of ONE highlight. Two constraints shape this:
+    // the replacement must be exempt from re-analysis (data-skip-analysis,
+    // otherwise the word re-highlights on the next mutation pass), and
+    // parent.normalize() must never run here — normalize deletes empty text
+    // nodes, which would destroy the framework anchor and make
+    // purgeStaleFragments tear out the block's other fragments. One
+    // right-click used to wipe the whole section that way.
+    removeSingleHighlight(el) {
+        const parent = el && el.parentNode;
+        if (!parent) return;
+
+        this.cleanupHoverElements(el);
+
+        const neutral = document.createElement('span');
+        neutral.setAttribute('data-skip-analysis', 'true');
+        neutral.textContent = el.textContent;
+
+        // Keep the anchor registry accurate: if the framework later reclaims
+        // this block, the replacement must be purged with the rest instead
+        // of lingering as a stray duplicated word
+        const anchor = el._eprimerAnchor;
+        if (anchor) {
+            const fragments = this._anchoredFragments.get(anchor);
+            if (fragments) {
+                const index = fragments.indexOf(el);
+                if (index !== -1) fragments[index] = neutral;
+            }
+            neutral._eprimerAnchor = anchor;
+        }
+
+        parent.replaceChild(neutral, el);
     }
 
     // Called on every mutation batch, before any debounced re-analysis:
@@ -387,11 +427,16 @@ export class DOMProcessor {
         this.clearFragmentRegistry();
     }
 
-    // Shared unwrap logic: replace matching highlight spans with plain text
+    // Shared unwrap logic: replace matching highlight spans with plain text.
+    //
+    // Deliberately NO parent.normalize() afterwards: normalize() deletes
+    // empty text nodes, which would destroy the emptied anchor nodes that
+    // keep framework references valid (see applyHighlights) — on React
+    // pages that resurfaces the blanked-component crash, and with the
+    // purge it turned one removal into losing the block's other fragments.
+    // Adjacent unwrapped text nodes are harmless.
     removeHighlightsBySelector(selector) {
         const highlights = document.querySelectorAll(selector);
-
-        this.processedParents.clear();
 
         highlights.forEach(highlight => {
             // Clean up hover cards and event listeners
@@ -401,17 +446,7 @@ export class DOMProcessor {
             if (!parent) return;
             const textNode = document.createTextNode(highlight.textContent);
             parent.replaceChild(textNode, highlight);
-            this.processedParents.add(parent);
         });
-
-        // Normalize all affected parent nodes
-        this.processedParents.forEach(parent => {
-            if (parent && parent.normalize) {
-                parent.normalize();
-            }
-        });
-
-        this.processedParents.clear();
     }
 
     // Clean up data attributes (event listeners are handled by PopupManager)

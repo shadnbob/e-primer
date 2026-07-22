@@ -239,6 +239,61 @@ describe('Regressions', () => {
       expect(p.textContent).toBe(FULL);
       expect(p.querySelectorAll('[class*="bias-highlight-"]').length).toBeGreaterThan(0);
     });
+
+    test('right-click removal keeps the block text, other highlights, and the anchor', async () => {
+      const { p, reactNode } = mountPost('Obviously biased and clearly slanted text here.');
+      await detector.processTextNode(reactNode);
+
+      const spans = p.querySelectorAll('[class*="bias-highlight-"]');
+      expect(spans.length).toBeGreaterThan(1);
+      const before = p.textContent;
+
+      detector.domProcessor.removeSingleHighlight(spans[0]);
+
+      expect(p.textContent).toBe(before); // no text loss — the old bug wiped the block
+      expect(p.querySelectorAll('[class*="bias-highlight-"]').length).toBe(spans.length - 1);
+      expect(reactNode.parentNode).toBe(p);   // the framework anchor survives
+      expect(reactNode.textContent).toBe(''); // and stays empty
+
+      // The removed word is exempt from re-analysis, so it stays removed
+      const neutral = p.querySelector('[data-skip-analysis]');
+      expect(neutral).toBeTruthy();
+      const collected = detector.domProcessor.collectTextNodes(p);
+      expect(collected.some(n => n.parentNode === neutral)).toBe(false);
+    });
+
+    test('a purge pass after right-click removal is a no-op for the block', async () => {
+      const { p, reactNode } = mountPost('Obviously biased and clearly slanted text here.');
+      await detector.processTextNode(reactNode);
+      const before = p.textContent;
+      const span = p.querySelector('[class*="bias-highlight-"]');
+
+      detector.domProcessor.removeSingleHighlight(span);
+      // The observer sees the removed span; only anchors may trigger purges
+      detector.domProcessor.purgeStaleFragments([
+        { type: 'childList', removedNodes: [span], addedNodes: [] }
+      ]);
+
+      expect(p.textContent).toBe(before);
+    });
+
+    test('framework reclaim after a right-click removal leaves no stray word', async () => {
+      const { p, reactNode } = mountPost();
+      await detector.processTextNode(reactNode);
+
+      detector.domProcessor.removeSingleHighlight(p.querySelector('[class*="bias-highlight-"]'));
+
+      // React swaps in the full text; the neutral replacement must be
+      // purged along with the remaining fragments
+      p.removeChild(reactNode);
+      detector.domProcessor.purgeStaleFragments([
+        { type: 'childList', removedNodes: [reactNode], addedNodes: [] }
+      ]);
+      p.appendChild(document.createTextNode(FULL));
+
+      expect(p.textContent).toBe(FULL);
+      expect(p.querySelector('[data-skip-analysis]')).toBeNull();
+    });
   });
 
   describe('single-pass text collection', () => {

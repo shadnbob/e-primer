@@ -503,19 +503,22 @@ describe('DOMProcessor', () => {
       expect(element.removeAttribute).toHaveBeenCalledWith('data-tooltip-text');
     });
 
-    test('should normalize parent nodes after removal', () => {
+    test('should NOT normalize parents after removal (anchor safety)', () => {
+      // normalize() deletes empty text nodes, which would destroy the
+      // framework anchors applyHighlights leaves in place
       const parent = createMockElement('p');
       parent.normalize = vi.fn();
-      
+
       const highlight = createMockElement('span');
       highlight.parentNode = parent;
-      
+
       mockDocument.querySelectorAll.mockReturnValue([highlight]);
       processor.cleanupHoverElements = vi.fn();
-      
+
       processor.removeAllHighlights();
-      
-      expect(parent.normalize).toHaveBeenCalled();
+
+      expect(parent.replaceChild).toHaveBeenCalled();
+      expect(parent.normalize).not.toHaveBeenCalled();
     });
   });
 
@@ -691,7 +694,7 @@ describe('DOMProcessor', () => {
       expect(mockDocument.querySelectorAll).toHaveBeenCalledWith('.excellence-attribution');
       expect(parent.replaceChild).toHaveBeenCalled();
       expect(processor.cleanupHoverElements).toHaveBeenCalledWith(excellenceHighlight);
-      expect(parent.normalize).toHaveBeenCalled();
+      expect(parent.normalize).not.toHaveBeenCalled();
     });
 
     test('should handle multiple excellence highlights', () => {
@@ -960,7 +963,7 @@ describe('DOMProcessor', () => {
 
   describe('removeSpecificHighlights - normalize', () => {
 
-    test('should normalize parents after removal', () => {
+    test('should NOT normalize parents after removal (anchor safety)', () => {
       const highlight = createMockElement('span');
       const parent = createMockElement('p');
       parent.normalize = vi.fn();
@@ -971,7 +974,8 @@ describe('DOMProcessor', () => {
 
       processor.removeSpecificHighlights('opinion');
 
-      expect(parent.normalize).toHaveBeenCalled();
+      expect(parent.replaceChild).toHaveBeenCalled();
+      expect(parent.normalize).not.toHaveBeenCalled();
     });
 
     test('should handle parent without normalize', () => {
