@@ -64,6 +64,49 @@ describe('Explainer conventions (all isExplainer types)', () => {
       expect(html, config.id).not.toContain('>Moderate<');
     }
   });
+
+  test('explainer cards use the teaching sequence, not the warning layout', () => {
+    const generator = new HoverContentGenerator();
+    const config = BiasConfig.BIAS_TYPES.DEBATE;
+    const sub = { id: 'tolerance_paradox', ...config.subCategories.tolerance_paradox };
+    const html = generator.generateHoverContent({
+      text: 'paradox of tolerance',
+      type: 'debate_tolerance_paradox',
+      parentType: 'debate',
+      subCategory: sub,
+      intensity: 2
+    });
+
+    // Fact-first: scaffold → story → usage → solid → shaky → question
+    const scaffold = html.indexOf('hover-card-reason');
+    const story = html.indexOf('Where it comes from:');
+    const usage = html.indexOf('How it gets used:');
+    const solid = html.indexOf('On solid ground:');
+    const shaky = html.indexOf('On shaky ground:');
+    const ask = html.indexOf('Worth asking:');
+
+    expect(scaffold).toBeGreaterThan(-1);
+    expect(story).toBeGreaterThan(scaffold);
+    expect(usage).toBeGreaterThan(story);   // misuse never leads
+    expect(solid).toBeGreaterThan(usage);
+    expect(shaky).toBeGreaterThan(solid);   // legitimate use shown first
+    expect(ask).toBeGreaterThan(shaky);     // ends on curiosity
+
+    // The teaching content is all there…
+    expect(html).toContain('Popper');
+    expect(html).toContain('1945');
+    // …and the warning vocabulary is gone from explainer cards
+    expect(html).not.toContain('Implication:');
+    expect(html).not.toContain('When to be concerned:');
+    expect(html).not.toContain('Look for:');
+  });
+
+  test('bias-type cards keep the warning layout', () => {
+    const generator = new HoverContentGenerator();
+    const html = generator.generateHoverContent({ text: 'obviously', type: 'opinion', intensity: 2 });
+    expect(html).toContain('When to be concerned:');
+    expect(html).toContain('>Moderate<');
+  });
 });
 
 describe('Speech & Civic Terms detection', () => {

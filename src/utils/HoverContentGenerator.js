@@ -172,6 +172,14 @@ export class HoverContentGenerator {
         // Quoted text
         content += `<div class="hover-card-text">"${this.escapeHtml(match.text)}"</div>`;
 
+        // Explainers teach rather than warn: their sections follow a learning
+        // sequence instead of the bias-warning layout below
+        if (biasConfig && biasConfig.isExplainer) {
+            content += this._generateExplainerSections(subConfig, biasConfig);
+            content += '</div>';
+            return content;
+        }
+
         // Contextual reasoning section (prioritized)
         if (isContextual) {
             const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : 'Unknown';
@@ -359,6 +367,72 @@ export class HoverContentGenerator {
     // Get custom styling for sub-categories
     getSubCategoryStyle(match) {
         return '';
+    }
+
+    // Explainer cards follow a teaching sequence, not the warning layout:
+    // a one-line scaffold, then the concept's actual story, then how it gets
+    // used (technique education, both directions), then a fair-use-before-
+    // stretched contrast, ending on questions. The ordering follows the
+    // refutation/prebunking literature: readers who know nothing (or arrive
+    // with a charged preconception) need the correct model grounded FIRST —
+    // never open on the misuse — and showing the legitimate use before the
+    // stretched one signals even-handedness instead of accusation.
+    _generateExplainerSections(subConfig, biasConfig) {
+        const cfg = subConfig || biasConfig;
+        let content = '';
+
+        // Advance organizer: one plain sentence for the detail to attach to
+        const oneLiner = cfg.basicTip || biasConfig.basicTip;
+        if (oneLiner) {
+            content += `<div class="hover-card-reason">${oneLiner}</div>`;
+        }
+
+        content += `<div class="hover-card-expanded">`;
+
+        if (cfg.description) {
+            content += `<div class="hover-card-section">
+                <div class="hover-card-section-title">Where it comes from:</div>
+                <div class="hover-card-section-content">${cfg.description}</div>
+            </div>`;
+        }
+
+        if (cfg.implication) {
+            content += `<div class="hover-card-section">
+                <div class="hover-card-section-title">How it gets used:</div>
+                <div class="hover-card-section-content">${cfg.implication}</div>
+            </div>`;
+        }
+
+        // Legitimate use first, stretched use second
+        const solid = cfg.whenAcceptable || biasConfig.whenAcceptable;
+        const shaky = cfg.whenConcerning || biasConfig.whenConcerning;
+        if (solid) {
+            content += `<div class="hover-card-section">
+                <div class="hover-card-section-title">On solid ground:</div>
+                <div class="hover-card-section-content">${solid}</div>
+            </div>`;
+        }
+        if (shaky) {
+            content += `<div class="hover-card-section">
+                <div class="hover-card-section-title">On shaky ground:</div>
+                <div class="hover-card-section-content">${shaky}</div>
+            </div>`;
+        }
+
+        // Subcategory examples are a single vivid contrast line (the parent
+        // examples object is generic; explainer cards skip it for focus)
+        if (cfg.examples && typeof cfg.examples === 'string') {
+            content += `<div class="hover-card-examples"><strong>For instance:</strong> ${cfg.examples}</div>`;
+        }
+
+        // End on curiosity, not verdicts
+        const ask = cfg.suggestion || biasConfig.suggestion;
+        if (ask) {
+            content += `<div class="hover-card-suggestion"><strong>Worth asking:</strong> ${ask}</div>`;
+        }
+
+        content += `</div>`;
+        return content;
     }
     
     
