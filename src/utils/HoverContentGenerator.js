@@ -425,10 +425,13 @@ export class HoverContentGenerator {
             content += `<div class="hover-card-examples"><strong>For instance:</strong> ${cfg.examples}</div>`;
         }
 
-        // End on curiosity, not verdicts
+        // End on curiosity, not verdicts. Suggestions are written as
+        // imperatives ("Ask what…"), which stutters after this label —
+        // strip the leading Ask.
         const ask = cfg.suggestion || biasConfig.suggestion;
         if (ask) {
-            content += `<div class="hover-card-suggestion"><strong>Worth asking:</strong> ${ask}</div>`;
+            const askText = ask.replace(/^Ask\s+/i, '');
+            content += `<div class="hover-card-suggestion"><strong>Worth asking:</strong> ${askText}</div>`;
         }
 
         content += `</div>`;

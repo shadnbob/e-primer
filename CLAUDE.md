@@ -89,7 +89,7 @@ The extension detects patterns in 5 main categories (23 types total, all enabled
 
 Fourteen types have subcategories — structured taxonomies that provide more specific detection and tailored guidance. Each subcategory has its own `icon`, `color`, `name`, `description`, `implication`, `suggestion`, `examples`, and `words` array in its dictionary file, plus `settingKey`, `statKey`, `basicTip`, `whenConcerning`, and `whenAcceptable` metadata in BiasConfig.
 
-**Types with subcategories (80 total subcategories):**
+**Types with subcategories (81 total subcategories):**
 1. **Opinion Words** (12): certainty, hedging, evaluative_positive, evaluative_negative, emotional_charge, comparative, political_framing, intensifiers, credibility_undermining, loaded_political, moral_judgments, emotional_appeals
 2. **Euphemisms** (7): political_euphemism, corporate_euphemism, social_euphemism, military_euphemism, dysphemism, medical_euphemism, environmental_euphemism
 3. **Emotional Manipulation** (6): fear_appeal, guilt_induction, flattery_manipulation, outrage_fuel, sympathy_exploitation, false_urgency
@@ -102,7 +102,7 @@ Fourteen types have subcategories — structured taxonomies that provide more sp
 10. **Speech & Civic Terms** (4): free_speech, censorship, rights, legal_standards — an *explainer* type (see below)
 11. **Economic Terms** (4): inflation, deficit_debt, recession_economy, class_records — an *explainer* type (see below)
 12. **Media & Truth Terms** (4): fake_news, misinfo_disinfo, conspiracy, narrative_media — an *explainer* type (see below)
-13. **Discourse Concepts** (6): tolerance_paradox, slippery_slope, whataboutism, strawman_adhominem, overton_window, motte_bailey — an *explainer* type (see below)
+13. **Discourse Concepts** (7): tolerance_paradox, tolerance_talk, slippery_slope, whataboutism, strawman_adhominem, overton_window, motte_bailey — an *explainer* type (see below)
 14. **Logical Fallacies** (8): relevance, circular, crowd_authority, evidence_games, goalposts_burden, causal, comparison, meta — an *explainer* type (see below)
 
 **How subcategories flow through the code:**

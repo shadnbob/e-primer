@@ -1653,7 +1653,7 @@
             name: "Free Speech",
             icon: "\u{1F5E3}\uFE0F",
             color: "#5c6bc0",
-            description: 'Two related but distinct things share the name: a legal right \u2014 in the US, the First Amendment, which restrains *government* ("Congress shall make no law\u2026") \u2014 and a broader cultural value of open discourse (argued by Milton and Mill long before any constitution).',
+            description: 'Two related but distinct things share the name: a legal right \u2014 in the US, the First Amendment, which restrains <em>government</em> ("Congress shall make no law\u2026") \u2014 and a broader cultural value of open discourse (argued by Milton and Mill long before any constitution).',
             implication: "The most common collapse online: one person argues the law (a platform or employer is not the government, so no right was violated) while the other argues the value (a culture of sanction chills discourse regardless of who applies it). Both senses are legitimate; treating them as one produces arguments where both sides are right about different things.",
             suggestion: "Ask which sense is in play: a legal claim about state power, or a cultural claim about norms of open discourse?",
             examples: '"They violated my free speech" \u2014 did a government act, or did a private party decline to host or associate?',
@@ -1669,7 +1669,7 @@
             icon: "\u2702\uFE0F",
             color: "#8d6e63",
             description: "Historically, suppression by authority \u2014 licensing regimes and prior restraint (Milton's Areopagitica argued against them in 1644). The word now stretches across state suppression, platform moderation, editorial judgment, and sometimes mere criticism.",
-            implication: "State censorship, platform moderation, editorial selection, and social pushback differ enormously in power and remedy \u2014 a government can imprison, a platform can remove, an editor can decline, a critic can only object. The single word erases those differences. Whether large platforms' moderation *should* be treated like public censorship is a genuine, unsettled debate; the word alone does not resolve it.",
+            implication: "State censorship, platform moderation, editorial selection, and social pushback differ enormously in power and remedy \u2014 a government can imprison, a platform can remove, an editor can decline, a critic can only object. The single word erases those differences. Whether large platforms' moderation <em>should</em> be treated like public censorship is a genuine, unsettled debate; the word alone does not resolve it.",
             suggestion: "Ask who exercised what power, with what alternatives left to the speaker \u2014 and what remedy is actually being proposed.",
             examples: '"They censored me" \u2014 a takedown? a declined submission? a ban? disagreement? Each is a different claim.',
             settingKey: "highlightCivicsCensorship",
@@ -1698,7 +1698,7 @@
             name: "Legal Standards",
             icon: "\u2696\uFE0F",
             color: "#6d4c41",
-            description: 'Courtroom standards imported into everyday judgment: "innocent until proven guilty" and "due process" govern what the *state* must do before punishing. "Defamation" (libel if written, slander if spoken) requires a false statement of fact \u2014 and in the US, for public figures, knowing or reckless falsehood (NYT v. Sullivan, 1964).',
+            description: 'Courtroom standards imported into everyday judgment: "innocent until proven guilty" and "due process" govern what the <em>state</em> must do before punishing. "Defamation" (libel if written, slander if spoken) requires a false statement of fact \u2014 and in the US, for public figures, knowing or reckless falsehood (NYT v. Sullivan, 1964).',
             implication: `A boycott is not a verdict and an employer is not a court, so courtroom standards do not transfer automatically \u2014 yet the worry behind invoking them (serious consequences without fair process) is a real normative question, not a confusion. "That's slander!" about a true statement or an opinion misuses a term with a precise meaning.`,
             suggestion: "Ask whether the standard invoked binds the actor in question \u2014 and if not, what fairness is actually being demanded.",
             examples: `"Innocent until proven guilty" \u2014 a rule for the state's power to punish; whether private judgment should wait for verdicts is a separate argument.`,
@@ -1757,8 +1757,8 @@
             name: "Inflation Is a Rate",
             icon: "\u{1F4C8}",
             color: "#6d4c41",
-            description: 'Inflation measures how fast prices are *rising*. "Inflation is falling" therefore means prices are rising more slowly \u2014 not that prices are falling (that would be deflation, which is rare and brings its own problems).',
-            implication: 'During 2021\u201324 this confusion was everywhere: headlines celebrated "falling inflation" while readers wondered why groceries still cost more, because the price *level* kept the earlier increases. Disinflation (a slowing rate) and deflation (falling prices) are different phenomena with nearly identical-sounding coverage.',
+            description: 'Inflation measures how fast prices are <em>rising</em>. "Inflation is falling" therefore means prices are rising more slowly \u2014 not that prices are falling (that would be deflation, which is rare and brings its own problems).',
+            implication: 'During 2021\u201324 this confusion was everywhere: headlines celebrated "falling inflation" while readers wondered why groceries still cost more, because the price <em>level</em> kept the earlier increases. Disinflation (a slowing rate) and deflation (falling prices) are different phenomena with nearly identical-sounding coverage.',
             suggestion: "Ask whether the sentence is about the rate of change or the level of prices \u2014 and over what period.",
             examples: '"Inflation fell to 3%" \u2014 prices are still rising 3% a year, on top of every previous increase.',
             settingKey: "highlightEconTermsInflation",
@@ -1965,15 +1965,30 @@
             name: "Paradox of Tolerance",
             icon: "\u{1F91D}",
             color: "#5c6bc0",
-            description: `From Karl Popper's The Open Society and Its Enemies (1945): "unlimited tolerance must lead to the disappearance of tolerance." The meme version stops there. Popper's footnote continues: intolerant philosophies should be countered by argument and public opinion as long as that works \u2014 he reserved suppression for movements that reject rational debate and answer arguments with violence.`,
-            implication: 'The paradox gets invoked as a finished argument, but it does not answer the hard question \u2014 who counts as intolerant, judged by whom, by what standard \u2014 which is decided *before* the paradox applies and is where the actual disagreement lives. Both failure modes are real: unlimited tolerance can shelter movements that would end it, and an elastic definition of "intolerance" can license excluding ordinary disagreement.',
+            description: `From Karl Popper's The Open Society and Its Enemies (1945): "unlimited tolerance must lead to the disappearance of tolerance" \u2014 because a movement that rejects tolerance can use its protections (speech, assembly, due process) to grow until it can abolish them for everyone else. The meme version stops at the slogan. Popper's footnote continues: intolerant philosophies should be countered by argument and public opinion as long as that works \u2014 he reserved suppression for movements that reject rational debate and answer arguments with violence.`,
+            implication: 'The paradox gets invoked as a finished argument, but it does not answer the hard question \u2014 who counts as intolerant, judged by whom, by what standard \u2014 which is decided <em>before</em> the paradox applies and is where the actual disagreement lives. Both failure modes are real: unlimited tolerance can shelter movements that would end it, and an elastic definition of "intolerance" can license excluding ordinary disagreement.',
             suggestion: "Ask what specific conduct is called intolerant, whether argument and public opinion have failed, and who gets to decide \u2014 the paradox itself settles none of these.",
-            examples: `"We must be intolerant of intolerance" \u2014 of violent rejection of debate (Popper's case), or of a position the speaker opposes?`,
+            examples: `The classic case: "we don't want that ethnicity here" \u2192 "then your movement can't organize here" \u2192 "you're persecuting us for our beliefs." The persecution claim invokes the very tolerance the movement exists to end \u2014 the hypocrisy that powers the paradox.`,
             settingKey: "highlightDebateToleranceParadox",
             statKey: "debateToleranceParadoxCount",
-            basicTip: "Popper's paradox is qualified \u2014 counter by argument while you can \u2014 and it never answers who counts as intolerant.",
+            basicTip: "A tolerant society cannot extend unlimited tolerance to movements that would use its protections to destroy tolerance itself \u2014 Popper's idea, and more qualified than the meme version of it.",
             whenConcerning: "When the paradox is deployed as a finished argument, skipping the who-decides question",
             whenAcceptable: "When Popper's actual conditions (rejection of debate, resort to violence) are argued, not assumed"
+          },
+          tolerance_talk: {
+            id: "tolerance_talk",
+            name: "Demanding Tolerance",
+            icon: "\u{1F54A}\uFE0F",
+            color: "#26a69a",
+            description: '"Tolerance" spans a ladder of very different asks: being left in peace, being accepted, or being endorsed \u2014 and demands for it rarely say which rung is meant. Underneath sits a reciprocity question philosophers from Popper to Rawls have worked on: tolerance functions as a mutual arrangement among those who extend it to each other.',
+            implication: `Two opposite distortions ride on the ambiguity. A plea to be left in peace gets recast as "demanding you endorse us" \u2014 raising the rung to make the ask sound aggressive. And a movement working to curtail others' freedom claims the same protection ("you're persecuting us for our beliefs") \u2014 invoking the reciprocity it refuses to extend, the reversal move at the heart of the paradox of tolerance.`,
+            suggestion: "Ask which rung is actually being asked for \u2014 peace, acceptance, or endorsement \u2014 and whether the one asking extends the same to others.",
+            examples: `"They're demanding tolerance" \u2014 to live unbothered, or to be agreed with? Those are different demands, and the sentence rarely says.`,
+            settingKey: "highlightDebateToleranceTalk",
+            statKey: "debateToleranceTalkCount",
+            basicTip: 'Demands for "tolerance" can mean leave-in-peace, acceptance, or endorsement \u2014 and the claim turns on reciprocity: who extends it back?',
+            whenConcerning: "When the rung is quietly raised to make a plea sound aggressive, or protection is claimed by a project that refuses to extend it",
+            whenAcceptable: "When the ask is specific about what is wanted and the reciprocity runs both ways"
           },
           slippery_slope: {
             id: "slippery_slope",
@@ -4738,7 +4753,7 @@
       icon: "\u{1F5E3}\uFE0F",
       color: "#5c6bc0",
       name: "Free Speech",
-      description: 'Two related but distinct things share the name: a legal right \u2014 in the US, the First Amendment, which restrains *government* ("Congress shall make no law\u2026") \u2014 and a broader cultural value of open discourse (argued by Milton and Mill long before any constitution).',
+      description: 'Two related but distinct things share the name: a legal right \u2014 in the US, the First Amendment, which restrains <em>government</em> ("Congress shall make no law\u2026") \u2014 and a broader cultural value of open discourse (argued by Milton and Mill long before any constitution).',
       implication: "The most common collapse online: one person argues the law (a platform or employer is not the government, so no right was violated) while the other argues the value (a culture of sanction chills discourse regardless of who applies it). Both senses are legitimate; treating them as one produces arguments where both sides are right about different things.",
       suggestion: "Ask which sense is in play: a legal claim about state power, or a cultural claim about norms of open discourse?",
       examples: '"They violated my free speech" \u2014 did a government act, or did a private party decline to host or associate?',
@@ -4754,7 +4769,7 @@
       color: "#8d6e63",
       name: "Censorship",
       description: "Historically, suppression by authority \u2014 licensing regimes and prior restraint (Milton's Areopagitica argued against them in 1644). The word now stretches across state suppression, platform moderation, editorial judgment, and sometimes mere criticism.",
-      implication: "State censorship, platform moderation, editorial selection, and social pushback differ enormously in power and remedy \u2014 a government can imprison, a platform can remove, an editor can decline, a critic can only object. The single word erases those differences. Whether large platforms' moderation *should* be treated like public censorship is a genuine, unsettled debate; the word alone does not resolve it.",
+      implication: "State censorship, platform moderation, editorial selection, and social pushback differ enormously in power and remedy \u2014 a government can imprison, a platform can remove, an editor can decline, a critic can only object. The single word erases those differences. Whether large platforms' moderation <em>should</em> be treated like public censorship is a genuine, unsettled debate; the word alone does not resolve it.",
       suggestion: "Ask who exercised what power, with what alternatives left to the speaker \u2014 and what remedy is actually being proposed.",
       examples: '"They censored me" \u2014 a takedown? a declined submission? a ban? disagreement? Each is a different claim.',
       words: [
@@ -4785,7 +4800,7 @@
       icon: "\u2696\uFE0F",
       color: "#6d4c41",
       name: "Legal Standards",
-      description: 'Courtroom standards imported into everyday judgment: "innocent until proven guilty" and "due process" govern what the *state* must do before punishing. "Defamation" (libel if written, slander if spoken) requires a false statement of fact \u2014 and in the US, for public figures, knowing or reckless falsehood (NYT v. Sullivan, 1964).',
+      description: 'Courtroom standards imported into everyday judgment: "innocent until proven guilty" and "due process" govern what the <em>state</em> must do before punishing. "Defamation" (libel if written, slander if spoken) requires a false statement of fact \u2014 and in the US, for public figures, knowing or reckless falsehood (NYT v. Sullivan, 1964).',
       implication: `A boycott is not a verdict and an employer is not a court, so courtroom standards do not transfer automatically \u2014 yet the worry behind invoking them (serious consequences without fair process) is a real normative question, not a confusion. "That's slander!" about a true statement or an opinion misuses a term with a precise meaning.`,
       suggestion: "Ask whether the standard invoked binds the actor in question \u2014 and if not, what fairness is actually being demanded.",
       examples: `"Innocent until proven guilty" \u2014 a rule for the state's power to punish; whether private judgment should wait for verdicts is a separate argument.`,
@@ -4809,8 +4824,8 @@
       icon: "\u{1F4C8}",
       color: "#6d4c41",
       name: "Inflation Is a Rate",
-      description: 'Inflation measures how fast prices are *rising*. "Inflation is falling" therefore means prices are rising more slowly \u2014 not that prices are falling (that would be deflation, which is rare and brings its own problems).',
-      implication: 'During 2021\u201324 this confusion was everywhere: headlines celebrated "falling inflation" while readers wondered why groceries still cost more, because the price *level* kept the earlier increases. Disinflation (a slowing rate) and deflation (falling prices) are different phenomena with nearly identical-sounding coverage.',
+      description: 'Inflation measures how fast prices are <em>rising</em>. "Inflation is falling" therefore means prices are rising more slowly \u2014 not that prices are falling (that would be deflation, which is rare and brings its own problems).',
+      implication: 'During 2021\u201324 this confusion was everywhere: headlines celebrated "falling inflation" while readers wondered why groceries still cost more, because the price <em>level</em> kept the earlier increases. Disinflation (a slowing rate) and deflation (falling prices) are different phenomena with nearly identical-sounding coverage.',
       suggestion: "Ask whether the sentence is about the rate of change or the level of prices \u2014 and over what period.",
       examples: '"Inflation fell to 3%" \u2014 prices are still rising 3% a year, on top of every previous increase.',
       words: [
@@ -4942,15 +4957,26 @@
       icon: "\u{1F91D}",
       color: "#5c6bc0",
       name: "Paradox of Tolerance",
-      description: `From Karl Popper's The Open Society and Its Enemies (1945): "unlimited tolerance must lead to the disappearance of tolerance." The meme version stops there. Popper's footnote continues: intolerant philosophies should be countered by argument and public opinion as long as that works \u2014 he reserved suppression for movements that reject rational debate and answer arguments with violence.`,
-      implication: 'The paradox gets invoked as a finished argument, but it does not answer the hard question \u2014 who counts as intolerant, judged by whom, by what standard \u2014 which is decided *before* the paradox applies and is where the actual disagreement lives. Both failure modes are real: unlimited tolerance can shelter movements that would end it, and an elastic definition of "intolerance" can license excluding ordinary disagreement.',
+      description: `From Karl Popper's The Open Society and Its Enemies (1945): "unlimited tolerance must lead to the disappearance of tolerance" \u2014 because a movement that rejects tolerance can use its protections (speech, assembly, due process) to grow until it can abolish them for everyone else. The meme version stops at the slogan. Popper's footnote continues: intolerant philosophies should be countered by argument and public opinion as long as that works \u2014 he reserved suppression for movements that reject rational debate and answer arguments with violence.`,
+      implication: 'The paradox gets invoked as a finished argument, but it does not answer the hard question \u2014 who counts as intolerant, judged by whom, by what standard \u2014 which is decided <em>before</em> the paradox applies and is where the actual disagreement lives. Both failure modes are real: unlimited tolerance can shelter movements that would end it, and an elastic definition of "intolerance" can license excluding ordinary disagreement.',
       suggestion: "Ask what specific conduct is called intolerant, whether argument and public opinion have failed, and who gets to decide \u2014 the paradox itself settles none of these.",
-      examples: `"We must be intolerant of intolerance" \u2014 of violent rejection of debate (Popper's case), or of a position the speaker opposes?`,
+      examples: `The classic case: "we don't want that ethnicity here" \u2192 "then your movement can't organize here" \u2192 "you're persecuting us for our beliefs." The persecution claim invokes the very tolerance the movement exists to end \u2014 the hypocrisy that powers the paradox.`,
       words: [
         "\\bparadox of tolerance\\b",
         "\\btolerance paradox\\b",
         "\\bintoleran(ce|t) of (the )?intoleran(ce|t)\\b",
-        "\\btolerat(e|ing) (the )?intolerant\\b",
+        "\\btolerat(e|ing) (the )?intolerant\\b"
+      ]
+    },
+    tolerance_talk: {
+      icon: "\u{1F54A}\uFE0F",
+      color: "#26a69a",
+      name: "Demanding Tolerance",
+      description: '"Tolerance" spans a ladder of very different asks: being left in peace, being accepted, or being endorsed \u2014 and demands for it rarely say which rung is meant. Underneath sits a reciprocity question philosophers from Popper to Rawls have worked on: tolerance functions as a mutual arrangement among those who extend it to each other.',
+      implication: `Two opposite distortions ride on the ambiguity. A plea to be left in peace gets recast as "demanding you endorse us" \u2014 raising the rung to make the ask sound aggressive. And a movement working to curtail others' freedom claims the same protection ("you're persecuting us for our beliefs") \u2014 invoking the reciprocity it refuses to extend, the reversal move at the heart of the paradox of tolerance.`,
+      suggestion: "Ask which rung is actually being asked for \u2014 peace, acceptance, or endorsement \u2014 and whether the one asking extends the same to others.",
+      examples: `"They're demanding tolerance" \u2014 to live unbothered, or to be agreed with? Those are different demands, and the sentence rarely says.`,
+      words: [
         "\\bdemand(s|ed|ing)? tolerance\\b",
         "\\bpreach(es|ed|ing)? tolerance\\b"
       ]
@@ -5774,7 +5800,8 @@
       }
       const ask = cfg.suggestion || biasConfig.suggestion;
       if (ask) {
-        content += `<div class="hover-card-suggestion"><strong>Worth asking:</strong> ${ask}</div>`;
+        const askText = ask.replace(/^Ask\s+/i, "");
+        content += `<div class="hover-card-suggestion"><strong>Worth asking:</strong> ${askText}</div>`;
       }
       content += `</div>`;
       return content;

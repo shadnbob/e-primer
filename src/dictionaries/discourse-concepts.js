@@ -21,15 +21,27 @@ export const discourseConceptsWords = {
         icon: '🤝',
         color: '#5c6bc0',
         name: 'Paradox of Tolerance',
-        description: 'From Karl Popper\'s The Open Society and Its Enemies (1945): "unlimited tolerance must lead to the disappearance of tolerance." The meme version stops there. Popper\'s footnote continues: intolerant philosophies should be countered by argument and public opinion as long as that works — he reserved suppression for movements that reject rational debate and answer arguments with violence.',
-        implication: 'The paradox gets invoked as a finished argument, but it does not answer the hard question — who counts as intolerant, judged by whom, by what standard — which is decided *before* the paradox applies and is where the actual disagreement lives. Both failure modes are real: unlimited tolerance can shelter movements that would end it, and an elastic definition of "intolerance" can license excluding ordinary disagreement.',
+        description: 'From Karl Popper\'s The Open Society and Its Enemies (1945): "unlimited tolerance must lead to the disappearance of tolerance" — because a movement that rejects tolerance can use its protections (speech, assembly, due process) to grow until it can abolish them for everyone else. The meme version stops at the slogan. Popper\'s footnote continues: intolerant philosophies should be countered by argument and public opinion as long as that works — he reserved suppression for movements that reject rational debate and answer arguments with violence.',
+        implication: 'The paradox gets invoked as a finished argument, but it does not answer the hard question — who counts as intolerant, judged by whom, by what standard — which is decided <em>before</em> the paradox applies and is where the actual disagreement lives. Both failure modes are real: unlimited tolerance can shelter movements that would end it, and an elastic definition of "intolerance" can license excluding ordinary disagreement.',
         suggestion: 'Ask what specific conduct is called intolerant, whether argument and public opinion have failed, and who gets to decide — the paradox itself settles none of these.',
-        examples: '"We must be intolerant of intolerance" — of violent rejection of debate (Popper\'s case), or of a position the speaker opposes?',
+        examples: 'The classic case: "we don\'t want that ethnicity here" → "then your movement can\'t organize here" → "you\'re persecuting us for our beliefs." The persecution claim invokes the very tolerance the movement exists to end — the hypocrisy that powers the paradox.',
         words: [
             "\\bparadox of tolerance\\b",
             "\\btolerance paradox\\b",
             "\\bintoleran(ce|t) of (the )?intoleran(ce|t)\\b",
-            "\\btolerat(e|ing) (the )?intolerant\\b",
+            "\\btolerat(e|ing) (the )?intolerant\\b"
+        ]
+    },
+
+    tolerance_talk: {
+        icon: '🕊️',
+        color: '#26a69a',
+        name: 'Demanding Tolerance',
+        description: '"Tolerance" spans a ladder of very different asks: being left in peace, being accepted, or being endorsed — and demands for it rarely say which rung is meant. Underneath sits a reciprocity question philosophers from Popper to Rawls have worked on: tolerance functions as a mutual arrangement among those who extend it to each other.',
+        implication: 'Two opposite distortions ride on the ambiguity. A plea to be left in peace gets recast as "demanding you endorse us" — raising the rung to make the ask sound aggressive. And a movement working to curtail others\' freedom claims the same protection ("you\'re persecuting us for our beliefs") — invoking the reciprocity it refuses to extend, the reversal move at the heart of the paradox of tolerance.',
+        suggestion: 'Ask which rung is actually being asked for — peace, acceptance, or endorsement — and whether the one asking extends the same to others.',
+        examples: '"They\'re demanding tolerance" — to live unbothered, or to be agreed with? Those are different demands, and the sentence rarely says.',
+        words: [
             "\\bdemand(s|ed|ing)? tolerance\\b",
             "\\bpreach(es|ed|ing)? tolerance\\b"
         ]

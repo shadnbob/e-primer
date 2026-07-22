@@ -19,8 +19,8 @@ export const econTermsWords = {
         icon: '📈',
         color: '#6d4c41',
         name: 'Inflation Is a Rate',
-        description: 'Inflation measures how fast prices are *rising*. "Inflation is falling" therefore means prices are rising more slowly — not that prices are falling (that would be deflation, which is rare and brings its own problems).',
-        implication: 'During 2021–24 this confusion was everywhere: headlines celebrated "falling inflation" while readers wondered why groceries still cost more, because the price *level* kept the earlier increases. Disinflation (a slowing rate) and deflation (falling prices) are different phenomena with nearly identical-sounding coverage.',
+        description: 'Inflation measures how fast prices are <em>rising</em>. "Inflation is falling" therefore means prices are rising more slowly — not that prices are falling (that would be deflation, which is rare and brings its own problems).',
+        implication: 'During 2021–24 this confusion was everywhere: headlines celebrated "falling inflation" while readers wondered why groceries still cost more, because the price <em>level</em> kept the earlier increases. Disinflation (a slowing rate) and deflation (falling prices) are different phenomena with nearly identical-sounding coverage.',
         suggestion: 'Ask whether the sentence is about the rate of change or the level of prices — and over what period.',
         examples: '"Inflation fell to 3%" — prices are still rising 3% a year, on top of every previous increase.',
         words: [

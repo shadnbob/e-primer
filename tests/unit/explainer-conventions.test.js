@@ -95,10 +95,31 @@ describe('Explainer conventions (all isExplainer types)', () => {
     // The teaching content is all there…
     expect(html).toContain('Popper');
     expect(html).toContain('1945');
+    // …the scaffold states the paradox plainly for zero-knowledge readers…
+    expect(html).toContain('cannot extend unlimited tolerance');
+    // …the label doesn't stutter into the imperative ("Worth asking: Ask…")…
+    expect(html).not.toContain('Worth asking:</strong> Ask');
     // …and the warning vocabulary is gone from explainer cards
     expect(html).not.toContain('Implication:');
     expect(html).not.toContain('When to be concerned:');
     expect(html).not.toContain('Look for:');
+  });
+
+  test('config content contains no stray markdown emphasis', () => {
+    // Cards render config strings as raw HTML, so *word* shows its
+    // asterisks; emphasis must use <em> tags
+    const offenders = [];
+    const scan = (value, path) => {
+      if (typeof value === 'string') {
+        if (/\*[a-z]+\*/i.test(value)) offenders.push(path);
+      } else if (Array.isArray(value)) {
+        value.forEach((v, i) => scan(v, `${path}[${i}]`));
+      } else if (value && typeof value === 'object') {
+        for (const [key, v] of Object.entries(value)) scan(v, `${path}.${key}`);
+      }
+    };
+    for (const config of Object.values(BiasConfig.BIAS_TYPES)) scan(config, config.id);
+    expect(offenders).toEqual([]);
   });
 
   test('bias-type cards keep the warning layout', () => {
@@ -163,8 +184,12 @@ describe('Discourse Concepts detection', () => {
 
   test('families detect and attribute', () => {
     expect(subsOf('They invoked the paradox of tolerance to justify the ban.')).toContain('tolerance_paradox');
+    // Tolerance-talk triggers are their own family now: the Popper card
+    // presumes the paradox was invoked, which "demanding tolerance" isn't
     expect(subsOf('Critics demanding tolerance were accused of preaching tolerance selectively.'))
-      .toEqual(expect.arrayContaining(['tolerance_paradox']));
+      .toEqual(expect.arrayContaining(['tolerance_talk']));
+    expect(subsOf('Critics demanding tolerance were accused of preaching tolerance selectively.'))
+      .not.toContain('tolerance_paradox');
     expect(subsOf('We must be intolerant of intolerance, the pamphlet said.')).toContain('tolerance_paradox');
     expect(subsOf('That is a slippery slope argument, and the thin end of the wedge.'))
       .toEqual(expect.arrayContaining(['slippery_slope']));
@@ -186,7 +211,7 @@ describe('Discourse Concepts detection', () => {
   test('phrases match across source line breaks', () => {
     // HTML text nodes preserve the source's wrapping, so multi-word phrases
     // must tolerate newlines and indentation between words
-    expect(subsOf('a community demanding\n                tolerance must act')).toContain('tolerance_paradox');
+    expect(subsOf('a community demanding\n                tolerance must act')).toContain('tolerance_talk');
     expect(subsOf('cited the paradox\nof tolerance in the ruling')).toContain('tolerance_paradox');
   });
 });
