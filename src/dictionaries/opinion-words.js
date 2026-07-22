@@ -154,7 +154,7 @@ export const opinionWords = {
                 "bipartisan"
             ],
             2: [
-                "progressive", "conservative", "liberal", "fringe",
+                "progressive",  "fringe",
                 "establishment", "anti-establishment", "populist", "elitist",
                 "partisan", "divisive", "polarizing", "contentious", "provocative"
             ],

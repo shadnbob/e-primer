@@ -2,6 +2,7 @@
 import { BiasDetector } from './BiasDetector.js';
 import { BiasConfig } from '../config/BiasConfig.js';
 import { getPopupManager } from '../utils/PopupManager.js';
+import { storageGet, storageSet } from '../utils/settings-storage.js';
 
 // Main content script using the refactored BiasDetector
 (function() {
@@ -48,11 +49,7 @@ import { getPopupManager } from '../utils/PopupManager.js';
         list.push(term);
 
         lastSettings = { ...lastSettings, ignoredWords: list };
-        try {
-            chrome.storage.sync.set({ ignoredWords: list });
-        } catch (e) {
-            console.warn('Could not persist ignored word:', e && e.message);
-        }
+        storageSet({ ignoredWords: list });
         const detectorSettings = { ...lastSettings, enableAnalysis: effectiveEnable(lastSettings) };
         biasDetector.updateSettings(detectorSettings);
     }
@@ -106,24 +103,11 @@ import { getPopupManager } from '../utils/PopupManager.js';
             }, 500);
         }
 
+        // storageGet handles per-area failures internally (falling back to
+        // defaults for that area), so stored settings win whenever either
+        // area is readable; Firefox supports the same callback-style API
         try {
-            if (typeof browser !== 'undefined' && browser.storage && browser.storage.sync) {
-                browser.storage.sync.get(defaultSettings)
-                    .then(applySettingsAndStart)
-                    .catch(error => {
-                        console.warn('Storage get failed (promise):', error);
-                        startWithDefaults();
-                    });
-            } else {
-                chrome.storage.sync.get(defaultSettings, (items) => {
-                    if (chrome.runtime.lastError) {
-                        console.warn('Storage get failed:', chrome.runtime.lastError);
-                        startWithDefaults();
-                        return;
-                    }
-                    applySettingsAndStart(items);
-                });
-            }
+            storageGet(defaultSettings, applySettingsAndStart);
         } catch (error) {
             console.warn('Storage API error:', error);
             startWithDefaults();
@@ -245,7 +229,7 @@ import { getPopupManager } from '../utils/PopupManager.js';
             biasDetector.settings.enableAnalysis = true;
             
             // Persist enabled state to storage so popup toggle stays in sync
-            chrome.storage.sync.set({ enableAnalysis: true });
+            storageSet({ enableAnalysis: true });
             
             // Small delay to ensure DOM is settled after highlight removal
             await new Promise(resolve => setTimeout(resolve, 50));
@@ -283,7 +267,7 @@ import { getPopupManager } from '../utils/PopupManager.js';
         biasDetector.settings.enableAnalysis = false;
         
         // Persist disabled state to storage so popup toggle stays in sync
-        chrome.storage.sync.set({ enableAnalysis: false });
+        storageSet({ enableAnalysis: false });
         
         const stats = biasDetector.getStats();
         

@@ -11,6 +11,7 @@
 
 import { BiasConfig } from '../config/BiasConfig.js';
 import { escapeHtml, sanitizeColor } from '../utils/sanitize.js';
+import { storageGet, storageSet, storageRemove } from '../utils/settings-storage.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     let currentSettings = {};
@@ -29,15 +30,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const defaults = Object.assign({}, BiasConfig.getDefaultSettings());
             customGroups.forEach(g => { defaults[g.settingKey] = g.enabled !== false; });
 
-            chrome.storage.sync.get(defaults, function(items) {
+            storageGet(defaults, function(items) {
                 currentSettings = items;
                 renderAll();
             });
         });
     }
 
-    function saveSettings(done) {
-        chrome.storage.sync.set(currentSettings, function() {
+    // Writes only the changed keys — a full currentSettings snapshot could
+    // clobber keys changed elsewhere since this page loaded
+    function saveSettings(patch, done) {
+        storageSet(patch, function() {
             broadcast({ action: 'updateSettings', settings: currentSettings });
             if (done) done();
         });
@@ -51,8 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const m = g.id.match(/_(\d+)$/);
             if (m) maxCounter = Math.max(maxCounter, parseInt(m[1], 10));
         });
+        const settingsPatch = {};
+        customGroups.forEach(g => { settingsPatch[g.settingKey] = currentSettings[g.settingKey] !== false; });
         chrome.storage.local.set({ customGroups: { version: 1, idCounter: maxCounter, groups } }, function() {
-            chrome.storage.sync.set(currentSettings, function() {
+            storageSet(settingsPatch, function() {
                 broadcast({ action: 'reloadCustomDictionaries' });
                 if (done) done();
             });
@@ -122,27 +127,27 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('input[name="siteMode"]').forEach(input => {
         input.addEventListener('change', e => {
             currentSettings.siteMode = e.target.value === 'ondemand' ? 'ondemand' : 'auto';
-            saveSettings();
+            saveSettings({ siteMode: currentSettings.siteMode });
         });
     });
 
     document.querySelectorAll('input[name="density"]').forEach(input => {
         input.addEventListener('change', e => {
             currentSettings.highlightDensity = e.target.value;
-            saveSettings();
+            saveSettings({ highlightDensity: e.target.value });
         });
     });
 
     document.getElementById('saveSites').addEventListener('click', () => {
         currentSettings.disabledSites = parseLines(document.getElementById('disabledSites').value);
         document.getElementById('disabledSites').value = currentSettings.disabledSites.join('\n');
-        saveSettings(() => flash('sitesSaved'));
+        saveSettings({ disabledSites: currentSettings.disabledSites }, () => flash('sitesSaved'));
     });
 
     document.getElementById('saveIgnored').addEventListener('click', () => {
         currentSettings.ignoredWords = parseLines(document.getElementById('ignoredWords').value);
         document.getElementById('ignoredWords').value = currentSettings.ignoredWords.join('\n');
-        saveSettings(() => flash('ignoredSaved'));
+        saveSettings({ ignoredWords: currentSettings.ignoredWords }, () => flash('ignoredSaved'));
     });
 
     // ---- custom dictionary CRUD ------------------------------------------
@@ -229,7 +234,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!confirm('Delete this custom group?')) return;
         const removed = customGroups.find(g => g.id === editingGroupId);
         customGroups = customGroups.filter(g => g.id !== editingGroupId);
-        if (removed) delete currentSettings[removed.settingKey];
+        if (removed) {
+            delete currentSettings[removed.settingKey];
+            storageRemove([removed.settingKey]);
+        }
         saveCustomGroups(() => {
             renderGroupList();
             closeEditor();

@@ -171,6 +171,15 @@ export class PopupManager {
         this.popup.style.opacity = '1';
         this.popup.style.visibility = 'visible';
         this.isVisible = true;
+
+        // Fresh open: don't inherit the previous card's scroll position
+        // (scrollTop only sticks once the popup is displayed; the expanded
+        // section is the styled scroller, the others are belt-and-braces)
+        this.popup.scrollTop = 0;
+        this.contentContainer.scrollTop = 0;
+        this.contentContainer.querySelectorAll('.hover-card-expanded').forEach(el => {
+            el.scrollTop = 0;
+        });
         
         // Ensure popup is above all other elements
         this.popup.style.zIndex = '999999';

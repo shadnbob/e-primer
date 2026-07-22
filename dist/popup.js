@@ -2903,6 +2903,53 @@
     return /^#[0-9a-fA-F]{6}$/.test(String(color)) ? color : "#e67e22";
   }
 
+  // src/utils/settings-storage.js
+  function storageSet(patch, done) {
+    let pending = 2;
+    const finish = () => {
+      pending -= 1;
+      if (pending === 0 && done)
+        done();
+    };
+    const writeArea = (area, label) => {
+      try {
+        area.set(patch, () => {
+          if (chrome.runtime.lastError) {
+            console.warn(`e-primer: storage.${label}.set failed:`, chrome.runtime.lastError.message);
+          }
+          finish();
+        });
+      } catch (e) {
+        console.warn(`e-primer: storage.${label}.set threw:`, e && e.message);
+        finish();
+      }
+    };
+    writeArea(chrome.storage.sync, "sync");
+    writeArea(chrome.storage.local, "local");
+  }
+  function storageGet(defaults, done) {
+    const readArea = (area, keys, label, cb) => {
+      try {
+        area.get(keys, (items) => {
+          if (chrome.runtime.lastError) {
+            console.warn(`e-primer: storage.${label}.get failed:`, chrome.runtime.lastError.message);
+            cb({});
+            return;
+          }
+          cb(items || {});
+        });
+      } catch (e) {
+        console.warn(`e-primer: storage.${label}.get threw:`, e && e.message);
+        cb({});
+      }
+    };
+    readArea(chrome.storage.sync, defaults, "sync", (syncItems) => {
+      readArea(chrome.storage.local, Object.keys(defaults), "local", (localItems) => {
+        done(Object.assign({}, defaults, syncItems, localItems));
+      });
+    });
+  }
+
   // src/popup/popup-dynamic.js
   document.addEventListener("DOMContentLoaded", function() {
     const settingsManager = new SettingsManager();
@@ -2969,7 +3016,7 @@
       customGroups.forEach(function(g) {
         defaults[g.settingKey] = g.enabled !== false;
       });
-      chrome.storage.sync.get(defaults, function(items) {
+      storageGet(defaults, function(items) {
         currentSettings = items;
         settingsLoaded = true;
         updateUI();
@@ -3011,7 +3058,7 @@
           if (!this.checked)
             sites.push(host);
           currentSettings.disabledSites = sites;
-          chrome.storage.sync.set(currentSettings, function() {
+          storageSet({ disabledSites: sites }, function() {
             sendSettingsToContentScript();
           });
         });
@@ -3022,7 +3069,7 @@
           if (isUpdating || !settingsLoaded)
             return;
           currentSettings.siteMode = this.checked ? "auto" : "ondemand";
-          chrome.storage.sync.set(currentSettings, function() {
+          storageSet({ siteMode: currentSettings.siteMode }, function() {
             sendSettingsToContentScript();
           });
         });
@@ -3034,7 +3081,7 @@
           if (isUpdating || !settingsLoaded)
             return;
           currentSettings.highlightDensity = event.target.value;
-          chrome.storage.sync.set(currentSettings, function() {
+          storageSet({ highlightDensity: event.target.value }, function() {
             sendSettingsToContentScript();
           });
         });
@@ -3109,13 +3156,13 @@
       }
     }
     function handleToggleChange(event) {
-      if (isUpdating)
+      if (isUpdating || !settingsLoaded)
         return;
       const toggleId = event.target.id;
       const settingKey = toggleMappings[toggleId];
       if (settingKey) {
         currentSettings[settingKey] = event.target.checked;
-        chrome.storage.sync.set(currentSettings, function() {
+        storageSet({ [settingKey]: event.target.checked }, function() {
           sendSettingsToContentScript();
         });
       }
@@ -3226,6 +3273,7 @@
           continue;
         sectionToggle.addEventListener("change", function() {
           const checked = this.checked;
+          const patch = {};
           isUpdating = true;
           childToggleIds.forEach((childId) => {
             const childToggle = document.getElementById(childId);
@@ -3234,11 +3282,12 @@
               const settingKey = toggleMappings[childId];
               if (settingKey) {
                 currentSettings[settingKey] = checked;
+                patch[settingKey] = checked;
               }
             }
           });
           isUpdating = false;
-          chrome.storage.sync.set(currentSettings, function() {
+          storageSet(patch, function() {
             sendSettingsToContentScript();
           });
         });
@@ -3263,6 +3312,7 @@
         const subToggleIds = Object.keys(biasType.subCategories).map((subId) => `${biasType.id}_${subId}Toggle`);
         parentToggle.addEventListener("change", function() {
           const checked = this.checked;
+          const patch = {};
           isUpdating = true;
           subToggleIds.forEach((subToggleId) => {
             const subToggle = document.getElementById(subToggleId);
@@ -3272,6 +3322,7 @@
               const settingKey = toggleMappings[subToggleId];
               if (settingKey) {
                 currentSettings[settingKey] = checked;
+                patch[settingKey] = checked;
               }
             }
           });
@@ -3280,6 +3331,9 @@
             group.classList.toggle("disabled", !checked);
           }
           isUpdating = false;
+          storageSet(patch, function() {
+            sendSettingsToContentScript();
+          });
         });
         subToggleIds.forEach((subToggleId) => {
           const subToggle = document.getElementById(subToggleId);
@@ -3341,7 +3395,7 @@
     function handleModeChange(event) {
       const newMode = event.target.value;
       currentSettings.analysisMode = newMode;
-      chrome.storage.sync.set(currentSettings, function() {
+      storageSet({ analysisMode: newMode }, function() {
         sendSettingsToContentScript();
         updateStatusText();
       });
@@ -3466,7 +3520,7 @@
             group.enabled = enabled;
           currentSettings[settingKey] = enabled;
           saveCustomGroups();
-          chrome.storage.sync.set(currentSettings, function() {
+          storageSet({ [settingKey]: enabled }, function() {
             sendSettingsToContentScript();
           });
         });

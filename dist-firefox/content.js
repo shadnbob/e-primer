@@ -2781,8 +2781,6 @@
         ],
         2: [
           "progressive",
-          "conservative",
-          "liberal",
           "fringe",
           "establishment",
           "anti-establishment",
@@ -5986,6 +5984,11 @@
       this.popup.style.opacity = "1";
       this.popup.style.visibility = "visible";
       this.isVisible = true;
+      this.popup.scrollTop = 0;
+      this.contentContainer.scrollTop = 0;
+      this.contentContainer.querySelectorAll(".hover-card-expanded").forEach((el) => {
+        el.scrollTop = 0;
+      });
       this.popup.style.zIndex = "999999";
       setTimeout(() => {
         this.adjustPositionIfNeeded();
@@ -8145,6 +8148,53 @@
     }
   };
 
+  // src/utils/settings-storage.js
+  function storageSet(patch, done) {
+    let pending = 2;
+    const finish = () => {
+      pending -= 1;
+      if (pending === 0 && done)
+        done();
+    };
+    const writeArea = (area, label) => {
+      try {
+        area.set(patch, () => {
+          if (chrome.runtime.lastError) {
+            console.warn(`e-primer: storage.${label}.set failed:`, chrome.runtime.lastError.message);
+          }
+          finish();
+        });
+      } catch (e) {
+        console.warn(`e-primer: storage.${label}.set threw:`, e && e.message);
+        finish();
+      }
+    };
+    writeArea(chrome.storage.sync, "sync");
+    writeArea(chrome.storage.local, "local");
+  }
+  function storageGet(defaults, done) {
+    const readArea = (area, keys, label, cb) => {
+      try {
+        area.get(keys, (items) => {
+          if (chrome.runtime.lastError) {
+            console.warn(`e-primer: storage.${label}.get failed:`, chrome.runtime.lastError.message);
+            cb({});
+            return;
+          }
+          cb(items || {});
+        });
+      } catch (e) {
+        console.warn(`e-primer: storage.${label}.get threw:`, e && e.message);
+        cb({});
+      }
+    };
+    readArea(chrome.storage.sync, defaults, "sync", (syncItems) => {
+      readArea(chrome.storage.local, Object.keys(defaults), "local", (localItems) => {
+        done(Object.assign({}, defaults, syncItems, localItems));
+      });
+    });
+  }
+
   // src/content/content-script.js
   (function() {
     "use strict";
@@ -8179,11 +8229,7 @@
         return;
       list.push(term);
       lastSettings = { ...lastSettings, ignoredWords: list };
-      try {
-        chrome.storage.sync.set({ ignoredWords: list });
-      } catch (e) {
-        console.warn("Could not persist ignored word:", e && e.message);
-      }
+      storageSet({ ignoredWords: list });
       const detectorSettings = { ...lastSettings, enableAnalysis: effectiveEnable(lastSettings) };
       biasDetector.updateSettings(detectorSettings);
     }
@@ -8229,21 +8275,7 @@
         }, 500);
       }
       try {
-        if (typeof browser !== "undefined" && browser.storage && browser.storage.sync) {
-          browser.storage.sync.get(defaultSettings).then(applySettingsAndStart).catch((error) => {
-            console.warn("Storage get failed (promise):", error);
-            startWithDefaults();
-          });
-        } else {
-          chrome.storage.sync.get(defaultSettings, (items) => {
-            if (chrome.runtime.lastError) {
-              console.warn("Storage get failed:", chrome.runtime.lastError);
-              startWithDefaults();
-              return;
-            }
-            applySettingsAndStart(items);
-          });
-        }
+        storageGet(defaultSettings, applySettingsAndStart);
       } catch (error) {
         console.warn("Storage API error:", error);
         startWithDefaults();
@@ -8337,7 +8369,7 @@
         biasDetector.disconnectObserver();
         biasDetector.clearHighlights();
         biasDetector.settings.enableAnalysis = true;
-        chrome.storage.sync.set({ enableAnalysis: true });
+        storageSet({ enableAnalysis: true });
         await new Promise((resolve) => setTimeout(resolve, 50));
         const stats = await biasDetector.forceAnalyze();
         biasDetector.setupMutationObserver();
@@ -8365,7 +8397,7 @@
       biasDetector.disconnectObserver();
       biasDetector.clearHighlights();
       biasDetector.settings.enableAnalysis = false;
-      chrome.storage.sync.set({ enableAnalysis: false });
+      storageSet({ enableAnalysis: false });
       const stats = biasDetector.getStats();
       sendResponse({
         success: true,

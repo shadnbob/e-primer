@@ -2534,6 +2534,76 @@
     return /^#[0-9a-fA-F]{6}$/.test(String(color)) ? color : "#e67e22";
   }
 
+  // src/utils/settings-storage.js
+  function storageSet(patch, done) {
+    let pending = 2;
+    const finish = () => {
+      pending -= 1;
+      if (pending === 0 && done)
+        done();
+    };
+    const writeArea = (area, label) => {
+      try {
+        area.set(patch, () => {
+          if (chrome.runtime.lastError) {
+            console.warn(`e-primer: storage.${label}.set failed:`, chrome.runtime.lastError.message);
+          }
+          finish();
+        });
+      } catch (e) {
+        console.warn(`e-primer: storage.${label}.set threw:`, e && e.message);
+        finish();
+      }
+    };
+    writeArea(chrome.storage.sync, "sync");
+    writeArea(chrome.storage.local, "local");
+  }
+  function storageRemove(keys, done) {
+    let pending = 2;
+    const finish = () => {
+      pending -= 1;
+      if (pending === 0 && done)
+        done();
+    };
+    const removeArea = (area, label) => {
+      try {
+        area.remove(keys, () => {
+          if (chrome.runtime.lastError) {
+            console.warn(`e-primer: storage.${label}.remove failed:`, chrome.runtime.lastError.message);
+          }
+          finish();
+        });
+      } catch (e) {
+        console.warn(`e-primer: storage.${label}.remove threw:`, e && e.message);
+        finish();
+      }
+    };
+    removeArea(chrome.storage.sync, "sync");
+    removeArea(chrome.storage.local, "local");
+  }
+  function storageGet(defaults, done) {
+    const readArea = (area, keys, label, cb) => {
+      try {
+        area.get(keys, (items) => {
+          if (chrome.runtime.lastError) {
+            console.warn(`e-primer: storage.${label}.get failed:`, chrome.runtime.lastError.message);
+            cb({});
+            return;
+          }
+          cb(items || {});
+        });
+      } catch (e) {
+        console.warn(`e-primer: storage.${label}.get threw:`, e && e.message);
+        cb({});
+      }
+    };
+    readArea(chrome.storage.sync, defaults, "sync", (syncItems) => {
+      readArea(chrome.storage.local, Object.keys(defaults), "local", (localItems) => {
+        done(Object.assign({}, defaults, syncItems, localItems));
+      });
+    });
+  }
+
   // src/options/options.js
   document.addEventListener("DOMContentLoaded", function() {
     let currentSettings = {};
@@ -2547,14 +2617,14 @@
         customGroups.forEach((g) => {
           defaults[g.settingKey] = g.enabled !== false;
         });
-        chrome.storage.sync.get(defaults, function(items) {
+        storageGet(defaults, function(items) {
           currentSettings = items;
           renderAll();
         });
       });
     }
-    function saveSettings(done) {
-      chrome.storage.sync.set(currentSettings, function() {
+    function saveSettings(patch, done) {
+      storageSet(patch, function() {
         broadcast({ action: "updateSettings", settings: currentSettings });
         if (done)
           done();
@@ -2569,8 +2639,12 @@
         if (m)
           maxCounter = Math.max(maxCounter, parseInt(m[1], 10));
       });
+      const settingsPatch = {};
+      customGroups.forEach((g) => {
+        settingsPatch[g.settingKey] = currentSettings[g.settingKey] !== false;
+      });
       chrome.storage.local.set({ customGroups: { version: 1, idCounter: maxCounter, groups } }, function() {
-        chrome.storage.sync.set(currentSettings, function() {
+        storageSet(settingsPatch, function() {
           broadcast({ action: "reloadCustomDictionaries" });
           if (done)
             done();
@@ -2632,24 +2706,24 @@
     document.querySelectorAll('input[name="siteMode"]').forEach((input) => {
       input.addEventListener("change", (e) => {
         currentSettings.siteMode = e.target.value === "ondemand" ? "ondemand" : "auto";
-        saveSettings();
+        saveSettings({ siteMode: currentSettings.siteMode });
       });
     });
     document.querySelectorAll('input[name="density"]').forEach((input) => {
       input.addEventListener("change", (e) => {
         currentSettings.highlightDensity = e.target.value;
-        saveSettings();
+        saveSettings({ highlightDensity: e.target.value });
       });
     });
     document.getElementById("saveSites").addEventListener("click", () => {
       currentSettings.disabledSites = parseLines(document.getElementById("disabledSites").value);
       document.getElementById("disabledSites").value = currentSettings.disabledSites.join("\n");
-      saveSettings(() => flash("sitesSaved"));
+      saveSettings({ disabledSites: currentSettings.disabledSites }, () => flash("sitesSaved"));
     });
     document.getElementById("saveIgnored").addEventListener("click", () => {
       currentSettings.ignoredWords = parseLines(document.getElementById("ignoredWords").value);
       document.getElementById("ignoredWords").value = currentSettings.ignoredWords.join("\n");
-      saveSettings(() => flash("ignoredSaved"));
+      saveSettings({ ignoredWords: currentSettings.ignoredWords }, () => flash("ignoredSaved"));
     });
     function openEditor(groupId) {
       editingGroupId = groupId || null;
@@ -2736,8 +2810,10 @@
         return;
       const removed = customGroups.find((g) => g.id === editingGroupId);
       customGroups = customGroups.filter((g) => g.id !== editingGroupId);
-      if (removed)
+      if (removed) {
         delete currentSettings[removed.settingKey];
+        storageRemove([removed.settingKey]);
+      }
       saveCustomGroups(() => {
         renderGroupList();
         closeEditor();

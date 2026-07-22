@@ -3,6 +3,7 @@
 import { SettingsManager } from './SettingsManager.js';
 import { PopupGenerator } from './PopupGenerator.js';
 import { escapeHtml, sanitizeColor } from '../utils/sanitize.js';
+import { storageGet, storageSet } from '../utils/settings-storage.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     // All bias/excellence/subcategory metadata comes from BiasConfig
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             defaults[g.settingKey] = g.enabled !== false;
         });
 
-        chrome.storage.sync.get(defaults, function(items) {
+        storageGet(defaults, function(items) {
             currentSettings = items;
             settingsLoaded = true;
             updateUI();
@@ -133,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     : [];
                 if (!this.checked) sites.push(host);
                 currentSettings.disabledSites = sites;
-                chrome.storage.sync.set(currentSettings, function() {
+                storageSet({ disabledSites: sites }, function() {
                     sendSettingsToContentScript();
                 });
             });
@@ -144,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
             autoRunToggle.addEventListener('change', function() {
                 if (isUpdating || !settingsLoaded) return;
                 currentSettings.siteMode = this.checked ? 'auto' : 'ondemand';
-                chrome.storage.sync.set(currentSettings, function() {
+                storageSet({ siteMode: currentSettings.siteMode }, function() {
                     sendSettingsToContentScript();
                 });
             });
@@ -156,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             input.addEventListener('change', function(event) {
                 if (isUpdating || !settingsLoaded) return;
                 currentSettings.highlightDensity = event.target.value;
-                chrome.storage.sync.set(currentSettings, function() {
+                storageSet({ highlightDensity: event.target.value }, function() {
                     sendSettingsToContentScript();
                 });
             });
@@ -242,17 +243,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleToggleChange(event) {
-        if (isUpdating) return;
-        
+        if (isUpdating || !settingsLoaded) return;
+
         const toggleId = event.target.id;
         const settingKey = toggleMappings[toggleId];
-        
+
         if (settingKey) {
             currentSettings[settingKey] = event.target.checked;
-            
-            // Save to storage
-            chrome.storage.sync.set(currentSettings, function() {
-                // Send message to content script
+
+            // Save only the changed key: full-snapshot writes could clobber
+            // keys changed elsewhere (e.g. ignoredWords added mid-session)
+            storageSet({ [settingKey]: event.target.checked }, function() {
                 sendSettingsToContentScript();
             });
         }
@@ -380,8 +381,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Handle section toggle change
             sectionToggle.addEventListener('change', function() {
                 const checked = this.checked;
+                const patch = {};
                 isUpdating = true;
-                
+
                 childToggleIds.forEach(childId => {
                     const childToggle = document.getElementById(childId);
                     if (childToggle) {
@@ -389,14 +391,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         const settingKey = toggleMappings[childId];
                         if (settingKey) {
                             currentSettings[settingKey] = checked;
+                            patch[settingKey] = checked;
                         }
                     }
                 });
-                
+
                 isUpdating = false;
-                
+
                 // Save and send to content script
-                chrome.storage.sync.set(currentSettings, function() {
+                storageSet(patch, function() {
                     sendSettingsToContentScript();
                 });
             });
@@ -426,8 +429,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             parentToggle.addEventListener('change', function() {
                 const checked = this.checked;
+                const patch = {};
                 isUpdating = true;
-                
+
                 subToggleIds.forEach(subToggleId => {
                     const subToggle = document.getElementById(subToggleId);
                     if (subToggle) {
@@ -436,16 +440,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         const settingKey = toggleMappings[subToggleId];
                         if (settingKey) {
                             currentSettings[settingKey] = checked;
+                            patch[settingKey] = checked;
                         }
                     }
                 });
-                
+
                 const group = document.querySelector(`.subcategory-group[data-parent="${biasType.id}"]`);
                 if (group) {
                     group.classList.toggle('disabled', !checked);
                 }
-                
+
                 isUpdating = false;
+
+                // handleToggleChange (attached first) only saved the parent
+                // key — and did so before this listener updated the children,
+                // so subcategory states never persisted. Save them here.
+                storageSet(patch, function() {
+                    sendSettingsToContentScript();
+                });
             });
             
             subToggleIds.forEach(subToggleId => {
@@ -514,9 +526,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleModeChange(event) {
         const newMode = event.target.value;
         currentSettings.analysisMode = newMode;
-        
-        // Save to storage
-        chrome.storage.sync.set(currentSettings, function() {
+
+        storageSet({ analysisMode: newMode }, function() {
             // Send updated settings to content script
             sendSettingsToContentScript();
             updateStatusText();
@@ -662,7 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 currentSettings[settingKey] = enabled;
                 saveCustomGroups();
-                chrome.storage.sync.set(currentSettings, function() {
+                storageSet({ [settingKey]: enabled }, function() {
                     sendSettingsToContentScript();
                 });
             });
