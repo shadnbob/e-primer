@@ -22,6 +22,20 @@ const flatDictionaries = {
     probability: require('../dictionaries/probability-language.js').probabilityLanguage
 };
 
+// Explainer dictionaries: subcategory-keyed like `dictionaries`, but their
+// cards render the teaching sequence (see HoverContentGenerator) instead of
+// the warning format
+const explainerDictionaries = {
+    spectrum: require('../dictionaries/spectrum-labels.js').spectrumWords,
+    scistats: require('../dictionaries/science-stats.js').sciStatsWords,
+    isms: require('../dictionaries/political-isms.js').politicalIsmsWords,
+    civics: require('../dictionaries/civic-terms.js').civicTermsWords,
+    econterms: require('../dictionaries/econ-terms.js').econTermsWords,
+    epistemics: require('../dictionaries/epistemic-terms.js').epistemicTermsWords,
+    debate: require('../dictionaries/discourse-concepts.js').discourseConceptsWords,
+    fallacy: require('../dictionaries/logical-fallacies.js').logicalFallaciesWords
+};
+
 class ReferencePageGenerator {
     // Flatten intensity-grouped words { 1: [...], 2: [...], 3: [...] } into a flat array
     flattenWords(words) {
@@ -30,7 +44,9 @@ class ReferencePageGenerator {
         return [];
     }
 
-    generate() {
+    // variant: 'docs' (GitHub Pages, default) or 'extension' (bundled
+    // info.html — no site chrome, footer links out to the hosted copy)
+    generate(variant = 'docs') {
         const categories = BiasConfig.CATEGORIES;
         const biasTypes = BiasConfig.BIAS_TYPES;
         const excellenceTypes = BiasConfig.EXCELLENCE_TYPES;
@@ -59,7 +75,7 @@ class ReferencePageGenerator {
         let totalSubcategories = 0;
         for (const config of Object.values(biasTypes)) {
             if (config.subCategories) {
-                const dict = dictionaries[config.id];
+                const dict = dictionaries[config.id] || explainerDictionaries[config.id];
                 if (dict) {
                     totalSubcategories += Object.keys(config.subCategories).length;
                     for (const sub of Object.values(dict)) {
@@ -72,7 +88,7 @@ class ReferencePageGenerator {
             }
         }
 
-        return this.renderPage(categorySections, excellenceSection, tocItems, Object.values(biasTypes).length, totalSubcategories, totalWords);
+        return this.renderPage(categorySections, excellenceSection, tocItems, Object.values(biasTypes).length, totalSubcategories, totalWords, variant);
     }
 
     slug(str) {
@@ -100,10 +116,13 @@ class ReferencePageGenerator {
     renderBiasType(config) {
         const hasSubCats = config.subCategories && Object.keys(config.subCategories).length > 0;
         const dict = dictionaries[config.id];
+        const explainerDict = explainerDictionaries[config.id];
         const flat = flatDictionaries[config.id];
 
         let wordsHtml = '';
-        if (hasSubCats && dict) {
+        if (hasSubCats && config.isExplainer && explainerDict) {
+            wordsHtml = this.renderExplainerSubcategories(config, explainerDict);
+        } else if (hasSubCats && dict) {
             wordsHtml = this.renderSubcategories(config, dict);
         } else if (flat) {
             const displayWords = this.expandFlatPatterns(flat);
@@ -113,9 +132,14 @@ class ReferencePageGenerator {
             </div>`;
         }
 
-        const wordCount = hasSubCats && dict
-            ? Object.values(dict).reduce((n, s) => n + (s.words ? this.flattenWords(s.words).length : 0), 0)
-            : (flat ? this.expandFlatPatterns(flat).length : 0);
+        let wordCount = 0;
+        if (hasSubCats && config.isExplainer && explainerDict) {
+            wordCount = Object.values(explainerDict).reduce((n, s) => n + (s.words ? s.words.length : 0), 0);
+        } else if (hasSubCats && dict) {
+            wordCount = Object.values(dict).reduce((n, s) => n + (s.words ? this.flattenWords(s.words).length : 0), 0);
+        } else if (flat) {
+            wordCount = this.expandFlatPatterns(flat).length;
+        }
         const subCount = hasSubCats ? Object.keys(config.subCategories).length : 0;
 
         const meta = subCount > 0
@@ -156,6 +180,87 @@ class ReferencePageGenerator {
             </details>`;
         }
         return html;
+    }
+
+    // Explainer cards teach a contested term rather than flag a problem, so
+    // they render the same teaching sequence as the hover cards (scaffold →
+    // history → usage → solid → shaky → example → question). Body fields are
+    // trusted config-authored HTML (<em> emphasis), matching the hover cards.
+    renderExplainerSubcategories(config, dict) {
+        let html = '';
+        for (const [subId, subMeta] of Object.entries(config.subCategories)) {
+            const dictEntry = dict[subId];
+            const words = dictEntry && dictEntry.words ? dictEntry.words : [];
+            const chips = words.map(w => this.displayExplainerPattern(w)).filter(Boolean);
+            const stripped = subMeta.suggestion ? subMeta.suggestion.replace(/^Ask\s+/i, '') : '';
+            const ask = stripped ? stripped.charAt(0).toUpperCase() + stripped.slice(1) : '';
+
+            const teachRow = (label, body, cls = '') => body
+                ? `<div class="teach ${cls}"><span class="teach-label">${label}:</span> ${body}</div>`
+                : '';
+
+            html += `
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">${subMeta.icon}</span>
+                    <strong style="color: ${subMeta.color}">${this.esc(subMeta.name)}</strong>
+                    <span class="word-count">${words.length}</span>
+                </summary>
+                ${subMeta.basicTip ? `<p class="sub-tip">${subMeta.basicTip}</p>` : ''}
+                ${teachRow('Where it comes from', subMeta.description)}
+                ${teachRow('How it gets used', subMeta.implication)}
+                ${teachRow('On solid ground', subMeta.whenAcceptable, 'solid')}
+                ${teachRow('On shaky ground', subMeta.whenConcerning, 'shaky')}
+                ${teachRow('For instance', subMeta.examples)}
+                ${teachRow('Worth asking', ask)}
+                <div class="word-list">
+                    ${chips.map(w => `<span class="word">${this.esc(w)}</span>`).join(' ')}
+                </div>
+            </details>`;
+        }
+        return html;
+    }
+
+    // Turn an explainer trigger regex string into one readable representative
+    // phrase for the chip list: drop lookarounds and word boundaries, take the
+    // first alternative of required groups, drop optional groups
+    displayExplainerPattern(raw) {
+        let s = this.stripLookarounds(String(raw));
+        s = s
+            .replace(/\\b/g, '')
+            .replace(/\\s\+/g, ' ')
+            .replace(/\(\?:/g, '(');
+        // Optional single characters and optional groups vanish; required
+        // groups keep their first alternative
+        s = s.replace(/\(([^()]*)\)\?/g, '');
+        s = s.replace(/\(([^()]*)\)/g, (m, inner) => inner.split('|')[0]);
+        s = s.replace(/\[([^\]]+)\]/g, (m, inner) => inner[0]);
+        s = s.replace(/(\w)\?/g, '');
+        s = s
+            .replace(/[?*+\\]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+        return s;
+    }
+
+    // Remove balanced (?!...) / (?=...) / (?<!...) groups, including nested parens
+    stripLookarounds(s) {
+        let out = '';
+        let i = 0;
+        while (i < s.length) {
+            if (s[i] === '(' && /^\(\?[<]?[!=]/.test(s.slice(i, i + 4))) {
+                let depth = 0;
+                while (i < s.length) {
+                    if (s[i] === '(') depth++;
+                    else if (s[i] === ')') { depth--; if (depth === 0) { i++; break; } }
+                    i++;
+                }
+            } else {
+                out += s[i];
+                i++;
+            }
+        }
+        return out;
     }
 
     renderExcellenceSection(configTypes) {
@@ -370,7 +475,30 @@ class ReferencePageGenerator {
             .replace(/"/g, '&quot;');
     }
 
-    renderPage(categorySections, excellenceSection, tocItems, typeCount, subCount, wordCount) {
+    renderPage(categorySections, excellenceSection, tocItems, typeCount, subCount, wordCount, variant = 'docs') {
+        const isExtension = variant === 'extension';
+        const backLink = isExtension
+            ? ''
+            : `<a href="./" class="back-link">&larr; Back to E-Prime Bias Detector</a>\n        `;
+        const footer = isExtension
+            ? `<footer class="site-footer">
+    <div class="footer-links">
+        <a href="https://shadnbob.github.io/e-primer/reference.html">Online reference</a>
+        <a href="https://github.com/shadnbob/e-primer">GitHub</a>
+    </div>
+    <p>E-Prime Bias Detector &mdash; built to make language visible.</p>
+    <p class="footer-note">Bundled with the extension &mdash; generated from BiasConfig.js and the pattern dictionaries at build time, so it always matches the installed version.</p>
+</footer>`
+            : `<footer class="site-footer">
+    <div class="footer-links">
+        <a href="./">Home</a>
+        <a href="https://github.com/shadnbob/e-primer">GitHub</a>
+        <a href="https://github.com/shadnbob/e-primer/issues">Issues</a>
+        <a href="privacy.html">Privacy</a>
+    </div>
+    <p>E-Prime Bias Detector &mdash; built to make language visible.</p>
+    <p class="footer-note">Generated from BiasConfig.js and pattern dictionaries.</p>
+</footer>`;
         return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -637,6 +765,39 @@ class ReferencePageGenerator {
             line-height: 1.8;
         }
 
+        .sub-tip {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink);
+            margin: 0 16px 12px;
+            padding: 10px 14px;
+            background: var(--paper-warm);
+            border-radius: 6px;
+        }
+
+        .teach {
+            font-size: 13.5px;
+            color: var(--blue-gray);
+            margin: 0 16px 10px;
+            line-height: 1.7;
+        }
+
+        .teach em { color: var(--ink); }
+
+        .teach-label {
+            display: block;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+        }
+
+        .teach.solid .teach-label { color: var(--green); }
+        .teach.shaky .teach-label { color: var(--accent); }
+
+        .subcategory .word-list { margin-top: 4px; }
+
         .guidance-label {
             font-weight: 600;
             font-size: 11px;
@@ -732,8 +893,7 @@ class ReferencePageGenerator {
 
 <header class="page-header">
     <div class="page-header-inner">
-        <a href="./" class="back-link">&larr; Back to E-Prime Bias Detector</a>
-        <h1>Pattern Reference</h1>
+        ${backLink}<h1>Pattern Reference</h1>
         <p class="subtitle">Complete reference of every detection pattern, category, and subcategory &mdash; generated from source at build time.</p>
         <div class="stats-bar">
             <div class="stat"><div class="stat-number">${typeCount}</div><div class="stat-label">Bias Types</div></div>
@@ -754,16 +914,7 @@ class ReferencePageGenerator {
     </main>
 </div>
 
-<footer class="site-footer">
-    <div class="footer-links">
-        <a href="./">Home</a>
-        <a href="https://github.com/shadnbob/e-primer">GitHub</a>
-        <a href="https://github.com/shadnbob/e-primer/issues">Issues</a>
-        <a href="privacy.html">Privacy</a>
-    </div>
-    <p>E-Prime Bias Detector &mdash; built to make language visible.</p>
-    <p class="footer-note">Generated from BiasConfig.js and pattern dictionaries.</p>
-</footer>
+${footer}
 
 </body>
 </html>`;

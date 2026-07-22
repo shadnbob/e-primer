@@ -430,7 +430,8 @@ export class HoverContentGenerator {
         // strip the leading Ask.
         const ask = cfg.suggestion || biasConfig.suggestion;
         if (ask) {
-            const askText = ask.replace(/^Ask\s+/i, '');
+            const stripped = ask.replace(/^Ask\s+/i, '');
+            const askText = stripped.charAt(0).toUpperCase() + stripped.slice(1);
             content += `<div class="hover-card-suggestion"><strong>Worth asking:</strong> ${askText}</div>`;
         }
 

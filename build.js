@@ -149,7 +149,9 @@ function generateCSS(targetName) {
   }
 }
 
-// Generate reference page into docs/ (GitHub Pages)
+// Generate reference page into docs/ (GitHub Pages) and info.html at the
+// repo root (the extension's bundled "Learn about detection categories"
+// page — copyStaticFiles then carries it into each dist)
 function generateReferencePage() {
   try {
     console.log('Generating reference page for docs/...');
@@ -162,6 +164,10 @@ function generateReferencePage() {
     const htmlPath = path.join(docsDir, 'reference.html');
     fs.writeFileSync(htmlPath, html);
     console.log('Generated docs/reference.html');
+
+    const infoHtml = generator.generate('extension');
+    fs.writeFileSync(path.join(__dirname, 'info.html'), infoHtml);
+    console.log('Generated info.html (extension variant)');
   } catch (error) {
     console.error('Error generating reference page:', error);
   }
@@ -232,15 +238,16 @@ async function build() {
     
     // Ensure directories exist
     ensureDirectories(targets);
-    
+
+    // Generate reference page + info.html first: copyStaticFiles (inside
+    // buildTarget) carries the fresh info.html into each dist
+    generateReferencePage();
+
     // Build each target
     for (const t of targets) {
       await buildTarget(t);
     }
-    
-    // Generate reference page (once, into docs/)
-    generateReferencePage();
-    
+
   } catch (error) {
     console.error('Build failed:', error);
     process.exit(1);

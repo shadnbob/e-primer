@@ -264,6 +264,39 @@
             line-height: 1.8;
         }
 
+        .sub-tip {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink);
+            margin: 0 16px 12px;
+            padding: 10px 14px;
+            background: var(--paper-warm);
+            border-radius: 6px;
+        }
+
+        .teach {
+            font-size: 13.5px;
+            color: var(--blue-gray);
+            margin: 0 16px 10px;
+            line-height: 1.7;
+        }
+
+        .teach em { color: var(--ink); }
+
+        .teach-label {
+            display: block;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+        }
+
+        .teach.solid .teach-label { color: var(--green); }
+        .teach.shaky .teach-label { color: var(--accent); }
+
+        .subcategory .word-list { margin-top: 4px; }
+
         .guidance-label {
             font-weight: 600;
             font-size: 11px;
@@ -364,8 +397,8 @@
         <p class="subtitle">Complete reference of every detection pattern, category, and subcategory &mdash; generated from source at build time.</p>
         <div class="stats-bar">
             <div class="stat"><div class="stat-number">23</div><div class="stat-label">Bias Types</div></div>
-            <div class="stat"><div class="stat-number">40</div><div class="stat-label">Subcategories</div></div>
-            <div class="stat"><div class="stat-number">1271</div><div class="stat-label">Patterns</div></div>
+            <div class="stat"><div class="stat-number">81</div><div class="stat-label">Subcategories</div></div>
+            <div class="stat"><div class="stat-number">1482</div><div class="stat-label">Patterns</div></div>
         </div>
     </div>
 </header>
@@ -1196,73 +1229,770 @@
         <div class="bias-type" id="type-spectrum" style="border-left-color: #7e57c2">
             <div class="bias-type-header">
                 <h3>Political Spectrum Labels</h3>
-                <span class="meta">3 subcategories &middot; 0 patterns</span>
+                <span class="meta">3 subcategories &middot; 37 patterns</span>
             </div>
             <p class="description">Left/Right and Liberal/Conservative labels that mean different things to different people</p>
             
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🧭</span>
+                    <strong style="color: #7e57c2">Left / Right</strong>
+                    <span class="word-count">20</span>
+                </summary>
+                <p class="sub-tip">Left/Right labels compress many separate questions into one axis and shift meaning across countries and eras.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Left and Right as political directions — a metaphor inherited from seating in the French National Assembly of 1789, where supporters of the king sat to the president's right and revolutionaries to his left.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The spectrum compresses many independent questions (economic, cultural, institutional) into a single axis, and its content shifts by country and era — positions called "right" in one nation may be called "left" in another. Prefixes like "far-" and "radical" often work to delegitimize rather than to locate.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When describing self-identified movements, a party's internal wings, or a defined coalition</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When "the left/the right" stands in for an unnamed everyone, or "far-/radical" is used to dismiss rather than describe</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "The left opposes this" — which parties, movements, or thinkers? On what grounds? Would they accept the label?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which specific positions, parties, or movements are meant. Where possible, name policies and stances instead of directions.</div>
+                <div class="word-list">
+                    <span class="word">left-wing</span> <span class="word">right-wing</span> <span class="word">leftist</span> <span class="word">leftists</span> <span class="word">rightist</span> <span class="word">rightists</span> <span class="word">far-left</span> <span class="word">far-right</span> <span class="word">alt-right</span> <span class="word">ultra-left</span> <span class="word">ultra-right</span> <span class="word">center-left</span> <span class="word">center-right</span> <span class="word">centre-left</span> <span class="word">centre-right</span> <span class="word">left-leaning</span> <span class="word">right-leaning</span> <span class="word">far left</span> <span class="word">left wing</span> <span class="word">the left</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">📜</span>
+                    <strong style="color: #26a69a">Liberal</strong>
+                    <span class="word-count">8</span>
+                </summary>
+                <p class="sub-tip">"Liberal" means free markets and limited government in the classical sense, social-welfare progressivism in modern American usage — near-opposite meanings.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> "Liberal" (from Latin liber, "free") has carried near-opposite meanings: classical liberalism — individual rights, free markets, limited government (Locke, Smith, Mill) — versus modern American usage, where since the New Deal it has meant social-welfare progressivism. "Neoliberal" confusingly revives the free-market sense, mostly as a critics' term for deregulation and privatization.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> In much of Europe, Latin America, and Australia, "liberal" still leans market-oriented — Australia's Liberal Party sits center-right. A sentence about "liberals" can assert opposite things depending on where the writer and the reader learned the word, and as an epithet it attributes a single belief to a vast, varied group.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the tradition or group is specified, or in proper names ("Liberal Democrats")</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When used as a catch-all epithet or when the intended tradition is ambiguous</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Liberals believe X" — American progressives? Classical liberals? A specific party? "Liberal democracy" uses the classical sense.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Identify which tradition is meant, or name the actual policy, party, or group instead of the label.</div>
+                <div class="word-list">
+                    <span class="word">liberals</span> <span class="word">liberalism</span> <span class="word">neoliberal</span> <span class="word">neoliberals</span> <span class="word">neoliberalism</span> <span class="word">illiberal</span> <span class="word">classical liberal</span> <span class="word">liberal</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🏛️</span>
+                    <strong style="color: #8d6e63">Conservative</strong>
+                    <span class="word-count">9</span>
+                </summary>
+                <p class="sub-tip">A "conservative" defends whatever is established where they live — the content of the label varies by country and era.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Conservatism, articulated by Edmund Burke in reaction to the French Revolution, names a disposition: preserving established institutions, preferring gradual change, and distrusting wholesale redesign of society. Its prefixed forms name specific movements that can cut against that disposition — neoconservatism was an interventionist US foreign-policy tendency, paleoconservatism a traditionalist, non-interventionist one.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> What is being conserved differs completely by time and place — monarchy in one country, free markets in another, a secular constitution in a third — so the label names a posture toward change, not a fixed platform. Used as a monolith ("conservatives want…"), it erases those differences and substitutes identity for argument.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When naming self-identified groups, parties, or a specified tradition</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When treating diverse traditions as one bloc, or using the label as an insult or badge instead of an argument</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Conservatives oppose this" — which movement, party, or tradition? (Note: "a conservative estimate" is an unrelated sense of the word.)</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What, specifically, is being conserved, and which policies or groups are actually meant.</div>
+                <div class="word-list">
+                    <span class="word">conservatism</span> <span class="word">neoconservative</span> <span class="word">neoconservatives</span> <span class="word">neocon</span> <span class="word">neocons</span> <span class="word">paleoconservative</span> <span class="word">ultraconservative</span> <span class="word">arch-conservative</span> <span class="word">conservative</span>
+                </div>
+            </details>
         </div>
 
         <div class="bias-type" id="type-scistats" style="border-left-color: #546e7a">
             <div class="bias-type-header">
                 <h3>Science &amp; Statistics</h3>
-                <span class="meta">6 subcategories &middot; 0 patterns</span>
+                <span class="meta">6 subcategories &middot; 39 patterns</span>
             </div>
             <p class="description">Research and statistics phrases that often mean less (or more) than they seem</p>
             
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🔬</span>
+                    <strong style="color: #5c6bc0">Proof &amp; &quot;The Science&quot;</strong>
+                    <span class="word-count">9</span>
+                </summary>
+                <p class="sub-tip">"Theory" means a hunch in conversation but the best-tested kind of explanation in science; "proven" claims more certainty than empirical science delivers.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> In science, a "theory" is the strongest kind of explanation — a framework repeatedly tested against evidence (germ theory, the theory of gravity) — while in everyday speech it means a hunch. And empirical science does not "prove" claims the way mathematics does; it accumulates evidence and fails to falsify.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> "Just a theory" uses the everyday sense to dismiss well-tested science. "Scientifically proven," "settled science," and "the science says" invoke Science as a single settled authority — often claiming more certainty than the underlying studies support, in either direction.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> In casual speech about everyday hunches, or where a claim really is formally provable</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When "theory" dismisses tested science, or "proven"/"the science says" ends scrutiny of a claim or product</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Evolution is just a theory" (so is gravity); "clinically proven" (in which trial, against what comparison?)</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What the actual evidence is: how many studies, of what kind, on whom, and how consistent the results are.</div>
+                <div class="word-list">
+                    <span class="word">just a theory</span> <span class="word">unproven theory</span> <span class="word">scientifically proven</span> <span class="word">proven fact</span> <span class="word">science prove</span> <span class="word">the science is settled</span> <span class="word">settled science</span> <span class="word">trust the science</span> <span class="word">studies prove</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">📊</span>
+                    <strong style="color: #00897b">Statistical Significance</strong>
+                    <span class="word-count">3</span>
+                </summary>
+                <p class="sub-tip">Statistically "significant" means a result this large would be unlikely if there were no real effect — not that the effect is big or important.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> In statistics, "significant" means that if nothing were really going on, a result this large would be unlikely — conventionally under a 5% probability (p < 0.05). It says nothing about size or importance: a tiny, practically meaningless effect can be statistically significant in a large study.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Reporting routinely lets the statistical meaning borrow the everyday meaning ("large, important"), making trivial effects sound consequential. The reverse also misleads: a "non-significant" result in a small study is not proof of no effect.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> In technical writing where the statistical sense is explicit and quantified</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When "significant" implies importance without an effect size</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Significantly higher risk" might mean 1.0% → 1.1%. Ask: how much higher, from what baseline?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Look for the effect size: how big is the difference, in absolute terms, for real people?</div>
+                <div class="word-list">
+                    <span class="word">statistically significant</span> <span class="word">statistical significance</span> <span class="word">significant increase</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🔗</span>
+                    <strong style="color: #7e57c2">Linked &amp; Associated</strong>
+                    <span class="word-count">7</span>
+                </summary>
+                <p class="sub-tip">"Linked to" means two things move together — not that one causes the other.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> "Linked to," "associated with," and "correlated with" report that two things move together — not that one causes the other.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Association headlines invite causal conclusions the underlying study cannot support: confounding (ice-cream sales and drownings both rise in summer), reverse causation, and selection effects all produce correlations without causation. "May cause" stacks a hedge on top of an association.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When explicitly presented as correlational, with confounders discussed</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When an association is framed to imply cause, or the study design goes unmentioned</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Coffee linked to longer life" — or do healthier people happen to drink more coffee?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What kind of study produced the claim (randomized trial vs. observational) and what else could explain the association.</div>
+                <div class="word-list">
+                    <span class="word">linked to</span> <span class="word">associated with</span> <span class="word">correlate with</span> <span class="word">a link between</span> <span class="word">an association between</span> <span class="word">may cause</span> <span class="word">may increase the risk</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">⚖️</span>
+                    <strong style="color: #6d4c41">Relative vs Absolute Risk</strong>
+                    <span class="word-count">5</span>
+                </summary>
+                <p class="sub-tip">Relative risk ("twice as likely") is meaningless without the baseline — doubling a tiny risk is still tiny.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> "Doubles the risk" and "50% more likely" are relative changes; they say nothing about the starting point. Doubling a one-in-a-million risk is still two in a million.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Relative risk is the standard way to make a health headline dramatic: it makes small dangers sound alarming and modest benefits sound miraculous. The absolute change — from what, to what — is what actually matters for decisions.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When absolute numbers accompany it ("from 1.0% to 1.4%")</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When only the relative change is given and the baseline is missing</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Doubles the risk" — of a 1-in-100 event or a 1-in-a-million event? "From 1.0% to 1.4%" is the honest form.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Find the base rate: from what, to what, out of how many people?</div>
+                <div class="word-list">
+                    <span class="word">double risk</span> <span class="word">twice as likely</span> <span class="word">d% more likely</span> <span class="word">increased risk</span> <span class="word">raise risk</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🔍</span>
+                    <strong style="color: #546e7a">No Evidence</strong>
+                    <span class="word-count">4</span>
+                </summary>
+                <p class="sub-tip">"No evidence" ranges from "thoroughly checked, not true" to "nobody has looked." Ask which.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> "No evidence that X" can mean anything from "well studied, and X does not happen" to "nobody has looked yet." Absence of evidence is only evidence of absence when someone has actually searched, hard, where the evidence would be.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The phrase serves both responsible debunking and premature dismissal: early in any question, "no evidence" is trivially true and tells you nothing. It can also launder uncertainty into reassurance — "no evidence of harm" is not "evidence of safety."</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When paired with the state of the research ("three large trials found no effect")</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When "no evidence" stands in for "we checked and it is false" without saying who checked, or dismisses a question nobody has studied</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "No evidence of side effects" — after how many patients, and how much follow-up?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Whether anyone has looked, how hard, and what they would have found if the claim were true.</div>
+                <div class="word-list">
+                    <span class="word">no evidence</span> <span class="word">no scientific basis</span> <span class="word">no known link</span> <span class="word">no data to suggest</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🌿</span>
+                    <strong style="color: #689f38">Natural &amp; Chemical-Free</strong>
+                    <span class="word-count">11</span>
+                </summary>
+                <p class="sub-tip">"Chemical-free" and "toxins" are marketing words — toxicity lives in the dose, not the origin.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Everything is chemicals — water, air, apples. "Chemical-free," "toxins," "all-natural," and "detox" are marketing categories, not scientific ones; toxicity is a property of dose, not of a substance's origin.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Purity language sells safety by category: natural-therefore-safe and synthetic-therefore-dangerous are both false (arsenic and botulinum toxin are natural; vitamin C is synthesized). Unnamed "toxins" cannot be checked, and healthy livers and kidneys already handle metabolic waste.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> Supervised medical detoxification is a real clinical term, and "natural" has defined regulatory meanings in some labeling contexts</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When purity words substitute for naming substances and doses, especially in selling</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Chemical-free cleaning spray" (it is made of chemicals); "flushes out toxins" (which ones, measured how?)</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which substance, at what dose, compared to what — and what specifically a "toxin" or "detox" refers to.</div>
+                <div class="word-list">
+                    <span class="word">chemical-free</span> <span class="word">free of chemicals</span> <span class="word">no chemicals</span> <span class="word">toxins</span> <span class="word">toxin-free</span> <span class="word">detox</span> <span class="word">all-natural</span> <span class="word">100% natural</span> <span class="word">natural remedy</span> <span class="word">superfood</span> <span class="word">clean eating</span>
+                </div>
+            </details>
         </div>
 
         <div class="bias-type" id="type-isms" style="border-left-color: #607d8b">
             <div class="bias-type-header">
                 <h3>Political -isms</h3>
-                <span class="meta">5 subcategories &middot; 0 patterns</span>
+                <span class="meta">5 subcategories &middot; 28 patterns</span>
             </div>
             <p class="description">System-words (socialism, capitalism, fascism, populism, nationalism) whose referents differ between speakers</p>
             
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🏭</span>
+                    <strong style="color: #607d8b">Socialism</strong>
+                    <span class="word-count">6</span>
+                </summary>
+                <p class="sub-tip">"Socialism" spans Marxist state ownership to welfare-state social democracy — the word alone does not say which.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> A 19th-century term whose core meaning — social or collective ownership of the means of production — now spans a huge range: Marxist state ownership, democratic socialism (an electoral route, itself contested), and social democracy (a market economy with a large welfare state, technically a different tradition).</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The same word covers the Soviet economy and a public library. In US discourse, Nordic countries are routinely called socialist while their own governments describe them as market economies with strong safety nets. Used as an epithet, "socialism" attaches the record of one variant to proposals from another.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the specific tradition or institutions are named, or groups self-describe</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When one variant's record is attached to a different variant's proposal, or the word ends the argument</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "That policy is socialism" — state ownership of industry, or a tax-funded service like roads and fire departments?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which institutions are actually proposed or described: who would own what, decided by whom?</div>
+                <div class="word-list">
+                    <span class="word">socialism</span> <span class="word">socialists</span> <span class="word">socialistic</span> <span class="word">socialist</span> <span class="word">democratic socialism</span> <span class="word">social democracy</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🏦</span>
+                    <strong style="color: #6d4c41">Capitalism</strong>
+                    <span class="word-count">6</span>
+                </summary>
+                <p class="sub-tip">"Capitalism" can mean markets in principle or the actual economy in practice — arguments often mix the two.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Popularized largely by its critics (Marx wrote of the "capitalist mode of production"; the noun spread later through writers like Sombart and Weber), "capitalism" can mean the minimal definition — private ownership and market exchange — or the entire actually-existing economy with its subsidies, monopolies, and regulations.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Defenders often argue for the textbook model of free exchange while critics attack the existing arrangement (or vice versa), so both sides can be right about different referents. Qualifiers like "crony capitalism" and "late capitalism" (a scholarly term from Sombart and Mandel, now mostly ironic) signal that a specific variant is meant — or just add color.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the referent is specified: a policy, an industry structure, a named arrangement</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When praise or blame switches between the ideal model and the existing system without saying so</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Capitalism causes X" / "capitalism lifted millions from poverty" — the same word, often two different systems.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Whether the claim is about markets in principle or about the current economy in practice — they support different conclusions.</div>
+                <div class="word-list">
+                    <span class="word">capitalism</span> <span class="word">capitalistic</span> <span class="word">late-capitalism</span> <span class="word">crony capitalism</span> <span class="word">free-market</span> <span class="word">capitalist</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">📚</span>
+                    <strong style="color: #455a64">Fascism</strong>
+                    <span class="word-count">5</span>
+                </summary>
+                <p class="sub-tip">"Fascism" was Mussolini's ultranationalist, one-party, leader-cult movement and its interwar kin; in casual use it now often just intensifies disapproval.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Historically, the movement founded by Mussolini in Italy (in power 1922–43) and, by extension, kindred interwar regimes: ultranationalism, a one-party state, a cult of the leader, suppression of opposition, and glorification of violence. Scholars (Paxton, Griffin, Eco) still debate the precise defining features.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Outside historical and scholarly use, the word drifts toward a generic intensifier for any disliked authority — Orwell observed as early as 1944 that it had become "almost entirely meaningless" in casual use. Calling something fascist ends analysis: it asserts the conclusion instead of showing which specific features apply.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> For the historical movements, self-described groups, or analysis that states its criteria</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the label substitutes for naming concrete features, ending analysis</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "That policy is fascist" — which element: the leader cult? one-party rule? political violence? Or is it simply disliked?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which concrete features are being claimed — and whether the same evidence is offered, or just the label.</div>
+                <div class="word-list">
+                    <span class="word">fascism</span> <span class="word">fascist</span> <span class="word">fascists</span> <span class="word">fascistic</span> <span class="word">neo-fascism</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">📣</span>
+                    <strong style="color: #7e57c2">Populism</strong>
+                    <span class="word-count">3</span>
+                </summary>
+                <p class="sub-tip">"Populism" frames politics as a virtuous "the people" against a corrupt "elite" — descriptive in scholarship, usually an insult in headlines.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Named for the US People's Party of the 1890s. In political science it describes a style, found on both left and right, that frames politics as a virtuous "the people" against a corrupt "elite" (Mudde calls it a "thin" ideology that attaches to others).</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> In headlines the word often just means "popular and irresponsible" or "demagogic" — a way to dismiss a movement without engaging its claims. The scholarly sense is descriptive; the journalistic sense is usually pejorative, and readers rarely know which one they are getting.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> In the political-science sense with the people/elite framing made explicit</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the label dismisses a movement without engaging its actual claims</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Populist economic policy" — described, or dismissed? The label alone does not say what the policy is.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What the labeled movement actually proposes, and who is being cast as "the people" and "the elite."</div>
+                <div class="word-list">
+                    <span class="word">populism</span> <span class="word">populist</span> <span class="word">populists</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🗺️</span>
+                    <strong style="color: #00838f">Nationalism &amp; Globalism</strong>
+                    <span class="word-count">8</span>
+                </summary>
+                <p class="sub-tip">"Nationalist" spans self-determination to chauvinism; "globalist" spans trade policy to conspiracy trope.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Nationalism ranges from a founding principle of modern states (self-determination movements) to aggressive supremacy; Orwell distinguished patriotism (devotion to a place and way of life) from nationalism (competitive prestige-seeking). "Globalism" is its shifting antonym.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Both words work as boundary markers more than descriptions. "Globalist" in particular ranges from a neutral label for supporters of international institutions and trade to conspiracy tropes — the ambiguity itself is why the word inflames. "Nationalist" likewise spans self-determination and chauvinism.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> For self-described movements, or when the specific policies and institutions are stated</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When either word insinuates loyalty or conspiracy without naming policies or people</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Globalist agenda" — trade agreements and treaties, or an insinuated hidden cabal? The sentence rarely says.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which policies or loyalties are actually meant, and whether the person described would accept the label.</div>
+                <div class="word-list">
+                    <span class="word">nationalism</span> <span class="word">nationalist</span> <span class="word">nationalists</span> <span class="word">nationalistic</span> <span class="word">globalism</span> <span class="word">globalist</span> <span class="word">globalists</span> <span class="word">ultranationalism</span>
+                </div>
+            </details>
         </div>
 
         <div class="bias-type" id="type-civics" style="border-left-color: #5c6bc0">
             <div class="bias-type-header">
                 <h3>Speech &amp; Civic Terms</h3>
-                <span class="meta">4 subcategories &middot; 0 patterns</span>
+                <span class="meta">4 subcategories &middot; 22 patterns</span>
             </div>
             <p class="description">Legal standards and civic values whose legal sense and cultural sense get swapped mid-argument</p>
             
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🗣️</span>
+                    <strong style="color: #5c6bc0">Free Speech</strong>
+                    <span class="word-count">4</span>
+                </summary>
+                <p class="sub-tip">"Free speech" names both a legal right against government and a cultural value — arguments often swap the two.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Two related but distinct things share the name: a legal right — in the US, the First Amendment, which restrains <em>government</em> ("Congress shall make no law…") — and a broader cultural value of open discourse defended in its own right, by Milton in 1644 and Mill in 1859, independent of any constitution.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The most common collapse online: one person argues the law (a platform or employer is not the government, so no right was violated) while the other argues the value (a culture of sanction chills discourse regardless of who applies it). Both senses are legitimate; treating them as one produces arguments where both sides are right about different things.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the speaker specifies law or value, or the state really is the actor</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the legal and cultural senses trade places mid-argument</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "They violated my free speech" — did a government act, or did a private party decline to host or associate?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which sense is in play: a legal claim about state power, or a cultural claim about norms of open discourse?</div>
+                <div class="word-list">
+                    <span class="word">free speech</span> <span class="word">freedom of speech</span> <span class="word">freedom of expression</span> <span class="word">first amendment</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">✂️</span>
+                    <strong style="color: #8d6e63">Censorship</strong>
+                    <span class="word-count">6</span>
+                </summary>
+                <p class="sub-tip">State suppression, platform moderation, editorial choice, and criticism differ in power and remedy — "censorship" covers them all.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Historically, suppression by authority — licensing regimes and prior restraint (Milton's Areopagitica argued against them in 1644). The word now stretches across state suppression, platform moderation, editorial judgment, and sometimes mere criticism.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> State censorship, platform moderation, editorial selection, and social pushback differ enormously in power and remedy — a government can imprison, a platform can remove, an editor can decline, a critic can only object. The single word erases those differences. Whether large platforms' moderation <em>should</em> be treated like public censorship is a genuine, unsettled debate; the word alone does not resolve it.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the actor and the power exercised are specified</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the word equates very different powers, or stands in for naming who did what</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "They censored me" — a takedown? a declined submission? a ban? disagreement? Each is a different claim.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Who exercised what power, with what alternatives left to the speaker — and what remedy is actually being proposed.</div>
+                <div class="word-list">
+                    <span class="word">censorship</span> <span class="word">censored</span> <span class="word">censoring</span> <span class="word">self-censorship</span> <span class="word">shadow-ban</span> <span class="word">deplatform</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">📜</span>
+                    <strong style="color: #00838f">Rights Claims</strong>
+                    <span class="word-count">4</span>
+                </summary>
+                <p class="sub-tip">Legal rights are enforceable and specific; moral rights are arguments — rights-talk often slides between them.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Rights-talk mixes distinct claims: legal rights (enforceable in some jurisdiction, against some party), moral rights (claims about what ought to be, whatever the law says), and rhetorical entitlement ("I have a right to…" as emphasis).</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> A legal right names who must do what — enforceable, specific, jurisdiction-bound. A moral right is an argument, not a fact about the law. Sliding between them lets a contested "ought" borrow the authority of an established "is," and vice versa: "there's no right to X" may be legally true and morally beside the point.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the claim specifies its kind: a law, a proposed law, or a moral argument</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When a moral claim borrows legal authority, or a legal fact is used to dismiss a moral argument</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "I have a right to say this here" — under law, the host usually decides "here"; the moral claim needs its own defense.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Ask: enforceable where, against whom? And if it is a moral claim, what is the argument for it?</div>
+                <div class="word-list">
+                    <span class="word">i have a right to</span> <span class="word">my rights</span> <span class="word">constitutional right</span> <span class="word">violate my rights</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">⚖️</span>
+                    <strong style="color: #6d4c41">Legal Standards</strong>
+                    <span class="word-count">8</span>
+                </summary>
+                <p class="sub-tip">Courtroom standards bind the state; invoking them elsewhere raises a real fairness question but does not settle it.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Courtroom standards imported into everyday judgment: "innocent until proven guilty" and "due process" govern what the <em>state</em> must do before punishing. "Defamation" (libel if written, slander if spoken) requires a false statement of fact — and in the US, for public officials (and, since 1967, public figures), knowing or reckless falsehood (NYT v. Sullivan, 1964).</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> A boycott is not a verdict and an employer is not a court, so courtroom standards do not transfer automatically — yet the worry behind invoking them (serious consequences without fair process) is a real normative question, not a confusion. "That's slander!" about a true statement or an opinion misuses a term with a precise meaning.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> In actual legal contexts, or when the fairness argument is made on its own terms</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When legal terms assert conclusions ("that's slander") without their elements, or courtroom rules are claimed to bind private actors automatically</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Innocent until proven guilty" — a rule for the state's power to punish; whether private judgment should wait for verdicts is a separate argument.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Whether the standard invoked binds the actor in question — and if not, what fairness is actually being demanded.</div>
+                <div class="word-list">
+                    <span class="word">due process</span> <span class="word">innocent until proven guilty</span> <span class="word">presumption of innocence</span> <span class="word">defamation</span> <span class="word">defamatory</span> <span class="word">libel</span> <span class="word">slander</span> <span class="word">slanderous</span>
+                </div>
+            </details>
         </div>
 
         <div class="bias-type" id="type-econterms" style="border-left-color: #6d4c41">
             <div class="bias-type-header">
                 <h3>Economic Terms</h3>
-                <span class="meta">4 subcategories &middot; 0 patterns</span>
+                <span class="meta">4 subcategories &middot; 21 patterns</span>
             </div>
             <p class="description">Everyday economics vocabulary where a technical meaning differs from how the phrase reads</p>
             
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">📈</span>
+                    <strong style="color: #6d4c41">Inflation Is a Rate</strong>
+                    <span class="word-count">7</span>
+                </summary>
+                <p class="sub-tip">Inflation is a rate: "falling inflation" means prices rising more slowly, not prices falling.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Inflation measures how fast prices are <em>rising</em>. "Inflation is falling" therefore means prices are rising more slowly — not that prices are falling (that would be deflation, which is rare and brings its own problems).</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> During 2021–24 this confusion was everywhere: headlines celebrated "falling inflation" while readers wondered why groceries still cost more, because the price <em>level</em> kept the earlier increases. Disinflation (a slowing rate) and deflation (falling prices) are different phenomena with nearly identical-sounding coverage.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the rate/level distinction is explicit or the numbers are given</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When rate language invites level conclusions ("inflation fell, so prices are back to normal")</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Inflation fell to 3%" — prices are still rising 3% a year, on top of every previous increase.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Whether the sentence is about the rate of change or the level of prices — and over what period.</div>
+                <div class="word-list">
+                    <span class="word">inflation falling</span> <span class="word">falling inflation</span> <span class="word">inflation came down</span> <span class="word">disinflation</span> <span class="word">deflation</span> <span class="word">deflationary</span> <span class="word">hyperinflation</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🏛️</span>
+                    <strong style="color: #546e7a">Deficit vs Debt</strong>
+                    <span class="word-count">5</span>
+                </summary>
+                <p class="sub-tip">The deficit is this year's gap; the debt is the accumulated total. Cutting one still grows the other.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> The deficit is a yearly flow — this year's gap between spending and revenue. The debt is the accumulated stock of all past deficits. Cutting the deficit still grows the debt, just more slowly.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The two get conflated daily, which lets rhetoric mislead in both directions: "we cut the deficit in half" can coexist with record debt, and "the debt hit a record" is nearly always true in a growing economy and says little by itself. Scale also vanishes — figures mean little without comparison to GDP.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When flow, stock, and scale are distinguished</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the words trade places, or figures come without a GDP-scale comparison</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "We halved the deficit" and "the debt hit a record" can both be true in one year: a deficit of $1T (down from $2T) still adds $1T to the debt.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which one is meant — the yearly gap or the accumulated total — and compared to what (last year, GDP, projections)?</div>
+                <div class="word-list">
+                    <span class="word">budget deficit</span> <span class="word">reduce the deficit</span> <span class="word">national debt</span> <span class="word">government debt</span> <span class="word">debt ceiling</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🌡️</span>
+                    <strong style="color: #00838f">Recession &amp; &quot;The Economy&quot;</strong>
+                    <span class="word-count">6</span>
+                </summary>
+                <p class="sub-tip">"Recession" has competing definitions, and "the economy" bundles measures that move in different directions.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> A "recession" has no single agreed definition: the informal rule of thumb (two consecutive quarters of shrinking GDP) differs from the US convention, where the NBER dates recessions after the fact using many indicators. And "the economy" is not one thing — GDP, stock indices, employment, and wages routinely move in different directions.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Whether "we are in a recession" can be genuinely disputed for months, which makes the word a political football. "Good for the economy" often means good for one measure and one group — the stock market is not household income, and GDP growth says nothing about how gains are distributed.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the measure and the definition in use are named</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When one measure stands in for the whole, or the definitional dispute is presented as settled</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "The economy is booming" — GDP? the S&P 500? median wages? All three can point different ways at once.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which measure and whose experience is meant: output, jobs, wages, prices, or portfolios?</div>
+                <div class="word-list">
+                    <span class="word">recession</span> <span class="word">recessions</span> <span class="word">technical recession</span> <span class="word">the economy is booming</span> <span class="word">good for the economy</span> <span class="word">grow the economy</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🏠</span>
+                    <strong style="color: #7e57c2">Middle Class &amp; Records</strong>
+                    <span class="word-count">3</span>
+                </summary>
+                <p class="sub-tip">Nearly everyone self-identifies as middle class, and nominal records are routine — both phrases need numbers.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> "Middle class" has no standard definition — income bands, wealth, occupation, and self-image all give different answers, and in surveys large majorities across very different incomes place themselves in it. "Working class" is contested the same way — occupation and education, or income? "Record profits" and similar records are often nominal: in a growing economy with inflation, records are routine.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Because nearly everyone hears themselves in "the middle class," policies pitched to it can target very different people than the listener imagines. Records reported without inflation adjustment or share-of-revenue context can describe an ordinary year in a bigger economy — or a genuinely extraordinary one; the phrase alone cannot say.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When income ranges or inflation-adjusted comparisons are given</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the class label targets sympathy without boundaries, or records come unadjusted</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Tax relief for the middle class" — which incomes, exactly? "Record profits" — real, or nominal in a larger economy?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What boundaries are meant by the class label, and whether the record is adjusted for inflation and scale.</div>
+                <div class="word-list">
+                    <span class="word">middle-class</span> <span class="word">working-class</span> <span class="word">record profits</span>
+                </div>
+            </details>
         </div>
 
         <div class="bias-type" id="type-epistemics" style="border-left-color: #7e57c2">
             <div class="bias-type-header">
                 <h3>Media &amp; Truth Terms</h3>
-                <span class="meta">4 subcategories &middot; 0 patterns</span>
+                <span class="meta">4 subcategories &middot; 13 patterns</span>
             </div>
             <p class="description">The vocabulary used to talk about truth and coverage itself — words that both describe real phenomena and dismiss opponents</p>
             
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">📰</span>
+                    <strong style="color: #8d6e63">Fake News</strong>
+                    <span class="word-count">1</span>
+                </summary>
+                <p class="sub-tip">"Fake news" named fabricated content, then became an epithet for unwelcome coverage — ask which is meant.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Around 2016 the phrase named something specific: fabricated stories manufactured for clicks and ad revenue. Within roughly a year it had been captured as an epithet for unfavorable coverage — one of the fastest semantic captures on record.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The phrase now points in two directions at once: at genuinely fabricated content, and at accurate-but-unwelcome reporting. Without specification it mostly signals the speaker's stance toward the outlet, not the story's accuracy — and its overuse makes the original, real phenomenon harder to name.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> For genuinely fabricated content, with the fabrication shown</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the phrase dismisses reporting without naming what is false</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "That story is fake news" — fabricated? mistaken in part? accurately reported but unwelcome? Three different claims.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What exactly is claimed to be false — the facts, the framing, or the outlet — and what the evidence is.</div>
+                <div class="word-list">
+                    <span class="word">fake news</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🔀</span>
+                    <strong style="color: #5c6bc0">Mis- &amp; Disinformation</strong>
+                    <span class="word-count">4</span>
+                </summary>
+                <p class="sub-tip">Mis- means false; dis- means deliberately false. Both labels carry claims that need their own evidence.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> In the researcher taxonomy: misinformation is false content spread without intent to deceive; disinformation is false content spread deliberately; malinformation is genuine information deployed to harm. The prefixes carry the intent claim.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> In practice the labels get applied beyond clear falsehood — to contested-but-arguable claims, and sometimes to positions that later became mainstream, which is why the labeling power itself is disputed. Calling something "disinformation" asserts intent to deceive; that is a strong claim that needs its own evidence.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the falsehood is demonstrated and the judging standard is named</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the label substitutes for showing falsehood, or intent is asserted without basis</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Flagged as misinformation" — false by what standard, judged by whom, and has that judgment been revisited?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Two separate questions: is the claim actually false, and who established that? And if intent is asserted, on what basis?</div>
+                <div class="word-list">
+                    <span class="word">misinformation</span> <span class="word">disinformation</span> <span class="word">malinformation</span> <span class="word">fact-check</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🧵</span>
+                    <strong style="color: #00838f">Conspiracy Theory</strong>
+                    <span class="word-count">2</span>
+                </summary>
+                <p class="sub-tip">A "conspiracy theory" explains events as a secret plot — but real plots exist (Watergate), so the test is whether any evidence could disprove the claim, not the label.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Descriptively, a claim that events are best explained by a secret plot. Real conspiracies exist and have been documented (Watergate; the tobacco industry's coordination to obscure smoking risks) — the label is not automatically wrong.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The term does double duty: it describes a reasoning style that resists disproof (missing evidence becomes proof of the cover-up; everything connects), and it dismisses unwelcome claims without examination. The useful question is not the label but the structure: could any evidence count against this claim?</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When describing the unfalsifiable reasoning structure, with examples</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the label ends inquiry into a claim that could be examined</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Just a conspiracy theory" — is the claim unfalsifiable, or merely unwelcome? The label alone cannot say.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Whether the claim is falsifiable and what specific evidence supports it — not whether someone has applied the label.</div>
+                <div class="word-list">
+                    <span class="word">conspiracy theory</span> <span class="word">conspiratorial</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">📡</span>
+                    <strong style="color: #7e57c2">Narratives &amp; &quot;The Media&quot;</strong>
+                    <span class="word-count">6</span>
+                </summary>
+                <p class="sub-tip">"The media" and "the narrative" bundle many actors into one — real patterns underneath need specific naming.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> "The mainstream media" bundles thousands of outlets with different owners, incentives, audiences, and politics into a single actor; "the narrative" implies coverage is a coordinated story rather than the noisier reality of herding, incentives, and error. "Do your own research" ranges from good advice to a dismissal of all expertise.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Monolith-words make coverage claims unfalsifiable: any outlet that contradicts "the narrative" gets excluded from "the media" that supposedly maintains it. Real, studiable phenomena exist underneath — ownership concentration, pack journalism, shared blind spots — but they need naming specifically to be examined at all.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When specific outlets, cases, and incentives are named</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the monolith framing makes the claim unfalsifiable</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "The media won't tell you this" — which outlets? (Often the claim itself comes from a large outlet.)</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which outlets, which claims, and which incentives are actually meant — and what would count as coverage that breaks the pattern.</div>
+                <div class="word-list">
+                    <span class="word">mainstream media</span> <span class="word">legacy media</span> <span class="word">corporate media</span> <span class="word">the narrative</span> <span class="word">push a narrative</span> <span class="word">do your own research</span>
+                </div>
+            </details>
         </div>
 
         <div class="bias-type" id="type-debate" style="border-left-color: #78909c">
             <div class="bias-type-header">
                 <h3>Discourse Concepts</h3>
-                <span class="meta">7 subcategories &middot; 0 patterns</span>
+                <span class="meta">7 subcategories &middot; 17 patterns</span>
             </div>
             <p class="description">Named paradoxes and debate-moves deployed as labels — each names a real move and doubles as a dismissal</p>
             
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🤝</span>
+                    <strong style="color: #5c6bc0">Paradox of Tolerance</strong>
+                    <span class="word-count">4</span>
+                </summary>
+                <p class="sub-tip">A tolerant society cannot extend unlimited tolerance to movements that would use its protections to destroy tolerance itself — Popper's idea, and more qualified than the meme version of it.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> From Karl Popper's The Open Society and Its Enemies (1945): "unlimited tolerance must lead to the disappearance of tolerance" — because a movement that rejects tolerance can use its protections (speech, assembly, due process) to grow until it can abolish them for everyone else. The meme version stops at the slogan. Popper's footnote continues: intolerant philosophies should be countered by argument and public opinion as long as that works — he reserved suppression for movements that reject rational debate and answer arguments with violence.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The paradox gets invoked as a finished argument, but it does not answer the hard question — who counts as intolerant, judged by whom, by what standard — which is decided <em>before</em> the paradox applies and is where the actual disagreement lives. Both failure modes are real: unlimited tolerance can shelter movements that would end it, and an elastic definition of "intolerance" can license excluding ordinary disagreement.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When Popper's actual conditions (rejection of debate, resort to violence) are argued, not assumed</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the paradox is deployed as a finished argument, skipping the who-decides question</div>
+                <div class="teach "><span class="teach-label">For instance:</span> The classic case: "we don't want that ethnicity here" → "then your movement can't organize here" → "you're persecuting us for our beliefs." The persecution claim invokes the very tolerance the movement exists to end — the hypocrisy that powers the paradox.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What specific conduct is called intolerant, whether argument and public opinion have failed, and who gets to decide — the paradox itself settles none of these.</div>
+                <div class="word-list">
+                    <span class="word">paradox of tolerance</span> <span class="word">tolerance paradox</span> <span class="word">intolerance of intolerance</span> <span class="word">tolerate intolerant</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🕊️</span>
+                    <strong style="color: #26a69a">Demanding Tolerance</strong>
+                    <span class="word-count">2</span>
+                </summary>
+                <p class="sub-tip">Demands for "tolerance" can mean leave-in-peace, acceptance, or endorsement — and the claim turns on reciprocity: who extends it back?</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> "Tolerance" spans a ladder of very different asks: being left in peace, being accepted, or being endorsed — and demands for it rarely say which rung is meant. Underneath sits a reciprocity question philosophers from Popper to Rawls have worked on: tolerance functions as a mutual arrangement among those who extend it to each other.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Two opposite distortions ride on the ambiguity. A plea to be left in peace gets recast as "demanding you endorse us" — raising the rung to make the ask sound aggressive. And a movement working to curtail others' freedom claims the same protection ("you're persecuting us for our beliefs") — invoking the reciprocity it refuses to extend, the reversal move at the heart of the paradox of tolerance.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the ask is specific about what is wanted and the reciprocity runs both ways</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the rung is quietly raised to make a plea sound aggressive, or protection is claimed by a project that refuses to extend it</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "They're demanding tolerance" — to live unbothered, or to be agreed with? Those are different demands, and the sentence rarely says.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which rung is actually being asked for — peace, acceptance, or endorsement — and whether the one asking extends the same to others.</div>
+                <div class="word-list">
+                    <span class="word">demand tolerance</span> <span class="word">preach tolerance</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🛝</span>
+                    <strong style="color: #6d4c41">Slippery Slope</strong>
+                    <span class="word-count">2</span>
+                </summary>
+                <p class="sub-tip">A slippery slope says one step will set off a chain ending in some feared outcome — a fallacy when the chain is merely asserted, legitimate when a real mechanism drives it.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Named as a fallacy when a chain from step A to feared outcome Z is asserted without any mechanism. But slope arguments are not automatically fallacious: precedent, incentive shifts, and boundary erosion are real, studiable mechanisms, and courts treat precedent-based slope arguments seriously.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The label cuts both ways: "that's a slippery slope fallacy" can dismiss a legitimate argument about how a rule will actually be extended, while a bare slope claim can smuggle in an unargued chain of dominoes. The difference is whether a mechanism is shown and whether anything plausibly stops the slide.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the mechanism (precedent, incentives) and its limits are actually argued</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When either the slope or the fallacy-label is asserted without examining the mechanism</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Legalize medical marijuana and soon every drug is legal" — by what mechanism, and what stops it? / "Slippery slope fallacy!" — but is a real mechanism (precedent, incentives) being waved away?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> For the mechanism: what specifically carries step one to the feared end, and what would stop it along the way?</div>
+                <div class="word-list">
+                    <span class="word">slippery-slope</span> <span class="word">thin end of the wedge</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">👉</span>
+                    <strong style="color: #00838f">Whataboutism</strong>
+                    <span class="word-count">3</span>
+                </summary>
+                <p class="sub-tip">Pointing at the accuser can be deflection or a fair consistency test — the label alone does not distinguish them.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> A Cold War-era label (Soviet spokesmen answering criticism with "and you are lynching Negroes"-style replies): deflecting a charge by pointing at the accuser's conduct instead of answering. The classical name is tu quoque — "you too."</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The move is real: changing the subject is not a defense, and two wrongs remain two wrongs. But the label also gets used to dodge legitimate consistency challenges — when the accuser's own standard is part of the argument (selective enforcement, hypocrisy in rule-making), the comparison is evidence, not deflection.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the charge is answered first, or the accuser's standard is genuinely at issue</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the label dodges a relevant consistency challenge, or the comparison dodges the charge</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "What about your side's scandal?" — deflection from this charge, or a fair test of the standard being applied?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Whether the comparison answers the charge or replaces it — and whether the accuser's consistency is actually relevant to the claim.</div>
+                <div class="word-list">
+                    <span class="word">whataboutism</span> <span class="word">whataboutery</span> <span class="word">tu quoque</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🎯</span>
+                    <strong style="color: #8d6e63">Strawman &amp; Ad Hominem</strong>
+                    <span class="word-count">4</span>
+                </summary>
+                <p class="sub-tip">A strawman refutes a distorted, weaker version of someone's claim; ad hominem attacks the person instead of the argument — and each accusation is itself a claim that has to be shown.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> A strawman attacks a weakened version of an opponent's claim; ad hominem attacks the arguer instead of the argument; a steelman argues against the strongest version. All three name the relationship between a response and the actual claim.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The accusations are moves too: "that's a strawman" asserts misrepresentation without showing it, and "ad hominem!" can deflect personal accountability even where character is the question — credibility, conflicts of interest, and track records are legitimately about the person. The labels need the same evidence they demand.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the original claim and the response are both on the table</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the accusation substitutes for showing the misrepresentation or irrelevance it alleges</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "You're strawmanning me" — what was the real claim? "That's ad hominem" — or is the witness's reliability the issue?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> For strawman claims: quote the original and the response — was the stated version actually weaker? For ad hominem: is the personal point relevant to credibility, or substituting for engagement?</div>
+                <div class="word-list">
+                    <span class="word">straw-man</span> <span class="word">straw-manned</span> <span class="word">steel-man</span> <span class="word">ad hominem</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🪟</span>
+                    <strong style="color: #607d8b">Overton Window</strong>
+                    <span class="word-count">1</span>
+                </summary>
+                <p class="sub-tip">The Overton window describes what is currently sayable — it is not an argument about what is right.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Named for Joseph Overton (Mackinac Center, 1990s): the range of policies politically acceptable to the mainstream at a given moment. Originally a descriptive claim about feasibility — politicians can only move within the window; movements move the window.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The concept now does three jobs at once: description (what is currently sayable), strategy ("shift the window"), and accusation ("normalizing extremism"). It can also smuggle in inevitability — windows do not move like weather; specific actors move them by choice, and naming the concept does not say whether a given shift is good or bad.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> In the descriptive sense, with the actors doing the moving named</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When description of acceptability stands in for argument about merit, or shifts are framed as weather</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "That's outside the Overton window" — a prediction about viability, not an argument about merit.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Whether the sentence describes what is acceptable, argues what should be, or accuses someone of moving the boundary — three different claims.</div>
+                <div class="word-list">
+                    <span class="word">overton window</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🏰</span>
+                    <strong style="color: #7e57c2">Motte-and-Bailey</strong>
+                    <span class="word-count">1</span>
+                </summary>
+                <p class="sub-tip">A motte-and-bailey charge alleges one speaker switching between a modest and a sweeping claim — it needs both quotes.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Nicholas Shackel's term (2005), from the medieval castle: a modest, defensible claim (the motte) and a sweeping, attractive claim (the bailey) share one vocabulary. Challenged on the bailey, the arguer retreats to the motte ("all I'm saying is…"), then reoccupies the bailey once the challenge passes.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The pattern is real and explains how many contested terms work — one word doing double duty for a modest and a sweeping claim. But naming it is a structural accusation that needs showing (quote the bailey, quote the motte, same speaker), and it misfires against groups: different people making different claims is not one arguer switching.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the modest and sweeping claims are quoted from the same source</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the charge is made without both claims shown, or against a group rather than a switching speaker</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "All I'm saying is X (modest)" — but was the earlier claim X, or something much bigger using the same words?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Which claim — the modest one or the sweeping one — is actually being defended right now, and which one the conclusion needs.</div>
+                <div class="word-list">
+                    <span class="word">motte-and-bailey</span>
+                </div>
+            </details>
         </div>
 
         <div class="bias-type" id="type-fallacy" style="border-left-color: #a1887f">
             <div class="bias-type-header">
                 <h3>Logical Fallacies</h3>
-                <span class="meta">8 subcategories &middot; 0 patterns</span>
+                <span class="meta">8 subcategories &middot; 34 patterns</span>
             </div>
             <p class="description">The named fallacy catalog — each name describes a real reasoning failure and doubles as an argument-ender (strawman, ad hominem, whataboutism, and slippery slope live under Discourse Concepts)</p>
             
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🐟</span>
+                    <strong style="color: #00838f">Red Herring &amp; Non Sequitur</strong>
+                    <span class="word-count">3</span>
+                </summary>
+                <p class="sub-tip">A red herring distracts with something vivid but off-topic; a non sequitur draws a conclusion that does not follow — though calling a point either can itself duck what is relevant.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Relevance fallacies: a red herring drags the argument toward something vivid but beside the point; a non sequitur draws a conclusion that does not follow from what preceded it; a Gish gallop (named for creationist Duane Gish, its most avid practitioner) buries an opponent under more claims than can be answered in the time available.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The moves are real — misdirection and overload win debates without winning arguments. But the labels also get used to duck relevant points: calling context a "red herring" or a cumulative case a "Gish gallop" can itself be the evasion.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the original question and the drift away from it are both shown</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When the label dismisses a point without showing it is off-topic, or misdirection goes unnamed</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "That's a red herring" — is it off the point, or an inconvenient part of it?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What the original question was and whether the point at issue actually bears on it — in either direction.</div>
+                <div class="word-list">
+                    <span class="word">red herring</span> <span class="word">non sequitur</span> <span class="word">gish gallop</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🔁</span>
+                    <strong style="color: #5c6bc0">Begging the Question</strong>
+                    <span class="word-count">2</span>
+                </summary>
+                <p class="sub-tip">"Begs the question" names circular reasoning — and, in everyday use, just means "raises the question." Check which.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Begging the question (petitio principii) means assuming the conclusion inside the premises — circular reasoning: "the report is reliable because it says so." Separately, everyday usage has largely repurposed "begs the question" to mean "raises the question," which usage guides now widely note.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Two confusions travel with this phrase: circular arguments can sound rigorous while proving nothing, and the fallacy-name itself now means different things to different readers. Someone accused of "begging the question" may just have prompted one.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When both premise and conclusion are shown, or the everyday sense is clearly meant</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When circularity is alleged without quoting the premise that assumes the conclusion</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "This begs the question" — a circularity charge, or just "this raises the question"? They are different claims.</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> For the fallacy: ask whether any premise already assumes the conclusion. For the phrase: check which sense the writer means.</div>
+                <div class="word-list">
+                    <span class="word">beg the question</span> <span class="word">circular reasoning</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">📢</span>
+                    <strong style="color: #8d6e63">Appeals &amp; Bandwagon</strong>
+                    <span class="word-count">4</span>
+                </summary>
+                <p class="sub-tip">Appeals borrow force from crowds, authorities, nature, or feelings — but relevant expert consensus is evidence, not fallacy.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Borrowed-force fallacies: appeal to popularity (ad populum / bandwagon), authority, nature (the naturalistic fallacy), emotion, tradition, novelty, and ignorance. Each substitutes something other than evidence — numbers, prestige, origin, feeling, age, newness, or the absence of disproof — for an argument.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The nuance the labels flatten: deferring to relevant expert consensus is evidence, not fallacy — the fallacy is substituting prestige for argument or citing authority outside its domain. Likewise popularity is weak evidence, not zero. "Appeal to X!" can dismiss legitimate weight along with borrowed force.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the authority has domain expertise and the evidence behind the consensus is available</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When prestige or popularity substitutes for argument, or the label dismisses relevant expertise</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Experts agree" — relevant consensus (evidence) or borrowed prestige (fallacy)? "Everyone's switching" — to what, and why?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What would remain of the claim if the crowd, the authority, or the feeling were removed — and whether the cited authority actually has domain expertise.</div>
+                <div class="word-list">
+                    <span class="word">appeal to popularity</span> <span class="word">ad populum</span> <span class="word">naturalistic fallacy</span> <span class="word">bandwagon</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🍒</span>
+                    <strong style="color: #6d4c41">Cherry-Picking &amp; Selection</strong>
+                    <span class="word-count">5</span>
+                </summary>
+                <p class="sub-tip">Selection fallacies present true evidence dishonestly chosen — the counter is the fuller dataset, shown.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Selection fallacies: cherry-picking keeps the favorable data and discards the rest; the Texas sharpshooter draws the target around the bullet holes after firing; hasty generalization scales a small sample into a rule; anecdotal evidence substitutes a story for a distribution; survivorship bias studies only what made it through the filter.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> These are among the most consequential reasoning failures because the presented evidence is genuine — only the selection is dishonest, so each claim survives fact-checking. The accusation cuts both ways too: "cherry-picking!" needs the fuller dataset shown, not just alleged.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the selection criteria are stated and the full base of evidence is on the table</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When selective evidence poses as the whole picture, or the accusation comes without the fuller data</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Every example they gave is true" — and what about the examples they didn't give?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What the full base of evidence looks like: what was left out, who did not survive to be counted, and whether the pattern was predicted or drawn afterward.</div>
+                <div class="word-list">
+                    <span class="word">cherry-pick</span> <span class="word">texas sharpshooter</span> <span class="word">anecdotal evidence</span> <span class="word">hasty generalization</span> <span class="word">survivorship bias</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🥅</span>
+                    <strong style="color: #607d8b">Goalposts, Burden &amp; No True Scotsman</strong>
+                    <span class="word-count">6</span>
+                </summary>
+                <p class="sub-tip">Goalpost-moving, burden-shifting, and No True Scotsman make positions unfalsifiable — fix the success criteria in advance.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Rule-changing moves: moving the goalposts redefines success after each demand is met; burden-of-proof games assign the proving to the other side ("prove it isn't true"); special pleading exempts one's own case from one's own standard; No True Scotsman rescues a generalization by redefining membership ("no real X would do that").</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Each move makes a position unfalsifiable in practice. The labels need care in return: standards can legitimately tighten as stakes rise (not every raised bar is moved goalposts), the burden genuinely rests with whoever asserts, and some membership definitions are real (a vegetarian who eats steak is not a counterexample to vegetarianism).</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When definitions and standards are argued openly and fixed before the evidence arrives</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When success or membership gets redefined after the fact, or the asserter assigns the proving to others</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "That wasn't real socialism" — a definitional argument that needs making, or a retreat that saves the theory from every failure?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> What was originally claimed and what would count as meeting or refuting it — fixed in advance, on both sides.</div>
+                <div class="word-list">
+                    <span class="word">(move|shift) the goalposts</span> <span class="word">goalpost-moving</span> <span class="word">burden of proof</span> <span class="word">special pleading</span> <span class="word">no true scotsman</span> <span class="word">that was not real socialism</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🎲</span>
+                    <strong style="color: #7e57c2">Post Hoc &amp; Causal Shortcuts</strong>
+                    <span class="word-count">4</span>
+                </summary>
+                <p class="sub-tip">Post hoc reads sequence as cause; "correlation isn't causation" is true — and gets used to dismiss evidence that is more than correlation.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Causal fallacies: post hoc ergo propter hoc ("after it, therefore because of it") reads sequence as causation; the gambler's fallacy expects independent events to remember the past; the sunk cost fallacy lets what is already spent dictate what to do next.</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> The corrective slogans get weaponized too: "correlation is not causation" is true and yet gets used to wave away strong, well-controlled observational evidence — correlation plus mechanism plus dose-response plus ruled-out confounders is how much of science works. The slogan starts the examination; it does not end it.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When mechanisms and controls are examined rather than asserted or dismissed</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When sequence poses as cause, or the corrective slogan waves away controlled evidence</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "I took it and got better" (post hoc); "correlation isn't causation" (about a randomized trial — it was causation).</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> For causal claims: ask for the mechanism and the controls. For the slogan: ask whether the evidence is actually just correlation, or more.</div>
+                <div class="word-list">
+                    <span class="word">post hoc</span> <span class="word">correlation (is not|isn't|does not equal|doesn't equal) causation</span> <span class="word">gambler's fallacy</span> <span class="word">sunk-cost fallacy</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🪞</span>
+                    <strong style="color: #546e7a">False Equivalence &amp; Extreme Comparisons</strong>
+                    <span class="word-count">5</span>
+                </summary>
+                <p class="sub-tip">False equivalence treats unlike things as alike; a false dichotomy pretends only two options exist — both smuggle a conclusion the real likeness, or the missing option, cannot support.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> Comparison fallacies: false equivalence treats unlike things as alike because they share a surface feature; false dichotomies and "false choice" framings force two options where more exist; Godwin's law names the drift of every long argument toward a Hitler comparison (reductio ad Hitlerum).</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> Comparisons carry arguments — and dismissing them cuts both ways: "false equivalence!" can duck a fair parallel, and invoking Godwin's law can dodge a historically apt warning. What matters is whether the compared cases are alike in the respects the argument needs.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the specific points of likeness and difference are argued</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When equivalence or its dismissal is asserted without naming the respects compared</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "You can't compare X to Y" — why not, in the respect being argued? "Either we do this or we fail" — is a third option being hidden?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> In which specific respects the two things are being equated, and whether those respects are the ones that matter for the conclusion.</div>
+                <div class="word-list">
+                    <span class="word">false equivalence</span> <span class="word">false dichotomy</span> <span class="word">false choice</span> <span class="word">godwin's law</span> <span class="word">reductio ad hitlerum</span>
+                </div>
+            </details>
+            <details class="subcategory" open>
+                <summary class="subcategory-header">
+                    <span class="sub-icon">🪃</span>
+                    <strong style="color: #a1887f">The Fallacy Fallacy &amp; Question Games</strong>
+                    <span class="word-count">5</span>
+                </summary>
+                <p class="sub-tip">Spotting a fallacy discredits an argument, never its conclusion (the fallacy fallacy) — and "just asking questions" can advance a claim while dodging the burden of asserting it.</p>
+                <div class="teach "><span class="teach-label">Where it comes from:</span> The fallacy fallacy: concluding that a claim is false because an argument for it was fallacious — bad arguments get made for true things. Question-framing does double duty too: "just asking questions" can be a cover for insinuating without asserting (sealioning: relentless polite demands that exhaust rather than inquire), and a loaded question smuggles its premise ("when did you stop…?").</div>
+                <div class="teach "><span class="teach-label">How it gets used:</span> This family is the type's own warning label: spotting a fallacy licenses discounting an argument, never the conclusion — and fallacy-naming can itself become sport that replaces engagement. Meanwhile the question-labels can dismiss sincere inquiry as bad faith; the difference is whether answers are ever accepted.</div>
+                <div class="teach solid"><span class="teach-label">On solid ground:</span> When the reasoning is refuted and the conclusion is then weighed on its remaining merits</div>
+                <div class="teach shaky"><span class="teach-label">On shaky ground:</span> When a fallacy verdict stands in for engaging the claim, or question-labels dismiss sincere inquiry</div>
+                <div class="teach "><span class="teach-label">For instance:</span> "Your argument is fallacious, so you're wrong" — the first half can be true and the second not follow. "Just asking questions" — sincere inquiry, or insinuation that never accepts an answer?</div>
+                <div class="teach "><span class="teach-label">Worth asking:</span> Separate the argument from the claim: refute the reasoning, then ask what the best remaining case for the conclusion is. For question games: does any answer get engaged?</div>
+                <div class="word-list">
+                    <span class="word">fallacy fallacy</span> <span class="word">argument from fallacy</span> <span class="word">sealioning</span> <span class="word">just asking questions</span> <span class="word">loaded question</span>
+                </div>
+            </details>
         </div>
         </section>
         
