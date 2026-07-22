@@ -74,7 +74,6 @@ export const epistemicTermsWords = {
             "\\bcorporate media\\b",
             "\\bthe narrative\\b(?!\\s+(structure|arc|voice|form|style|perspective|frame))",
             "\\bpush(es|ing)? a narrative\\b",
-            "\\becho chambers?\\b",
             "\\bdo your own research\\b"
         ]
     }

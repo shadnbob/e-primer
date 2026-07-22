@@ -43,7 +43,7 @@ export const sciStatsWords = {
         icon: '📊',
         color: '#00897b',
         name: 'Statistical Significance',
-        description: 'In statistics, "significant" means the result is unlikely to be chance alone (conventionally p < 0.05). It says nothing about size or importance — a tiny, practically meaningless effect can be statistically significant in a large study.',
+        description: 'In statistics, "significant" means that if nothing were really going on, a result this large would be unlikely — conventionally under a 5% probability (p < 0.05). It says nothing about size or importance: a tiny, practically meaningless effect can be statistically significant in a large study.',
         implication: 'Reporting routinely lets the statistical meaning borrow the everyday meaning ("large, important"), making trivial effects sound consequential. The reverse also misleads: a "non-significant" result in a small study is not proof of no effect.',
         suggestion: 'Look for the effect size: how big is the difference, in absolute terms, for real people?',
         examples: '"Significantly higher risk" might mean 1.0% → 1.1%. Ask: how much higher, from what baseline?',
@@ -125,8 +125,7 @@ export const sciStatsWords = {
             "\\b100% natural\\b",
             "\\bnatural remed(y|ies)\\b",
             "\\bsuperfoods?\\b",
-            "\\bclean eating\\b",
-            "\\btoxic chemicals\\b"
+            "\\bclean eating\\b"
         ]
     }
 };

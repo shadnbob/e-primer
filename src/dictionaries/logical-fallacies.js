@@ -22,7 +22,7 @@ export const logicalFallaciesWords = {
         icon: '🐟',
         color: '#00838f',
         name: 'Red Herring & Non Sequitur',
-        description: 'Relevance fallacies: a red herring drags the argument toward something vivid but beside the point; a non sequitur draws a conclusion that does not follow from what preceded it; a Gish gallop buries an opponent under more claims than can be answered in the time available.',
+        description: 'Relevance fallacies: a red herring drags the argument toward something vivid but beside the point; a non sequitur draws a conclusion that does not follow from what preceded it; a Gish gallop (named for creationist Duane Gish, its most avid practitioner) buries an opponent under more claims than can be answered in the time available.',
         implication: 'The moves are real — misdirection and overload win debates without winning arguments. But the labels also get used to duck relevant points: calling context a "red herring" or a cumulative case a "Gish gallop" can itself be the evasion.',
         suggestion: 'Ask what the original question was and whether the point at issue actually bears on it — in either direction.',
         examples: '"That\'s a red herring" — is it off the point, or an inconvenient part of it?',
@@ -121,7 +121,7 @@ export const logicalFallaciesWords = {
         description: 'Comparison fallacies: false equivalence treats unlike things as alike because they share a surface feature; false dichotomies and "false choice" framings force two options where more exist; Godwin\'s law names the drift of every long argument toward a Hitler comparison (reductio ad Hitlerum).',
         implication: 'Comparisons carry arguments — and dismissing them cuts both ways: "false equivalence!" can duck a fair parallel, and invoking Godwin\'s law can dodge a historically apt warning. What matters is whether the compared cases are alike in the respects the argument needs.',
         suggestion: 'Ask in which specific respects the two things are being equated, and whether those respects are the ones that matter for the conclusion.',
-        examples: '"You can\'t compare X to Y" — why not, in the respect being argued? "This is just like [atrocity]" — in what specific way?',
+        examples: '"You can\'t compare X to Y" — why not, in the respect being argued? "Either we do this or we fail" — is a third option being hidden?',
         words: [
             "\\bfalse equivalen(ce|cy|cies)\\b",
             "\\bfalse dichotom(y|ies)\\b",
@@ -138,7 +138,7 @@ export const logicalFallaciesWords = {
         description: 'The fallacy fallacy: concluding that a claim is false because an argument for it was fallacious — bad arguments get made for true things. Question-framing does double duty too: "just asking questions" can be a cover for insinuating without asserting (sealioning: relentless polite demands that exhaust rather than inquire), and a loaded question smuggles its premise ("when did you stop…?").',
         implication: 'This family is the type\'s own warning label: spotting a fallacy licenses discounting an argument, never the conclusion — and fallacy-naming can itself become sport that replaces engagement. Meanwhile the question-labels can dismiss sincere inquiry as bad faith; the difference is whether answers are ever accepted.',
         suggestion: 'Separate the argument from the claim: refute the reasoning, then ask what the best remaining case for the conclusion is. For question games: does any answer get engaged?',
-        examples: '"Your argument is fallacious, so you\'re wrong" — the first half can be true and the second not follow.',
+        examples: '"Your argument is fallacious, so you\'re wrong" — the first half can be true and the second not follow. "Just asking questions" — sincere inquiry, or insinuation that never accepts an answer?',
         words: [
             "\\bfallacy fallacy\\b",
             "\\bargument from fallacy\\b",

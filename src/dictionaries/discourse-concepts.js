@@ -54,7 +54,7 @@ export const discourseConceptsWords = {
         description: 'Named as a fallacy when a chain from step A to feared outcome Z is asserted without any mechanism. But slope arguments are not automatically fallacious: precedent, incentive shifts, and boundary erosion are real, studiable mechanisms, and courts treat precedent-based slope arguments seriously.',
         implication: 'The label cuts both ways: "that\'s a slippery slope fallacy" can dismiss a legitimate argument about how a rule will actually be extended, while a bare slope claim can smuggle in an unargued chain of dominoes. The difference is whether a mechanism is shown and whether anything plausibly stops the slide.',
         suggestion: 'Ask for the mechanism: what specifically carries step one to the feared end, and what would stop it along the way?',
-        examples: '"This leads inevitably to X" — by what mechanism? / "Slippery slope fallacy!" — is there a mechanism being ignored?',
+        examples: '"Legalize medical marijuana and soon every drug is legal" — by what mechanism, and what stops it? / "Slippery slope fallacy!" — but is a real mechanism (precedent, incentives) being waved away?',
         words: [
             "\\bslippery[- ]slopes?\\b",
             "\\bthin end of the wedge\\b"
