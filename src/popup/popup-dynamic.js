@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderSubcategoryGroups();
 
     // Custom groups load before settings: their setting keys join the
-    // storage.sync defaults so every payload sent to the content script
+    // storage defaults so every payload sent to the content script
     // carries them (missing keys used to resurrect disabled groups)
     loadCustomGroups(function() {
         loadSettings();

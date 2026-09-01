@@ -2904,50 +2904,94 @@
   }
 
   // src/utils/settings-storage.js
+  var SCRUB_MARKER = "_syncScrubbed";
   function storageSet(patch, done) {
-    let pending = 2;
-    const finish = () => {
-      pending -= 1;
-      if (pending === 0 && done)
+    try {
+      chrome.storage.local.set(patch, () => {
+        if (chrome.runtime.lastError) {
+          console.warn("e-primer: storage.local.set failed:", chrome.runtime.lastError.message);
+        }
+        if (done)
+          done();
+      });
+    } catch (e) {
+      console.warn("e-primer: storage.local.set threw:", e && e.message);
+      if (done)
         done();
-    };
-    const writeArea = (area, label) => {
-      try {
-        area.set(patch, () => {
-          if (chrome.runtime.lastError) {
-            console.warn(`e-primer: storage.${label}.set failed:`, chrome.runtime.lastError.message);
-          }
-          finish();
-        });
-      } catch (e) {
-        console.warn(`e-primer: storage.${label}.set threw:`, e && e.message);
-        finish();
-      }
-    };
-    writeArea(chrome.storage.sync, "sync");
-    writeArea(chrome.storage.local, "local");
+    }
   }
   function storageGet(defaults, done) {
-    const readArea = (area, keys, label, cb) => {
-      try {
-        area.get(keys, (items) => {
-          if (chrome.runtime.lastError) {
-            console.warn(`e-primer: storage.${label}.get failed:`, chrome.runtime.lastError.message);
-            cb({});
-            return;
-          }
-          cb(items || {});
-        });
-      } catch (e) {
-        console.warn(`e-primer: storage.${label}.get threw:`, e && e.message);
-        cb({});
+    const wanted = Object.keys(defaults).concat([SCRUB_MARKER]);
+    readLocal(wanted, (localItems) => {
+      if (localItems[SCRUB_MARKER]) {
+        delete localItems[SCRUB_MARKER];
+        done(Object.assign({}, defaults, localItems));
+        return;
       }
-    };
-    readArea(chrome.storage.sync, defaults, "sync", (syncItems) => {
-      readArea(chrome.storage.local, Object.keys(defaults), "local", (localItems) => {
+      migrateAndScrubSync(localItems, (syncItems) => {
+        delete localItems[SCRUB_MARKER];
         done(Object.assign({}, defaults, syncItems, localItems));
       });
     });
+  }
+  function readLocal(keys, cb) {
+    try {
+      chrome.storage.local.get(keys, (items) => {
+        if (chrome.runtime.lastError) {
+          console.warn("e-primer: storage.local.get failed:", chrome.runtime.lastError.message);
+          cb({});
+          return;
+        }
+        cb(items || {});
+      });
+    } catch (e) {
+      console.warn("e-primer: storage.local.get threw:", e && e.message);
+      cb({});
+    }
+  }
+  function migrateAndScrubSync(localItems, cb) {
+    let syncArea;
+    try {
+      syncArea = chrome.storage.sync;
+      if (!syncArea || typeof syncArea.get !== "function")
+        throw new Error("storage.sync unavailable");
+    } catch (e) {
+      storageSet({ [SCRUB_MARKER]: true });
+      cb({});
+      return;
+    }
+    try {
+      syncArea.get(null, (syncItems) => {
+        if (chrome.runtime.lastError) {
+          console.warn("e-primer: storage.sync.get failed during scrub:", chrome.runtime.lastError.message);
+          cb({});
+          return;
+        }
+        syncItems = syncItems || {};
+        const keep = {};
+        for (const [key, value] of Object.entries(syncItems)) {
+          if (!(key in localItems))
+            keep[key] = value;
+        }
+        keep[SCRUB_MARKER] = true;
+        storageSet(keep, () => {
+          try {
+            syncArea.clear(() => {
+              if (chrome.runtime.lastError) {
+                console.warn("e-primer: storage.sync.clear failed:", chrome.runtime.lastError.message);
+              }
+            });
+          } catch (e) {
+            console.warn("e-primer: storage.sync.clear threw:", e && e.message);
+          }
+        });
+        delete keep[SCRUB_MARKER];
+        cb(keep);
+      });
+    } catch (e) {
+      console.warn("e-primer: storage.sync.get threw during scrub:", e && e.message);
+      cb({});
+    }
   }
 
   // src/popup/popup-dynamic.js

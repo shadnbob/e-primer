@@ -109,7 +109,7 @@
         <p>This extension does not transmit any data to external servers, third parties, or the extension developer. All text analysis is performed entirely within your browser using local pattern matching. No network requests are made by the extension.</p>
 
         <h2>Data storage</h2>
-        <p>The only data stored by the extension is your preference settings — which detection categories you have enabled or disabled, your analysis mode (problems, excellence, or balanced), highlight density, per-site preferences, words you have chosen to ignore, and any custom word groups you create. These settings are saved using your browser's extension storage. Preference settings also use the browser's extension sync storage, so if you have browser sync turned on, your browser vendor may sync them between your own signed-in browsers — the same way it syncs your bookmarks. They are never shared with, or accessible to, the extension developer or any third party.</p>
+        <p>The only data stored by the extension is your preference settings — which detection categories you have enabled or disabled, your analysis mode (problems, excellence, or balanced), highlight density, per-site preferences, words you have chosen to ignore, and any custom word groups you create. These settings are saved using your browser's local extension storage and remain on your device: they are not synced between browsers, not shared, and not accessible to the extension developer or any third party. (If an earlier version stored settings in the browser's sync storage, the current version moves them to local storage and clears them from sync on first run.)</p>
 
         <h2>Permissions</h2>
         <p>The extension requests the following browser permissions:</p>
