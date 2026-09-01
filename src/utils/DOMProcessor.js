@@ -118,8 +118,54 @@ export class DOMProcessor {
         if (popupParent) {
             return true;
         }
-        
+
+        // Never touch editable regions: highlighting empties text nodes in
+        // place, and a rich-text editor's model (Lexical/Draft on Facebook)
+        // doesn't know we rewrote its DOM — the user's in-progress message
+        // gets destroyed. Chat composers ate typed text this way.
+        if (this.isEditableElement(element)) {
+            return true;
+        }
+
         return false;
+    }
+
+    // An element that is itself an editable surface (the walker rejects it,
+    // pruning the whole subtree). isContentEditable is inherited, so this
+    // also matches descendants when called on an arbitrary parent.
+    isEditableElement(element) {
+        if (element.isContentEditable) {
+            return true;
+        }
+        if (element.nodeName === 'TEXTAREA' || element.nodeName === 'INPUT') {
+            return true;
+        }
+        if (!element.getAttribute) {
+            return false;
+        }
+        const ce = element.getAttribute('contenteditable');
+        if (ce !== null && ce.toLowerCase() !== 'false') {
+            return true;
+        }
+        const role = element.getAttribute('role');
+        return role === 'textbox' || role === 'searchbox' || role === 'combobox';
+    }
+
+    // Whether a node (text or element) sits anywhere inside an editable
+    // region — used by the mutation filter so typing never triggers analysis
+    isInsideEditable(node) {
+        const el = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+        if (!el) {
+            return false;
+        }
+        if (el.isContentEditable) {
+            return true;
+        }
+        if (!el.closest) {
+            return false;
+        }
+        const host = el.closest('textarea, input, [contenteditable], [role="textbox"], [role="searchbox"], [role="combobox"]');
+        return !!host && (host.getAttribute('contenteditable') || '').toLowerCase() !== 'false';
     }
 
     isOwnHighlight(element) {

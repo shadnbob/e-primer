@@ -458,4 +458,89 @@ describe('Regressions', () => {
       detector.destroy();
     });
   });
+
+  // Highlighting empties text nodes in place, which destroys in-progress
+  // typing inside rich-text editors (Facebook chat ate messages when a
+  // typed word matched a dictionary). Editable regions must be invisible
+  // to the whole pipeline: collection, analysis, and the mutation filter.
+  describe('editable regions are never analyzed', () => {
+    let processor;
+
+    beforeEach(() => {
+      processor = new DOMProcessor();
+    });
+
+    it('collectTextNodes prunes contenteditable, textarea, and role=textbox subtrees', () => {
+      document.body.innerHTML = `
+        <p id="article">Everyone says this is clearly a terrible failure.</p>
+        <div contenteditable="true"><p>Everyone agrees this is obviously wrong</p></div>
+        <div contenteditable=""><span>clearly biased draft text here</span></div>
+        <div role="textbox"><span>obviously everyone always agrees</span></div>
+        <textarea>studies show everyone is wrong</textarea>
+        <div contenteditable="false"><p>Experts say this is honestly fine to analyze.</p></div>
+      `;
+
+      const texts = processor.collectTextNodes(document.body).map(n => n.textContent);
+
+      expect(texts.some(t => t.includes('terrible failure'))).toBe(true);      // normal content
+      expect(texts.some(t => t.includes('obviously wrong'))).toBe(false);      // contenteditable
+      expect(texts.some(t => t.includes('draft text'))).toBe(false);           // bare contenteditable attr
+      expect(texts.some(t => t.includes('always agrees'))).toBe(false);        // role=textbox
+      expect(texts.some(t => t.includes('studies show'))).toBe(false);         // textarea
+      expect(texts.some(t => t.includes('honestly fine'))).toBe(true);         // contenteditable="false" is not editable
+    });
+
+    it('analyzeDocument leaves a chat composer DOM untouched', async () => {
+      document.body.innerHTML = `
+        <div id="composer" contenteditable="true" role="textbox">
+          <p>Everyone knows this is clearly the worst thing ever</p>
+        </div>
+      `;
+      const before = document.getElementById('composer').innerHTML;
+
+      const detector = new BiasDetector();
+      detector.settings = Object.assign({}, detector.settings, { highlightDensity: 'everything' });
+      await detector.analyzeDocument();
+
+      expect(document.getElementById('composer').innerHTML).toBe(before);
+      expect(document.querySelectorAll('#composer [class*="bias-highlight"]').length).toBe(0);
+      detector.destroy();
+    });
+
+    it('mutations inside editables never schedule re-analysis', () => {
+      document.body.innerHTML = `
+        <div id="composer" contenteditable="true"><p id="draft">typing in progress</p></div>
+        <p id="page">Regular page paragraph with enough text to matter.</p>
+      `;
+      const detector = new BiasDetector();
+      const draftText = document.getElementById('draft').firstChild;
+
+      const typing = [{
+        type: 'characterData',
+        target: draftText,
+        addedNodes: [],
+        removedNodes: []
+      }];
+      expect(detector.shouldProcessMutations(typing)).toBe(false);
+
+      const composerChildList = [{
+        type: 'childList',
+        target: document.getElementById('composer'),
+        addedNodes: [document.getElementById('draft')],
+        removedNodes: []
+      }];
+      expect(detector.shouldProcessMutations(composerChildList)).toBe(false);
+
+      // Sanity: the same shapes outside an editable still process
+      const pageText = document.getElementById('page').firstChild;
+      const pageEdit = [{
+        type: 'characterData',
+        target: pageText,
+        addedNodes: [],
+        removedNodes: []
+      }];
+      expect(detector.shouldProcessMutations(pageEdit)).toBe(true);
+      detector.destroy();
+    });
+  });
 });

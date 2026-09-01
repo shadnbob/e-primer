@@ -761,6 +761,11 @@ export class BiasDetector {
                 if (parent.closest && parent.closest('.bias-popup, [data-e-prime-popup]')) {
                     return false;
                 }
+                // Typing in a chat composer or form field must never
+                // trigger analysis
+                if (this.domProcessor.isInsideEditable(mutation.target)) {
+                    return false;
+                }
                 return this.domProcessor.isSignificantContent(mutation.target);
             }
 
@@ -775,6 +780,13 @@ export class BiasDetector {
             
             // Skip if target is inside a popup
             if (mutation.target.closest && mutation.target.closest('.bias-popup')) {
+                return false;
+            }
+
+            // Skip mutations inside editable regions (chat composers,
+            // rich-text editors) — the collector prunes them anyway, so
+            // re-analysis on every keystroke would be pure churn
+            if (this.domProcessor.isInsideEditable(mutation.target)) {
                 return false;
             }
 
