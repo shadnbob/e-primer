@@ -93,14 +93,14 @@
         <a href="./" class="back-link">&larr; Back to E-Prime Bias Detector</a>
 
         <h1>Privacy Policy</h1>
-        <div class="updated">Last updated: March 31, 2026</div>
+        <div class="updated">Last updated: September 1, 2026</div>
 
         <div class="summary">
-            <strong>The short version:</strong> E-Prime Bias Detector does not collect, transmit, or store any personal data. All text analysis happens locally in your browser. Nothing leaves your device.
+            <strong>The short version:</strong> E-Prime Bias Detector does not collect, transmit, or store any personal data. All text analysis happens locally in your browser, and the extension makes no network requests. The only thing it stores is your own settings.
         </div>
 
         <h2>What the extension does</h2>
-        <p>E-Prime Bias Detector analyzes the text content of web pages you visit to highlight language patterns such as opinion words, absolute statements, passive voice, and other rhetorical structures. It also identifies markers of quality writing like clear attribution and nuanced language.</p>
+        <p>E-Prime Bias Detector analyzes the text content of web pages you visit to highlight language patterns such as opinion words, absolute statements, passive voice, and other rhetorical structures. It also identifies markers of quality writing like clear attribution and nuanced language, and shows neutral explainer cards for contested terms (political labels, statistics phrases, named fallacies, and similar vocabulary).</p>
 
         <h2>Data collection</h2>
         <p>This extension does not collect any data. It does not track your browsing history, record the content of pages you visit, or gather any personal information. No analytics, telemetry, or usage data is collected.</p>
@@ -109,13 +109,13 @@
         <p>This extension does not transmit any data to external servers, third parties, or the extension developer. All text analysis is performed entirely within your browser using local pattern matching. No network requests are made by the extension.</p>
 
         <h2>Data storage</h2>
-        <p>The only data stored by the extension is your preference settings — which detection categories you have enabled or disabled, and your selected analysis mode (problems, excellence, or balanced). These settings are saved using Chrome's local storage API and remain on your device. They are not synced, shared, or accessible to anyone other than you.</p>
+        <p>The only data stored by the extension is your preference settings — which detection categories you have enabled or disabled, your analysis mode (problems, excellence, or balanced), highlight density, per-site preferences, words you have chosen to ignore, and any custom word groups you create. These settings are saved using your browser's extension storage. Preference settings also use the browser's extension sync storage, so if you have browser sync turned on, your browser vendor may sync them between your own signed-in browsers — the same way it syncs your bookmarks. They are never shared with, or accessible to, the extension developer or any third party.</p>
 
         <h2>Permissions</h2>
         <p>The extension requests the following browser permissions:</p>
-        <p><strong>activeTab</strong> — allows the extension to read the text content of the page you are currently viewing, only when the extension is active. This is required to perform the language analysis.</p>
-        <p><strong>scripting</strong> — allows the extension to inject its content script into web pages for real-time text analysis and highlighting.</p>
-        <p><strong>storage</strong> — allows the extension to save your preference settings locally on your device.</p>
+        <p><strong>activeTab</strong> — allows the extension's popup to communicate with the page you are currently viewing (for the analyze button, statistics, and per-site controls).</p>
+        <p><strong>storage</strong> — allows the extension to save your preference settings in your browser's extension storage.</p>
+        <p><strong>Access to web page content</strong> — the analysis script is declared in the extension manifest to run on the pages you visit (your browser may describe this as reading and changing data on websites). This is what performs the highlighting. All analysis happens locally in your browser; the extension makes no network requests, and you can turn it off per-site or switch it to analyze-only-on-demand.</p>
 
         <h2>Third-party services</h2>
         <p>This extension does not use any third-party services, APIs, or external resources. It does not include any advertising, tracking pixels, or analytics scripts.</p>

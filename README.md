@@ -117,6 +117,8 @@ Many phrases are ambiguous. "It seems" can be weaseling ("it seems like this is 
 
 ## Detection Categories
 
+The complete, always-current list of every pattern lives on the [Pattern Reference](https://shadnbob.github.io/e-primer/reference.html) — generated from source at build time. The same page ships inside the extension as the popup's "Learn about detection categories" link, so the installed copy always matches the installed version.
+
 ### Basic Detection (enabled by default)
 - **Opinion Words** — subjective language and evaluative terms
 - **To-Be Verbs** — E-Prime violations that can create false equivalencies

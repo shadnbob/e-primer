@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Prime Bias Detector</title>
-    <meta name="description" content="A browser extension that detects biased language patterns in web content using E-Prime principles and linguistic analysis.">
+    <meta name="description" content="A browser extension that highlights biased language patterns, markers of quality writing, and plain-language explainers for contested terms — using E-Prime principles and linguistic analysis.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -383,6 +383,107 @@
             padding-top: 0;
         }
 
+        /* --- EXPLAINERS --- */
+        .expl-section {
+            padding: 100px 40px;
+            background: var(--paper-warm);
+        }
+
+        .expl-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .expl-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 48px;
+        }
+
+        .expl-card {
+            padding: 24px 28px;
+            border-radius: 10px;
+            background: white;
+            border: 1px solid var(--rule);
+            border-left: 4px solid var(--blue-gray);
+        }
+
+        .expl-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .expl-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--blue-gray);
+        }
+
+        .expl-sample {
+            max-width: 560px;
+            margin: 48px auto 0;
+            background: white;
+            border: 1px solid var(--rule);
+            border-top: 3px solid #5c6bc0;
+            border-radius: 10px;
+            padding: 24px 28px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+        }
+
+        .expl-sample .context-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #5c6bc0;
+            margin-bottom: 4px;
+        }
+
+        .expl-sample h4 {
+            font-family: 'Newsreader', serif;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .expl-sample .expl-tip {
+            font-size: 14px;
+            font-weight: 500;
+            background: var(--paper-warm);
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+        }
+
+        .expl-sample .expl-row {
+            font-size: 13px;
+            color: var(--blue-gray);
+            line-height: 1.65;
+            margin-bottom: 10px;
+        }
+
+        .expl-sample .expl-row strong {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+        }
+
+        .expl-sample .expl-row.solid strong { color: var(--green); }
+        .expl-sample .expl-row.shaky strong { color: var(--accent); }
+
+        .expl-links {
+            margin-top: 36px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .expl-links a { color: var(--accent); }
+
         /* --- EXCELLENCE --- */
         .exc-section {
             padding: 100px 40px;
@@ -525,7 +626,7 @@
             .demo-section, .theory-section, .exc-section, .install-section { padding: 60px 24px; }
             .demo-content { padding: 24px; }
             .demo-legend { padding: 12px 24px 20px; }
-            .category-grid, .exc-grid, .install-steps { grid-template-columns: 1fr; }
+            .category-grid, .expl-grid, .exc-grid, .install-steps { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -537,7 +638,7 @@
         <div class="hero-eyebrow">Browser Extension for Chrome &amp; Firefox</div>
         <h1>Read between<br>the lines.</h1>
         <p class="hero-subtitle">
-            E-Prime Bias Detector highlights the linguistic patterns that shape how you interpret information &mdash; opinion disguised as fact, vague sourcing, emotional manipulation &mdash; alongside markers of quality writing. The goal is sharper reading, not prescribed conclusions.
+            E-Prime Bias Detector highlights the linguistic patterns that shape how you interpret information &mdash; opinion disguised as fact, vague sourcing, emotional manipulation &mdash; alongside markers of quality writing, and explainer cards that teach the contested terms arguments run on. The goal is sharper reading, not prescribed conclusions.
         </p>
         <a href="https://github.com/shadnbob/e-primer" class="hero-cta">
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -613,7 +714,7 @@
 <!-- DETECTION CATEGORIES -->
 <section class="theory-section" id="categories">
     <div class="theory-inner">
-        <div class="section-label">15 Detection Categories</div>
+        <div class="section-label">15 Bias Categories</div>
         <h2 class="section-title">What the extension looks for &mdash; and why.</h2>
         <p class="section-intro">
             Each category targets a specific way language can mislead or demonstrate integrity. The extension doesn't assume any pattern is inherently bad &mdash; it makes it visible so you can decide.
@@ -693,6 +794,66 @@
                 <p>Presenting complex situations as binary choices: "you're either with us or against us." Reality is rarely that simple.</p>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- EXPLAINERS -->
+<section class="expl-section" id="explainers">
+    <div class="expl-inner">
+        <div class="section-label">8 Explainer Groups</div>
+        <h2 class="section-title">Contested terms, explained &mdash; not flagged.</h2>
+        <p class="section-intro">
+            Some of the most argued-over words online aren't bias &mdash; they're vocabulary: terms that mean different things to different readers, carry whole histories, or do double duty as descriptions and dismissals. Explainers mark these with a neutral <em>Context</em> badge instead of a warning, and the card teaches the term: where it comes from, how it gets used in both directions, and when it stands on solid ground versus shaky ground. The cards never argue for or against the thing they name.
+        </p>
+
+        <div class="expl-grid" data-skip-analysis="true">
+            <div class="expl-card" style="border-left-color:#7e57c2">
+                <h3>Political Spectrum Labels</h3>
+                <p>Left/Right, liberal, conservative &mdash; labels that compress many separate questions into one axis and shift meaning across countries and eras.</p>
+            </div>
+            <div class="expl-card" style="border-left-color:#546e7a">
+                <h3>Science &amp; Statistics</h3>
+                <p>"Theory," "statistically significant," "linked to" &mdash; research phrases that often mean less (or more) than they seem to.</p>
+            </div>
+            <div class="expl-card" style="border-left-color:#607d8b">
+                <h3>Political -isms</h3>
+                <p>Socialism, capitalism, fascism, populism, nationalism &mdash; system-words that refer to different things depending on who's speaking.</p>
+            </div>
+            <div class="expl-card" style="border-left-color:#5c6bc0">
+                <h3>Speech &amp; Civic Terms</h3>
+                <p>Free speech, censorship, rights, courtroom standards &mdash; where the legal sense and the cultural sense get swapped mid-argument.</p>
+            </div>
+            <div class="expl-card" style="border-left-color:#6d4c41">
+                <h3>Economic Terms</h3>
+                <p>Inflation, deficit vs. debt, "the economy" &mdash; everyday economics vocabulary whose technical meaning differs from how the phrase reads.</p>
+            </div>
+            <div class="expl-card" style="border-left-color:#7e57c2">
+                <h3>Media &amp; Truth Terms</h3>
+                <p>Fake news, misinformation, conspiracy theory, "the narrative" &mdash; words that describe real phenomena and also get used to dismiss opponents.</p>
+            </div>
+            <div class="expl-card" style="border-left-color:#78909c">
+                <h3>Discourse Concepts</h3>
+                <p>The paradox of tolerance, slippery slope, whataboutism, the Overton window &mdash; named moves that are real, and also get thrown to end arguments.</p>
+            </div>
+            <div class="expl-card" style="border-left-color:#a1887f">
+                <h3>Logical Fallacies</h3>
+                <p>The named catalog &mdash; each one describes a real reasoning failure and doubles as an argument-ender. The cards cover both faces.</p>
+            </div>
+        </div>
+
+        <div class="expl-sample" data-skip-analysis="true">
+            <div class="context-badge">Context</div>
+            <h4>Paradox of Tolerance</h4>
+            <div class="expl-tip">A tolerant society cannot extend unlimited tolerance to movements that would use its protections to destroy tolerance itself &mdash; Popper's idea, and more qualified than the meme version of it.</div>
+            <div class="expl-row"><strong>Where it comes from:</strong> From Karl Popper's <em>The Open Society and Its Enemies</em> (1945): "unlimited tolerance must lead to the disappearance of tolerance" &mdash; because a movement that rejects tolerance can use its protections (speech, assembly, due process) to grow until it can abolish them for everyone else. The meme version stops at the slogan. Popper's footnote continues: intolerant philosophies should be countered by argument and public opinion as long as that works &mdash; he reserved suppression for movements that reject rational debate and answer arguments with violence.</div>
+            <div class="expl-row"><strong>How it gets used:</strong> The paradox gets invoked as a finished argument, but it does not answer the hard question &mdash; who counts as intolerant, judged by whom, by what standard &mdash; which is decided <em>before</em> the paradox applies and is where the actual disagreement lives. Both failure modes are real: unlimited tolerance can shelter movements that would end it, and an elastic definition of "intolerance" can license excluding ordinary disagreement.</div>
+            <div class="expl-row solid"><strong>On solid ground:</strong> When Popper's actual conditions (rejection of debate, resort to violence) are argued, not assumed.</div>
+            <div class="expl-row shaky"><strong>On shaky ground:</strong> When the paradox is deployed as a finished argument, skipping the who-decides question.</div>
+            <div class="expl-row"><strong>For instance:</strong> The classic case: "we don't want that ethnicity here" &rarr; "then your movement can't organize here" &rarr; "you're persecuting us for our beliefs." The persecution claim invokes the very tolerance the movement exists to end &mdash; the hypocrisy that powers the paradox.</div>
+            <div class="expl-row"><strong>Worth asking:</strong> What specific conduct is called intolerant, whether argument and public opinion have failed, and who gets to decide &mdash; the paradox itself settles none of these.</div>
+        </div>
+
+        <p class="expl-links">Every card is in the <a href="reference.html">pattern reference</a> &mdash; or see them live on the <a href="explainers.html">explainer playground</a>.</p>
     </div>
 </section>
 
